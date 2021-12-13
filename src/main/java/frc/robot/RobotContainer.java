@@ -6,12 +6,20 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.commands.teleop.HeadingCommand;
+import frc.robot.helpers.CommandQueue;
+import frc.robot.helpers.HeadingQueue;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Heading;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,9 +33,14 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Heading heading = new Heading();
+
+  private final HeadingQueue headingQueue = new HeadingQueue();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -39,7 +52,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+    // Execute hold heading command with Driver Right Bumper
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    driverRightBumper.whileHeld(new HeadingCommand(headingQueue, heading));
+
+    // Enqueue headings for driver with A/B
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorA.whenPressed(() -> headingQueue.enqueueHeading(Rotation2d.fromDegrees(90)));
+    operatorB.whenPressed(() -> headingQueue.enqueueHeading(Rotation2d.fromDegrees(180)));
   }
 
   /**
