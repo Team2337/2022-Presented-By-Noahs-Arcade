@@ -28,9 +28,13 @@ public class SwerveDriveCommand extends CommandBase {
 
   @Override
   public void execute() {
-    double vxMetersPerSecond = -Utilities.modifyAxis(controller.getLeftY()) * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-    double vyMetersPerSecond = -Utilities.modifyAxis(controller.getLeftX()) * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-    double omegaRadiansPerSecond = -Utilities.modifyAxis(controller.getRightX()) * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    double forward = -Utilities.modifyAxis(controller.getLeftY());
+    double strafe = -Utilities.modifyAxis(controller.getLeftX());
+    double rotation = -Utilities.modifyAxis(controller.getRightX());
+
+    double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
+    double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
+    double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     boolean isFieldOriented = !controller.getLeftBumper();
 
     if (isFieldOriented) {
