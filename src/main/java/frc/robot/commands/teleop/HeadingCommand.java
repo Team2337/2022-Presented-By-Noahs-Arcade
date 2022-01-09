@@ -2,7 +2,6 @@ package frc.robot.commands.teleop;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.helpers.HeadingQueue;
 import frc.robot.subsystems.Heading;
 
 /**
@@ -12,11 +11,9 @@ import frc.robot.subsystems.Heading;
  */
 public class HeadingCommand extends CommandBase {
   
-  private HeadingQueue headingQueue;
   private Heading heading;
 
-  public HeadingCommand(HeadingQueue headingQueue, Heading heading) {
-    this.headingQueue = headingQueue;
+  public HeadingCommand(Heading heading) {
     this.heading = heading;
     
     addRequirements(heading);
@@ -33,16 +30,16 @@ public class HeadingCommand extends CommandBase {
   }
 
   private void updateDesiredHeading() {
-    Rotation2d desiredHeading = headingQueue.dequeueHeading();
+    Rotation2d desiredHeading = heading.dequeueHeading();
     if (desiredHeading == null) {
       return;
     }
-    heading.setDesiredHeading(desiredHeading);
+    heading.setCurrentHeading(desiredHeading);
   }
 
   @Override
   public void end(boolean interrupted) {
-    heading.setDesiredHeading(null);
+    heading.setCurrentHeading(null);
   }
 
 }
