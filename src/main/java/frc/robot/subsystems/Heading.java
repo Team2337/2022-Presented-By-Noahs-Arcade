@@ -12,14 +12,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Heading extends SubsystemBase {
 
-  Rotation2d desiredHeading;
+  private Rotation2d nextHeading;
+  private Rotation2d currentHeading;
 
-  public void setDesiredHeading(Rotation2d desiredHeading) {
-    this.desiredHeading = desiredHeading;
+  public void setCurrentHeading(Rotation2d currentHeading) {
+    this.currentHeading = currentHeading;
   }
 
-  public Rotation2d getDesiredHeading() {
-    return desiredHeading;
+  public Rotation2d getCurrentHeading() {
+    return currentHeading;
+  }
+
+  public void enqueueHeading(Rotation2d nextHeading) {
+    this.nextHeading = nextHeading;
+  }
+  
+  public Rotation2d dequeueHeading() {
+    Rotation2d heading = this.nextHeading;
+    this.nextHeading = null;
+    return heading;
   }
 
 }

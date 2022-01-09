@@ -10,14 +10,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.HeadingCommand;
-import frc.robot.helpers.CommandQueue;
-import frc.robot.helpers.HeadingQueue;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
@@ -35,7 +31,6 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading();
 
-  private final HeadingQueue headingQueue = new HeadingQueue();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -54,13 +49,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Execute hold heading command with Driver Right Bumper
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    driverRightBumper.whileHeld(new HeadingCommand(headingQueue, heading));
+    driverRightBumper.whileHeld(new HeadingCommand(heading));
+    //TODO: This is more of a when pressed not a while held, think through when released functionality
 
     // Enqueue headings for driver with A/B
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorA.whenPressed(() -> headingQueue.enqueueHeading(Rotation2d.fromDegrees(90)));
-    operatorB.whenPressed(() -> headingQueue.enqueueHeading(Rotation2d.fromDegrees(180)));
+    operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
+    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
   }
 
   /**

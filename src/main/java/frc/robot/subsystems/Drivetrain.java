@@ -22,6 +22,7 @@ import frc.robot.Constants;
 public class Drivetrain extends SubsystemBase {
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  private Rotation2d desiredRotation;
 
   private PigeonIMU pigeon;
 
@@ -136,6 +137,12 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(ChassisSpeeds chassisSpeeds) {
     this.chassisSpeeds = chassisSpeeds;
+    this.desiredRotation = null;
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds, Rotation2d desiredRotation) {
+    this.chassisSpeeds = chassisSpeeds;
+    this.desiredRotation = desiredRotation;
   }
 
   public void resetOdometry() {
@@ -147,10 +154,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void stopMotors() {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  }
-
-  public void setModuleStates(SwerveModuleState[] states) {
-    this.chassisSpeeds = kinematics.toChassisSpeeds(states);
+    this.desiredRotation = null;
   }
 
   @Override
@@ -161,7 +165,14 @@ public class Drivetrain extends SubsystemBase {
     for (int i = 0; i < states.length; i++) {
       SwerveModule module = modules[i];
       SwerveModuleState moduleState = states[i];
-      module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
+      Rotation2d rotation;
+      if (this.desiredRotation == null) {
+        rotation = moduleState.angle;
+      } else {
+        rotation = this.desiredRotation;
+      }
+      //TODO: Optimize rotational angle based on current angle
+      module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, rotation.getRadians());
     }
 
     odometry.update(

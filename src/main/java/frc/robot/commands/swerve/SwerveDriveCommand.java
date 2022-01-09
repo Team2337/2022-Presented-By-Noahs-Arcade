@@ -46,42 +46,49 @@ public class SwerveDriveCommand extends CommandBase {
      * rotational value. Check to see if we're attempting to maintain some
      * static heading provided by our Heading subsystem.
      */
-    Rotation2d desiredHeading = heading.getDesiredHeading();
+    Rotation2d desiredHeading = heading.getCurrentHeading();
     if (desiredHeading != null) {
-      /**
-       * Code largely lifted from 2019 -
-       * https://github.com/Team2337/2020-Perpetual-Supercharger/blob/b4366826ed0e9842878486df3a2a3898ca411ebe/src/main/java/frc/robot/subsystems/OperatorAngleAdjustment.java#L202-L220
-       */
-      Rotation2d rotationError = drivetrain.getGyroscopeRotation().minus(desiredHeading);
-
-      /** Rotational P while not rotating */
-      double stationaryP = 0.015;
-      /** Rotational P while rotating */
-      double movingP = 0.01;
-
-      double kP = forward == 0 && strafe == 0 ? stationaryP : movingP;
-
-      double calculatedRotation = rotationError.getDegrees() * kP;
-      // Max out our maximum automatic rotational speed at 0.6 out of 1.0
-      calculatedRotation = (Math.abs(calculatedRotation) > 0.6) ? Math.copySign(0.6, calculatedRotation) : calculatedRotation;
-      omegaRadiansPerSecond = calculatedRotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+      //TODO: Make sure we consider nonzero omegaRadiansPerSecond values
     }
 
     if (isFieldOriented) {
-      drivetrain.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
+      if (desiredHeading != null) {
+        drivetrain.drive(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond,
+            drivetrain.getGyroscopeRotation()
+          ),
+          desiredHeading
+        ); 
+      } else {
+        drivetrain.drive(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond,
+            drivetrain.getGyroscopeRotation()
+          )
+        ); 
+      }
+    } else {
+      if (desiredHeading != null) {
+        drivetrain.drive(
+          new ChassisSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond
+          ),
+          desiredHeading
+        );
+      } else {
+        drivetrain.drive(new ChassisSpeeds(
           vxMetersPerSecond,
           vyMetersPerSecond,
-          omegaRadiansPerSecond,
-          drivetrain.getGyroscopeRotation()
-        )
-      );
-    } else {
-      drivetrain.drive(new ChassisSpeeds(
-        vxMetersPerSecond,
-        vyMetersPerSecond,
-        omegaRadiansPerSecond
-      ));
+          omegaRadiansPerSecond
+        ));
+      }
     }
   }
 
