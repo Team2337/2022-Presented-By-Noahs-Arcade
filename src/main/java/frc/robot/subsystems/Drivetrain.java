@@ -156,7 +156,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (int i = 0; i < states.length; i++) {
       SwerveModule module = modules[i];
