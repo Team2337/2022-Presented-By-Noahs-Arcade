@@ -49,8 +49,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Execute hold heading command with Driver Right Bumper
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    driverRightBumper.whileHeld(new HeadingCommand(heading));
-    //TODO: This is more of a when pressed not a while held, think through when released functionality
+    driverRightBumper.whenPressed(new HeadingCommand(heading));
+    driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
 
     // Enqueue headings for driver with A/B
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);

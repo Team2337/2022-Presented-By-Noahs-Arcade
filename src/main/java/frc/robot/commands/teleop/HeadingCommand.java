@@ -1,7 +1,7 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Heading;
 
 /**
@@ -9,7 +9,7 @@ import frc.robot.subsystems.Heading;
  * static heading (ex: 90 degrees) or dynamic (ex: continiously
  * provided by a LimeLight or vision system).
  */
-public class HeadingCommand extends CommandBase {
+public class HeadingCommand extends InstantCommand {
   
   private Heading heading;
 
@@ -24,22 +24,12 @@ public class HeadingCommand extends CommandBase {
     updateDesiredHeading();
   }
 
-  @Override
-  public void execute() {
-    updateDesiredHeading();
-  }
-
   private void updateDesiredHeading() {
     Rotation2d desiredHeading = heading.dequeueHeading();
     if (desiredHeading == null) {
       return;
     }
     heading.setCurrentHeading(desiredHeading);
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    heading.setCurrentHeading(null);
   }
 
 }
