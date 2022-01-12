@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -23,7 +22,7 @@ public class Drivetrain extends SubsystemBase {
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  private PigeonIMU pigeon;
+  private Pigeon pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -66,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
    * and the calculations from the joystick inputs is handled.
    * Field orientation is set here as well
    */
-  public Drivetrain(PigeonIMU pigeon) {
+  public Drivetrain(Pigeon pigeon) {
     this.pigeon = pigeon;
 
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
@@ -131,7 +130,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getFusedHeading());
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {

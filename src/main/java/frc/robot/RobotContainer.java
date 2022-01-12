@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Pigeon;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,7 +22,7 @@ public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
 
-  private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final Pigeon pigeon = new Pigeon(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
