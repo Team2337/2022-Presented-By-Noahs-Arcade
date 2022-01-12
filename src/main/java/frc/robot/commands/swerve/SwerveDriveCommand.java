@@ -47,8 +47,8 @@ public class SwerveDriveCommand extends CommandBase {
      * static heading provided by our Heading subsystem.
      */
     Rotation2d desiredHeading = heading.getCurrentHeading();
-    if (desiredHeading != null) {
-      //TODO: Make sure we consider nonzero omegaRadiansPerSecond values
+    if (desiredHeading != null && Utilities.deadband(rotation, 0.1) == 0) {
+      //desiredHeading = null;
     }
 
     if (isFieldOriented) {

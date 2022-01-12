@@ -165,13 +165,10 @@ public class Drivetrain extends SubsystemBase {
     for (int i = 0; i < states.length; i++) {
       SwerveModule module = modules[i];
       SwerveModuleState moduleState = states[i];
-      Rotation2d rotation;
-      if (this.desiredRotation == null) {
-        rotation = moduleState.angle;
-      } else {
+      Rotation2d rotation = moduleState.angle;
+      if (this.desiredRotation != null) {
         rotation = this.desiredRotation;
       }
-      //TODO: Optimize rotational angle based on current angle
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, rotation.getRadians());
     }
 
