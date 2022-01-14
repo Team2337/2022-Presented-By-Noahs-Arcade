@@ -166,9 +166,11 @@ public class Drivetrain extends SubsystemBase {
       SwerveModule module = modules[i];
       SwerveModuleState moduleState = states[i];
       Rotation2d rotation = moduleState.angle;
+
       if (this.desiredRotation != null) {
         rotation = this.desiredRotation;
       }
+
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, rotation.getRadians());
     }
 
