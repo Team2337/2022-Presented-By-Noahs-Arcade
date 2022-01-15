@@ -16,6 +16,7 @@ import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.HeadingCommand;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading();
+  private final Shooter shooter = new Shooter();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
