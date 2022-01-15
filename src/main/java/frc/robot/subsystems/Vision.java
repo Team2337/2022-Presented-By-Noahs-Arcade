@@ -12,7 +12,9 @@ public class Vision extends SubsystemBase {
   /**
    * 
    */
-  public Vision() {
-    // 
-  }
+  public Vision() {}
+
+  @Override
+  public void periodic() {}
+  
 }

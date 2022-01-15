@@ -13,4 +13,8 @@ public class Shooter extends SubsystemBase {
    * 
    */
   public Shooter() {}
+
+  @Override
+  public void periodic() {}
+  
 }

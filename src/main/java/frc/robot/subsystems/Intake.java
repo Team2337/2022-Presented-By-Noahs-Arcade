@@ -14,4 +14,7 @@ public class Intake extends SubsystemBase {
    */
   public Intake() {}
 
+  @Override
+  public void periodic() {}
+
 }
