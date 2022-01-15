@@ -3,6 +3,7 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
@@ -36,6 +37,10 @@ public class SwerveDriveCommand extends CommandBase {
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
 
+    SmartDashboard.putNumber("forward", forward);
+    SmartDashboard.putNumber("strafe", strafe);
+    SmartDashboard.putNumber("rotation", rotation);
+
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
@@ -47,8 +52,8 @@ public class SwerveDriveCommand extends CommandBase {
      * static heading provided by our Heading subsystem.
      */
     Rotation2d desiredHeading = heading.getCurrentHeading();
-    if (desiredHeading != null && Utilities.deadband(rotation, 0.1) == 0) {
-      //desiredHeading = null;
+    if (desiredHeading != null && rotation != 0) {
+      desiredHeading = null;
     }
 
     if (isFieldOriented) {

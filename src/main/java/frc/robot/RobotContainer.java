@@ -56,7 +56,7 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
-    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
+    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(130)));
   }
 
   /**
