@@ -7,8 +7,6 @@ public class StopIntake extends InstantCommand {
   private final Intake subsystem;
 
   /**
-   * Creates a new SetIntakeSpeed.
-   *
    * @param subsystem The subsystem used by this command.
    */
   public StopIntake(Intake subsystem) {

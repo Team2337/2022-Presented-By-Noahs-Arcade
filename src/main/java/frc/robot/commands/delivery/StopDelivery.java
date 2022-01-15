@@ -1,20 +1,16 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.delivery;
 
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Delivery;
 
-/** An example command that uses an example subsystem. */
-public class SetIntakeSpeed extends InstantCommand {
-  private final Intake subsystem;
-  private final double speed;
+public class StopDelivery extends InstantCommand {
+  private final Delivery subsystem;
 
   /**
    * @param subsystem The subsystem used by this command.
-   * @param speed The speed (as a percent)
    */
-  public SetIntakeSpeed(Intake subsystem, double speed) {
+  public StopDelivery(Delivery subsystem) {
     this.subsystem = subsystem;
-    this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -22,12 +18,16 @@ public class SetIntakeSpeed extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //Sets intake speed
-    subsystem.setIntakeSpeed(speed);
+    //Sets delivery speed
+    subsystem.stopDelivery();
   }
+
+  // Called every time the scheduler runs while the command is scheduled.
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //Stops motors
   }
+
 }
