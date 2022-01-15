@@ -63,6 +63,7 @@ public class RobotContainer {
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(new SetIntakeSpeed(intake, Constants.INTAKE_SPEED));
+    operatorRightBumper.whenReleased(new StopIntake(intake));
   }
 
   /**

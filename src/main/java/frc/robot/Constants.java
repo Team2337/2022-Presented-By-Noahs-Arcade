@@ -87,5 +87,6 @@ public final class Constants {
   public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
   // Other motor IDs
-  public static final int INTAKE_MOTOR_ID = 6;//TODO: get device id
+  public static final int INTAKE_MOTOR_ID = 6;//TODO: get actual device id on robot
+  public static final double INTAKE_SPEED = 0.5;
 }
