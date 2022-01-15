@@ -1,9 +1,11 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
@@ -18,6 +20,8 @@ public class SwerveDriveCommand extends CommandBase {
   private final Heading heading;
   private final Drivetrain drivetrain;
 
+  private PIDController rotationController = new PIDController(1.0, 0.0, 0.1);
+
   /**
    * Command running the swerve calculations with the joystick
    *
@@ -28,6 +32,12 @@ public class SwerveDriveCommand extends CommandBase {
     this.heading = heading;
     this.drivetrain = drivetrain;
 
+    Shuffleboard.getTab("Drivetrain").getLayout("Rotation Controller", BuiltInLayouts.kList)
+      .withSize(4, 8).withPosition(20, 0)
+      .addNumber("Rotation Controller Value (Radians)", () -> rotationController.getPositionError());
+
+    rotationController.enableContinuousInput(-2 * Math.PI, 2 * Math.PI);
+
     addRequirements(drivetrain);
   }
 
@@ -37,9 +47,7 @@ public class SwerveDriveCommand extends CommandBase {
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
 
-    SmartDashboard.putNumber("forward", forward);
-    SmartDashboard.putNumber("strafe", strafe);
-    SmartDashboard.putNumber("rotation", rotation);
+    drivetrain.logJoysticks(forward, strafe, rotation);
 
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
@@ -54,6 +62,11 @@ public class SwerveDriveCommand extends CommandBase {
     Rotation2d desiredHeading = heading.getCurrentHeading();
     if (desiredHeading != null && rotation != 0) {
       desiredHeading = null;
+    }
+
+    // Modify our omegaRadiansPerSecond to achieve our desired rotational value
+    if (desiredHeading != null) {
+      omegaRadiansPerSecond = rotationController.calculate(drivetrain.getGyroscopeRotation().getRadians(), desiredHeading.getRadians()) * (Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.5);
     }
 
     if (isFieldOriented) {

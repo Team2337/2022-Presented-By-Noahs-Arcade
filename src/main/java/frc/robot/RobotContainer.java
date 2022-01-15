@@ -52,11 +52,15 @@ public class RobotContainer {
     driverRightBumper.whenPressed(new HeadingCommand(heading));
     driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
 
-    // Enqueue headings for driver with A/B
+    // Enqueue headings for driver with A/B/X/Y
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
-    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(130)));
+    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
+    operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(355)));
+    operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
   }
 
   /**

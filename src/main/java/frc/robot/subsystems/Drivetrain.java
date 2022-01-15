@@ -14,15 +14,16 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
 
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  private Rotation2d desiredRotation;
 
   private PigeonIMU pigeon;
 
@@ -72,14 +73,11 @@ public class Drivetrain extends SubsystemBase {
 
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
 
-    SmartDashboard.putNumber("ticks", 0);
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
     modules = new SwerveModule[] {
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(0, 0),
+          .withSize(4, 8)
+          .withPosition(4, 0),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE0_DRIVE_MOTOR_ID,
         Constants.MODULE0_ANGLE_MOTOR_ID,
@@ -88,8 +86,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(2, 0),
+          .withSize(4, 8)
+          .withPosition(0, 0),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE1_DRIVE_MOTOR_ID,
         Constants.MODULE1_ANGLE_MOTOR_ID,
@@ -98,8 +96,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(4, 0),
+          .withSize(4, 8)
+          .withPosition(0, 8),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE2_DRIVE_MOTOR_ID,
         Constants.MODULE2_ANGLE_MOTOR_ID,
@@ -108,8 +106,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(6, 0),
+          .withSize(4, 8)
+          .withPosition(4, 8),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE3_DRIVE_MOTOR_ID,
         Constants.MODULE3_ANGLE_MOTOR_ID,
@@ -117,6 +115,22 @@ public class Drivetrain extends SubsystemBase {
         Constants.MODULE3_ANGLE_OFFSET
       )
     };
+
+    ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
+    chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
+    chassisSpeedsWidget.addNumber("vy meters/s", () -> chassisSpeeds.vyMetersPerSecond);
+    chassisSpeedsWidget.addNumber("omega radians/s", () -> chassisSpeeds.omegaRadiansPerSecond);
+
+    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
+    gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
+
+    /*
+    tab.getLayout("Joystick Values", BuiltInLayouts.kList);
+    layout.addNumber("Forward", () -> forward); // 
+    layout.addNumber("Strafe", () -> strafe);
+    layout.addNumber("Rotation", () -> rotation);
+    layout.withSize(4, 8).withPosition(8, 0);
+    */
   }
 
   public void resetPosition(Pose2d pose) {
@@ -137,12 +151,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(ChassisSpeeds chassisSpeeds) {
     this.chassisSpeeds = chassisSpeeds;
-    this.desiredRotation = null;
   }
 
   public void drive(ChassisSpeeds chassisSpeeds, Rotation2d desiredRotation) {
     this.chassisSpeeds = chassisSpeeds;
-    this.desiredRotation = desiredRotation;
   }
 
   public void resetOdometry() {
@@ -154,7 +166,9 @@ public class Drivetrain extends SubsystemBase {
    */
   public void stopMotors() {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-    this.desiredRotation = null;
+  }
+
+  public void logJoysticks(double forward, double strafe, double rotation) {
   }
 
   @Override
@@ -165,13 +179,7 @@ public class Drivetrain extends SubsystemBase {
     for (int i = 0; i < states.length; i++) {
       SwerveModule module = modules[i];
       SwerveModuleState moduleState = states[i];
-      Rotation2d rotation = moduleState.angle;
-
-      if (this.desiredRotation != null) {
-        rotation = this.desiredRotation;
-      }
-
-      module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, rotation.getRadians());
+      module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
     odometry.update(
