@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -29,6 +31,41 @@ public class Shooter extends SubsystemBase {
     private double kI = 0;
     private double kD = 0.0002;
     private double kF = 0;
+    private double leftSpeed = 0;
+    private double rightSpeed = 0;
+    public ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+    /* tab.getLayout("Shooter", BuiltInLayouts.kList)
+         .withSize(2, 4)
+         .withPosition(0, 0); */
+     public NetworkTableEntry kep = Shuffleboard.getTab("Shooter")
+     .add("kP", kP )
+     .withWidget(BuiltInWidgets.kTextView)
+     .getEntry();    // This method will be called once per scheduler run
+ 
+     public NetworkTableEntry kei = Shuffleboard.getTab("Shooter")
+     .add("kI", kI )
+     .withWidget(BuiltInWidgets.kTextView)
+     .getEntry();    // This method will be called once per scheduler run
+ 
+     public NetworkTableEntry ked = Shuffleboard.getTab("Shooter")
+     .add("kD", kD )
+     .withWidget(BuiltInWidgets.kTextView)
+     .getEntry();    // This method will be called once per scheduler run
+ 
+     public NetworkTableEntry kef = Shuffleboard.getTab("Shooter")
+     .add("kF", kF )
+     .withWidget(BuiltInWidgets.kTextView)
+     .getEntry();  
+     public NetworkTableEntry leftShooter = Shuffleboard.getTab("Shooter")
+        .add("Left Shooter Speed", 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 100))
+        .getEntry();
+    public NetworkTableEntry rightShooter = Shuffleboard.getTab("Shooter")
+        .add("Right Shooter Speed", 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 100))
+        .getEntry();
 
     public Shooter() {
         leftShooterMotor = new TalonFX(Constants.SHOOTERLEFTMOTOR);
@@ -78,42 +115,42 @@ public class Shooter extends SubsystemBase {
         /* Sets up inversions
         leftShooterMotor.setInverted(false);
         rightShooterMotor.setInverted(true); */
+         // This method will be called once per scheduler run
     }
-
+    
+    
     @Override
     public void periodic() {
-        NetworkTableEntry kep = Shuffleboard.getTab("Example Tab")
-        .add("kP", 0 )
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .getEntry();    // This method will be called once per scheduler run
-
-         kP = kep.getDouble(0);
-         SmartDashboard.putNumber("Testing", kP);
-
-         NetworkTableEntry kei = Shuffleboard.getTab("Example Tab")
-        .add("kI", 0 )
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .getEntry();    // This method will be called once per scheduler run
-
-         kI = kei.getDouble(0);
-         SmartDashboard.putNumber("Testing1", kI);
-
-         NetworkTableEntry ked = Shuffleboard.getTab("Example Tab")
-        .add("kD", 0 )
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .getEntry();    // This method will be called once per scheduler run
-
-         kD = ked.getDouble(0);
-         SmartDashboard.putNumber("Testing2", kD);
-
-         NetworkTableEntry kef = Shuffleboard.getTab("Example Tab")
-        .add("kF", 0 )
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .getEntry();    // This method will be called once per scheduler run
-
-         kF = kef.getDouble(0);
-         SmartDashboard.putNumber("Testing", kF);
-  }
+        SmartDashboard.putNumber("Testing", kP);
+        SmartDashboard.putNumber("Testing1", kI);
+        SmartDashboard.putNumber("Testing2", kD);
+        SmartDashboard.putNumber("Testing3", kF);
+        if(kep.getDouble(0) != kP){
+            kP = kep.getDouble(0);
+            configurePID(kP, kI, kD, kF);
+        }
+        if(kei.getDouble(0) != kI){
+            kI = kei.getDouble(0);
+            configurePID(kP, kI, kD, kF);
+        }
+        if(ked.getDouble(0) != kD){
+            kD = ked.getDouble(0);
+            configurePID(kP, kI, kD, kF);
+        }
+        if(kef.getDouble(0) != kF){
+            kF = kef.getDouble(0);
+            configurePID(kP, kI, kD, kF);
+        }
+        if(leftShooter.getDouble(0) != leftSpeed){
+            leftSpeed = leftShooter.getDouble(0);
+            setLeftShooterSpeed(leftSpeed);
+        }
+        if(rightShooter.getDouble(0) != rightSpeed){
+            rightSpeed = rightShooter.getDouble(0);
+            setRightShooterSpeed(rightSpeed);
+        }
+    
+      }
 
   public void configurePID(double kp, double ki, double kd, double kf){
       leftShooterMotor.config_kP(0, kp);
@@ -125,6 +162,30 @@ public class Shooter extends SubsystemBase {
       rightShooterMotor.config_kD(0, kd);
       rightShooterMotor.config_kF(0, kf);
   }
+
+  public void setLeftShooterSpeed(double speed){
+      leftShooterMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void setRightShooterSpeed(double speed){
+    rightShooterMotor.set(ControlMode.PercentOutput, speed);
+    
+ }
+ public void stopLeftShooter(){
+    leftShooterMotor.set(ControlMode.PercentOutput, 0);
+}
+
+public void stopRightShooter(){
+  rightShooterMotor.set(ControlMode.PercentOutput, 0);
+}
+
+public double getLeftShooterSpeed(){
+    return leftShooterMotor.getMotorOutputPercent();
+}
+
+public double getRightShooterSpeed(){
+    return rightShooterMotor.getMotorOutputPercent();
+}
 
 
 }
