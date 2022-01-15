@@ -1,17 +1,21 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Heading;
 
 
 public class SwerveDriveCommand extends CommandBase {
 
   private final XboxController controller;
 
+  private final Heading heading;
   private final Drivetrain drivetrain;
 
   /**
@@ -19,8 +23,9 @@ public class SwerveDriveCommand extends CommandBase {
    *
    * @param subsystem - SwerveDrivetrain subsystem object
    */
-  public SwerveDriveCommand(XboxController controller, Drivetrain drivetrain) {
+  public SwerveDriveCommand(XboxController controller, Heading heading, Drivetrain drivetrain) {
     this.controller = controller;
+    this.heading = heading;
     this.drivetrain = drivetrain;
 
     addRequirements(drivetrain);
@@ -32,26 +37,63 @@ public class SwerveDriveCommand extends CommandBase {
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
 
+    SmartDashboard.putNumber("forward", forward);
+    SmartDashboard.putNumber("strafe", strafe);
+    SmartDashboard.putNumber("rotation", rotation);
+
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     boolean isFieldOriented = !controller.getLeftBumper();
 
+    /**
+     * Set the rotational value of the robot. Fallback to using joysticks for
+     * rotational value. Check to see if we're attempting to maintain some
+     * static heading provided by our Heading subsystem.
+     */
+    Rotation2d desiredHeading = heading.getCurrentHeading();
+    if (desiredHeading != null && rotation != 0) {
+      desiredHeading = null;
+    }
+
     if (isFieldOriented) {
-      drivetrain.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
+      if (desiredHeading != null) {
+        drivetrain.drive(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond,
+            drivetrain.getGyroscopeRotation()
+          ),
+          desiredHeading
+        ); 
+      } else {
+        drivetrain.drive(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond,
+            drivetrain.getGyroscopeRotation()
+          )
+        ); 
+      }
+    } else {
+      if (desiredHeading != null) {
+        drivetrain.drive(
+          new ChassisSpeeds(
+            vxMetersPerSecond,
+            vyMetersPerSecond,
+            omegaRadiansPerSecond
+          ),
+          desiredHeading
+        );
+      } else {
+        drivetrain.drive(new ChassisSpeeds(
           vxMetersPerSecond,
           vyMetersPerSecond,
-          omegaRadiansPerSecond,
-          drivetrain.getGyroscopeRotation()
-        )
-      );
-    } else {
-      drivetrain.drive(new ChassisSpeeds(
-        vxMetersPerSecond,
-        vyMetersPerSecond,
-        omegaRadiansPerSecond
-      ));
+          omegaRadiansPerSecond
+        ));
+      }
     }
   }
 
