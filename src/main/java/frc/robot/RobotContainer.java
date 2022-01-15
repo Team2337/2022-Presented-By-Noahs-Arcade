@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.intake.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.HeadingCommand;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Heading;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +30,8 @@ public class RobotContainer {
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading();
+  
+  private final Intake intake = new Intake();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -57,6 +59,10 @@ public class RobotContainer {
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
     operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(130)));
+
+    // Configure intake controls
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    operatorRightBumper.whenPressed(new SetIntakeSpeed(intake, Constants.INTAKE_SPEED));
   }
 
   /**
