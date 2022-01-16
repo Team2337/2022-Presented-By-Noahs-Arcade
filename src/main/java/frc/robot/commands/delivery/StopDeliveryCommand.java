@@ -3,13 +3,13 @@ package frc.robot.commands.delivery;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Delivery;
 
-public class StopDelivery extends InstantCommand {
+public class StopDeliveryCommand extends InstantCommand {
   private final Delivery subsystem;
 
   /**
    * @param subsystem The subsystem used by this command.
    */
-  public StopDelivery(Delivery subsystem) {
+  public StopDeliveryCommand(Delivery subsystem) {
     this.subsystem = subsystem;
     
     addRequirements(subsystem);
