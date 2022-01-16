@@ -28,9 +28,11 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-
-  private final Intake intake = new Intake();
+  
+  private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
+  private final Intake intake = new Intake();
+  private final Vision vision = new Vision();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
