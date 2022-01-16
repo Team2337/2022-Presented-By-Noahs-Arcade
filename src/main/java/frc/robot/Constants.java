@@ -89,8 +89,4 @@ public final class Constants {
   public static final int SHOOTERLEFTMOTOR = 2;
   public static final int SHOOTERRIGHTMOTOR = 3;
 
-
-
-
-
 }
