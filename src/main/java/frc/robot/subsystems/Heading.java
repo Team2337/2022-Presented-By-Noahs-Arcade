@@ -41,7 +41,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the currentHeading from it's actual heading.
    */
-  private PIDController rotationController = new PIDController(1.0, 0.0, 0.1);
+  private PIDController rotationController = new PIDController(8.0, 4.0, 0.75);
   // TODO: Use a ProfiledPIDController so we can use a motion profile to smooth our turning
 
   /**
@@ -86,21 +86,22 @@ public class Heading extends SubsystemBase {
     // the internal state of our controller so we don't end up with huge swings
     if (newHeadingSet) {
       rotationController.reset();
+
       newHeadingSet = false;
     }
-
+    
+    rotationController.setSetpoint(currentHeading.getDegrees());
     // If we've reached our setpoint (within a tolerance) don't move the robot
+    /*
     if (rotationController.atSetpoint()) {
       return new Rotation2d();
     }
+    */
 
     // TODO: Note to Zach - we should see what kind of values the Pigeon will give us.
     // Someplace in 2337's 2020 code they have a comment that the Pigeon is giving us
     // a value from -360 to 360. I need to confirm if that's true.
-    double error = rotationController.calculate(
-      actualRotationSupplier.get().getDegrees(),
-      currentHeading.getDegrees()
-    );
+    double error = rotationController.calculate(actualRotationSupplier.get().getDegrees());
     return Rotation2d.fromDegrees(error);
   }
 
