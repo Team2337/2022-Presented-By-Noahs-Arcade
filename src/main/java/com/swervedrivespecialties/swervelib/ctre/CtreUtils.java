@@ -7,6 +7,5 @@ public final class CtreUtils {
     }
 
     public static void checkCtreError(ErrorCode errorCode, String message) {
-
     }
 }

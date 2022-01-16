@@ -29,7 +29,7 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading();
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

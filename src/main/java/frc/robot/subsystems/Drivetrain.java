@@ -153,10 +153,6 @@ public class Drivetrain extends SubsystemBase {
     this.chassisSpeeds = chassisSpeeds;
   }
 
-  public void drive(ChassisSpeeds chassisSpeeds, Rotation2d desiredRotation) {
-    this.chassisSpeeds = chassisSpeeds;
-  }
-
   public void resetOdometry() {
     odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
   }
