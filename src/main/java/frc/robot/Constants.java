@@ -86,8 +86,8 @@ public final class Constants {
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
   public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
-  public static final int SHOOTERLEFTMOTOR = 5;
-  public static final int SHOOTERRIGHTMOTOR = 6;
+  public static final int SHOOTERLEFTMOTOR = 2;
+  public static final int SHOOTERRIGHTMOTOR = 3;
 
 
 
