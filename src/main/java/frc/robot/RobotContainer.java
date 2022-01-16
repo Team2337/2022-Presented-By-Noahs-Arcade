@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.delivery.*;
-import frc.robot.commands.intake.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -50,14 +48,14 @@ public class RobotContainer {
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(new SetIntakeSpeedCommand(intake, Constants.INTAKE_SPEED));
-    operatorRightBumper.whenReleased(new StopIntakeCommand(intake));
+    operatorRightBumper.whenPressed(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED));
+    operatorRightBumper.whenReleased(() -> intake.stopIntake());
 
     // Configure delivery stuff
     // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(new SetDeliverySpeedCommand(delivery, Constants.DELIVERY_SPEED));
-    operatorLeftBumper.whenReleased(new StopDeliveryCommand(delivery));
+    operatorLeftBumper.whenPressed(() -> delivery.setDeliverySpeed(Constants.DELIVERY_SPEED));
+    operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
   }
 
   /**

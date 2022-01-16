@@ -47,8 +47,8 @@ public class Delivery extends SubsystemBase {
 
     // Set up shuffleboard stuff
     ShuffleboardLayout intakeWidget = tab.getLayout("Delivery Info", BuiltInLayouts.kList).withSize(3,2).withPosition(11, 16);
-    intakeWidget.addNumber("Speed", () -> getDeliverySpeed());
-    intakeWidget.addNumber("Temp", () -> getDeliveryTemperature());
+    intakeWidget.addNumber("Speed", this::getDeliverySpeed);
+    intakeWidget.addNumber("Temp", this::getDeliveryTemperature);
   }
 
   @Override

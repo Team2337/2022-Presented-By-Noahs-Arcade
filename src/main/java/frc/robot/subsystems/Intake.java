@@ -47,8 +47,8 @@ public class Intake extends SubsystemBase {
 
     // Set up shuffleboard stuff
     ShuffleboardLayout intakeWidget = tab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(8, 16);
-    intakeWidget.addNumber("Speed", () -> getIntakeSpeed());
-    intakeWidget.addNumber("Temp", () -> getIntakeTemperature());
+    intakeWidget.addNumber("Speed", this::getIntakeSpeed);
+    intakeWidget.addNumber("Temp", this::getIntakeTemperature);
   }
 
   @Override
