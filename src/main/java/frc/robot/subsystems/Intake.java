@@ -13,13 +13,31 @@ import frc.robot.Constants;
  */
 public class Intake extends SubsystemBase {
 
-  private final TalonFX intakeMotor;
+  private final TalonFX motor;
   
-  /**
-   * 
-   */
   public Intake() {
-    intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+    // Initialize motor
+    motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+    
+    // TODO: make sure config settings are correct
+    //Set settings on motor
+    motor.configFactoryDefault();
+
+    motor.setInverted(false); //TODO: make sure this is correct
+    motor.setNeutralMode(NeutralMode.Coast);
+
+    //Configure a current limit
+    StatorCurrentLimitConfiguration intakeCurrentLimitConfig = 
+      new StatorCurrentLimitConfiguration();
+    intakeCurrentLimitConfig.currentLimit = 50;
+    intakeCurrentLimitConfig.enable = true;
+    intakeCurrentLimitConfig.triggerThresholdCurrent = 40;
+    intakeCurrentLimitConfig.triggerThresholdTime = 3;
+    //Push the current limit to the motor
+    motor.configStatorCurrentLimit(intakeCurrentLimitConfig, 0);
+
+    //Configure motor ramp rate
+    motor.configClosedloopRamp(0.5);
   }
 
   @Override
@@ -33,29 +51,29 @@ public class Intake extends SubsystemBase {
    * Sets the intake speed
    * @param speed The speed as a percent (from -1 to 1)
    */
-  public void setIntakeSpeed(double speed){
-    intakeMotor.set(ControlMode.PercentOutput, speed);
+  public void setIntakeSpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
   }
   
   /**
    * Stops the intake
    */
-  public void stopIntake(){
-    intakeMotor.set(ControlMode.PercentOutput, 0);
+  public void stopIntake() {
+    setIntakeSpeed(0.);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  public double getIntakeSpeed(){
-    return intakeMotor.getMotorOutputPercent();
+  public double getIntakeSpeed() {
+    return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  public double getIntakeTemperature(){
-    return intakeMotor.getTemperature();
+  public double getIntakeTemperature() {
+    return motor.getTemperature();
   }
 
 }

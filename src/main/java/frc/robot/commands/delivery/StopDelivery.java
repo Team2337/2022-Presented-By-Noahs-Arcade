@@ -11,23 +11,14 @@ public class StopDelivery extends InstantCommand {
    */
   public StopDelivery(Delivery subsystem) {
     this.subsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+    
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //Sets delivery speed
     subsystem.stopDelivery();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    //Stops motors
   }
 
 }

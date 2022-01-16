@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.intake.SetIntakeSpeed;
 
 /**
  * Subsystem for the delivery mechanism
@@ -13,13 +14,31 @@ import frc.robot.Constants;
  */
 public class Delivery extends SubsystemBase {
 
-  private final TalonFX deliveryMotor;
+  private final TalonFX motor;
 
-  /**
-   * Delivery constructor
-   */
   public Delivery() {
-    deliveryMotor = new TalonFX(Constants.MODULE3_DRIVE_MOTOR_ID);
+    // Initializes motor
+    motor = new TalonFX(Constants.MODULE3_DRIVE_MOTOR_ID);
+    
+    // TODO: make sure config settings are correct
+    //Set settings on motor
+    motor.configFactoryDefault();
+
+    motor.setInverted(false); //TODO: make sure this is correct
+    motor.setNeutralMode(NeutralMode.Coast);
+
+    //Configure a current limit
+    StatorCurrentLimitConfiguration intakeCurrentLimitConfig = 
+      new StatorCurrentLimitConfiguration();
+    intakeCurrentLimitConfig.currentLimit = 50;
+    intakeCurrentLimitConfig.enable = true;
+    intakeCurrentLimitConfig.triggerThresholdCurrent = 40;
+    intakeCurrentLimitConfig.triggerThresholdTime = 3;
+    //Push the current limit to the motor
+    motor.configStatorCurrentLimit(intakeCurrentLimitConfig, 0);
+
+    //Configure motor ramp rate
+    motor.configClosedloopRamp(0.5);
   }
 
   @Override
@@ -33,29 +52,29 @@ public class Delivery extends SubsystemBase {
    * Sets the intake speed
    * @param speed The speed as a percent (from -1 to 1)
    */
-  public void setDeliverySpeed(double speed){
-    deliveryMotor.set(ControlMode.PercentOutput, speed);
+  public void setDeliverySpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
   }
   
   /**
    * Stops the intake
    */
-  public void stopDelivery(){
-    deliveryMotor.set(ControlMode.PercentOutput, 0);
+  public void stopDelivery() {
+    setDeliverySpeed(0.);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  public double getDeliverySpeed(){
-    return deliveryMotor.getMotorOutputPercent();
+  public double getDeliverySpeed() {
+    return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  public double getDeliveryTemperature(){
-    return deliveryMotor.getTemperature();
+  public double getDeliveryTemperature() {
+    return motor.getTemperature();
   }
 
 }

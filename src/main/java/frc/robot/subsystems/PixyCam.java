@@ -8,6 +8,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * The code for retrieving information from the PixyCam using the SPI port
+ * 
  * @author M. Francis, Nicholas Stokes
  */
 public class PixyCam extends SubsystemBase {
@@ -33,7 +34,7 @@ public class PixyCam extends SubsystemBase {
    * Subsystem for the PixyCam
    * @param chipselect The chip the pixy is plugged into on the SPI
    */
-  public PixyCam(int chipselect){
+  public PixyCam(int chipselect) {
     //Create a link
     pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);
     state = pixycam.init(chipselect);
@@ -49,13 +50,13 @@ public class PixyCam extends SubsystemBase {
 
   // This method will be called once per scheduler run
   @Override
-  public void periodic(){
+  public void periodic() {
 
     //DO NOT REMOVE THIS LINE OF CODE EVER
     updateTargets();
 
     //Check to see if the camera initialized correctly.
-    if(!connected && !retrievedState){
+    if(!connected && !retrievedState) {
       //If we got here, the camera gave us an error.
       //Try to reinitialize the Pixy.
       state = pixycam.init(chip);
@@ -73,9 +74,9 @@ public class PixyCam extends SubsystemBase {
     SmartDashboard.putBoolean("Pixy " + chip + " sees target", seesTarget);
 
     //Debug testing
-    if(DEBUG){
+    if(DEBUG) {
       //Acquire target data
-      if(seesTarget){
+      if(seesTarget) {
         //Get the largest target
         // Block lt = getLargestTarget(); //Gets the largest target (lt)
         SmartDashboard.putString("Largest block", getLargestTarget().toString());
@@ -93,7 +94,7 @@ public class PixyCam extends SubsystemBase {
   /**
    * Refreshes the target cache.
    */
-  private void updateTargets(){
+  private void updateTargets() {
     //If the Pixy is returning an error, don't update the targets.
     if(state < 0) return;
     //Retrieve the targets and store the number in a variable
@@ -108,7 +109,7 @@ public class PixyCam extends SubsystemBase {
   /**
    * @return The number of targets in view of the camera (or the last number retrieved)
    */
-  public int getNumberOfTargets(){
+  public int getNumberOfTargets() {
     return numberOfTargets;
   }
 
@@ -116,7 +117,7 @@ public class PixyCam extends SubsystemBase {
    * Gets all cached targets. Be sure to update it with updateTargets()
    * @return An ArrayList of target data.
    */
-  public ArrayList<Block> getAllTargets(){
+  public ArrayList<Block> getAllTargets() {
     //Retrieve all blocks
     return pixycam.getCCC().getBlockCache();
   }
@@ -126,9 +127,9 @@ public class PixyCam extends SubsystemBase {
    * @return A Block class containing the largest target.
    * @see Block
    */
-  public Block getLargestTarget(){
+  public Block getLargestTarget() {
     //See if we already have the largest Block (to be efficient)
-    if(lastLargestBlockRetrieval == cacheNumber){
+    if(lastLargestBlockRetrieval == cacheNumber) {
       SmartDashboard.putNumber("lastRetrieval", lastLargestBlockRetrieval);
       SmartDashboard.putNumber("cacheNumber", cacheNumber);
       return lastLargestBlock;
@@ -141,11 +142,11 @@ public class PixyCam extends SubsystemBase {
     ArrayList<Block> blocks = getAllTargets();
     Block largestBlock = null;
     //Loops through all targets and finds the widest one
-    for(Block block : blocks){
-      if(largestBlock == null){
+    for(Block block : blocks) {
+      if(largestBlock == null) {
         //If this is the first iteration, set largestBlock to the current block.
         largestBlock = block;
-      } else if(block.getWidth() > largestBlock.getWidth()){
+      } else if(block.getWidth() > largestBlock.getWidth()) {
         //If we find a wider block, set largestBlock to the current block.
         largestBlock = block;
       }
@@ -164,7 +165,7 @@ public class PixyCam extends SubsystemBase {
    * @return Returns the x-coordinate of the largest target from 0-315. 
    * Returns -1 if there isn't a target.
    */
-  public int getLargestTargetX(){
+  public int getLargestTargetX() {
     //Get the largest target
     Block largestTarget = getLargestTarget();
     //Return -1 if there was no target
@@ -178,7 +179,7 @@ public class PixyCam extends SubsystemBase {
    * @return Returns the y-coordinate of the largest target from 0-207. 
    * Returns -1 if there isn't a target.
    */
-  public int getLargestTargetY(){
+  public int getLargestTargetY() {
     //Get the largest target
     Block largestTarget = getLargestTarget();
     //Return -1 if there was no target
@@ -192,7 +193,7 @@ public class PixyCam extends SubsystemBase {
    * @return Returns the angle to the largest target in degrees from the center of the camera.
    * Ranges from -30 to 30. Returns 0.0 if no target was found.
    */
-  public double getLargestTargetAngle(){
+  public double getLargestTargetAngle() {
     double x = getLargestTargetX();
     //Return 0 (centered) if no target was found
     if(!seesTarget)
@@ -209,7 +210,7 @@ public class PixyCam extends SubsystemBase {
   /**
    * @return Returns the width of the largest target.
    */
-  public int getLargestTargetWidth(){
+  public int getLargestTargetWidth() {
     Block largestTarget = getLargestTarget();
     //Return -1 if there was no target
     if(largestTarget == null)
@@ -222,7 +223,7 @@ public class PixyCam extends SubsystemBase {
    * @return Returns the height of the largest target.
    * This is generally going to be smaller than the width because of lighting.
    */
-  public int getLargestTargetHeight(){
+  public int getLargestTargetHeight() {
     Block largestTarget = getLargestTarget();
     //Return -1 if there was no target
     if(largestTarget == null)
