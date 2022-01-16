@@ -23,7 +23,7 @@ public class Delivery extends SubsystemBase {
 
   public Delivery() {
     // Initializes motor
-    motor = new TalonFX(Constants.MODULE3_DRIVE_MOTOR_ID);
+    motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
     
     // TODO: make sure config settings are correct
     //Set settings on motor
