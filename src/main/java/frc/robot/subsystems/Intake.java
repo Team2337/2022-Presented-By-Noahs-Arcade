@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -12,6 +16,8 @@ import frc.robot.Constants;
  * @author Alex C, Michael F, Nicholas S
  */
 public class Intake extends SubsystemBase {
+
+  private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
   private final TalonFX motor;
   
@@ -38,13 +44,18 @@ public class Intake extends SubsystemBase {
 
     //Configure motor ramp rate
     motor.configClosedloopRamp(0.5);
+
+    // Set up shuffleboard stuff
+    ShuffleboardLayout intakeWidget = tab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(8, 16);
+    intakeWidget.addNumber("Speed", () -> getIntakeSpeed());
+    intakeWidget.addNumber("Temp", () -> getIntakeTemperature());
   }
 
   @Override
   public void periodic() {
     // Put debug information on SmartDashboard
-    SmartDashboard.putNumber("intake/speed", getIntakeSpeed());
-    SmartDashboard.putNumber("intake/temperature", getIntakeTemperature());
+    // SmartDashboard.putNumber("intake/speed", getIntakeSpeed());
+    // SmartDashboard.putNumber("intake/temperature", getIntakeTemperature());
   }
 
   /**
