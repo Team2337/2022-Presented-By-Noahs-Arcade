@@ -73,7 +73,7 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'junit:junit:4.12'
-    
+
     // Import Pixy2 Java API
     implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4.1'
 }
