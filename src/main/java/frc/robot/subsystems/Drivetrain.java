@@ -123,14 +123,6 @@ public class Drivetrain extends SubsystemBase {
 
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
-
-    /*
-    tab.getLayout("Joystick Values", BuiltInLayouts.kList);
-    layout.addNumber("Forward", () -> forward); // 
-    layout.addNumber("Strafe", () -> strafe);
-    layout.addNumber("Rotation", () -> rotation);
-    layout.withSize(4, 8).withPosition(8, 0);
-    */
   }
 
   public void resetPosition(Pose2d pose) {

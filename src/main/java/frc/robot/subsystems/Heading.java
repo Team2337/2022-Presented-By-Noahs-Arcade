@@ -75,7 +75,12 @@ public class Heading extends SubsystemBase {
     return heading;
   }
 
-  // TODO: Write docs and give this a better function name...
+  /**
+   * Uses the rotation PID controller to calculate the
+   * offset from the current location the robot should
+   * rotate in order to achieve the desired heading.
+   * Is not clamped by maximum rotational speeds.
+   */
   public Rotation2d calculateRotation() {
     double error = rotationController.calculate(
       actualRotationSupplier.get().getDegrees(),

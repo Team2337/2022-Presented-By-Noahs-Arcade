@@ -42,8 +42,8 @@ public class SwerveDriveCommand extends CommandBase {
      * maintained heading - if the robot should be maintaining a heading.
      * Will not be calculated if the rotation joystick has an input.
      */
-    if (heading.shouldMaintainHeading() && rotation == 0) {
-      if (rotation != 0) {
+    if (heading.shouldMaintainHeading()) {
+      if (rotation == 0) {
         Rotation2d desiredDegreesPerSecond = heading.calculateRotation();
         // Clamp our desiredDegreesPerSecond to +/- our max speed
         double clampedRadiansPerSecond = MathUtil.clamp(
