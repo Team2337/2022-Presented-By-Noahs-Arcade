@@ -7,5 +7,10 @@
       "/LiveWindow/Shooter": "Subsystem",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
     }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
+    }
   }
 }
