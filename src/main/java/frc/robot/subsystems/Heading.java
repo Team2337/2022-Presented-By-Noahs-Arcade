@@ -27,10 +27,6 @@ public class Heading extends SubsystemBase {
    */
   private Rotation2d currentHeading;
   /**
-   * Set when we first provide a new heading to maintain.
-   */
-  private boolean newHeadingSet = false;
-  /**
    * The "next" heading is the enqueued heading we would like the robot to maintain.
    * Swapping from the next heading -> the current heading is done manually via the
    * `setCurrentHeading` method.
@@ -60,7 +56,7 @@ public class Heading extends SubsystemBase {
 
   public void setCurrentHeading(Rotation2d currentHeading) {
     if (this.currentHeading != currentHeading) {
-      newHeadingSet = true;
+      resetRotationController();
     }
     this.currentHeading = currentHeading;
   }
@@ -79,30 +75,25 @@ public class Heading extends SubsystemBase {
     return heading;
   }
 
-  // TODO: Write docs here...
-  // TODO: This needs a better name - it's calculating the error, but that's not descriptive
+  // TODO: Write docs and give this a better function name...
   public Rotation2d calculateRotation() {
-    // If we've gotten a new rotation since our last calculation, we should reset
-    // the internal state of our controller so we don't end up with huge swings
-    if (newHeadingSet) {
-      rotationController.reset();
-
-      newHeadingSet = false;
-    }
-    
-    rotationController.setSetpoint(currentHeading.getDegrees());
-    // If we've reached our setpoint (within a tolerance) don't move the robot
-    /*
+    double error = rotationController.calculate(
+      actualRotationSupplier.get().getDegrees(),
+      currentHeading.getDegrees()
+    );
     if (rotationController.atSetpoint()) {
       return new Rotation2d();
     }
-    */
-
-    // TODO: Note to Zach - we should see what kind of values the Pigeon will give us.
-    // Someplace in 2337's 2020 code they have a comment that the Pigeon is giving us
-    // a value from -360 to 360. I need to confirm if that's true.
-    double error = rotationController.calculate(actualRotationSupplier.get().getDegrees());
     return Rotation2d.fromDegrees(error);
+  }
+
+  /**
+   * Resets the state of the internal rotation PID controller.
+   * Should be called when the controller's setpoint moves, or
+   * when we stop calling `calculate` on a regular basis.
+   */
+  public void resetRotationController() {
+    rotationController.reset();
   }
 
 }

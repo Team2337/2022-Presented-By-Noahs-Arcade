@@ -164,9 +164,6 @@ public class Drivetrain extends SubsystemBase {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   }
 
-  public void logJoysticks(double forward, double strafe, double rotation) {
-  }
-
   @Override
   public void periodic() {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);

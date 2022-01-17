@@ -43,35 +43,23 @@ public class SwerveDriveCommand extends CommandBase {
      * Will not be calculated if the rotation joystick has an input.
      */
     if (heading.shouldMaintainHeading() && rotation == 0) {
-      Rotation2d desiredDegreesPerSecond = heading.calculateRotation();
-      // Clamp our desiredDegreesPerSecond to +/- our max speed
-      double clampedRadiansPerSecond = MathUtil.clamp(
-          desiredDegreesPerSecond.getRadians(),
-          -Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-          Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-      rotation = clampedRadiansPerSecond / Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+      if (rotation != 0) {
+        Rotation2d desiredDegreesPerSecond = heading.calculateRotation();
+        // Clamp our desiredDegreesPerSecond to +/- our max speed
+        double clampedRadiansPerSecond = MathUtil.clamp(
+            desiredDegreesPerSecond.getRadians(),
+            -Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+            Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+        rotation = clampedRadiansPerSecond / Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+      } else {
+        heading.resetRotationController();
+      }
     }
-
-    // drivetrain.logJoysticks(forward, strafe, rotation);
 
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     boolean isFieldOriented = !controller.getLeftBumper();
-
-    /**
-     * Calculate a omegaRadiansPerSecond for the robot to achieve it's
-     * maintained heading - if the robot should be maintaining a heading.
-     * Will not be calculated if the rotation joystick has an input.
-     */
-    // if (heading.shouldMaintainHeading() && rotation == 0) {
-    //   Rotation2d error = heading.calculateRotation();
-    //   // Use our error / our maximum rotational speed to figure out how fast we should be rotating.
-    //   double calculatedRotation = error.getRadians() / Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    //   // Clamp our calculatedRotation to [-1, 1]
-    //   calculatedRotation = Math.max(Math.min(calculatedRotation, 1), -1);
-    //   omegaRadiansPerSecond = calculatedRotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    // }
 
     if (isFieldOriented) {
       drivetrain.drive(
