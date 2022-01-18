@@ -38,7 +38,6 @@ public class Heading extends SubsystemBase {
    * PID used to converge the robot to the currentHeading from it's actual heading.
    */
   private PIDController rotationController = new PIDController(8.0, 4.0, 0.75);
-  // TODO: Use a ProfiledPIDController so we can use a motion profile to smooth our turning
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
