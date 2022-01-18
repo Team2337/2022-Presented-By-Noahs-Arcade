@@ -48,13 +48,13 @@ public class RobotContainer {
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED));
+    operatorRightBumper.whenPressed(() -> intake.startIntake());
     operatorRightBumper.whenReleased(() -> intake.stopIntake());
 
     // Configure delivery stuff
     // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(() -> delivery.setDeliverySpeed(Constants.DELIVERY_SPEED));
+    operatorLeftBumper.whenPressed(() -> delivery.setDeliverySpeed());
     operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
   }
 

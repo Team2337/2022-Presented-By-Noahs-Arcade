@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,8 +15,6 @@ import frc.robot.Constants;
  * @author Alex C, Michael F, Nicholas S
  */
 public class Intake extends SubsystemBase {
-
-  private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
   private final TalonFX motor;
   
@@ -33,57 +30,53 @@ public class Intake extends SubsystemBase {
     motor.setNeutralMode(NeutralMode.Coast);
 
     //Configure a current limit
-    StatorCurrentLimitConfiguration intakeCurrentLimitConfig = 
+    StatorCurrentLimitConfiguration currentLimitConfig = 
       new StatorCurrentLimitConfiguration();
-    intakeCurrentLimitConfig.currentLimit = 50;
-    intakeCurrentLimitConfig.enable = true;
-    intakeCurrentLimitConfig.triggerThresholdCurrent = 40;
-    intakeCurrentLimitConfig.triggerThresholdTime = 3;
+    currentLimitConfig.currentLimit = 50;
+    currentLimitConfig.enable = true;
+    currentLimitConfig.triggerThresholdCurrent = 40;
+    currentLimitConfig.triggerThresholdTime = 3;
     //Push the current limit to the motor
-    motor.configStatorCurrentLimit(intakeCurrentLimitConfig, 0);
+    motor.configStatorCurrentLimit(currentLimitConfig, 0);
 
     //Configure motor ramp rate
     motor.configClosedloopRamp(0.5);
 
     // Set up shuffleboard stuff
-    ShuffleboardLayout intakeWidget = tab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(8, 16);
+    ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
+    ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
     intakeWidget.addNumber("Speed", this::getIntakeSpeed);
     intakeWidget.addNumber("Temp", this::getIntakeTemperature);
   }
 
   @Override
-  public void periodic() {
-    // Put debug information on SmartDashboard
-    // SmartDashboard.putNumber("intake/speed", getIntakeSpeed());
-    // SmartDashboard.putNumber("intake/temperature", getIntakeTemperature());
-  }
+  public void periodic() {}
 
   /**
-   * Sets the intake speed
-   * @param speed The speed as a percent (from -1 to 1)
+   * Starts the intake
    */
-  public void setIntakeSpeed(double speed) {
-    motor.set(ControlMode.PercentOutput, speed);
+  public void startIntake() {
+    motor.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
   }
   
   /**
    * Stops the intake
    */
   public void stopIntake() {
-    setIntakeSpeed(0.);
+    motor.set(ControlMode.PercentOutput, 0.0);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  public double getIntakeSpeed() {
+  private double getIntakeSpeed() {
     return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  public double getIntakeTemperature() {
+  private double getIntakeTemperature() {
     return motor.getTemperature();
   }
 
