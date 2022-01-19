@@ -22,8 +22,8 @@ import frc.robot.Constants;
 */
 public class Shooter extends SubsystemBase {
 
-    private TalonFX leftShoot;
-    private TalonFX rightShoot;
+    private TalonFX topShoot;
+    private TalonFX bottomShoot;
     public TalonFXConfiguration fxConfig;
     public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
 
@@ -32,12 +32,12 @@ public class Shooter extends SubsystemBase {
     private double kD = 0.0002;
     private double kF = 0;
 
-    private double leftSpeed = 0;
-    private double rightSpeed = 0;
-    private double prevLeftSpeed = 0;
-    private double prevRightSpeed = 0;
-    private int rightCounter = 0;
-    private int leftCounter = 0;
+    private double topSpeed = 0;
+    private double bottomSpeed = 0;
+    private double prevTopSpeed = 0;
+    private double prevBottomSpeed = 0;
+    private int topCounter = 0;
+    private int bottomCounter = 0;
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
@@ -65,33 +65,33 @@ public class Shooter extends SubsystemBase {
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();  
 
-     public NetworkTableEntry leftShooter = speeds
-        .add("Left Shooter Speed", 0)
+     public NetworkTableEntry topShooter = speeds
+        .add("Top Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
         .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
-    public NetworkTableEntry rightShooter = speeds
-        .add("Right Shooter Speed", 0)
+    public NetworkTableEntry bottomShooter = speeds
+        .add("Bottom Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
         .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
 
     public Shooter() {
-        leftShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
-        rightShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
+        topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
+        bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
         fxConfig = new TalonFXConfiguration();
         
 
         /** --- CONFIGURE MOTOR AND SENSOR SETTINGS --- **/
         // Configures motors to factory default
-        leftShoot.configFactoryDefault();
-        rightShoot.configFactoryDefault();
+        topShoot.configFactoryDefault();
+        bottomShoot.configFactoryDefault();
         // Configures sensors for PID calculations
         fxConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
 
         /*Don't allow either motor to run backwards
-     leftShoot.configNominalOutputReverse(0);
-        rightShoot.configNominalOutputReverse(0); */
+        topShoot.configNominalOutputReverse(0);
+        bottomShoot.configNominalOutputReverse(0); */
 
         /** --- SETS UP SETTINGS (Such as current limits) ON MOTORS AND SENSORS --- **/
         // Set up current limits
@@ -100,15 +100,15 @@ public class Shooter extends SubsystemBase {
         currentLimitConfigurationMotor.triggerThresholdCurrent = 40;
         currentLimitConfigurationMotor.triggerThresholdTime = 3;
         // Implements these current limits on the motors
-        leftShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
-        rightShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
+        topShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
+        bottomShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
 
         // Set a closed-loop ramp rate on the motors
-        leftShoot.configClosedloopRamp(0.1);
-        rightShoot.configClosedloopRamp(0.1);
+        topShoot.configClosedloopRamp(0.1);
+        bottomShoot.configClosedloopRamp(0.1);
         // Enable voltage compensation for all control modes on the motors
-        leftShoot.enableVoltageCompensation(true);
-        rightShoot.enableVoltageCompensation(true);
+        topShoot.enableVoltageCompensation(true);
+        bottomShoot.enableVoltageCompensation(true);
 
         /** --- CONFIGURE PIDS --- **/
         // Implement variables into the PIDs
@@ -117,12 +117,12 @@ public class Shooter extends SubsystemBase {
         /** --- BRAKE MODES AND INVERSIONS --- **/
         // Sets up control mode.
         // Sets it to neutral mode so that the motors do not brake down to 0.
-        leftShoot.setNeutralMode(NeutralMode.Coast);
-        rightShoot.setNeutralMode(NeutralMode.Coast);
+        topShoot.setNeutralMode(NeutralMode.Coast);
+        bottomShoot.setNeutralMode(NeutralMode.Coast);
         /* Sets up inversions
-        leftShoot.setInverted(false);
-        rightShoot.setInverted(true); */
-         
+     topShoot.setInverted(false);
+        bottomShoot.setInverted(true); */
+        
     }
     
     
@@ -145,65 +145,65 @@ public class Shooter extends SubsystemBase {
             kF = kef.getDouble(0);
             configurePID(kP, kI, kD, kF);
         }
-        if (leftShooter.getDouble(0) != leftSpeed) {
-            if (prevLeftSpeed == leftShooter.getDouble(0)) {
-                leftCounter++;
+        if (topShooter.getDouble(0) != topSpeed) {
+            if (prevTopSpeed == topShooter.getDouble(0)) {
+                bottomCounter++;
             }
-            if (leftCounter == 50){
-                leftSpeed = leftShooter.getDouble(0);
-                leftCounter = 0;
+            if (bottomCounter == 50){
+                topSpeed = topShooter.getDouble(0);
+                bottomCounter = 0;
             }
-            prevLeftSpeed = leftShooter.getDouble(0);
+            prevTopSpeed = topShooter.getDouble(0);
 
         }
-        if (rightShooter.getDouble(0) != rightSpeed) {
-            if (prevRightSpeed == rightShooter.getDouble(0)) {
-                rightCounter++;
+        if (bottomShooter.getDouble(0) != bottomSpeed) {
+            if (prevBottomSpeed == bottomShooter.getDouble(0)) {
+                topCounter++;
             }
-            if (rightCounter == 50){
-                rightSpeed = rightShooter.getDouble(0);
-                rightCounter = 0;
+            if (topCounter == 50){
+                bottomSpeed = bottomShooter.getDouble(0);
+                topCounter = 0;
             }
-            prevRightSpeed = rightShooter.getDouble(0);
+            prevBottomSpeed = bottomShooter.getDouble(0);
 
         }
       }
 
   public void configurePID(double kp, double ki, double kd, double kf){
-        leftShoot.config_kP(0, kp);
-        leftShoot.config_kI(0, ki);
-        leftShoot.config_kD(0, kd);
-        leftShoot.config_kF(0, kf);
-        rightShoot.config_kP(0, kp);
-        rightShoot.config_kI(0, ki);
-        rightShoot.config_kD(0, kd);
-        rightShoot.config_kF(0, kf);
+        topShoot.config_kP(0, kp);
+        topShoot.config_kI(0, ki);
+        topShoot.config_kD(0, kd);
+        topShoot.config_kF(0, kf);
+        bottomShoot.config_kP(0, kp);
+        bottomShoot.config_kI(0, ki);
+        bottomShoot.config_kD(0, kd);
+        bottomShoot.config_kF(0, kf);
   }
 
-  public void setLeftShooterSpeed(double speed){
-      leftShoot.set(ControlMode.PercentOutput, speed);
+  public void setTopShooterSpeed(double speed){
+     topShoot.set(ControlMode.PercentOutput, speed);
   }
 
-  public void setRightShooterSpeed(double speed){
-      rightShoot.set(ControlMode.PercentOutput, speed);
+  public void setBottomShooterSpeed(double speed){
+      bottomShoot.set(ControlMode.PercentOutput, speed);
     
  }
- public void stopLeftShooter(){
-     leftShoot.set(ControlMode.PercentOutput, 0);
+ public void stopTopShooter(){
+     topShoot.set(ControlMode.PercentOutput, 0);
  }
  
- public void stopRightShooter(){
-     rightShoot.set(ControlMode.PercentOutput, 0);
+ public void stopBottomShooter(){
+     bottomShoot.set(ControlMode.PercentOutput, 0);
  }
- public double getLeftShooterSpeed(){
-     return leftShoot.getMotorOutputPercent();
+ public double getTopShooterSpeed(){
+     return topShoot.getMotorOutputPercent();
  }
- public double getRightShooterSpeed(){
-     return rightShoot.getMotorOutputPercent();
+ public double getBottomShooterSpeed(){
+     return bottomShoot.getMotorOutputPercent();
  }
- public double getLeftRPM() {
+ public double getTopRPM() {
     // Encoder ticks per 100 ms
-    double speed = leftShoot.getSelectedSensorVelocity();
+    double speed = topShoot.getSelectedSensorVelocity();
     // Encoder ticks per second
     double tps = speed * 10;
     // Encoder revolutions per second
@@ -212,9 +212,9 @@ public class Shooter extends SubsystemBase {
     double rpm = rps * 60;
     return rpm;
   }
-  public double getRightRPM() {
+  public double getBottomRPM() {
     // Encoder ticks per 100 ms
-    double speed = rightShoot.getSelectedSensorVelocity();
+    double speed = bottomShoot.getSelectedSensorVelocity();
     // Encoder ticks per second
     double tps = speed * 10;
     // Encoder revolutions per second
