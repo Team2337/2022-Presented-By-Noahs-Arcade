@@ -18,7 +18,7 @@ public class StartShooter extends CommandBase {
   }
 
   @Override
-  public void initialize() {
+  public void execute() {
     subsystem.setTopShooterSpeed(subsystem.topShooter.getDouble(0));
     subsystem.setBottomShooterSpeed(subsystem.bottomShooter.getDouble(0));
   }
