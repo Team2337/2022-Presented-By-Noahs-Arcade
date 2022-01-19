@@ -54,7 +54,7 @@ public class RobotContainer {
     // Configure delivery stuff
     // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(() -> delivery.setDeliverySpeed());
+    operatorLeftBumper.whenPressed(() -> delivery.startDelivery());
     operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
   }
 

@@ -29,21 +29,9 @@ public class Intake extends SubsystemBase {
     motor.setInverted(false); //TODO: make sure this is correct
     motor.setNeutralMode(NeutralMode.Coast);
 
-    //Configure a current limit
-    StatorCurrentLimitConfiguration currentLimitConfig = 
-      new StatorCurrentLimitConfiguration();
-    currentLimitConfig.currentLimit = 50;
-    currentLimitConfig.enable = true;
-    currentLimitConfig.triggerThresholdCurrent = 40;
-    currentLimitConfig.triggerThresholdTime = 3;
-    //Push the current limit to the motor
-    motor.configStatorCurrentLimit(currentLimitConfig, 0);
-
-    //Configure motor ramp rate
-    motor.configClosedloopRamp(0.5);
-
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
+    
     ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
     intakeWidget.addNumber("Speed", this::getIntakeSpeed);
     intakeWidget.addNumber("Temp", this::getIntakeTemperature);
