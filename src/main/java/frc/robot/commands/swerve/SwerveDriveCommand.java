@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
@@ -45,21 +46,30 @@ public class SwerveDriveCommand extends CommandBase {
     if (heading.shouldMaintainHeading()) {
       if (rotation == 0) {
         Rotation2d desiredDegreesPerSecond = heading.calculateRotation();
+        
         // Clamp our desiredDegreesPerSecond to +/- our max speed
         double clampedRadiansPerSecond = MathUtil.clamp(
             desiredDegreesPerSecond.getRadians(),
             -Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
             Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         rotation = clampedRadiansPerSecond / Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        
+        final double minimumRotation = 0.01;
+        if (rotation != 0 && Math.abs(rotation) < minimumRotation) {
+          rotation = Math.copySign(minimumRotation, rotation);
+        }
       } else {
         heading.resetRotationController();
       }
     }
 
+    SmartDashboard.putNumber("rotation", rotation);
+
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     boolean isFieldOriented = !controller.getLeftBumper();
+    SmartDashboard.putNumber("Max Angular Velocity", Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     if (isFieldOriented) {
       drivetrain.drive(

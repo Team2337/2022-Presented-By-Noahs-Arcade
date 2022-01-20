@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -37,7 +38,8 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the currentHeading from it's actual heading.
    */
-  private PIDController rotationController = new PIDController(8.0, 4.0, 0.75);
+  //8.0, 4.0, 0.75
+  private PIDController rotationController = new PIDController(4.0, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -51,6 +53,7 @@ public class Heading extends SubsystemBase {
     this.actualRotationSupplier = actualRotationSupplier;
 
     rotationController.enableContinuousInput(0, 360);
+    rotationController.setTolerance(1.0);
   }
 
   public void setCurrentHeading(Rotation2d currentHeading) {
@@ -81,14 +84,18 @@ public class Heading extends SubsystemBase {
    * Is not clamped by maximum rotational speeds.
    */
   public Rotation2d calculateRotation() {
-    double error = rotationController.calculate(
+    SmartDashboard.putString("current heading", String.valueOf(currentHeading.getDegrees()));
+    double output = rotationController.calculate(
       actualRotationSupplier.get().getDegrees(),
       currentHeading.getDegrees()
     );
+    SmartDashboard.putNumber("Position Error}", rotationController.getPositionError());
+    //rotationController.setP(SmartDashboard.getNumber("p2", 8.0));
+    SmartDashboard.putNumber("PID output", output);
     if (rotationController.atSetpoint()) {
       return new Rotation2d();
     }
-    return Rotation2d.fromDegrees(error);
+    return Rotation2d.fromDegrees(output);
   }
 
   /**

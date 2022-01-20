@@ -49,8 +49,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Execute hold heading command with Driver Right Bumper
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    driverRightBumper.whenPressed(new HeadingCommand(heading));
-    driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
+    driverRightBumper.whenReleased(new HeadingCommand(heading));
+    //driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
 
     // Enqueue headings for driver with A/B/X/Y
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
@@ -59,7 +59,7 @@ public class RobotContainer {
     JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
     operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
-    operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(355)));
+    operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(45)));
     operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
   }
 
