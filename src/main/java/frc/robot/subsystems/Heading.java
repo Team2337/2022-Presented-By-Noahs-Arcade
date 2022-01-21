@@ -2,9 +2,9 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -37,9 +37,17 @@ public class Heading extends SubsystemBase {
 
   /**
    * PID used to converge the robot to the currentHeading from it's actual heading.
+   * P value should be calculated based on when we would like the robot to start
+   * slowing down. Ex: If we should be rotating "full speed" (not 100% but 80%)
+   * until get get to 10 degrees and then start slowing in to our final position,
+   * our P value can be calculated with the following-
+   * Max Speed = 0.8
+   * Slow Down Error Value = 10%
+   * 0.8 = 10 * kP
+   * 0.8 / 10 = kP
+   * kP = 0.08
    */
-  //8.0, 4.0, 0.75
-  private PIDController rotationController = new PIDController(4.0, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.08, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -53,9 +61,15 @@ public class Heading extends SubsystemBase {
     this.actualRotationSupplier = actualRotationSupplier;
 
     rotationController.enableContinuousInput(0, 360);
-    rotationController.setTolerance(1.0);
+    // rotationController.setTolerance(1.0);
   }
 
+  /**
+   * Set the heading the robot should attempt to maintain. If you're
+   * calling this method, be sure to require the Heading subsystem.
+   * Only one Command should be updating the robot's desired Heading
+   * at a time.
+   */
   public void setCurrentHeading(Rotation2d currentHeading) {
     if (this.currentHeading != currentHeading) {
       resetRotationController();
@@ -67,10 +81,17 @@ public class Heading extends SubsystemBase {
     return currentHeading != null;
   }
 
+  /**
+   * Enqueue a heading to be swapped at a later point via
+   * `setEnqueuedHeadingToCurrentHeading`. You do not need to
+   * require the Heading subsystem when calling this method -
+   * this command is safe(ish) to be called from different
+   * Commands.
+   */
   public void enqueueHeading(Rotation2d nextHeading) {
     this.nextHeading = nextHeading;
   }
-  
+
   public Rotation2d dequeueHeading() {
     Rotation2d heading = this.nextHeading;
     this.nextHeading = null;
@@ -79,23 +100,26 @@ public class Heading extends SubsystemBase {
 
   /**
    * Uses the rotation PID controller to calculate the
-   * offset from the current location the robot should
-   * rotate in order to achieve the desired heading.
-   * Is not clamped by maximum rotational speeds.
+   * rotational value as some percentage from
+   * [-max speed, max speed] where max speed is a value
+   * we would expect from a joystick (ex: [-1, 1]).
    */
-  public Rotation2d calculateRotation() {
-    SmartDashboard.putString("current heading", String.valueOf(currentHeading.getDegrees()));
+  public double calculateRotation() {
     double output = rotationController.calculate(
       actualRotationSupplier.get().getDegrees(),
       currentHeading.getDegrees()
     );
-    SmartDashboard.putNumber("Position Error}", rotationController.getPositionError());
-    //rotationController.setP(SmartDashboard.getNumber("p2", 8.0));
-    SmartDashboard.putNumber("PID output", output);
     if (rotationController.atSetpoint()) {
-      return new Rotation2d();
+      return 0.0;
     }
-    return Rotation2d.fromDegrees(output);
+    // Clamp to some max speed (between [0, 1])
+    final double maxSpeed = 0.8;
+    double clamedOutput = MathUtil.clamp(
+      output,
+      -maxSpeed,
+      maxSpeed
+    );
+    return clamedOutput;
   }
 
   /**
