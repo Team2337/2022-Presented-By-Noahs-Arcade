@@ -5,10 +5,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
@@ -25,6 +25,12 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  
+  private final Climber climber = new Climber();
+  private final Delivery delivery = new Delivery();
+  private final Intake intake = new Intake();
+  private final Vision vision = new Vision();
+  
   private final ColorSensor colorSensor = new ColorSensor();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -41,6 +47,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+
+    // Configure intake controls
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    operatorRightBumper.whenPressed(() -> intake.startIntake());
+    operatorRightBumper.whenReleased(() -> intake.stopIntake());
+
+    // Configure delivery stuff
+    // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    operatorLeftBumper.whenPressed(() -> delivery.startDelivery());
+    operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
   }
 
   /**
