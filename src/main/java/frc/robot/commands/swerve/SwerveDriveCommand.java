@@ -45,7 +45,14 @@ public class SwerveDriveCommand extends CommandBase {
      */
     if (heading.shouldMaintainHeading()) {
       if (rotation == 0) {
-        rotation = heading.calculateRotation();
+        Rotation2d desiredDegreesPerSecond = heading.calculateRotation();
+        
+        // Clamp our desiredDegreesPerSecond to +/- our max speed
+        double clampedRadiansPerSecond = MathUtil.clamp(
+            desiredDegreesPerSecond.getRadians(),
+            -Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+            Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+        rotation = clampedRadiansPerSecond / Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
         
         final double minimumRotation = 0.01;
         if (rotation != 0 && Math.abs(rotation) < minimumRotation) {
@@ -56,12 +63,13 @@ public class SwerveDriveCommand extends CommandBase {
       }
     }
 
-    SmartDashboard.putNumber("Rotation", rotation);
+    SmartDashboard.putNumber("rotation", rotation);
 
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     boolean isFieldOriented = !controller.getLeftBumper();
+    SmartDashboard.putNumber("Max Angular Velocity", Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     if (isFieldOriented) {
       drivetrain.drive(
