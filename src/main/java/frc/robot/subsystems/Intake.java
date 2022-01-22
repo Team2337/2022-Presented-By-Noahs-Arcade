@@ -29,6 +29,8 @@ public class Intake extends SubsystemBase {
     motor.setInverted(false); //TODO: make sure this is correct
     motor.setNeutralMode(NeutralMode.Coast);
 
+    motor.configOpenloopRamp(0.5);
+
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
     
