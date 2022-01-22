@@ -31,6 +31,8 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
 
+  private final PixyCam pixy = new PixyCam(0);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings

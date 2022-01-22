@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PixySigs;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import java.util.ArrayList;
+import java.util.Map;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -27,7 +29,6 @@ public class PixyCam extends SubsystemBase {
   private int numberOfTargets;
   private boolean connected;
   private boolean seesTarget;
-  private boolean retrievedState;
 
   private int cacheNumber;
   private int lastLargestBlockRetrieval;
@@ -46,7 +47,6 @@ public class PixyCam extends SubsystemBase {
     connected = (state >= 0);
     chip = chipselect;
     seesTarget = false;
-    retrievedState = false;
     cacheNumber = 0;
     lastLargestBlockRetrieval = -1;
     numberOfTargets = 0;
@@ -54,41 +54,74 @@ public class PixyCam extends SubsystemBase {
     // Prepare Shuffleboard stuff
     ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
 
-    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(4, 6).withPosition(4, 2);
+    // Targetting red boolean
+    pixyTab.addBoolean("Targeting red", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() == 1 : false;
+    })
+      .withSize(4, 4)
+      .withPosition(12, 0)
+      .withProperties(Map.of("Color when true", "#ff6666"))
+      .withProperties(Map.of("Color when false", "#000000"));
+    // Targetting blue boolean
+    pixyTab.addBoolean("Targeting blue", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() == 2 : false;
+    })
+      .withSize(4, 4)
+      .withPosition(12, 4)
+      .withProperties(Map.of("Color when true", "#6666ff"))
+      .withProperties(Map.of("Color when false", "#000000"));
+
+    // Info widget
+    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(4, 6).withPosition(4, 4);
     infoWidget.addNumber("Number of Targets", this::getNumberOfTargets);
+    infoWidget.addString("Target list", () -> getAllTargets().toString());
+    infoWidget.addNumber("Pixy State", () -> state);
 
+    // Block info widget
     ShuffleboardLayout blockWidget = pixyTab.getLayout("Largest Block", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
-    Block largestBlock = getLargestTarget();
+    blockWidget.addNumber("x pos", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getX() : -1;
+    });
+    blockWidget.addNumber("y pos", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getY() : -1;
+    });
+    blockWidget.addNumber("width", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getWidth() : -1;
+    });
+    blockWidget.addNumber("height", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getHeight() : -1;
+    });
+    blockWidget.addNumber("angle", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? getLargestTargetAngle() : 0;
+    });
+    blockWidget.addNumber("signature", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() : 0;
+    });
+    blockWidget.addString("toString", () -> {
+      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.toString() : "";
+    });
 
-    // Hacky code to make sure we don't make method calls to things that don't exist
-    blockWidget.addNumber("x pos", largestBlock != null ? largestBlock::getX : () -> -1);
-    blockWidget.addNumber("y pos", largestBlock != null ? largestBlock::getY : () -> -1);
-    blockWidget.addNumber("width", largestBlock != null ? largestBlock::getWidth : () -> -1);
-    blockWidget.addNumber("height", largestBlock != null ? largestBlock::getHeight : () -> -1);
-    blockWidget.addNumber("angle", largestBlock != null ? largestBlock::getAngle : () -> -1);
-    blockWidget.addString("toString", largestBlock != null ? largestBlock::toString : () -> "");
-
-    pixyTab.addBoolean("Sees Target", () -> seesTarget).withSize(2, 2).withPosition(4, 0);
+    pixyTab.addBoolean("Sees Target", () -> seesTarget)
+      .withSize(4, 4)
+      .withPosition(4, 0);
   }
 
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
 
-    //DO NOT REMOVE THIS LINE OF CODE EVER
+    // The following line of code is very important.
     updateTargets();
+    getLargestTarget();
 
-    //Check to see if the camera initialized correctly.
-    if(!connected && !retrievedState) {
-      //If we got here, the camera gave us an error.
-      //Try to reinitialize the Pixy.
+    // Check to see if the camera initialized correctly.
+    if(!connected) {
+      // If we got here, the camera gave us an error.
+      // Try to reinitialize the Pixy.
       state = pixycam.init(chip);
-      //If we get another error, don't check again.
-      //Keep the error code for reference
-      if(state < 0) retrievedState = true;
     }
 
-    //Detect connection
+    // Detect connection
     connected = (state >= 0);
   }
 
@@ -100,7 +133,9 @@ public class PixyCam extends SubsystemBase {
     if(state < 0) return;
 
     // Retrieve the targets and store the number in a variable
-    numberOfTargets = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG1, 48);
+    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 48);
+    if(error < 0) return;
+    numberOfTargets = error;
 
     // Update variables
     cacheNumber++;
@@ -166,7 +201,7 @@ public class PixyCam extends SubsystemBase {
    */
   public int getLargestTargetX() {
     // Get the largest target
-    Block largestTarget = getLargestTarget();
+    Block largestTarget = lastLargestBlock;
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
@@ -181,7 +216,7 @@ public class PixyCam extends SubsystemBase {
    */
   public int getLargestTargetY() {
     // Get the largest target
-    Block largestTarget = getLargestTarget();
+    Block largestTarget = lastLargestBlock;
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
@@ -213,7 +248,7 @@ public class PixyCam extends SubsystemBase {
    * @return Returns the width of the largest target.
    */
   public int getLargestTargetWidth() {
-    Block largestTarget = getLargestTarget();
+    Block largestTarget = lastLargestBlock;
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
@@ -227,12 +262,20 @@ public class PixyCam extends SubsystemBase {
    * This is generally going to be smaller than the width because of lighting.
    */
   public int getLargestTargetHeight() {
-    Block largestTarget = getLargestTarget();
+    Block largestTarget = lastLargestBlock;
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
     
     //Return the requested value
     return largestTarget.getHeight();
+  }
+
+  public PixySigs getLargestTargetColor() {
+    if(lastLargestBlock == null)
+      return PixySigs.None;
+    
+    // According to programmed values on robot
+    return lastLargestBlock.getSignature() == 1 ? PixySigs.Red : PixySigs.Blue;
   }
 }
