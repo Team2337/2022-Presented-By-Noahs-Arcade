@@ -66,7 +66,7 @@ public class RobotContainer {
     operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
     operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(45)));
     operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
