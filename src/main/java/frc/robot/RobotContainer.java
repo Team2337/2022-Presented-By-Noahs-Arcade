@@ -5,12 +5,15 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.commands.teleop.HeadingCommand;
 import frc.robot.subsystems.*;
 
 /**
@@ -24,15 +27,19 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
+
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
+  private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
 
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -44,6 +51,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Execute hold heading command with Driver Right Bumper
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    driverRightBumper.whenReleased(new HeadingCommand(heading));
+    //driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
+
+    // Enqueue headings for driver with A/B/X/Y
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
+    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
+    operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(45)));
+    operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
 
     // Configure intake controls

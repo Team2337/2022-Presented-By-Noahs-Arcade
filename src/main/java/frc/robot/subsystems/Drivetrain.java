@@ -116,8 +116,7 @@ public class Drivetrain extends SubsystemBase {
       )
     };
 
-    ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8)
-        .withPosition(12, 0);
+    ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
     chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
     chassisSpeedsWidget.addNumber("vy meters/s", () -> chassisSpeeds.vyMetersPerSecond);
     chassisSpeedsWidget.addNumber("omega radians/s", () -> chassisSpeeds.omegaRadiansPerSecond);
@@ -155,10 +154,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public void stopMotors() {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  }
-
-  public void setModuleStates(SwerveModuleState[] states) {
-    this.chassisSpeeds = kinematics.toChassisSpeeds(states);
   }
 
   @Override
