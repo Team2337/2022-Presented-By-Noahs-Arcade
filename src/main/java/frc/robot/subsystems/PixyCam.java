@@ -9,11 +9,11 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 /**
  * The code for retrieving information from the PixyCam using the SPI port
  * 
- * @author M. Francis, Nicholas Stokes
+ * @author Michael Francis, Nicholas Stokes
  */
 public class PixyCam extends SubsystemBase {
 
-  //PixyCam
+  // Variables for PixyCam
   private Pixy2 pixycam;
   private int state;
   private int chip;
@@ -22,12 +22,11 @@ public class PixyCam extends SubsystemBase {
   private boolean seesTarget;
   private boolean retrievedState;
 
-  //For efficiency
   private int cacheNumber;
   private int lastLargestBlockRetrieval;
   private Block lastLargestBlock;
 
-  //Debug mode
+  // Debug mode
   private final boolean DEBUG = true;
 
   /**
@@ -35,10 +34,10 @@ public class PixyCam extends SubsystemBase {
    * @param chipselect The chip the pixy is plugged into on the SPI
    */
   public PixyCam(int chipselect) {
-    //Create a link
+    // Create a link
     pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);
     state = pixycam.init(chipselect);
-    //Initialize variables
+    // Initialize variables
     connected = (state >= 0);
     chip = chipselect;
     seesTarget = false;
@@ -118,7 +117,7 @@ public class PixyCam extends SubsystemBase {
    * @return An ArrayList of target data.
    */
   public ArrayList<Block> getAllTargets() {
-    //Retrieve all blocks
+    // Retrieve all blocks
     return pixycam.getCCC().getBlockCache();
   }
 
@@ -128,35 +127,36 @@ public class PixyCam extends SubsystemBase {
    * @see Block
    */
   public Block getLargestTarget() {
-    //See if we already have the largest Block (to be efficient)
+    // See if we already have the largest Block (to be efficient)
     if(lastLargestBlockRetrieval == cacheNumber) {
       SmartDashboard.putNumber("lastRetrieval", lastLargestBlockRetrieval);
       SmartDashboard.putNumber("cacheNumber", cacheNumber);
       return lastLargestBlock;
     }
 
-    //Check to see if there are any targets.
+    // Check to see if there are any targets.
     if(!seesTarget) return null;
 
-    //Get all the targets
+    // Get all the targets
     ArrayList<Block> blocks = getAllTargets();
     Block largestBlock = null;
-    //Loops through all targets and finds the widest one
+    // Loops through all targets and finds the widest one
     for(Block block : blocks) {
       if(largestBlock == null) {
-        //If this is the first iteration, set largestBlock to the current block.
+        // If this is the first iteration, set largestBlock to the current block.
         largestBlock = block;
       } else if(block.getWidth() > largestBlock.getWidth()) {
-        //If we find a wider block, set largestBlock to the current block.
+        // If we find a wider block, set largestBlock to the current block.
         largestBlock = block;
       }
     }
 
-    //Update the last time we looked for the largest Block
+    // Update the last time we looked for the largest Block
     lastLargestBlockRetrieval = cacheNumber;
-    //Store this Block
+    // Store this Block
     lastLargestBlock = largestBlock;
-    //Return the Blocks
+
+    // Return the Blocks
     SmartDashboard.putString("Largest block", largestBlock.toString());
     return largestBlock;
   }
@@ -166,12 +166,12 @@ public class PixyCam extends SubsystemBase {
    * Returns -1 if there isn't a target.
    */
   public int getLargestTargetX() {
-    //Get the largest target
+    // Get the largest target
     Block largestTarget = getLargestTarget();
-    //Return -1 if there was no target
+    // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
-    //Return the requested value
+    // Return the requested value
     return largestTarget.getX();
   }
 
@@ -180,12 +180,12 @@ public class PixyCam extends SubsystemBase {
    * Returns -1 if there isn't a target.
    */
   public int getLargestTargetY() {
-    //Get the largest target
+    // Get the largest target
     Block largestTarget = getLargestTarget();
-    //Return -1 if there was no target
+    // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
-    //Return the requested value
+    // Return the requested value
     return largestTarget.getY();
   }
 
@@ -195,7 +195,7 @@ public class PixyCam extends SubsystemBase {
    */
   public double getLargestTargetAngle() {
     double x = getLargestTargetX();
-    //Return 0 (centered) if no target was found
+    // Return 0 (centered) if no target was found
     if(!seesTarget)
       return 0.0;
     /**
@@ -212,10 +212,11 @@ public class PixyCam extends SubsystemBase {
    */
   public int getLargestTargetWidth() {
     Block largestTarget = getLargestTarget();
-    //Return -1 if there was no target
+    // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
-    //Return the requested value
+    
+    // Return the requested value
     return largestTarget.getWidth();
   }
 
@@ -225,9 +226,10 @@ public class PixyCam extends SubsystemBase {
    */
   public int getLargestTargetHeight() {
     Block largestTarget = getLargestTarget();
-    //Return -1 if there was no target
+    // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
+    
     //Return the requested value
     return largestTarget.getHeight();
   }
