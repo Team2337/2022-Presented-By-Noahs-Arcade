@@ -76,8 +76,8 @@ public final class Constants {
   public static final int MODULE1_ANGLE_CANCODER_ID = 2;
   public static final double MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
 
-  public static final int MODULE2_DRIVE_MOTOR_ID = 14;
-  public static final int MODULE2_ANGLE_MOTOR_ID = 10;
+  public static final int MODULE2_DRIVE_MOTOR_ID = 24;
+  public static final int MODULE2_ANGLE_MOTOR_ID = 20;
   public static final int MODULE2_ANGLE_CANCODER_ID = 3;
   public static final double MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
 
@@ -86,6 +86,6 @@ public final class Constants {
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
   public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
-  public static final int SHOOTER_LEFT_MOTOR = 2;
-  public static final int SHOOTER_RIGHT_MOTOR = 3;
+  public static final int SHOOTER_LEFT_MOTOR = 10;
+  public static final int SHOOTER_RIGHT_MOTOR = 14;
 }

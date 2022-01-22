@@ -18,7 +18,7 @@ public class StopShooter extends CommandBase {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     subsystem.setTopShooterSpeed(0);
     subsystem.setBottomShooterSpeed(0);
   }

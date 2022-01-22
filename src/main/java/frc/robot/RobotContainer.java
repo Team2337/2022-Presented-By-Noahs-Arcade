@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.commands.shooter.*;
 import frc.robot.subsystems.*;
 
 /**
@@ -46,6 +47,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Execute hold heading command with Driver Right Bumper
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+    driverA.whenHeld(new StartShooter(shooter));
+    //driverA.whenReleased(new StopShooter(shooter));
     //TODO: This is more of a when pressed not a while held, think through when released functionality
   }
 

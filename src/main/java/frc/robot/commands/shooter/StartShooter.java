@@ -24,7 +24,20 @@ public class StartShooter extends CommandBase {
   }
 
   @Override
+  public void end(boolean interrupted) {
+    subsystem.currentLimitConfigurationMotor.currentLimit = 0;
+    subsystem.topShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
+    subsystem.bottomShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
+    
+    subsystem.topShoot.configClosedloopRamp(0.5);
+    subsystem.bottomShoot.configClosedloopRamp(0.5);
+    subsystem.stopTopShooter();
+    subsystem.stopBottomShooter();
+  }
+
+
+  @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

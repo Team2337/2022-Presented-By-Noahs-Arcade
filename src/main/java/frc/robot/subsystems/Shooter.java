@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,8 +23,8 @@ import frc.robot.Constants;
 */
 public class Shooter extends SubsystemBase {
 
-    private TalonFX topShoot;
-    private TalonFX bottomShoot;
+    public TalonFX topShoot;
+    public TalonFX bottomShoot;
     public TalonFXConfiguration fxConfig;
     public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
 
@@ -119,16 +120,17 @@ public class Shooter extends SubsystemBase {
         // Sets it to neutral mode so that the motors do not brake down to 0.
         topShoot.setNeutralMode(NeutralMode.Coast);
         bottomShoot.setNeutralMode(NeutralMode.Coast);
-        /* Sets up inversions
-     topShoot.setInverted(false);
-        bottomShoot.setInverted(true); */
+        // Sets up inversions
+        topShoot.setInverted(false);
+        bottomShoot.setInverted(true); 
         
     }
     
     
     @Override
     public void periodic() {
-
+        SmartDashboard.putNumber("Top Shooter Velocity", topShoot.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Bottom Shooter Velocity", bottomShoot.getSelectedSensorVelocity());
         if (kep.getDouble(0) != kP) {
             kP = kep.getDouble(0);
             configurePID(kP, kI, kD, kF);
@@ -180,14 +182,7 @@ public class Shooter extends SubsystemBase {
         bottomShoot.config_kF(0, kf);
   }
 
-  public void setTopShooterSpeed(double speed){
-     topShoot.set(ControlMode.PercentOutput, speed);
-  }
 
-  public void setBottomShooterSpeed(double speed){
-      bottomShoot.set(ControlMode.PercentOutput, speed);
-    
- }
  public void stopTopShooter(){
      topShoot.set(ControlMode.PercentOutput, 0);
  }
@@ -201,6 +196,26 @@ public class Shooter extends SubsystemBase {
  public double getBottomShooterSpeed(){
      return bottomShoot.getMotorOutputPercent();
  }
+
+ public void setTopShooterSpeed(double speed){
+    // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+    double rps = 6380/60; // Max revolutions per second
+    double tps = rps*2048; // Max encoder ticks per second
+    double maxSpeed = tps/10; // This converts to motor ticks. 
+    double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
+    topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed));
+ }
+
+ public void setBottomShooterSpeed(double speed){
+    // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+    double rps = 6380/60; // Max revolutions per second
+    double tps = rps*2048; // Max encoder ticks per second
+    double maxSpeed = tps/10; // This converts to motor ticks. 
+    double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
+    bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed));
+
+   
+}
  public double getTopRPM() {
     // Encoder ticks per 100 ms
     double speed = topShoot.getSelectedSensorVelocity();
@@ -217,7 +232,7 @@ public class Shooter extends SubsystemBase {
     double speed = bottomShoot.getSelectedSensorVelocity();
     // Encoder ticks per second
     double tps = speed * 10;
-    // Encoder revolutions per second
+    // Encoder revolutions per second                      
     double rps = tps / 2048;
     // Convert rps into revolutions per minute
     double rpm = rps * 60;
