@@ -1,13 +1,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import java.util.ArrayList;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * The code for retrieving information from the PixyCam using the SPI port
+ * <p>
+ * TODO: this file needs a refactor.
+ * When creating this class originally, I just added a bunch of methods I thought
+ * would be useful and ways to make them useful.
  * 
  * @author Michael Francis, Nicholas Stokes
  */
@@ -26,9 +33,6 @@ public class PixyCam extends SubsystemBase {
   private int lastLargestBlockRetrieval;
   private Block lastLargestBlock;
 
-  // Debug mode
-  private final boolean DEBUG = true;
-
   /**
    * Subsystem for the PixyCam
    * @param chipselect The chip the pixy is plugged into on the SPI
@@ -37,6 +41,7 @@ public class PixyCam extends SubsystemBase {
     // Create a link
     pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);
     state = pixycam.init(chipselect);
+
     // Initialize variables
     connected = (state >= 0);
     chip = chipselect;
@@ -45,6 +50,25 @@ public class PixyCam extends SubsystemBase {
     cacheNumber = 0;
     lastLargestBlockRetrieval = -1;
     numberOfTargets = 0;
+
+    // Prepare Shuffleboard stuff
+    ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
+
+    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(4, 6).withPosition(4, 2);
+    infoWidget.addNumber("Number of Targets", this::getNumberOfTargets);
+
+    ShuffleboardLayout blockWidget = pixyTab.getLayout("Largest Block", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
+    Block largestBlock = getLargestTarget();
+
+    // Hacky code to make sure we don't make method calls to things that don't exist
+    blockWidget.addNumber("x pos", largestBlock != null ? largestBlock::getX : () -> -1);
+    blockWidget.addNumber("y pos", largestBlock != null ? largestBlock::getY : () -> -1);
+    blockWidget.addNumber("width", largestBlock != null ? largestBlock::getWidth : () -> -1);
+    blockWidget.addNumber("height", largestBlock != null ? largestBlock::getHeight : () -> -1);
+    blockWidget.addNumber("angle", largestBlock != null ? largestBlock::getAngle : () -> -1);
+    blockWidget.addString("toString", largestBlock != null ? largestBlock::toString : () -> "");
+
+    pixyTab.addBoolean("Sees Target", () -> seesTarget).withSize(2, 2).withPosition(4, 0);
   }
 
   // This method will be called once per scheduler run
@@ -66,43 +90,21 @@ public class PixyCam extends SubsystemBase {
 
     //Detect connection
     connected = (state >= 0);
-
-    //Put important information to the SmartDashboard
-    SmartDashboard.putNumber("Pixy " + chip + " State", state);
-    SmartDashboard.putBoolean("Pixy " + chip + " Connected", connected);
-    SmartDashboard.putBoolean("Pixy " + chip + " sees target", seesTarget);
-
-    //Debug testing
-    if(DEBUG) {
-      //Acquire target data
-      if(seesTarget) {
-        //Get the largest target
-        // Block lt = getLargestTarget(); //Gets the largest target (lt)
-        SmartDashboard.putString("Largest block", getLargestTarget().toString());
-        SmartDashboard.putNumber("Largest Target X-Coord", getLargestTargetX());
-        SmartDashboard.putNumber("Largest Target Y-Coord", getLargestTargetY());
-        SmartDashboard.putNumber("Largest Target Angle", getLargestTargetAngle());
-        SmartDashboard.putNumber("Largest Target Width", getLargestTargetWidth());
-        SmartDashboard.putNumber("Largest Target Height", getLargestTargetHeight());
-      }
-      //Push to dashboard how many targets are detected
-      SmartDashboard.putNumber("Number of Targets", getNumberOfTargets());
-    }
   }
 
   /**
    * Refreshes the target cache.
    */
   private void updateTargets() {
-    //If the Pixy is returning an error, don't update the targets.
+    // If the Pixy is returning an error, don't update the targets.
     if(state < 0) return;
-    //Retrieve the targets and store the number in a variable
+
+    // Retrieve the targets and store the number in a variable
     numberOfTargets = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG1, 48);
-    //Update the cache number
+
+    // Update variables
     cacheNumber++;
-    //Update the seesTarget variable
-    if(numberOfTargets > 0) seesTarget = true;
-    else seesTarget = false;
+    seesTarget = numberOfTargets > 0;
   }
 
   /**
@@ -129,8 +131,6 @@ public class PixyCam extends SubsystemBase {
   public Block getLargestTarget() {
     // See if we already have the largest Block (to be efficient)
     if(lastLargestBlockRetrieval == cacheNumber) {
-      SmartDashboard.putNumber("lastRetrieval", lastLargestBlockRetrieval);
-      SmartDashboard.putNumber("cacheNumber", cacheNumber);
       return lastLargestBlock;
     }
 
@@ -157,7 +157,6 @@ public class PixyCam extends SubsystemBase {
     lastLargestBlock = largestBlock;
 
     // Return the Blocks
-    SmartDashboard.putString("Largest block", largestBlock.toString());
     return largestBlock;
   }
 
@@ -171,6 +170,7 @@ public class PixyCam extends SubsystemBase {
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
+    
     // Return the requested value
     return largestTarget.getX();
   }
@@ -185,6 +185,7 @@ public class PixyCam extends SubsystemBase {
     // Return -1 if there was no target
     if(largestTarget == null)
       return -1;
+    
     // Return the requested value
     return largestTarget.getY();
   }
@@ -198,6 +199,7 @@ public class PixyCam extends SubsystemBase {
     // Return 0 (centered) if no target was found
     if(!seesTarget)
       return 0.0;
+    
     /**
      * To get the angle, we divide the x (which ranges from 0 to 315, the width
      * of the camera) by 315 to get it as a percentage from 0-1. We multiply
