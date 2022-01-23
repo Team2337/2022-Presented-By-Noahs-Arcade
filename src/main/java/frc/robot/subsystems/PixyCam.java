@@ -1,38 +1,31 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.PixySigs;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Optional;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * The code for retrieving information from the PixyCam using the SPI port
- * <p>
- * TODO: this file needs a refactor.
- * When creating this class originally, I just added a bunch of methods I thought
- * would be useful and ways to make them useful.
  * 
- * @author Michael Francis, Nicholas Stokes
+ * @author Michael Francis
  */
 public class PixyCam extends SubsystemBase {
 
   // Variables for PixyCam
-  private Pixy2 pixycam;
+  final private Pixy2 pixycam;
+  final private int chip;
   private int state;
-  private int chip;
-  private int numberOfTargets;
   private boolean connected;
-  private boolean seesTarget;
 
-  private int cacheNumber;
-  private int lastLargestBlockRetrieval;
-  private Block lastLargestBlock;
+  private int numberOfTargets;
+  private ArrayList<Block> blocks;
+  private ArrayList<Block> filteredBlocks;
+
+  private Block redTarget;
+  private Block blueTarget;
 
   /**
    * Subsystem for the PixyCam
@@ -44,238 +37,122 @@ public class PixyCam extends SubsystemBase {
     state = pixycam.init(chipselect);
 
     // Initialize variables
-    connected = (state >= 0);
     chip = chipselect;
-    seesTarget = false;
-    cacheNumber = 0;
-    lastLargestBlockRetrieval = -1;
     numberOfTargets = 0;
-
-    // Prepare Shuffleboard stuff
-    ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
-
-    // Targetting red boolean
-    pixyTab.addBoolean("Targeting red", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() == 1 : false;
-    })
-      .withSize(4, 4)
-      .withPosition(12, 0)
-      .withProperties(Map.of("Color when true", "#ff6666"))
-      .withProperties(Map.of("Color when false", "#000000"));
-    // Targetting blue boolean
-    pixyTab.addBoolean("Targeting blue", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() == 2 : false;
-    })
-      .withSize(4, 4)
-      .withPosition(12, 4)
-      .withProperties(Map.of("Color when true", "#6666ff"))
-      .withProperties(Map.of("Color when false", "#000000"));
-
-    // Info widget
-    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(4, 6).withPosition(4, 4);
-    infoWidget.addNumber("Number of Targets", this::getNumberOfTargets);
-    infoWidget.addString("Target list", () -> getAllTargets().toString());
-    infoWidget.addNumber("Pixy State", () -> state);
-
-    // Block info widget
-    ShuffleboardLayout blockWidget = pixyTab.getLayout("Largest Block", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
-    blockWidget.addNumber("x pos", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getX() : -1;
-    });
-    blockWidget.addNumber("y pos", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getY() : -1;
-    });
-    blockWidget.addNumber("width", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getWidth() : -1;
-    });
-    blockWidget.addNumber("height", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getHeight() : -1;
-    });
-    blockWidget.addNumber("angle", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? getLargestTargetAngle() : 0;
-    });
-    blockWidget.addNumber("signature", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.getSignature() : 0;
-    });
-    blockWidget.addString("toString", () -> {
-      return (numberOfTargets > 0 && lastLargestBlock != null) ? lastLargestBlock.toString() : "";
-    });
-
-    pixyTab.addBoolean("Sees Target", () -> seesTarget)
-      .withSize(4, 4)
-      .withPosition(4, 0);
   }
 
-  // This method will be called once per scheduler run
   @Override
   public void periodic() {
+    // Update Pixy values
+    updatePixy();
 
-    // The following line of code is very important.
-    updateTargets();
-    getLargestTarget();
+    // Filter target values
+    filterTargets();
+  }
 
+  /**
+   * Updates the values of the PixyCam
+   */
+  private void updatePixy() {
     // Check to see if the camera initialized correctly.
     if(!connected) {
-      // If we got here, the camera gave us an error.
-      // Try to reinitialize the Pixy.
+      // Attempt to reconnect Pixy
       state = pixycam.init(chip);
+      connected = (state >= 0);
+      if(!connected) return;
     }
 
-    // Detect connection
-    connected = (state >= 0);
-  }
-
-  /**
-   * Refreshes the target cache.
-   */
-  private void updateTargets() {
-    // If the Pixy is returning an error, don't update the targets.
-    if(state < 0) return;
-
-    // Retrieve the targets and store the number in a variable
+    // Either number of targets or an error code
     int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 48);
-    if(error < 0) return;
+
+    // If there was an error (i.e. Pixy is busy getting new values), don't update variables
+    if(error < 0)
+      return;
+
     numberOfTargets = error;
-
-    // Update variables
-    cacheNumber++;
-    seesTarget = numberOfTargets > 0;
+    blocks = pixycam.getCCC().getBlockCache();
   }
 
   /**
-   * @return The number of targets in view of the camera (or the last number retrieved)
+   * Filters the targets based on conditions that make them seem "cargo-like"
    */
-  public int getNumberOfTargets() {
-    return numberOfTargets;
-  }
+  private void filterTargets() {
+    // Skip the method if number of targets is 0
+    if(numberOfTargets == 0)
+      return;
+    
+    // Filter ArrayList
+    Block bestRedBlock = null;
+    Block bestBlueBlock = null;
+    filteredBlocks.clear();
 
-  /**
-   * Gets all cached targets. Be sure to update it with updateTargets()
-   * @return An ArrayList of target data.
-   */
-  public ArrayList<Block> getAllTargets() {
-    // Retrieve all blocks
-    return pixycam.getCCC().getBlockCache();
-  }
-
-  /**
-   * Gets the largest target.
-   * @return A Block class containing the largest target.
-   * @see Block
-   */
-  public Block getLargestTarget() {
-    // See if we already have the largest Block (to be efficient)
-    if(lastLargestBlockRetrieval == cacheNumber) {
-      return lastLargestBlock;
-    }
-
-    // Check to see if there are any targets.
-    if(!seesTarget) return null;
-
-    // Get all the targets
-    ArrayList<Block> blocks = getAllTargets();
-    Block largestBlock = null;
-    // Loops through all targets and finds the widest one
     for(Block block : blocks) {
-      if(largestBlock == null) {
-        // If this is the first iteration, set largestBlock to the current block.
-        largestBlock = block;
-      } else if(block.getWidth() > largestBlock.getWidth()) {
-        // If we find a wider block, set largestBlock to the current block.
-        largestBlock = block;
+      // Get ratio of width to height
+      double ratio = block.getWidth() / block.getHeight();
+
+      // Take reciprocal if less than 1 for simplication purposes
+      if(ratio < 1)
+        ratio = 1 / ratio;
+      
+      // Check if it matches conditions
+      if(ratio < Constants.PIXY_RATIO_THRESHOLD) {
+        // Add it to filtered list
+        filteredBlocks.add(block);
+
+        // Set red or blue target to whatever this one is
+        double area = block.getWidth() * block.getHeight();
+        if(block.getSignature() == 1){
+          if(redTarget == null || redTarget.getWidth() * redTarget.getHeight() < area){
+            redTarget = block;
+          }
+        } else {
+          if(blueTarget == null || blueTarget.getWidth() * blueTarget.getHeight() < area){
+            blueTarget = block;
+          }
+        }
       }
     }
 
-    // Update the last time we looked for the largest Block
-    lastLargestBlockRetrieval = cacheNumber;
-    // Store this Block
-    lastLargestBlock = largestBlock;
-
-    // Return the Blocks
-    return largestBlock;
+    redTarget = bestRedBlock;
+    blueTarget = bestBlueBlock;
   }
 
   /**
-   * @return Returns the x-coordinate of the largest target from 0-315. 
-   * Returns -1 if there isn't a target.
+   * <b>Note:</b> this will probably be replaced with a way to specify a trajectory
+   * 
+   * @return The largest red target that seems "cargo-like"
    */
-  public int getLargestTargetX() {
-    // Get the largest target
-    Block largestTarget = lastLargestBlock;
-    // Return -1 if there was no target
-    if(largestTarget == null)
-      return -1;
+  public Optional<Block> getRedTarget() {
+    if(redTarget == null)
+      return Optional.empty();
     
-    // Return the requested value
-    return largestTarget.getX();
+    return Optional.of(redTarget);
   }
 
   /**
-   * @return Returns the y-coordinate of the largest target from 0-207. 
-   * Returns -1 if there isn't a target.
+   * <b>Note:</b> this will probably be replaced with a way to specify a trajectory
+   * 
+   * @return The largest blue target that seems "cargo-like"
    */
-  public int getLargestTargetY() {
-    // Get the largest target
-    Block largestTarget = lastLargestBlock;
-    // Return -1 if there was no target
-    if(largestTarget == null)
-      return -1;
+  public Optional<Block> getBlueTarget() {
+    if(blueTarget == null)
+      return Optional.empty();
     
-    // Return the requested value
-    return largestTarget.getY();
+    return Optional.of(blueTarget);
   }
 
   /**
-   * @return Returns the angle to the largest target in degrees from the center of the camera.
-   * Ranges from -30 to 30. Returns 0.0 if no target was found.
+   * @return Whether or not the Pixy sees a red cargo
    */
-  public double getLargestTargetAngle() {
-    double x = getLargestTargetX();
-    // Return 0 (centered) if no target was found
-    if(!seesTarget)
-      return 0.0;
-    
-    /**
-     * To get the angle, we divide the x (which ranges from 0 to 315, the width
-     * of the camera) by 315 to get it as a percentage from 0-1. We multiply
-     * that by 60 (the field of view of the PixyCam) to get it in terms of
-     * degrees, and then subtract it by 30 to center it.
-     */
-    return ((x / 315) * 60) - 30;
+  public boolean seesRedTarget(){
+    return getRedTarget().isPresent();
   }
 
   /**
-   * @return Returns the width of the largest target.
+   * @return Whether or not the Pixy sees a blue cargo
    */
-  public int getLargestTargetWidth() {
-    Block largestTarget = lastLargestBlock;
-    // Return -1 if there was no target
-    if(largestTarget == null)
-      return -1;
-    
-    // Return the requested value
-    return largestTarget.getWidth();
+  public boolean seesBlueTarget(){
+    return getBlueTarget().isPresent();
   }
 
-  /**
-   * @return Returns the height of the largest target.
-   * This is generally going to be smaller than the width because of lighting.
-   */
-  public int getLargestTargetHeight() {
-    Block largestTarget = lastLargestBlock;
-    // Return -1 if there was no target
-    if(largestTarget == null)
-      return -1;
-    
-    //Return the requested value
-    return largestTarget.getHeight();
-  }
-
-  public PixySigs getLargestTargetColor() {
-    if(lastLargestBlock == null)
-      return PixySigs.None;
-    
-    // According to programmed values on robot
-    return lastLargestBlock.getSignature() == 1 ? PixySigs.Red : PixySigs.Blue;
-  }
 }

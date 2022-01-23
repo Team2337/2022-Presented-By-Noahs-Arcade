@@ -98,4 +98,6 @@ public final class Constants {
     Blue,
     None
   }
+
+  public static final double PIXY_RATIO_THRESHOLD = 1.5;
 }
