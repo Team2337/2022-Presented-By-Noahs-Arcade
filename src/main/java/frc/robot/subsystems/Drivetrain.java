@@ -156,12 +156,11 @@ public class Drivetrain extends SubsystemBase {
    * @return The heading of the robot.
    */
   public Rotation2d getHeading() {
-    double yaw = pigeon.getYaw(); // [-368,640, 368,640]
     // Pigeon yaw values are a little weird. Clockwise rotations
     // give us negative values and ccw rotations give us positive values.
     // Flip values to make positive -> CW, negative -> CCW
-    double yawFlipped = yaw * -1.0; // [-368,640, 368,640]
-    return Utilities.relativeRotationFromAbsoluteRotation(Rotation2d.fromDegrees(yawFlipped)); // (-180, 180)
+    Rotation2d rotationFlipped = getGyroscopeRotation().unaryMinus(); // [-368,640, 368,640]
+    return Utilities.relativeRotationFromAbsoluteRotation(rotationFlipped); // (-180, 180)
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
