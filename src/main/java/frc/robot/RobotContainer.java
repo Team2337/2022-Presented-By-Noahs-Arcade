@@ -43,6 +43,10 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  public void resetGyro() {
+    pigeon.setYaw(0, 250);
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -63,7 +67,7 @@ public class RobotContainer {
     operatorA.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(90)));
     operatorB.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(270)));
     operatorX.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(45)));
-    operatorY.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(5)));
+    operatorY.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(0)));
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);

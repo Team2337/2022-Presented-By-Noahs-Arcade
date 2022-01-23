@@ -39,7 +39,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.04, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.004, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -64,7 +64,8 @@ public class Heading extends SubsystemBase {
    * @return A Rotation2d representing the heading of the robot.
    */
   private Rotation2d currentHeading() {
-    return gyroAngleSupplier.get().unaryMinus();
+    // [-368,640, 368,640] -> (-180, 180)
+    return Utilities.convertRotationToRelativeRotation(gyroAngleSupplier.get());
   }
 
   /**
@@ -78,7 +79,7 @@ public class Heading extends SubsystemBase {
    */
   public void setMaintainHeading(Rotation2d maintainHeading) {
     if (maintainHeading != null) {
-      maintainHeading = Utilities.relativeRotationFromAbsoluteRotation(maintainHeading);
+      maintainHeading = Utilities.convertRotationToRelativeRotation(maintainHeading);
     }
     if (this.maintainHeading == maintainHeading) {
       return;
@@ -102,7 +103,7 @@ public class Heading extends SubsystemBase {
    */
   public void setNextHeading(Rotation2d nextHeading) {
     if (nextHeading != null) {
-      nextHeading = Utilities.relativeRotationFromAbsoluteRotation(nextHeading);
+      nextHeading = Utilities.convertRotationToRelativeRotation(nextHeading);
     }
     this.nextHeading = nextHeading;
   }
@@ -129,16 +130,13 @@ public class Heading extends SubsystemBase {
       return 0.0;
     }
 
-    Rotation2d currentHeading = Utilities.relativeRotationFromAbsoluteRotation(currentHeading());
+    Rotation2d currentHeading = currentHeading();
     double output = rotationController.calculate(
       currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
     SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
     SmartDashboard.putNumber("Rotation Controller Output", output);
-    if (rotationController.atSetpoint()) {
-      return 0.0;
-    }
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clamedOutput = MathUtil.clamp(
