@@ -137,8 +137,37 @@ public class Drivetrain extends SubsystemBase {
     return kinematics;
   }
 
+  /**
+   * Get the gyroscope rotation of the robot as measured by the
+   * yaw value of the Pigeon.
+   * @return The rotation of the robot.
+   */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getFusedHeading());
+    return Rotation2d.fromDegrees(pigeon.getYaw());
+  }
+
+  /**
+   * Get the heading of the robot in a [0, 360] range.
+   * 90 degrees = 90 degrees clockwise (aka facing right)
+   * 270 degrees = 270 degrees clockwise (aka facing left)
+   * @return The heading of the robot.
+   */
+  public Rotation2d getHeading() {
+    // Pigeon yaw values are a little weird. Clockwise rotations
+    // give us negative values and ccw rotations give us positive values.
+    // Values for the yaw are +/- 368,640 (1024 full turns).
+    // Flip our rotation value so CW = positive / CCW = negative.
+    // Wrap our values to a [0, 360] so -1 = 359, and 361 = 1
+    double yaw = pigeon.getYaw(); // [-368,640, 368,640]
+    double yawFlipped = yaw * -1.0; // Flip values to make positive -> CW, negative -> CCW
+    double yawMod = yawFlipped % 360; // [-360, 360]
+
+    double offset = 0.0;
+    if (yawMod < 0) {
+      // Change negatives to ccw values. -1 -> 359, -181 -> 179
+      offset = 360;
+    }
+    return Rotation2d.fromDegrees(yawMod + offset);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
