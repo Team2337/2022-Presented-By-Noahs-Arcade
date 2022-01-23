@@ -27,11 +27,11 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
 
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
   
@@ -67,7 +67,7 @@ public class RobotContainer {
     operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
     operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(45)));
     operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
