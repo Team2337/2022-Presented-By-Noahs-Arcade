@@ -30,7 +30,7 @@ public class RobotContainer {
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getHeading);
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
 

@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Utilities;
 
 @RunWith(JUnit4.class)
 public class UtilitiesTest {

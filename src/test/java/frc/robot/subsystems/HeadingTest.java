@@ -6,8 +6,6 @@ import org.junit.runners.JUnit4;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
-import frc.robot.subsystems.Heading;
 
 @RunWith(JUnit4.class)
 public class HeadingTest {

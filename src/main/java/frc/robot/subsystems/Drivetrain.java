@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -140,27 +139,12 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Get the gyroscope rotation of the robot as measured by the
-   * yaw value of the Pigeon.
+   * yaw value of the Pigeon. [-368,640, 368,640] degrees.
    *
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
     return Rotation2d.fromDegrees(pigeon.getYaw());
-  }
-
-  /**
-   * Get the heading of the robot in a (-180, 180) range.
-   * 90 degrees = 90 degrees clockwise
-   * -90 degrees = 270 degrees clockwise (or 90 CCW)
-   *
-   * @return The heading of the robot.
-   */
-  public Rotation2d getHeading() {
-    // Pigeon yaw values are a little weird. Clockwise rotations
-    // give us negative values and ccw rotations give us positive values.
-    // Flip values to make positive -> CW, negative -> CCW
-    Rotation2d rotationFlipped = getGyroscopeRotation().unaryMinus(); // [-368,640, 368,640]
-    return Utilities.relativeRotationFromAbsoluteRotation(rotationFlipped); // (-180, 180)
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {

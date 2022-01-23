@@ -19,10 +19,10 @@ import frc.robot.Utilities;
 public class Heading extends SubsystemBase {
 
   /**
-   * Supplier to provide the heading of the robot. Should come from
+   * Supplier to provide the gyro angle of the robot. Should come from
    * the gyro on the Drivetrain. Used to calculate our maintain heading calculation.
    */
-  private Supplier<Rotation2d> currentHeadingSupplier;
+  private Supplier<Rotation2d> gyroAngleSupplier;
   /**
    * The maintain heading is the heading we would like the robot to maintain.
    * Can be null if the robot should not maintain any specific heading.
@@ -44,17 +44,27 @@ public class Heading extends SubsystemBase {
   /**
    * Heading subsystem to maintain a static heading of the robot.
    *
-   * @param actualRotationSupplier A Supplier to provide the current heading of
-   *                               the robot.
-   *                               Should come from a gyro. Values are expected to
-   *                               be in the range of (-180, 180) degrees.
+   * @param gyroAngleSupplier A Supplier to provide the gyro value of the robot.
+   *                          Should come from the Pigeon.
    */
-  public Heading(Supplier<Rotation2d> currentHeadingSupplier) {
-    this.currentHeadingSupplier = currentHeadingSupplier;
+  public Heading(Supplier<Rotation2d> gyroAngleSupplier) {
+    this.gyroAngleSupplier = gyroAngleSupplier;
 
     rotationController.enableContinuousInput(-180, 180);
     // +/- 1 degree position error tolerance
     rotationController.setTolerance(1.0);
+  }
+
+  /**
+   * Convert from the gyro angle supplier to a heading rotation value.
+   * Gyro angles are reported as CCW rotations being a positive change,
+   * and CW rotations being a negative value. We want to convert to a
+   * more heading value by flipping those values.
+   *
+   * @return A Rotation2d representing the heading of the robot.
+   */
+  private Rotation2d currentHeading() {
+    return gyroAngleSupplier.get().unaryMinus();
   }
 
   /**
@@ -68,10 +78,11 @@ public class Heading extends SubsystemBase {
    */
   public void setMaintainHeading(Rotation2d maintainHeading) {
     maintainHeading = Utilities.relativeRotationFromAbsoluteRotation(maintainHeading);
-    if (this.maintainHeading != maintainHeading) {
-      resetRotationController();
+    if (this.maintainHeading == maintainHeading) {
+      return;
     }
     this.maintainHeading = maintainHeading;
+    resetRotationController();
   }
 
   public boolean shouldMaintainHeading() {
@@ -108,9 +119,9 @@ public class Heading extends SubsystemBase {
    * we would expect from a joystick (ex: [-1, 1]).
    */
   public double calculateRotation() {
-    Rotation2d currentRotation = Utilities.relativeRotationFromAbsoluteRotation(currentHeadingSupplier.get());
+    Rotation2d currentHeading = Utilities.relativeRotationFromAbsoluteRotation(currentHeading());
     double output = rotationController.calculate(
-      currentRotation.getDegrees(),
+      currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
     SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
