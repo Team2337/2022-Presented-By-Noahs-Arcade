@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,9 +37,9 @@ public class Heading extends SubsystemBase {
   private Rotation2d nextHeading;
 
   /**
-   * PID used to converge the robot to the currentHeading from it's actual heading.
+   * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(4.0, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.04, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -52,6 +53,7 @@ public class Heading extends SubsystemBase {
     this.currentHeadingSupplier = currentHeadingSupplier;
 
     rotationController.enableContinuousInput(-180, 180);
+    // +/- 1 degree position error tolerance
     rotationController.setTolerance(1.0);
   }
 
@@ -101,11 +103,11 @@ public class Heading extends SubsystemBase {
 
   /**
    * Uses the rotation PID controller to calculate the
-   * offset from the current location the robot should
-   * rotate in order to achieve the desired heading.
-   * Is not clamped by maximum rotational speeds.
+   * rotational value as some percentage from
+   * [-max speed, max speed] where max speed is a value
+   * we would expect from a joystick (ex: [-1, 1]).
    */
-  public Rotation2d calculateRotation() {
+  public double calculateRotation() {
     Rotation2d currentRotation = Utilities.relativeRotationFromAbsoluteRotation(currentHeadingSupplier.get());
     double output = rotationController.calculate(
       currentRotation.getDegrees(),
@@ -114,9 +116,16 @@ public class Heading extends SubsystemBase {
     SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
     SmartDashboard.putNumber("Rotation Controller Output", output);
     if (rotationController.atSetpoint()) {
-      return new Rotation2d();
+      return 0.0;
     }
-    return Rotation2d.fromDegrees(output);
+    // Clamp to some max speed (should be between [0.0, 1.0])
+    final double maxSpeed = 0.3;
+    double clamedOutput = MathUtil.clamp(
+      output,
+      -maxSpeed,
+      maxSpeed
+    );
+    return clamedOutput;
   }
 
   /**
