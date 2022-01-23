@@ -77,7 +77,9 @@ public class Heading extends SubsystemBase {
    *                        null if the robot should not maintain a heading.
    */
   public void setMaintainHeading(Rotation2d maintainHeading) {
-    maintainHeading = Utilities.relativeRotationFromAbsoluteRotation(maintainHeading);
+    if (maintainHeading != null) {
+      maintainHeading = Utilities.relativeRotationFromAbsoluteRotation(maintainHeading);
+    }
     if (this.maintainHeading == maintainHeading) {
       return;
     }
@@ -99,7 +101,10 @@ public class Heading extends SubsystemBase {
    *                    should not maintain a new heading.
    */
   public void setNextHeading(Rotation2d nextHeading) {
-    this.nextHeading = Utilities.relativeRotationFromAbsoluteRotation(nextHeading);
+    if (nextHeading != null) {
+      nextHeading = Utilities.relativeRotationFromAbsoluteRotation(nextHeading);
+    }
+    this.nextHeading = nextHeading;
   }
 
   /**
@@ -119,6 +124,11 @@ public class Heading extends SubsystemBase {
    * we would expect from a joystick (ex: [-1, 1]).
    */
   public double calculateRotation() {
+    // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
+    if (maintainHeading == null) {
+      return 0.0;
+    }
+
     Rotation2d currentHeading = Utilities.relativeRotationFromAbsoluteRotation(currentHeading());
     double output = rotationController.calculate(
       currentHeading.getDegrees(),

@@ -44,13 +44,6 @@ public class SwerveDriveCommand extends CommandBase {
     if (heading.shouldMaintainHeading()) {
       if (rotation == 0) {
         rotation = heading.calculateRotation();
-
-        /*
-        final double minimumRotation = 0.01;
-        if (rotation != 0 && Math.abs(rotation) < minimumRotation) {
-          rotation = Math.copySign(minimumRotation, rotation);
-        }
-        */
       } else {
         heading.resetRotationController();
       }
