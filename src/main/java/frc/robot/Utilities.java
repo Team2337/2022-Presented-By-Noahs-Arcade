@@ -8,7 +8,7 @@ public class Utilities {
    *
    * @return A Rotation2d from (-180, 180) degrees.
    */
-  public static Rotation2d relativeRotationFromAbsoluteRotation(Rotation2d rotation) {
+  public static Rotation2d convertRotationToRelativeRotation(Rotation2d rotation) {
     double rotationDegrees = rotation.getDegrees() % 360;
     if (rotationDegrees > 180) {
       rotationDegrees -= 360;
