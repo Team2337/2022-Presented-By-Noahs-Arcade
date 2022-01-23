@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Utilities;
 
 /**
  * The Heading subsystem is a "fake" subsystem (no hardware) that is used to coordinate
@@ -28,8 +29,8 @@ public class Heading extends SubsystemBase {
   private Rotation2d maintainHeading;
   /**
    * The next heading is the enqueued heading we would like the robot to maintain.
-   * Swapping from the next heading -> the maintain heading is done manually via the
-   * `setCurrentHeading` method.
+   * Swapping from the next heading -> the maintain heading is done via the
+   * `setNextHeadingToMaintainHeading` method.
    * Next heading may be null if the robot has no next heading to maintain.
    */
   private Rotation2d nextHeading;
@@ -41,16 +42,16 @@ public class Heading extends SubsystemBase {
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
-   * 
+   *
    * @param actualRotationSupplier A Supplier to provide the current heading of
    *                               the robot.
    *                               Should come from a gyro. Values are expected to
-   *                               be in the range of [0, 360] degrees.
+   *                               be in the range of (-180, 180) degrees.
    */
   public Heading(Supplier<Rotation2d> currentHeadingSupplier) {
     this.currentHeadingSupplier = currentHeadingSupplier;
 
-    rotationController.enableContinuousInput(0, 360);
+    rotationController.enableContinuousInput(-180, 180);
     rotationController.setTolerance(1.0);
   }
 
@@ -60,10 +61,11 @@ public class Heading extends SubsystemBase {
    * Command should be updating the robot's heading at a time.
    *
    * @param maintainHeading The heading the robot should attempt to
-   *                        maintain.Expects a value from 0 to 360 degrees. Can be
+   *                        maintain.Expects a value (-180, 180) degrees. Can be
    *                        null if the robot should not maintain a heading.
    */
   public void setMaintainHeading(Rotation2d maintainHeading) {
+    maintainHeading = Utilities.relativeRotationFromAbsoluteRotation(maintainHeading);
     if (this.maintainHeading != maintainHeading) {
       resetRotationController();
     }
@@ -78,13 +80,13 @@ public class Heading extends SubsystemBase {
    * Enqueue the next heading for the robot. There can only be one next
    * heading enqueued at a time. The next heading must be swapped manually
    * to the maintain heading by calling `setNextHeadingToMaintainHeading`.
-   * 
+   *
    * @param nextHeading The next heading the robot should maintain. Expects a
-   *                    value from 0 to 360 degrees. Can be null if the robot*
+   *                    value from (-180, 180) degrees. Can be null if the robot
    *                    should not maintain a new heading.
    */
   public void setNextHeading(Rotation2d nextHeading) {
-    this.nextHeading = nextHeading;
+    this.nextHeading = Utilities.relativeRotationFromAbsoluteRotation(nextHeading);
   }
 
   /**
@@ -104,8 +106,9 @@ public class Heading extends SubsystemBase {
    * Is not clamped by maximum rotational speeds.
    */
   public Rotation2d calculateRotation() {
+    Rotation2d currentRotation = Utilities.relativeRotationFromAbsoluteRotation(currentHeadingSupplier.get());
     double output = rotationController.calculate(
-      currentHeadingSupplier.get().getDegrees(),
+      currentRotation.getDegrees(),
       maintainHeading.getDegrees()
     );
     SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());

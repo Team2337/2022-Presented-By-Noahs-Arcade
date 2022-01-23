@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Utilities;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -140,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Get the gyroscope rotation of the robot as measured by the
    * yaw value of the Pigeon.
+   *
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
@@ -147,27 +149,20 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Get the heading of the robot in a [0, 360] range.
-   * 90 degrees = 90 degrees clockwise (aka facing right)
-   * 270 degrees = 270 degrees clockwise (aka facing left)
+   * Get the heading of the robot in a (-180, 180) range.
+   * 90 degrees = 90 degrees clockwise
+   * -90 degrees = 270 degrees clockwise (or 90 CCW)
+   *
    * @return The heading of the robot.
    */
   public Rotation2d getHeading() {
+    double yaw = pigeon.getYaw(); // [-368,640, 368,640]
     // Pigeon yaw values are a little weird. Clockwise rotations
     // give us negative values and ccw rotations give us positive values.
-    // Values for the yaw are +/- 368,640 (1024 full turns).
-    // Flip our rotation value so CW = positive / CCW = negative.
-    // Wrap our values to a [0, 360] so -1 = 359, and 361 = 1
-    double yaw = pigeon.getYaw(); // [-368,640, 368,640]
-    double yawFlipped = yaw * -1.0; // Flip values to make positive -> CW, negative -> CCW
-    double yawMod = yawFlipped % 360; // [-360, 360]
-
-    double offset = 0.0;
-    if (yawMod < 0) {
-      // Change negatives to ccw values. -1 -> 359, -181 -> 179
-      offset = 360;
-    }
-    return Rotation2d.fromDegrees(yawMod + offset);
+    // Flip values to make positive -> CW, negative -> CCW
+    double yawFlipped = yaw * -1.0; // [-368,640, 368,640]
+    double yawMod = yawFlipped % 360; // (-360, 360)
+    return Utilities.relativeRotationFromAbsoluteRotation(Rotation2d.fromDegrees(yawMod)); // (-180, 180)
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
