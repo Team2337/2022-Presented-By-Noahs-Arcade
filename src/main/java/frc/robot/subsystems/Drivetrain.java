@@ -161,8 +161,7 @@ public class Drivetrain extends SubsystemBase {
     // give us negative values and ccw rotations give us positive values.
     // Flip values to make positive -> CW, negative -> CCW
     double yawFlipped = yaw * -1.0; // [-368,640, 368,640]
-    double yawMod = yawFlipped % 360; // (-360, 360)
-    return Utilities.relativeRotationFromAbsoluteRotation(Rotation2d.fromDegrees(yawMod)); // (-180, 180)
+    return Utilities.relativeRotationFromAbsoluteRotation(Rotation2d.fromDegrees(yawFlipped)); // (-180, 180)
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
