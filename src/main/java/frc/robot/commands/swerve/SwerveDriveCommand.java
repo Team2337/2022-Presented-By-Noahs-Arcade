@@ -3,11 +3,14 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
+import frc.robot.subsystems.AutoDriveProvider;
+import frc.robot.subsystems.AutoDriveProvider.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
@@ -16,6 +19,7 @@ public class SwerveDriveCommand extends CommandBase {
 
   private final XboxController controller;
 
+  private AutoDriveProvider autoDriveProvider;
   private final Heading heading;
   private final Drivetrain drivetrain;
 
@@ -24,8 +28,9 @@ public class SwerveDriveCommand extends CommandBase {
    *
    * @param subsystem - SwerveDrivetrain subsystem object
    */
-  public SwerveDriveCommand(XboxController controller, Heading heading, Drivetrain drivetrain) {
+  public SwerveDriveCommand(XboxController controller, AutoDriveProvider autoDriveProvider, Heading heading, Drivetrain drivetrain) {
     this.controller = controller;
+    this.autoDriveProvider = autoDriveProvider;
     this.heading = heading;
     this.drivetrain = drivetrain;
 
@@ -37,6 +42,17 @@ public class SwerveDriveCommand extends CommandBase {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
+    boolean isFieldOriented = !controller.getLeftBumper();
+
+    // Auto Drive is currently only available in autonomous
+    if (DriverStation.isAutonomous()) {
+      AutoDrive autoDrive = autoDriveProvider.getAutoDrive();
+      if (autoDrive != null) {
+        forward = autoDrive.forward;
+        strafe = autoDrive.strafe;
+        isFieldOriented = autoDrive.isFieldOriented;
+      }
+    }
 
     /**
      * Calculate a rotation value for the robot to achieve it's
@@ -68,7 +84,6 @@ public class SwerveDriveCommand extends CommandBase {
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    boolean isFieldOriented = !controller.getLeftBumper();
     SmartDashboard.putNumber("Max Angular Velocity", Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     if (isFieldOriented) {
