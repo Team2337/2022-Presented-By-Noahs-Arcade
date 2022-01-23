@@ -1,6 +1,23 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class Utilities {
+  /**
+   * Convert a Rotation2d to a rotation value between (-180, 180).
+   *
+   * @return A Rotation2d from (-180, 180) degrees.
+   */
+  public static Rotation2d convertRotationToRelativeRotation(Rotation2d rotation) {
+    double rotationDegrees = rotation.getDegrees() % 360;
+    if (rotationDegrees > 180) {
+      rotationDegrees -= 360;
+    } else if (rotationDegrees < -180) {
+      rotationDegrees += 360;
+    }
+    return Rotation2d.fromDegrees(rotationDegrees);
+  }
+
     /**
      * Checks to see if the absolute value of the input is less than the deadband
      * @param input - Value in which the deadband will be applied (0 < input < 1)
