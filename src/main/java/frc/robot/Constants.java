@@ -97,8 +97,9 @@ public final class Constants {
   public static enum Colors {
     Red,
     Blue,
+    Unknown,
     None
   }
 
-  public static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 300;
+  public static int COLOR_SENSOR_PROXIMITY = 300;
 }

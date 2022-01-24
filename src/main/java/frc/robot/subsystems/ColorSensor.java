@@ -68,7 +68,7 @@ public class ColorSensor extends SubsystemBase {
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
     // Check match
-    if(sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY_THRESHOLD) {
+    if(sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY) {
       // If not close enough, there is no ball
       currentColor = Colors.None;
     } else if (match.color == matchRed) {
