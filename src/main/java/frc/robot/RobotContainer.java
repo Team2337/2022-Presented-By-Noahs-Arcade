@@ -27,9 +27,6 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  
-  private final ColorSensor colorSensorLeft = new ColorSensor(I2C.Port.kOnboard);
-  // private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
 
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
