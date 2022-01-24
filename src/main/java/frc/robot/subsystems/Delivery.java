@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Colors;
@@ -33,10 +34,8 @@ public class Delivery extends SubsystemBase {
 
   /**
    * Initializes the Delivery subsystem with its two color sensors
-   * @param leftSensor The color sensor on the left side of the robot
-   * @param rightSensor The color sensor on the right side of the robot
    */
-  public Delivery(ColorSensor leftSensor, ColorSensor rightSensor) {
+  public Delivery() {
     // Initialize motor
     motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
     
@@ -46,8 +45,8 @@ public class Delivery extends SubsystemBase {
     motor.setNeutralMode(NeutralMode.Brake);
 
     // Initialize color sensor
-    this.leftSensor = leftSensor;
-    this.rightSensor = rightSensor;
+    this.leftSensor = new ColorSensor(I2C.Port.kOnboard);
+    this.rightSensor = new ColorSensor(I2C.Port.kMXP);
 
     // Initialize stored objects array
     storedColors = new Colors[4];
