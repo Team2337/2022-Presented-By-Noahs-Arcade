@@ -14,12 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
+
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -71,14 +73,11 @@ public class Drivetrain extends SubsystemBase {
 
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
 
-    SmartDashboard.putNumber("ticks", 0);
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
     modules = new SwerveModule[] {
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(0, 0),
+          .withSize(4, 8)
+          .withPosition(4, 0),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE0_DRIVE_MOTOR_ID,
         Constants.MODULE0_ANGLE_MOTOR_ID,
@@ -87,8 +86,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(2, 0),
+          .withSize(4, 8)
+          .withPosition(0, 0),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE1_DRIVE_MOTOR_ID,
         Constants.MODULE1_ANGLE_MOTOR_ID,
@@ -97,8 +96,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(4, 0),
+          .withSize(4, 8)
+          .withPosition(0, 8),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE2_DRIVE_MOTOR_ID,
         Constants.MODULE2_ANGLE_MOTOR_ID,
@@ -107,8 +106,8 @@ public class Drivetrain extends SubsystemBase {
       ),
       Mk4SwerveModuleHelper.createFalcon500(
         tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(6, 0),
+          .withSize(4, 8)
+          .withPosition(4, 8),
         Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE3_DRIVE_MOTOR_ID,
         Constants.MODULE3_ANGLE_MOTOR_ID,
@@ -116,6 +115,14 @@ public class Drivetrain extends SubsystemBase {
         Constants.MODULE3_ANGLE_OFFSET
       )
     };
+
+    ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
+    chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
+    chassisSpeedsWidget.addNumber("vy meters/s", () -> chassisSpeeds.vyMetersPerSecond);
+    chassisSpeedsWidget.addNumber("omega radians/s", () -> chassisSpeeds.omegaRadiansPerSecond);
+
+    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
+    gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }
 
   public void resetPosition(Pose2d pose) {
@@ -130,8 +137,16 @@ public class Drivetrain extends SubsystemBase {
     return kinematics;
   }
 
+  /**
+   * Get the gyroscope rotation of the robot as measured by the
+   * yaw value of the Pigeon. [-368,640, 368,640] degrees.
+   * Counter-clockwise is interpreted as a positive change,
+   * clockwise is interpreted as a negative change.
+   *
+   * @return The rotation of the robot.
+   */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getFusedHeading());
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -147,10 +162,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public void stopMotors() {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  }
-
-  public void setModuleStates(SwerveModuleState[] states) {
-    this.chassisSpeeds = kinematics.toChassisSpeeds(states);
   }
 
   @Override
