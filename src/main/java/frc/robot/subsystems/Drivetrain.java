@@ -137,8 +137,16 @@ public class Drivetrain extends SubsystemBase {
     return kinematics;
   }
 
+  /**
+   * Get the gyroscope rotation of the robot as measured by the
+   * yaw value of the Pigeon. [-368,640, 368,640] degrees.
+   * Counter-clockwise is interpreted as a positive change,
+   * clockwise is interpreted as a negative change.
+   *
+   * @return The rotation of the robot.
+   */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getFusedHeading());
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {

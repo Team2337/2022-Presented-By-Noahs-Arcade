@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
-import frc.robot.commands.teleop.HeadingCommand;
 import frc.robot.subsystems.*;
 
 /**
@@ -28,14 +27,14 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   
   private final ColorSensor colorSensorLeft = new ColorSensor(I2C.Port.kOnboard);
   // private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
 
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
+  private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
 
@@ -48,6 +47,10 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  public void resetGyro() {
+    pigeon.setYaw(0, 250);
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -57,19 +60,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Execute hold heading command with Driver Right Bumper
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    driverRightBumper.whenReleased(new HeadingCommand(heading));
-    //driverRightBumper.whenReleased(() -> heading.setCurrentHeading(null));
+    driverRightBumper.whenPressed(heading::setNextHeadingToMaintainHeading);
+    // driverRightBumper.whenReleased(() -> heading.setMaintainHeading(null), heading);
 
     // Enqueue headings for driver with A/B/X/Y
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
-    operatorA.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(90)));
-    operatorB.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(180)));
-    operatorX.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(45)));
-    operatorY.whenPressed(() -> heading.enqueueHeading(Rotation2d.fromDegrees(5)));
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+    operatorA.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(90)));
+    operatorB.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(270)));
+    operatorX.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(45)));
+    operatorY.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(0)));
 
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
@@ -77,7 +79,6 @@ public class RobotContainer {
     operatorRightBumper.whenReleased(() -> intake.stopIntake());
 
     // Configure delivery stuff
-    // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     operatorLeftBumper.whenPressed(() -> delivery.startDelivery());
     operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
