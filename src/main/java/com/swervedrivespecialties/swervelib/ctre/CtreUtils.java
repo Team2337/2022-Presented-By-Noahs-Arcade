@@ -5,13 +5,11 @@ import com.ctre.phoenix.ErrorCode;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public final class CtreUtils {
-    /**
-     * checks the specified error code for issues
-     *
-     * @param errorCode error code
-     * @param message   message to print if error happens
-     */
+    private CtreUtils() {}
+
     public static void checkCtreError(ErrorCode errorCode, String message) {
-        DriverStation.reportError(message + errorCode, false);
+        if (errorCode != ErrorCode.OK) {
+            DriverStation.reportError(String.format("%s: %s", message, errorCode.toString()), false);
+        }
     }
 }
