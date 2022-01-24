@@ -101,6 +101,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 if (hasVoltageCompensation()) {
                     motorConfiguration.slot0.kF = (1023.0 * sensorVelocityCoefficient / nominalVoltage) * velocityConstant;
                 }
+
                 motorConfiguration.motionCruiseVelocity = 2.0 / velocityConstant / sensorVelocityCoefficient;
                 motorConfiguration.motionAcceleration = (8.0 - 2.0) / accelerationConstant / sensorVelocityCoefficient;
             }

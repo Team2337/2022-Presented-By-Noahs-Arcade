@@ -27,12 +27,9 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  
-  private final ColorSensor colorSensorLeft = new ColorSensor(I2C.Port.kOnboard);
-  private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
 
   private final Climber climber = new Climber();
-  private final Delivery delivery = new Delivery(colorSensorLeft, colorSensorRight);
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   private final Intake intake = new Intake();
