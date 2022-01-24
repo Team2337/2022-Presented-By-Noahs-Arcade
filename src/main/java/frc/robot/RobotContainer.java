@@ -32,10 +32,10 @@ public class RobotContainer {
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   
   private final ColorSensor colorSensorLeft = new ColorSensor(I2C.Port.kOnboard);
-  // private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
+  private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
 
   private final Climber climber = new Climber();
-  private final Delivery delivery = new Delivery();
+  private final Delivery delivery = new Delivery(colorSensorLeft, colorSensorRight);
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
 
@@ -75,12 +75,6 @@ public class RobotContainer {
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(() -> intake.startIntake());
     operatorRightBumper.whenReleased(() -> intake.stopIntake());
-
-    // Configure delivery stuff
-    // TODO: figure out if delivery needs to always run, and if so, where to put the command(s)
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(() -> delivery.startDelivery());
-    operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
   }
 
   /**

@@ -52,13 +52,7 @@ public class ColorSensor extends SubsystemBase {
     ShuffleboardLayout matchWidget = tab.getLayout("Match", BuiltInLayouts.kList)
       .withPosition(4, 0)
       .withSize(4, 8);
-    matchWidget.addString("Match", () -> {
-      switch(getColor()){
-        case Red:    return "Red";
-        case Blue:   return "Blue";
-        default:     return "None";
-      }
-    });
+    matchWidget.addString("Match", () -> getColor().toString());
   }
 
   @Override
@@ -68,7 +62,7 @@ public class ColorSensor extends SubsystemBase {
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
     // Check match
-    if(sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY_THRESHOLD) {
+    if(seesBall()) {
       // If not close enough, there is no ball
       currentColor = Colors.None;
     } else if (match.color == matchRed) {
@@ -83,8 +77,18 @@ public class ColorSensor extends SubsystemBase {
     }
   }
 
+  /**
+   * @return If the object is close, gives the closest color. Otherwise returns <code>Colors.None
+   */
   public Colors getColor(){
     return currentColor;
+  }
+
+  /**
+   * @return Whether or not the proximity sensor detects a close object
+   */
+  public boolean seesBall() {
+    return sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY;
   }
 
 }
