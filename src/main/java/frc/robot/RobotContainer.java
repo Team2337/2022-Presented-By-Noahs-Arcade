@@ -8,6 +8,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -29,13 +30,14 @@ public class RobotContainer {
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
+  
+  private final ColorSensor colorSensorLeft = new ColorSensor(I2C.Port.kOnboard);
+  // private final ColorSensor colorSensorRight = new ColorSensor(I2C.Port.kMXP);
 
   private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
   private final Intake intake = new Intake();
   private final Vision vision = new Vision();
-  
-  private final ColorSensor colorSensor = new ColorSensor();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

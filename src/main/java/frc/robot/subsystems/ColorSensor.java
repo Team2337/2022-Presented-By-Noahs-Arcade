@@ -1,95 +1,90 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Colors;
 
 /**
  * Subsystem for the REV Robotics Color Sensor V3. Plugs in to the I2C port.
- * <p>
- * TODO: Color matching
  * 
  * @author Michael Francis
  * 
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
 public class ColorSensor extends SubsystemBase {
-  
-  /** The I2C port on the roboRIO */
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
+  // The sensor
   private final ColorSensorV3 sensor;
 
-  private Color detectedColor;
-  private double infrared;
-  private int proximity;
+  // Color matches
+  private final ColorMatch colorMatcher;
+  private final Color matchRed  = new Color(0.4529, 0.2117, 0.0980);
+  private final Color matchBlue = new Color(0.1078, 0.2608, 0.3921);
+  // private final Color matchYellow = new Color(0.4803, 0.4019, 0.0431);
 
-  private ShuffleboardComponent<SuppliedValueWidget<Boolean>> colorWidget;
+  // Other variables
+  private Colors currentColor;
 
-  public ColorSensor(){
-    sensor = new ColorSensorV3(i2cPort);
+  /**
+   * Initializes a REV Robotics Color Sensor v3
+   * @param port The I2C port the sensor is plugged into
+   */
+  public ColorSensor(I2C.Port port){
+    // Set up sensor
+    sensor = new ColorSensorV3(port);
+
+    // Color match
+    colorMatcher = new ColorMatch();
+    colorMatcher.addColorMatch(matchRed);
+    colorMatcher.addColorMatch(matchBlue);
+
+    currentColor = Colors.None;
 
     // Shuffleboard stuff
     ShuffleboardTab tab = Shuffleboard.getTab("Color Sensor");
 
-    // General info
-    ShuffleboardLayout infoWidget = tab.getLayout("Info", BuiltInLayouts.kList).withPosition(4, 0).withSize(4, 8);
-    infoWidget.addNumber("Red", () -> detectedColor.red);
-    infoWidget.addNumber("Green", () -> detectedColor.green);
-    infoWidget.addNumber("Blue", () -> detectedColor.blue);
-    infoWidget.addNumber("Infrared", () -> infrared);
-    infoWidget.addNumber("Proximity", () -> proximity);
-
-    // Show color
-    colorWidget = tab.addBoolean("Color", () -> true).withPosition(8, 0).withSize(4, 4);
+    ShuffleboardLayout matchWidget = tab.getLayout("Match", BuiltInLayouts.kList)
+      .withPosition(4, 0)
+      .withSize(4, 8);
+    matchWidget.addString("Match", () -> {
+      switch(getColor()){
+        case Red:    return "Red";
+        case Blue:   return "Blue";
+        default:     return "None";
+      }
+    });
   }
 
   @Override
   public void periodic(){
-    // Update values
-    detectedColor = sensor.getColor();
-    infrared = sensor.getIR();
-    proximity = sensor.getProximity();
+    // Get color and what its closest color is
+    Color detectedColor = sensor.getColor();
+    ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
-    // Update color on Shuffleboard
-    // https://www.chiefdelphi.com/t/shuffleboard-color-block-for-color-sensor/372871/4
-    // colorWidget.withProperties(Map.of("colorWhenTrue", detectedColor));
-    colorWidget.withProperties(
-      Map.of(
-        "Color when true",
-        String.format(
-          "#%02x%02x%02x",
-          (int)Math.floor(detectedColor.red * 255),
-          (int)Math.floor(detectedColor.green * 255),
-          (int)Math.floor(detectedColor.blue * 255)
-        )
-      )
-    );
+    // Check match
+    if(sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY_THRESHOLD) {
+      // If not close enough, there is no ball
+      currentColor = Colors.None;
+    } else if (match.color == matchRed) {
+      // Red ball
+      currentColor = Colors.Red;
+    } else if (match.color == matchBlue) {
+      // Blue ball
+      currentColor = Colors.Blue;
+    } else {
+      // No ball
+      currentColor = Colors.None;
+    }
   }
 
-
-  /**
-   * @return A Color object of the detected color value
-   */
-  public Color getColor(){
-    return detectedColor;
-  }
-
-  /**
-   * @return The raw color value from the IR ADC
-   */
-  public double getIR(){
-    return infrared;
-  }
-
-  /**
-   * @return The proximity of the detected object from 0-2047 where larger is closer
-   */
-  public int getProximity(){
-    return proximity;
+  public Colors getColor(){
+    return currentColor;
   }
 
 }

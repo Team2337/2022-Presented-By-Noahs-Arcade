@@ -92,4 +92,13 @@ public final class Constants {
 
   public static final int DELIVERY_MOTOR_ID = 7;
   public static final double DELIVERY_SPEED = 0.5;
+
+  // Color stuff
+  public static enum Colors {
+    Red,
+    Blue,
+    None
+  }
+
+  public static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 300;
 }
