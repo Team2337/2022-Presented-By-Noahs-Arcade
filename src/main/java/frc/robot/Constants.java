@@ -2,7 +2,9 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.coordinates.PolarCoordinate;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -34,6 +36,38 @@ public final class Constants {
 
   // Radius to the wheel modules can be thought of as a triangle - width and length are the two sides
   public static final double DRIVETRAIN_RADIUS_INCHES = Math.hypot(MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES, MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES);
+
+  public static final class Auto {
+    /**
+     * Our polar coordinates for our balls are based off of the center of the field.
+     * Note that the angles are measured where the left-hand field perimeter
+     * (y = 27) is our 0 degrees. This is because when our center point is in the
+     * middle of the field, the top-left quadrant in a cartesian system is our
+     * positive-positive quadrant. Top right should be positive X values and
+     * negative Y values (shifted to the right of our center).
+     */
+    // Ball 1 = Ball nearest to the top starting location
+    public static final PolarCoordinate kBall1 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(9.75) // 80.25 using alliance wall zero
+    );
+    // Ball 2 = Ball nearest to the middle starting location
+    public static final PolarCoordinate kBall2 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(54.75) // 35.25 using alliance wall zero
+    );
+    // Ball 3 = Ball just in front of the Terminal
+    public static final PolarCoordinate kBall3 = new PolarCoordinate(
+      Units.inchesToMeters(305.66),
+      Rotation2d.fromDegrees(67.35) // 22.65 using alliance wall zero
+    );
+    // Ball 4 is the human player ball at the Terminal
+    // Ball 5 = Ball nearest to the bottom starting location
+    public static final PolarCoordinate kBall5 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(122.25) // -32.25 using alliance wall zero
+    );
+  }
 
   // Robot-specific configuration for our swerve drive algorithm
   public static final class Swerve {
