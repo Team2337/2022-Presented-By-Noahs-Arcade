@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -39,6 +41,8 @@ public class Shooter extends SubsystemBase {
     private double prevBottomSpeed = 0;
     private int topCounter = 0;
     private int bottomCounter = 0;
+    private double motorShutdownTemp = 55;
+    public boolean motorOverTemp = false;
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
@@ -76,6 +80,25 @@ public class Shooter extends SubsystemBase {
         .withWidget(BuiltInWidgets.kNumberSlider)
         .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
+
+        ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
+        .withSize(2, 4)
+        .withPosition(4, 0); 
+
+        /*
+     public NetworkTableEntry topShootTemp = temps
+     .add("Top Shooter Temp", topShoot.getTemperature())
+     .withWidget(BuiltInWidgets.kDial)
+     .getEntry();
+     public NetworkTableEntry bottomShootTemp = temps
+     .add("Bottom Shooter Temp", bottomShoot.getTemperature())
+     .withWidget(BuiltInWidgets.kDial)
+     .getEntry();
+     public NetworkTableEntry OverTemp = temps
+     .add("OverTemp", motorOverTemp)
+     .withWidget(BuiltInWidgets.kBooleanBox)
+     .getEntry();
+     */
 
     public Shooter() {
         topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
@@ -131,6 +154,9 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Top Shooter Velocity", topShoot.getSelectedSensorVelocity());
         SmartDashboard.putNumber("Bottom Shooter Velocity", bottomShoot.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("top shooter temp", topShoot.getTemperature());
+        SmartDashboard.putNumber("bottom shooter temp", bottomShoot.getTemperature());
+        SmartDashboard.putBoolean("Shooter Motor Over Temp", motorOverTemp);
         if (kep.getDouble(0) != kP) {
             kP = kep.getDouble(0);
             configurePID(kP, kI, kD, kF);
@@ -169,6 +195,12 @@ public class Shooter extends SubsystemBase {
             prevBottomSpeed = bottomShooter.getDouble(0);
 
         }
+
+        if (getBottomMotorOverTemp() | getTopMotorOverTemp()) {
+            motorOverTemp = true;
+        } else {
+            motorOverTemp = false;
+        }
       }
 
   public void configurePID(double kp, double ki, double kd, double kf){
@@ -196,6 +228,14 @@ public class Shooter extends SubsystemBase {
  public double getBottomShooterSpeed(){
      return bottomShoot.getMotorOutputPercent();
  }
+
+ public boolean getTopMotorOverTemp() {
+     return topShoot.getTemperature() > motorShutdownTemp;
+ }
+
+ public boolean getBottomMotorOverTemp() {
+    return bottomShoot.getTemperature() > motorShutdownTemp;
+}
 
  public void setTopShooterSpeed(double speed){
     // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
