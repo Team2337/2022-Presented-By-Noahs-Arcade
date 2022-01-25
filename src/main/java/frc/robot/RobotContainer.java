@@ -27,15 +27,26 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+
+  private final Climber climber = new Climber();
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
+  private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
+  private final Vision vision = new Vision();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  public void resetGyro() {
+    pigeon.setYaw(0, 250);
   }
 
   /**
@@ -45,8 +56,32 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Execute hold heading command with Driver Right Bumper
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, drivetrain));
+
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    driverRightBumper.whenPressed(heading::setNextHeadingToMaintainHeading);
+    // driverRightBumper.whenReleased(() -> heading.setMaintainHeading(null), heading);
+
+    // Enqueue headings for driver with A/B/X/Y
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    operatorA.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(90)));
+    operatorB.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(270)));
+    operatorX.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(45)));
+    operatorY.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(0)));
+
+    // Configure intake controls
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    operatorRightBumper.whenPressed(() -> intake.startIntake());
+    operatorRightBumper.whenReleased(() -> intake.stopIntake());
+
+    // Configure delivery stuff
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    operatorLeftBumper.whenPressed(() -> delivery.startDelivery());
+    operatorLeftBumper.whenReleased(() -> delivery.stopDelivery());
+
+    // Configure shooter controls
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     driverA.whenHeld(new StartShooter(shooter));
     //driverA.whenReleased(new StopShooter(shooter));
