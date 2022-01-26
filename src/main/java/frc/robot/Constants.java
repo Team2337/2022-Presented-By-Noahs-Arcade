@@ -120,8 +120,7 @@ public final class Constants {
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
   public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
-  // Other motor IDs
-  public static final int INTAKE_MOTOR_ID = 6;//TODO: get actual device id on robot
+  public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
 
   public static final int DELIVERY_MOTOR_ID = 7;
