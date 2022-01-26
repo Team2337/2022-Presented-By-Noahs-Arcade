@@ -31,16 +31,23 @@ public class PolarCoordinateTest {
 
   @Test
   public void testCartesianCoordinateTranslation() {
-    Translation2d ballOneTranslation = Constants.Auto.kBall1.toCartesianCoordinate();
+    // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
+    PolarCoordinate ballOne = new PolarCoordinate(
+      Constants.Auto.kBall1.getRadiusMeters(),
+      Constants.Auto.kBall1.getTheta(),
+      new Translation2d()
+    );
+    Translation2d coordinate = ballOne.toFieldCoordinate();
     // 153 inches to meters -> 3.8862
     // 9.75 degrees to radians -> 0.17016960206944712
     // x = 3.8862 * cos(0.17016960206944712) = 3.83007
     // y = 3.8862 * sin(0.17016960206944712) = 0.658126
+    // Note since it's a field coordinate, we swap our X and Y
     Assert.assertEquals(
-      3.83007, ballOneTranslation.getX(), 0.00001
+      3.83007, coordinate.getY(), 0.00001
     );
     Assert.assertEquals(
-      0.658126, ballOneTranslation.getY(), 0.00001
+      0.658126, coordinate.getX(), 0.00001
     );
   }
 
