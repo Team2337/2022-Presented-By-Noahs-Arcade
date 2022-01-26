@@ -103,4 +103,60 @@ public class PolarCoordinateTest {
     );
   }
 
+  @Test
+  public void testFieldCoordinateLeft() {
+    Translation2d fieldCenter = Constants.kHub;
+    PolarCoordinate leftCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(0));
+    Translation2d leftFieldCoordinate = leftCoordinate.toFieldCoordinate();
+    Assert.assertTrue(leftFieldCoordinate.getX() == fieldCenter.getX());
+    Assert.assertTrue(leftFieldCoordinate.getY() > fieldCenter.getY());
+  }
+
+  @Test
+  public void testFieldCoordinateForward() {
+    Translation2d fieldCenter = Constants.kHub;
+    PolarCoordinate forwardCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(90));
+    Translation2d forwardFieldCoordinate = forwardCoordinate.toFieldCoordinate();
+    Assert.assertTrue(forwardFieldCoordinate.getX() > fieldCenter.getX());
+    Assert.assertTrue(forwardFieldCoordinate.getY() == fieldCenter.getY());
+  }
+
+  @Test
+  public void testFieldCoordinateRight() {
+    Translation2d fieldCenter = Constants.kHub;
+    PolarCoordinate rightCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(180));
+    Translation2d rightFieldCoordinate = rightCoordinate.toFieldCoordinate();
+    Assert.assertTrue(rightFieldCoordinate.getX() == fieldCenter.getX());
+    Assert.assertTrue(rightFieldCoordinate.getY() < fieldCenter.getY());
+  }
+
+  @Test
+  public void testFieldCoordinateBackwards() {
+    Translation2d fieldCenter = Constants.kHub;
+    PolarCoordinate backwardsCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(270));
+    Translation2d backwardsFieldCoordinate = backwardsCoordinate.toFieldCoordinate();
+    Assert.assertTrue(backwardsFieldCoordinate.getX() < fieldCenter.getX());
+    Assert.assertTrue(backwardsFieldCoordinate.getY() == fieldCenter.getY());
+  }
+
+  @Test
+  public void testFieldCoordinateBackwardsInverse() {
+    Translation2d fieldCenter = Constants.kHub;
+    PolarCoordinate backwardsCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(-90));
+    Translation2d backwardsFieldCoordinate = backwardsCoordinate.toFieldCoordinate();
+    Assert.assertTrue(backwardsFieldCoordinate.getX() < fieldCenter.getX());
+    Assert.assertTrue(backwardsFieldCoordinate.getY() == fieldCenter.getY());
+  }
+
+  @Test
+  public void testFieldCoordinateInverse() {
+    // Going -90 degrees should be the same as going 270 degrees
+    PolarCoordinate coordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(270));
+    PolarCoordinate inverseCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(-90));
+    Translation2d fieldCoordinate = coordinate.toFieldCoordinate();
+    Translation2d inverseFieldCoordinate = inverseCoordinate.toFieldCoordinate();
+    Assert.assertTrue(fieldCoordinate.getX() == inverseFieldCoordinate.getX());
+    Assert.assertTrue(fieldCoordinate.getY() == inverseFieldCoordinate.getY());
+  }
+
 }
