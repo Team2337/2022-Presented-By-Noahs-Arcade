@@ -38,7 +38,7 @@ public class Robot extends LoggedRobot {
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     // Set a metadata value
-    logger.recordMetadata("ProjectName", "Delta2022");
+    logger.recordMetadata("ProjectName", "2022Relentless");
 
     // Log to USB stick (name will be selected automatically)
     // logger.addDataReceiver(new ByteLogReceiver("/media/sda1/"));
