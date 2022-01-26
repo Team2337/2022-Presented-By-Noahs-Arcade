@@ -3,6 +3,7 @@ package frc.robot.coordinates;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 
 public class PolarCoordinate {
 
@@ -32,18 +33,15 @@ public class PolarCoordinate {
   public Translation2d toFieldCoordinate() {
     // Hub is in the center of the field
     // Center of field is (27ft, 13.5ft)
-    Translation2d center = new Translation2d(
-      Units.feetToMeters(27),
-      Units.feetToMeters(13.5)
-    );
+    Translation2d fieldCenter = Constants.kHub;
     Translation2d translation = this.toCartesianCoordinate();
     /**
      * We need to add our CC's X (width) to our field Y (width)
      * and our CC's Y (height) to our field X (height).
      */
     return new Translation2d(
-      center.getX() + translation.getY(),
-      center.getY() + translation.getX()
+      fieldCenter.getX() + translation.getY(),
+      fieldCenter.getY() + translation.getX()
     );
   }
 

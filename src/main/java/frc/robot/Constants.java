@@ -3,6 +3,7 @@ package frc.robot;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.coordinates.PolarCoordinate;
 
@@ -36,6 +37,12 @@ public final class Constants {
 
   // Radius to the wheel modules can be thought of as a triangle - width and length are the two sides
   public static final double DRIVETRAIN_RADIUS_INCHES = Math.hypot(MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES, MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES);
+
+  // Location of the Hub on the field - the center of the field
+  public static final Translation2d kHub = new Translation2d(
+    Units.feetToMeters(27),
+    Units.feetToMeters(13.5)
+  );
 
   public static final class Auto {
     /**
