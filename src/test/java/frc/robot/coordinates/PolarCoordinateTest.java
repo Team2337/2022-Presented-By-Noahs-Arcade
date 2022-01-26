@@ -46,22 +46,20 @@ public class PolarCoordinateTest {
 
   @Test
   public void testFieldCoordinateZero() {
+    Translation2d fieldCenter = Constants.kHub;
     PolarCoordinate coord = new PolarCoordinate(0, new Rotation2d());
     Translation2d translation = coord.toFieldCoordinate();
     Assert.assertEquals(
-        translation.getX(), Units.feetToMeters(27), 0.00001
+        translation.getX(), fieldCenter.getX(), 0.00001
     );
     Assert.assertEquals(
-        translation.getY(), Units.feetToMeters(13.5), 0.00001
+        translation.getY(), fieldCenter.getY(), 0.00001
     );
   }
 
   @Test
   public void testFieldCoordinateBall1() {
-    Translation2d fieldCenter = new Translation2d(
-      Units.feetToMeters(27),
-      Units.feetToMeters(13.5)
-    );
+    Translation2d fieldCenter = Constants.kHub;
     Translation2d location = Constants.Auto.kBall1.toFieldCoordinate();
     // This is a rough test - we don't actually need to know that Ball 1
     // is right on the X, Y - the important part is that it's +, + to the
@@ -84,10 +82,7 @@ public class PolarCoordinateTest {
 
   @Test
   public void testFieldCoordinateBall5() {
-    Translation2d fieldCenter = new Translation2d(
-      Units.feetToMeters(27),
-      Units.feetToMeters(13.5)
-    );
+    Translation2d fieldCenter = Constants.kHub;
     Translation2d location = Constants.Auto.kBall5.toFieldCoordinate();
     // This is a rough test - we don't actually need to know that Ball 5
     // is right on the X, Y - the important part is that it's +, - to the
