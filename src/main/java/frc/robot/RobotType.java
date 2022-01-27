@@ -12,7 +12,7 @@ public class RobotType {
     PRACTICE
   }
 
-  private static String kPracticeBotMAC = "";
+  private static String kPracticeBotMAC = "00:80:2F:17:89:85";
 
   public static Type getRobotType() {
     String mac = getMACAddress();
