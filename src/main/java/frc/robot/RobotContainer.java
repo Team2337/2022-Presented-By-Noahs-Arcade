@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -29,7 +30,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
-    heading.setDefaultCommand(new OdometryHeadingCommand(drivetrain, heading));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -40,8 +40,11 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+    driverX.whenPressed(heading::enableMaintainHeading);
+    // Note: Point is currently set to 0, 0. Need to drop Translation2d for comp.
+    driverRightBumper.whileHeld(new OdometryHeadingCommand(new Translation2d(), drivetrain, heading));
   }
 
   public Command getAutonomousCommand() {
