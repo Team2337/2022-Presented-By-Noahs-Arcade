@@ -1,5 +1,7 @@
 package frc.robot.coordinates;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -164,6 +166,24 @@ public class PolarCoordinateTest {
     Translation2d inverseFieldCoordinate = inverseCoordinate.toFieldCoordinate();
     Assert.assertTrue(fieldCoordinate.getX() == inverseFieldCoordinate.getX());
     Assert.assertTrue(fieldCoordinate.getY() == inverseFieldCoordinate.getY());
+  }
+
+  @Test
+  public void testFromFieldCoordinate() {
+    PolarCoordinate ball = PolarCoordinate.fromFieldCoordinate(Constants.Auto.kBall1.toFieldCoordinate());
+    Assert.assertEquals(
+      ball.getRadiusMeters(),
+      Constants.Auto.kBall1.getRadiusMeters(),
+      0.0001
+    );
+    Assert.assertEquals(
+      ball.getTheta(),
+      Constants.Auto.kBall1.getTheta()
+    );
+    assertEquals(
+      ball.getReferencePoint(),
+      Constants.Auto.kBall1.getReferencePoint()
+    );
   }
 
 }

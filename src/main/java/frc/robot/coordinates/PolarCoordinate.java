@@ -38,6 +38,26 @@ public class PolarCoordinate {
     this.referencePoint = referencePoint;
   }
 
+  public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate) {
+    return fromFieldCoordinate(coordinate, Constants.kHub);
+  }
+
+  public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate, Translation2d referencePoint) {
+    // Our "x" is the "width" of our triangle. Field-wise, our y values will get us
+    // that width. Same is true for "y" and "height" + field X.
+    double x = coordinate.getY() - referencePoint.getY();
+    double y = coordinate.getX() - referencePoint.getX();
+    // Distance is our hypotenuse of our triangle
+    // Angle is our tangent of our two components
+    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    double angle = Math.atan2(y, x); // (-π, π] radians
+    return new PolarCoordinate(
+      distance,
+      new Rotation2d(angle),
+      referencePoint
+    );
+  }
+
   public double getRadiusMeters() {
     return radiusMeters;
   }
