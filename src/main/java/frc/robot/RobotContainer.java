@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,20 +38,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    // Execute hold heading command with Driver Right Bumper
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     driverRightBumper.whenPressed(heading::setNextHeadingToMaintainHeading);
-    // driverRightBumper.whenReleased(() -> heading.setMaintainHeading(null), heading);
-
-    // Enqueue headings for driver with A/B/X/Y
-    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
-    operatorA.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(90)));
-    operatorB.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(270)));
-    operatorX.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(45)));
-    operatorY.whenPressed(() -> heading.setNextHeading(Rotation2d.fromDegrees(0)));
   }
 
   public Command getAutonomousCommand() {
