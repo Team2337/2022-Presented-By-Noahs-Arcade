@@ -2,10 +2,10 @@ package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Utilities;
+import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
@@ -14,6 +14,7 @@ public class SwerveDriveCommand extends CommandBase {
 
   private final XboxController controller;
 
+  private final AutoDrive autoDrive;
   private final Heading heading;
   private final Drivetrain drivetrain;
 
@@ -22,8 +23,9 @@ public class SwerveDriveCommand extends CommandBase {
    *
    * @param subsystem - SwerveDrivetrain subsystem object
    */
-  public SwerveDriveCommand(XboxController controller, Heading heading, Drivetrain drivetrain) {
+  public SwerveDriveCommand(XboxController controller, AutoDrive autoDrive, Heading heading, Drivetrain drivetrain) {
     this.controller = controller;
+    this.autoDrive = autoDrive;
     this.heading = heading;
     this.drivetrain = drivetrain;
 
@@ -41,6 +43,13 @@ public class SwerveDriveCommand extends CommandBase {
     // controller to let the driver rotate freely.
     if (rotation != 0 && heading.isEnabled()) {
       heading.disableMaintainHeading();
+    }
+
+    AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);
+    if (autoDriveState != null) {
+      forward = autoDriveState.forward;
+      strafe = autoDriveState.strafe;
+      isFieldOriented = autoDriveState.isFieldOriented;
     }
 
     /**

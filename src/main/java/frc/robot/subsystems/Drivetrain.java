@@ -133,6 +133,10 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return chassisSpeeds;
+  }
+
   public SwerveDriveKinematics getKinematics() {
     return kinematics;
   }
