@@ -492,7 +492,12 @@ public final class Mk4SwerveModuleHelper {
         L1(SdsModuleConfigurations.MK4_L1),
         L2(SdsModuleConfigurations.MK4_L2),
         L3(SdsModuleConfigurations.MK4_L3),
-        L4(SdsModuleConfigurations.MK4_L4);
+        L4(SdsModuleConfigurations.MK4_L4),
+        L1i(SdsModuleConfigurations.MK4i_L1),
+        L2i(SdsModuleConfigurations.MK4i_L2),
+        L3i(SdsModuleConfigurations.MK4i_L3),
+        L4i(SdsModuleConfigurations.MK4i_L4);
+        
 
         private final ModuleConfiguration configuration;
 

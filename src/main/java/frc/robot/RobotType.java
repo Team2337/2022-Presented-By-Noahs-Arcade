@@ -9,15 +9,21 @@ public class RobotType {
 
   public enum Type {
     COMPETITION,
+    SKILLSBOT,
     PRACTICE
   }
 
   private static String kPracticeBotMAC = "00:80:2F:17:89:85";
 
+  //TODO:  Need accurate MAC address from skillsbot
+  private static String kSkillsBotMAC = "00:80:2F:00:00:00";
+
   public static Type getRobotType() {
     String mac = getMACAddress();
     if (mac != null && mac.equals(kPracticeBotMAC)) {
       return Type.PRACTICE;
+    } else if (mac != null && mac.equals(kSkillsBotMAC)) {
+      return Type.SKILLSBOT;
     }
     return Type.COMPETITION;
   }
