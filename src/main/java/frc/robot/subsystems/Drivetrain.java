@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotType;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -140,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
 
     SmartDashboard.putData("Odometry", field);
+    SmartDashboard.putString("Type", RobotType.getRobotType().toString());
   }
 
   public void resetPosition(Pose2d pose) {
