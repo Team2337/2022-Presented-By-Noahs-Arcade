@@ -16,7 +16,7 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public final static boolean isSkillsBot = false;
+  public final static boolean isSkillsBot = true;
   /**
    * 17x17in robot - since the values are the same, we'll only define one value
    * as opposed to having a length and a width. Keep in mind - this will not work
@@ -116,23 +116,23 @@ public final class Constants {
   public static final int MODULE0_DRIVE_MOTOR_ID = isSkillsBot ? 0 : 18;
   public static final int MODULE0_ANGLE_MOTOR_ID = isSkillsBot ? 4 : 19;
   public static final int MODULE0_ANGLE_CANCODER_ID = 1;
-  public static final double MODULE0_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(50.701904296875) : -Math.toRadians(131.039429);
+  public static final double MODULE0_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(50.701904296875) : -Math.toRadians(130.599976);
 
 
   public static final int MODULE1_DRIVE_MOTOR_ID = isSkillsBot ? 1 : 1;
   public static final int MODULE1_ANGLE_MOTOR_ID = isSkillsBot ? 5 : 2;
   public static final int MODULE1_ANGLE_CANCODER_ID = 2;
-  public static final double MODULE1_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(128.58123779296875) : -Math.toRadians(175.685120);
+  public static final double MODULE1_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(128.58123779296875) : -Math.toRadians(175.163269);
 
   public static final int MODULE2_DRIVE_MOTOR_ID = isSkillsBot ? 14 : 8;
   public static final int MODULE2_ANGLE_MOTOR_ID = isSkillsBot ? 10 : 9;
   public static final int MODULE2_ANGLE_CANCODER_ID = 3;
-  public static final double MODULE2_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(346.63238525390625) : -Math.toRadians(278.695679);
+  public static final double MODULE2_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(346.63238525390625) : -Math.toRadians(278.338623);
 
   public static final int MODULE3_DRIVE_MOTOR_ID = isSkillsBot ? 15 : 10;
   public static final int MODULE3_ANGLE_MOTOR_ID = isSkillsBot ? 11 : 11;
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
-  public static final double MODULE3_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(286.42730712890625) : -Math.toRadians(355.682373);
+  public static final double MODULE3_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(286.42730712890625) : -Math.toRadians(355.860901);
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
