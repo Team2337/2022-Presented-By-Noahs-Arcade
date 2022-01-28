@@ -100,6 +100,4 @@ public final class Constants {
     UNKNOWN,
     NONE
   }
-
-  public static int COLOR_SENSOR_PROXIMITY = 300;
 }

@@ -7,7 +7,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 
 /**
@@ -18,6 +17,8 @@ import frc.robot.Constants.BallColor;
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
 public class ColorSensor extends SubsystemBase {
+
+  private final int COLOR_SENSOR_PROXIMITY = 300; //TODO: test number in delivery, see if there are actual units here
 
   // The sensor
   private final ColorSensorV3 sensor;
@@ -51,7 +52,7 @@ public class ColorSensor extends SubsystemBase {
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
     // Check match
-    if (sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY) {
+    if (sensor.getProximity() < COLOR_SENSOR_PROXIMITY) {
       // If not close enough, there is no ball
       currentColor = BallColor.NONE;
     } else if (match.color == matchRed) {
@@ -78,7 +79,7 @@ public class ColorSensor extends SubsystemBase {
     }, null);
   }
 
-  public BallColor getColor(){
+  public BallColor getColor() {
     return currentColor;
   }
 
