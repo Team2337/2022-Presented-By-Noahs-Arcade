@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Colors;
+import frc.robot.Constants.BallColor;
 
 /**
  * Subsystem for the REV Robotics Color Sensor V3. Plugs in to the I2C port.
@@ -28,7 +28,7 @@ public class ColorSensor extends SubsystemBase {
   private final Color matchBlue = new Color(0.1078, 0.2608, 0.3921);
 
   // Other variables
-  private Colors currentColor = Colors.None;
+  private BallColor currentColor = BallColor.NONE;
 
   /**
    * Initializes a REV Robotics Color Sensor v3
@@ -53,16 +53,16 @@ public class ColorSensor extends SubsystemBase {
     // Check match
     if (sensor.getProximity() < Constants.COLOR_SENSOR_PROXIMITY) {
       // If not close enough, there is no ball
-      currentColor = Colors.None;
+      currentColor = BallColor.NONE;
     } else if (match.color == matchRed) {
       // Red ball
-      currentColor = Colors.Red;
+      currentColor = BallColor.RED;
     } else if (match.color == matchBlue) {
       // Blue ball
-      currentColor = Colors.Blue;
+      currentColor = BallColor.BLUE;
     } else {
       // No ball
-      currentColor = Colors.None;
+      currentColor = BallColor.NONE;
     }
   }
 
@@ -71,14 +71,14 @@ public class ColorSensor extends SubsystemBase {
     builder.setSmartDashboardType("ColorSensor");
     builder.addStringProperty("Match", () -> {
       switch(getColor()){
-        case Red:    return "Red";
-        case Blue:   return "Blue";
+        case RED:    return "Red";
+        case BLUE:   return "Blue";
         default:     return "None";
       }
     }, null);
   }
 
-  public Colors getColor(){
+  public BallColor getColor(){
     return currentColor;
   }
 

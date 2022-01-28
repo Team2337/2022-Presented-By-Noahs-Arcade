@@ -94,11 +94,11 @@ public final class Constants {
   public static final double DELIVERY_SPEED = 0.5;
 
   // Color stuff
-  public static enum Colors {
-    Red,
-    Blue,
-    Unknown,
-    None
+  public static enum BallColor {
+    RED,
+    BLUE,
+    UNKNOWN,
+    NONE
   }
 
   public static int COLOR_SENSOR_PROXIMITY = 300;
