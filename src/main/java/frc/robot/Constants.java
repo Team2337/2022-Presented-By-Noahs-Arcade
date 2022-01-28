@@ -16,24 +16,30 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public final static boolean isSkillsBot = false;
   /**
    * 17x17in robot - since the values are the same, we'll only define one value
    * as opposed to having a length and a width. Keep in mind - this will not work
    * in the future if the robot is not a perfect square.
    */
-  private static final double DRIVETRAIN_WIDTH_INCHES = 17;
-  public static final double DRIVETRAIN_LENGTH_INCHES = 17;
+  //private static final double DRIVETRAIN_WIDTH_INCHES = 17;
+  //public static final double DRIVETRAIN_LENGTH_INCHES = 17;
 
   // The module inset from the outside edges of the robot
-  private static final double MODULE_INSET_WIDTH_INCHES = 3.25;
-  private static final double MODULE_INSET_HEIGHT_INCHES = 3.25;
+  //private static final double MODULE_INSET_WIDTH_INCHES = 3.25;
+  //private static final double MODULE_INSET_HEIGHT_INCHES = 3.25;
 
-  private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = DRIVETRAIN_WIDTH_INCHES - (MODULE_INSET_WIDTH_INCHES * 2);
-  private static final double DRIVETRAIN_WHEEL_BASE_INCHES = DRIVETRAIN_LENGTH_INCHES - (MODULE_INSET_HEIGHT_INCHES * 2);
+  //private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = DRIVETRAIN_WIDTH_INCHES - (MODULE_INSET_WIDTH_INCHES * 2);
+  //private static final double DRIVETRAIN_WHEEL_BASE_INCHES = DRIVETRAIN_LENGTH_INCHES - (MODULE_INSET_HEIGHT_INCHES * 2);
+
+    
+  private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = isSkillsBot ? 17 : 18.75;
+  private static final double DRIVETRAIN_WHEEL_BASE_INCHES = isSkillsBot ? 17 : 18.75;
 
   // /2 since we're measuring from the center - halfway
   private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
   private static final double MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES = DRIVETRAIN_WHEEL_BASE_INCHES / 2;
+
 
   // Radius to the wheel modules can be thought of as a triangle - width and length are the two sides
   public static final double DRIVETRAIN_RADIUS_INCHES = Math.hypot(MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES, MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES);
@@ -107,25 +113,26 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
-  public static final int MODULE0_DRIVE_MOTOR_ID = 0;
-  public static final int MODULE0_ANGLE_MOTOR_ID = 4;
+  public static final int MODULE0_DRIVE_MOTOR_ID = isSkillsBot ? 0 : 18;
+  public static final int MODULE0_ANGLE_MOTOR_ID = isSkillsBot ? 4 : 19;
   public static final int MODULE0_ANGLE_CANCODER_ID = 1;
-  public static final double MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
+  public static final double MODULE0_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(50.701904296875) : -Math.toRadians(131.039429);
 
-  public static final int MODULE1_DRIVE_MOTOR_ID = 1;
-  public static final int MODULE1_ANGLE_MOTOR_ID = 5;
+
+  public static final int MODULE1_DRIVE_MOTOR_ID = isSkillsBot ? 1 : 1;
+  public static final int MODULE1_ANGLE_MOTOR_ID = isSkillsBot ? 5 : 2;
   public static final int MODULE1_ANGLE_CANCODER_ID = 2;
-  public static final double MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
+  public static final double MODULE1_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(128.58123779296875) : -Math.toRadians(175.685120);
 
-  public static final int MODULE2_DRIVE_MOTOR_ID = 14;
-  public static final int MODULE2_ANGLE_MOTOR_ID = 10;
+  public static final int MODULE2_DRIVE_MOTOR_ID = isSkillsBot ? 14 : 8;
+  public static final int MODULE2_ANGLE_MOTOR_ID = isSkillsBot ? 10 : 9;
   public static final int MODULE2_ANGLE_CANCODER_ID = 3;
-  public static final double MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
+  public static final double MODULE2_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(346.63238525390625) : -Math.toRadians(278.695679);
 
-  public static final int MODULE3_DRIVE_MOTOR_ID = 15;
-  public static final int MODULE3_ANGLE_MOTOR_ID = 11;
+  public static final int MODULE3_DRIVE_MOTOR_ID = isSkillsBot ? 15 : 10;
+  public static final int MODULE3_ANGLE_MOTOR_ID = isSkillsBot ? 11 : 11;
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
-  public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
+  public static final double MODULE3_ANGLE_OFFSET = isSkillsBot ? -Math.toRadians(286.42730712890625) : -Math.toRadians(355.682373);
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
