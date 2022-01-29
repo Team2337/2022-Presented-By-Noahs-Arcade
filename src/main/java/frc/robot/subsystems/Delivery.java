@@ -2,10 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,7 +29,7 @@ public class Delivery extends SubsystemBase {
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
 
-    ShuffleboardLayout deliveryWidget = deliveryTab.getLayout("Delivery Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
+    ShuffleboardLayout deliveryWidget = deliveryTab.getLayout("Delivery Info", BuiltInLayouts.kList).withSize(4,8).withPosition(0, 0);
     deliveryWidget.addNumber("Speed", this::getDeliverySpeed);
     deliveryWidget.addNumber("Temp", this::getDeliveryTemperature);
   }
