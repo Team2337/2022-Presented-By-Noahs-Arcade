@@ -5,6 +5,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class RobotType {
 
   public enum Type {
@@ -36,6 +38,9 @@ public class RobotType {
       for (int i = 0; i < address.length; i++) {
         sb.append(String.format("%02X%s", address[i], (i < address.length - 1) ? ":" : ""));
       }
+
+      // Remove once validated.
+      SmartDashboard.putString("Mac-Address", sb.toString());
       return sb.toString();
     } catch (UnknownHostException | SocketException e) {
       e.printStackTrace();
