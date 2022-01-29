@@ -14,54 +14,54 @@ public class UtilitiesTest {
   public void testConvertRotationToRelativeRotation() {
     // Zero
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      0, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(0)
-      ).getDegrees(), 0, 0.0);
+      ).getDegrees(), 0.0);
     // Basic
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      90, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(90)
-      ).getDegrees(), 90, 0.0);
+      ).getDegrees(), 0.0);
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      -90, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(-90)
-      ).getDegrees(), -90, 0.0);
+      ).getDegrees(), 0.0);
     // Bounds testing (no wrap)
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      180, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(180)
-      ).getDegrees(), 180, 0.0);
+      ).getDegrees(), 0.0);
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      -180, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(-180)
-      ).getDegrees(), -180, 0.0);
+      ).getDegrees(), 0.0);
     // Wrap testing (basic)
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      -179, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(181)
-      ).getDegrees(), -179, 0.0);
+      ).getDegrees(), 0.0);
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      179, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(-181)
-      ).getDegrees(), 179, 0.0);
+      ).getDegrees(), 0.0);
     // Bounds testing (wrap)
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      0, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(360)
-      ).getDegrees(), 0, 0.0);
+      ).getDegrees(), 0.0);
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      0, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(-360)
-      ).getDegrees(), 0, 0.0);
+      ).getDegrees(), 0.0);
     // Wrap testing (advanced)
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      45, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(405)
-      ).getDegrees(), 45, 0.0);
+      ).getDegrees(), 0.0);
     Assert.assertEquals(
-      Utilities.convertRotationToRelativeRotation(
+      -45, Utilities.convertRotationToRelativeRotation(
         Rotation2d.fromDegrees(-405)
-      ).getDegrees(), -45, 0.0);
+      ).getDegrees(), 0.0);
   }
 
 }

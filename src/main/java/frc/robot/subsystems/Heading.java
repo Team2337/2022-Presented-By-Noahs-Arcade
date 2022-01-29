@@ -19,6 +19,18 @@ import frc.robot.Utilities;
 public class Heading extends SubsystemBase {
 
   /**
+   * Whether or not the Heading subsystem is enabled. Being "enabled" means
+   * providing a heading to maintain if a maintainHeading is set + returning
+   * some value from the calculateRotation method. If the system is disabled,
+   * shouldMaintainHeading will return false even when a maintainHeading is
+   * set, and calculateRotation will always return 0.0
+   *
+   * NOTE: Currently disabled by default as not to cause confusion when
+   * we're testing things on the robot.
+   */
+  private boolean enabled = false;
+
+  /**
    * Supplier to provide the gyro angle of the robot. Should come from
    * the gyro on the Drivetrain. Used to calculate our maintain heading calculation.
    */
@@ -55,6 +67,23 @@ public class Heading extends SubsystemBase {
     rotationController.setTolerance(1.0);
   }
 
+  public void enableMaintainHeading() {
+    // If we're going from disabled -> enabled, reset our rotation controller
+    // to prevent large jumps.
+    if (!this.enabled) {
+      resetRotationController();
+    }
+    this.enabled = true;
+  }
+
+  public void disableMaintainHeading() {
+    this.enabled = false;
+  }
+
+  public boolean isEnabled() {
+    return this.enabled;
+  }
+
   /**
    * Convert from the gyro angle supplier to a heading rotation value.
    * Gyro angles are reported as CCW rotations being a positive change,
@@ -89,7 +118,7 @@ public class Heading extends SubsystemBase {
   }
 
   public boolean shouldMaintainHeading() {
-    return maintainHeading != null;
+    return this.enabled && maintainHeading != null;
   }
 
   /**
@@ -125,6 +154,11 @@ public class Heading extends SubsystemBase {
    * we would expect from a joystick (ex: [-1, 1]).
    */
   public double calculateRotation() {
+    // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
+    if (!this.enabled) {
+      return 0.0;
+    }
+
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
       return 0.0;
