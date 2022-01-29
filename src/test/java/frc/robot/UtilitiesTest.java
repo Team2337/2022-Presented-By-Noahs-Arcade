@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 @RunWith(JUnit4.class)
 public class UtilitiesTest {
-  
+
   @Test
   public void testConvertRotationToRelativeRotation() {
     // Zero
