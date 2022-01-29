@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutoDrivableCommand;
 
@@ -43,6 +45,10 @@ public class AutoDrive extends SubsystemBase {
    */
   private AutoDrivableCommand getAutoDrivableCommand() {
     Command command = getCurrentCommand();
+    if (command != null) {
+      SmartDashboard.putData("AutoDrive Current Command", (CommandBase) command);
+      SmartDashboard.putBoolean("Is AutoDrivableCommand", command instanceof AutoDrivableCommand);
+    }
     if (command != null && command instanceof AutoDrivableCommand) {
       return (AutoDrivableCommand) command;
     }

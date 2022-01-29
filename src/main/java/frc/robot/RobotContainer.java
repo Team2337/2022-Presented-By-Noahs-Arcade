@@ -41,7 +41,7 @@ public class RobotContainer {
 
   public void resetRobot() {
     // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
-    drivetrain.resetPosition(new Pose2d(Units.feetToMeters(-7), 0, new Rotation2d()));
+    drivetrain.resetPosition(new Pose2d(Units.feetToMeters(20), Units.feetToMeters(13.5), new Rotation2d()));
     // drivetrain.resetOdometry();
     pigeon.setYaw(0, 250);
   }
@@ -49,11 +49,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
+    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
     // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
     // Maintain 1 ft distance in front of target
     // TODO: Remove some of these values at some point after testing
-    rightTrigger.whileHeld(new DistanceToTargetCommand(new Translation2d(), Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading));
+    rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(3), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {
