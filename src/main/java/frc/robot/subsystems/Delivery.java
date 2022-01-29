@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,9 +16,19 @@ import frc.robot.Constants.BallColor;
  */
 public class Delivery extends SubsystemBase {
 
+  // Motor
   private final TalonFX motor;
-  private final ColorSensor leftSensor;
-  private final ColorSensor rightSensor;
+
+  // Color sensors
+  public final ColorSensor leftSensor = new ColorSensor(I2C.Port.kOnboard);
+  public final ColorSensor rightSensor = new ColorSensor(I2C.Port.kMXP);
+
+  // Golf ball sensors
+  // TODO: figure out actual slots in DIO for these
+  public final DigitalInput bottomBeam = new DigitalInput(0);
+  public final DigitalInput topLeftBeam = new DigitalInput(1);
+  public final DigitalInput topRightBeam = new DigitalInput(2);
+  public final DigitalInput outBeam = new DigitalInput(3);
 
   /**
    * Stores the currently held colors in this order:
@@ -27,10 +38,9 @@ public class Delivery extends SubsystemBase {
    * <li><code>[2]</code>: Top
    * <li><code>[3]</code>: Left
    */
-  private final BallColor[] storedColors;
+  public final BallColor[] storedColors = new BallColor[4];
 
-  private int turnsToMake = 0;
-  private boolean motorsActive = false;//TODO: do we need this?
+  public int balls = 0;
 
   /**
    * Initializes the Delivery subsystem with its two color sensors
@@ -44,13 +54,6 @@ public class Delivery extends SubsystemBase {
     motor.setInverted(false); //TODO: make sure this is correct
     motor.setNeutralMode(NeutralMode.Brake);
 
-    // Initialize color sensor
-    this.leftSensor = new ColorSensor(I2C.Port.kOnboard);
-    this.rightSensor = new ColorSensor(I2C.Port.kMXP);
-
-    // Initialize stored objects array
-    storedColors = new BallColor[4];
-
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
 
@@ -58,10 +61,10 @@ public class Delivery extends SubsystemBase {
       .withSize(6, 8)
       .withPosition(4, 0);
     storedLayout.addStringArray("title", () -> new String[]{
-      "Bottom: " + storedColors[0].toString(),
-      "Right: "  + storedColors[1].toString(),
-      "Top: "    + storedColors[2].toString(),
-      "Left: "   + storedColors[3].toString()
+      "Bottom: " + String.valueOf(storedColors[0]),
+      "Right: "  + String.valueOf(storedColors[1]),
+      "Top: "    + String.valueOf(storedColors[2]),
+      "Left: "   + String.valueOf(storedColors[3])
     });
 
   }
@@ -70,19 +73,10 @@ public class Delivery extends SubsystemBase {
   public void periodic() {}
 
   /**
-   * Starts turning the delivery mechanism right
+   * Starts turning the delivery mechanism
    */
-  public void turnDeliveryRight() {
-    motor.set(ControlMode.PercentOutput, Constants.DELIVERY_SPEED);
-    motorsActive = true;
-  }
-
-  /**
-   * Starts turning the delivery mechanism left
-   */
-  public void turnDeliveryLeft(){
-    motor.set(ControlMode.PercentOutput, -Constants.DELIVERY_SPEED);
-    motorsActive = true;
+  public void startDelivery(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
   }
   
   /**
@@ -90,7 +84,6 @@ public class Delivery extends SubsystemBase {
    */
   public void stopDelivery() {
     motor.set(ControlMode.PercentOutput, 0.0);
-    motorsActive = false;
   }
 
   // 

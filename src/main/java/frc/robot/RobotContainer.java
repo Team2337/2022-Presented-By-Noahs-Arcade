@@ -17,6 +17,8 @@ public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
 
+  public final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
+
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
   // private final Climber climber = new Climber();
@@ -45,6 +47,8 @@ public class RobotContainer {
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(() -> intake.startIntake());
     operatorRightBumper.whenReleased(() -> intake.stopIntake());
+
+    // Configure buttons/switches on operator station
   }
 
   public Command getAutonomousCommand() {
