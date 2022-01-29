@@ -92,14 +92,22 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
       -maxSpeed,
       maxSpeed
     );
-    // Face the robot TOWARDS the point we're heading towards
+
+    SmartDashboard.putNumber("Initial X", pose.getX());
+    SmartDashboard.putNumber("Initial Y", pose.getY());
     double x = pose.getX() - targetMeters.getX();
     double y = pose.getY() - targetMeters.getY();
-    double angle = Math.atan2(y, x); // (-π, π] radians
-    // The angle is the angle outward from our center point. In order to face our center
-    // point, we need to rotate our angle by 180 degrees.
-    Rotation2d desiredRotation = Rotation2d.fromDegrees(Units.radiansToDegrees(angle) - 180);
-    SmartDashboard.putNumber("Desired Rotation", desiredRotation.getDegrees());
+    // pow(tan(x, y), -1)
+    double towardsCenterDegrees = Math.atan2(y, x);
+    SmartDashboard.putNumber("Towards Center Degrees (Tangent)", Units.radiansToDegrees(towardsCenterDegrees));
+    SmartDashboard.putNumber("X", x);
+    SmartDashboard.putNumber("Y", y);
+    // Rotation2d desiredRotation =
+    // Rotation2d.fromDegrees((drivetrain.getGyroscopeRotation().getDegrees() +
+    // -Units.radiansToDegrees(towardsCenterDegrees)));
+    Rotation2d desiredRotation = Rotation2d.fromDegrees(Units.radiansToDegrees(towardsCenterDegrees) - 180);
+    // Rotation2d desiredRotation = Rotation2d.fromDegrees(0);
+    SmartDashboard.putNumber("Odometry Desired Rotation", desiredRotation.getDegrees());
     heading.setMaintainHeading(desiredRotation);
 
     // heading.setMaintainHeading(Rotation2d.fromDegrees(-1 * (90 + robotCoordinate.getTheta().getDegrees())));
@@ -110,7 +118,7 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
     // Driver can strafe during this command. Forward should be forward to the robot.
     // Note that this command assumes we're facing the target (use with Heading)
     return new AutoDrive.State(
-      -output,
+      0.0,
       strafe,
       true
     );
