@@ -85,7 +85,7 @@ public class RobotContainer {
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     driverA.whenHeld(new StartShooter(shooter));
     //driverA.whenReleased(new StopShooter(shooter));
-    //TODO: This is more of a when pressed not a while held, think through when released functionality
+    
   }
 
   /**

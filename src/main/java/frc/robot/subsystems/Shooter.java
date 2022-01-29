@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
     private double kP = 1.15;
     private double kI = 0;
     private double kD = 0.0002;
-    private double kF = 0;
+    private double kF = 0.1079;
 
     private double topSpeed = 0;
     private double bottomSpeed = 0;
@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
     private double prevBottomSpeed = 0;
     private int topCounter = 0;
     private int bottomCounter = 0;
-    private double motorShutdownTemp = 55;
+    private double motorShutdownTemp = 70;
     public boolean motorOverTemp = false;
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
@@ -73,12 +73,12 @@ public class Shooter extends SubsystemBase {
      public NetworkTableEntry topShooter = speeds
         .add("Top Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 100))
+        .withProperties(Map.of("min", 0, "max", 50))
         .getEntry();
     public NetworkTableEntry bottomShooter = speeds
         .add("Bottom Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 100))
+        .withProperties(Map.of("min", 0, "max", 50))
         .getEntry();
 
         ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
@@ -156,14 +156,18 @@ public class Shooter extends SubsystemBase {
         temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
         speed.addNumber("Top Shooter RPM", () -> getTopRPM());
         speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
+        speed.addNumber("Top Shooter Wheel Speed(ft/s)", () -> getTopWheelSpeed());
+        speed.addNumber("Bottom Shooter Wheel Speed(ft/s)", () -> getBottomWheelSpeed());
+
         
     }
     
     
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Top Shooter Velocity", topShoot.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("Bottom Shooter Velocity", bottomShoot.getSelectedSensorVelocity());
+
+        SmartDashboard.putNumber("Top Shooter Velocity", getTopRPM());
+        SmartDashboard.putNumber("Bottom Shooter Velocity", getBottomRPM());
         SmartDashboard.putNumber("top shooter temp", topShoot.getTemperature());
         SmartDashboard.putNumber("bottom shooter temp", bottomShoot.getTemperature());
         SmartDashboard.putBoolean("Shooter Motor Over Temp", motorOverTemp);
@@ -247,25 +251,6 @@ public class Shooter extends SubsystemBase {
     return bottomShoot.getTemperature() > motorShutdownTemp;
 }
 
- public void setTopShooterSpeed(double speed){
-    // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
-    double rps = 6380/60; // Max revolutions per second
-    double tps = rps*2048; // Max encoder ticks per second
-    double maxSpeed = tps/10; // This converts to motor ticks. 
-    double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-    topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed));
- }
-
- public void setBottomShooterSpeed(double speed){
-    // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
-    double rps = 6380/60; // Max revolutions per second
-    double tps = rps*2048; // Max encoder ticks per second
-    double maxSpeed = tps/10; // This converts to motor ticks. 
-    double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-    bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed));
-
-   
-}
  public double getTopRPM() {
     // Encoder ticks per 100 ms
     double speed = topShoot.getSelectedSensorVelocity();
@@ -287,5 +272,52 @@ public class Shooter extends SubsystemBase {
     // Convert rps into revolutions per minute
     double rpm = rps * 60;
     return rpm;
-  }
+}
+
+  public double getTopWheelSpeed(){
+      double wheelDiameter = 4; //This is in inches.
+      double rpm = getTopRPM();
+      double wheelRpm = rpm * (16/24); //16/24 is the gear ratio (16 is the input gear of the falcons, 24 is the output gear of the wheel)
+      double wheelSpeed = ((2*Math.PI*wheelRpm)/60)*((wheelDiameter/12)/2); //This turns wheel RPM's into ft/s
+      return wheelSpeed;
+    }
+  public double getBottomWheelSpeed(){
+      double wheelDiameter = 4; //This is in inches.
+      double rpm = getBottomRPM();
+      double wheelRpm = rpm * (16/24); //16/24 is the gear ratio (16 is the input gear of the falcons, 24 is the output gear of the wheel)
+      double wheelSpeed = ((2*Math.PI*wheelRpm)/60)*((wheelDiameter/12)/2); //This turns wheel RPM's into ft/s
+      return wheelSpeed;
+    }
+    public void setTopShooterSpeed(double speed){
+        double wheel = speed/((4/12)/2);
+        double wheelRpm = (wheel/60)*(2*Math.PI);
+        double rpm = wheelRpm / (16/24);
+        double rps = rpm/60;
+        double tps = rps*2048;
+        double encoderTicks = tps / 10;
+        topShoot.set(ControlMode.Velocity, (encoderTicks));
+        /* Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        double rps = 6380/60; // Max revolutions per second
+        double tps = rps*2048; // Max encoder ticks per second
+        double maxSpeed = tps/10; // This converts to motor ticks. 
+        double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
+        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        
+     }
+     public void setBottomShooterSpeed(double speed){
+        double wheel = speed/((4/12)/2);
+        double wheelRpm = (wheel/60)*(2*Math.PI);
+        double rpm = wheelRpm / (16/24);
+        double rps = rpm/60;
+        double tps = rps*2048;
+        double encoderTicks = tps / 10;
+        bottomShoot.set(ControlMode.Velocity, (encoderTicks));
+        /* Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        double rps = 6380/60; // Max revolutions per second
+        double tps = rps*2048; // Max encoder ticks per second
+        double maxSpeed = tps/10; // This converts to motor ticks. 
+        double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
+        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        
+     }
 }
