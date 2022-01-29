@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Colors;
+import frc.robot.Constants.BallColor;
 
 /**
  * Subsystem for the delivery mechanism
@@ -27,7 +27,7 @@ public class Delivery extends SubsystemBase {
    * <li><code>[2]</code>: Top
    * <li><code>[3]</code>: Left
    */
-  private final Colors[] storedColors;
+  private final BallColor[] storedColors;
 
   private int turnsToMake = 0;
   private boolean motorsActive = false;//TODO: do we need this?
@@ -49,9 +49,7 @@ public class Delivery extends SubsystemBase {
     this.rightSensor = new ColorSensor(I2C.Port.kMXP);
 
     // Initialize stored objects array
-    storedColors = new Colors[4];
-    for(int i = 0; i < 4; i++)
-      storedColors[i] = Colors.None;
+    storedColors = new BallColor[4];
 
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
