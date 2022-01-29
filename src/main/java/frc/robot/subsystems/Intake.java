@@ -50,10 +50,11 @@ public class Intake extends SubsystemBase {
   }
   
   /**
-   * Stops the intake
+   * Reverses the intake. This is the state it will be in unless we are intaking something.
+   * It is equivalent to an idle state.
    */
-  public void stopIntake() {
-    motor.set(ControlMode.PercentOutput, 0.0);
+  public void idleIntake() {
+    motor.set(ControlMode.PercentOutput, -0.2);
   }
 
   /**

@@ -139,4 +139,9 @@ public final class Constants {
     BLUE,
     UNKNOWN
   }
+
+  public static enum Directions {
+    CLOCKWISE,
+    COUNTER_CLOCKWISE
+  }
 }

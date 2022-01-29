@@ -6,9 +6,12 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.BallColor;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
@@ -28,8 +31,17 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
+  private final DeliveryBigBrother bigBrother = new DeliveryBigBrother(delivery, intake);
+
+  public static BallColor allianceColor;
+  public static BallColor opposingColor;
+
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+
+    // Set alliance color
+    allianceColor = DriverStation.getAlliance() == Alliance.Red ? BallColor.RED : BallColor.BLUE;
+    opposingColor = allianceColor == BallColor.RED ? BallColor.BLUE : BallColor.RED;
 
     // Configure the button bindings
     configureButtonBindings();
@@ -46,7 +58,7 @@ public class RobotContainer {
     // Configure intake controls
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(() -> intake.startIntake());
-    operatorRightBumper.whenReleased(() -> intake.stopIntake());
+    operatorRightBumper.whenReleased(() -> intake.idleIntake());
 
     // Configure buttons/switches on operator station
   }
