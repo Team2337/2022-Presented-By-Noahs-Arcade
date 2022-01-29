@@ -35,6 +35,13 @@ public class SwerveDriveCommand extends CommandBase {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
+    boolean isFieldOriented = !controller.getLeftBumper();
+
+    // If a driver-initiated rotationis provided, disable our rotation
+    // controller to let the driver rotate freely.
+    if (rotation != 0 && heading.isEnabled()) {
+      heading.disableMaintainHeading();
+    }
 
     /**
      * Calculate a rotation value for the robot to achieve it's
@@ -42,19 +49,12 @@ public class SwerveDriveCommand extends CommandBase {
      * Will not be calculated if the rotation joystick has an input.
      */
     if (heading.shouldMaintainHeading()) {
-      if (rotation == 0) {
-        rotation = heading.calculateRotation();
-      } else {
-        heading.resetRotationController();
-      }
+      rotation = heading.calculateRotation();
     }
-
-    SmartDashboard.putNumber("Rotation", rotation);
 
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double vyMetersPerSecond = strafe * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
     double omegaRadiansPerSecond = rotation * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    boolean isFieldOriented = !controller.getLeftBumper();
 
     if (isFieldOriented) {
       drivetrain.drive(
