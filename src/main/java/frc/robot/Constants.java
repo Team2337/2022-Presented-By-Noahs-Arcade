@@ -17,7 +17,28 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
+public int MODULE0_DRIVE_MOTOR_ID;
+public Constants() {
+  switch (RobotType.getRobotType()) {
+    case PRACTICE: 
+    MODULE0_DRIVE_MOTOR_ID = 18;
+    break;
+    case SKILLSBOT:
+    MODULE0_DRIVE_MOTOR_ID = 10; 
+    break;
+    case COMPETITION:
+    MODULE0_DRIVE_MOTOR_ID = 18;
+    break;
+    default:
+  }
+}
+private static Constants instance;
+public static Constants getInstance() {
+  if (instance == null) {
+    instance = new Constants();
+  }
+  return instance;
+}
  
 /**
  * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
@@ -25,8 +46,8 @@ public final class Constants {
  * Wheel base is fromt to back.
  */
     
-  private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = RobotType.getRobotType() == Type.PRACTICE ? 17 : 18.75;
-  private static final double DRIVETRAIN_WHEEL_BASE_INCHES = RobotType.getRobotType() == Type.PRACTICE ? 17 : 18.75;
+  private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = RobotType.getRobotType() == Type.SKILLSBOT ? 17 : 18.75;
+  private static final double DRIVETRAIN_WHEEL_BASE_INCHES = RobotType.getRobotType() == Type.SKILLSBOT ? 17 : 18.75;
 
   // /2 since we're measuring from the center - halfway
   private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
@@ -111,26 +132,26 @@ public final class Constants {
 
 
 
-  public static final int MODULE0_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 0 : 18;
-  public static final int MODULE0_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 4 : 19;
+  //public static final int MODULE0_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 0 : 18;
+  public static final int MODULE0_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 4 : 19;
   public static final int MODULE0_ANGLE_CANCODER_ID = 1;
-  public static final double MODULE0_ANGLE_OFFSET = RobotType.getRobotType() == Type.PRACTICE ? -Math.toRadians(50.701904296875) : -Math.toRadians(130.599976);
+  public static final double MODULE0_ANGLE_OFFSET = RobotType.getRobotType() == Type.SKILLSBOT ? -Math.toRadians(50.701904296875) : -Math.toRadians(130.599976);
 
 
-  public static final int MODULE1_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 1 : 1;
-  public static final int MODULE1_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 5 : 2;
+  public static final int MODULE1_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 1 : 1;
+  public static final int MODULE1_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 5 : 2;
   public static final int MODULE1_ANGLE_CANCODER_ID = 2;
-  public static final double MODULE1_ANGLE_OFFSET = RobotType.getRobotType() == Type.PRACTICE ? -Math.toRadians(128.58123779296875) : -Math.toRadians(175.163269);
+  public static final double MODULE1_ANGLE_OFFSET = RobotType.getRobotType() == Type.SKILLSBOT ? -Math.toRadians(128.58123779296875) : -Math.toRadians(175.163269);
 
-  public static final int MODULE2_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 14 : 8;
-  public static final int MODULE2_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 10 : 9;
+  public static final int MODULE2_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 14 : 8;
+  public static final int MODULE2_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 10 : 9;
   public static final int MODULE2_ANGLE_CANCODER_ID = 3;
-  public static final double MODULE2_ANGLE_OFFSET = RobotType.getRobotType() == Type.PRACTICE ? -Math.toRadians(346.63238525390625) : -Math.toRadians(278.338623);
+  public static final double MODULE2_ANGLE_OFFSET = RobotType.getRobotType() == Type.SKILLSBOT ? -Math.toRadians(346.63238525390625) : -Math.toRadians(278.338623);
 
-  public static final int MODULE3_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 15 : 10;
-  public static final int MODULE3_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.PRACTICE ? 11 : 11;
+  public static final int MODULE3_DRIVE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 15 : 10;
+  public static final int MODULE3_ANGLE_MOTOR_ID = RobotType.getRobotType() == Type.SKILLSBOT ? 11 : 11;
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
-  public static final double MODULE3_ANGLE_OFFSET = RobotType.getRobotType() == Type.PRACTICE ? -Math.toRadians(286.42730712890625) : -Math.toRadians(355.860901);
+  public static final double MODULE3_ANGLE_OFFSET = RobotType.getRobotType() == Type.SKILLSBOT ? -Math.toRadians(286.42730712890625) : -Math.toRadians(355.860901);
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;

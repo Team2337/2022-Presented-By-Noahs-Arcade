@@ -17,8 +17,7 @@ public class RobotType {
 
   private static String kPracticeBotMAC = "00:80:2F:17:89:85";
 
-  //TODO:  Need accurate MAC address from skillsbot
-  private static String kSkillsBotMAC = "00:80:2F:00:00:00";
+  private static String kSkillsBotMAC = "00:80:2F:30:2E:F2";
 
   public static Type getRobotType() {
     String mac = getMACAddress();
