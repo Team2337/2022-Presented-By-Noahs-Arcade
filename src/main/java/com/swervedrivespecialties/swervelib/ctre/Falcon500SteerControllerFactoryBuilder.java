@@ -123,7 +123,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
             }
             checkCtreError(motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, CAN_TIMEOUT_MS), "Failed to set Falcon 500 feedback sensor");
             motor.setSensorPhase(moduleConfiguration.isSteerInverted());
-            if (RobotType.getRobotType() == Type.PRACTICE) {
+            if (RobotType.getRobotType() == Type.SKILLSBOT) {
                 motor.setInverted(TalonFXInvertType.CounterClockwise);
             } else {
                 motor.setInverted(TalonFXInvertType.Clockwise);

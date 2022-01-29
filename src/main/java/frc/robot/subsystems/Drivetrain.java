@@ -96,7 +96,7 @@ public class Drivetrain extends SubsystemBase {
           .withSize(4, 8)
           .withPosition(4, 0),
         RobotType.getRobotType() == Type.SKILLSBOT ? Mk4SwerveModuleHelper.GearRatio.L1 : Mk4SwerveModuleHelper.GearRatio.L1i,
-        Constants.MODULE0_DRIVE_MOTOR_ID,
+        Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
         Constants.MODULE0_ANGLE_MOTOR_ID,
         Constants.MODULE0_ANGLE_CANCODER_ID,
         Constants.MODULE0_ANGLE_OFFSET
