@@ -85,6 +85,11 @@ public class Shooter extends SubsystemBase {
         .withSize(2, 4)
         .withPosition(4, 0); 
 
+        ShuffleboardLayout speed = tab.getLayout("Motor Velocities", BuiltInLayouts.kList)
+        .withSize(2, 4)
+        .withPosition(6, 0); 
+        
+        
         /*
      public NetworkTableEntry topShootTemp = temps
      .add("Top Shooter Temp", topShoot.getTemperature())
@@ -146,6 +151,11 @@ public class Shooter extends SubsystemBase {
         // Sets up inversions
         topShoot.setInverted(false);
         bottomShoot.setInverted(true); 
+        temps.addNumber("Top Shooter Temperature", () -> topShoot.getTemperature());
+        temps.addNumber("Bottom Shooter Temperature", () -> bottomShoot.getTemperature());
+        temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
+        speed.addNumber("Top Shooter RPM", () -> getTopRPM());
+        speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
         
     }
     
