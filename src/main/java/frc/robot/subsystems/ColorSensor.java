@@ -24,23 +24,22 @@ public class ColorSensor extends SubsystemBase {
   private final ColorSensorV3 sensor;
 
   // Color matches
-  private final ColorMatch colorMatcher;
+  private final ColorMatch colorMatcher = new ColorMatch();
   private final Color matchRed  = new Color(0.4529, 0.2117, 0.0980);
   private final Color matchBlue = new Color(0.1078, 0.2608, 0.3921);
 
   // Other variables
-  private BallColor currentColor = BallColor.NONE;
+  private BallColor currentColor = null;
 
   /**
    * Initializes a REV Robotics Color Sensor v3
    * @param port The I2C port the sensor is plugged into
    */
   public ColorSensor(I2C.Port port) {
-    // Set up sensor
+    // Set up sensor with a specific port
     sensor = new ColorSensorV3(port);
 
     // Color match
-    colorMatcher = new ColorMatch();
     colorMatcher.addColorMatch(matchRed);
     colorMatcher.addColorMatch(matchBlue);
   }
@@ -51,19 +50,19 @@ public class ColorSensor extends SubsystemBase {
     Color detectedColor = sensor.getColor();
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
+    // Reset current color
+    currentColor = null;
+
     // Check match
     if (sensor.getProximity() < COLOR_SENSOR_PROXIMITY) {
       // If not close enough, there is no ball
-      currentColor = BallColor.NONE;
+      return;
     } else if (match.color == matchRed) {
       // Red ball
       currentColor = BallColor.RED;
     } else if (match.color == matchBlue) {
       // Blue ball
       currentColor = BallColor.BLUE;
-    } else {
-      // No ball
-      currentColor = BallColor.NONE;
     }
   }
 

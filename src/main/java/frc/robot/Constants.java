@@ -97,7 +97,6 @@ public final class Constants {
   public static enum BallColor {
     RED,
     BLUE,
-    UNKNOWN,
-    NONE
+    UNKNOWN
   }
 }
