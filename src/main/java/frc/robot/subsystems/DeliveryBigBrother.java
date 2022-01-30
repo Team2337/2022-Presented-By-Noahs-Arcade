@@ -72,9 +72,9 @@ public class DeliveryBigBrother extends SubsystemBase {
       "Right: " + String.valueOf(rightSensor.getColor())
     });
     storedLayout.addStringArray("Golf ball sensors", () -> new String[]{
-      "Intake: " + intakeBeam.get(),
+      "Intake: "    + intakeBeam.get(),
       "Top Left: "  + topLeftBeam.get(),
-      "Top Right: "    + topRightBeam.get(),
+      "Top Right: " + topRightBeam.get(),
       "Shooter: "   + shooterBeam.get()
     });
   }
