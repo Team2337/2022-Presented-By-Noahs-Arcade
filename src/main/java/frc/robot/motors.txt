@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+CAN IDS FOR MOTORS
+
+ 0 - Drive motor 0
+ 1 - Drive motor 1
+ 2 - 
+ 3 - 
+ 4 - Angle motor 0
+ 5 - Angle motor 1
+ 6 - Intake first stage
+ 7 - Intake second stage
+ 8 - Delivery
+ 9 - 
+10 - Angle motor 2
+11 - Angle motor 3
+12 - 
+13 - 
+14 - Drive motor 2
+15 - Drive motor 3

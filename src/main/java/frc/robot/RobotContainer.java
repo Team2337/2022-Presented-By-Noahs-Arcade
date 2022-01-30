@@ -31,8 +31,6 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
-  private final DeliveryBigBrother bigBrother = new DeliveryBigBrother(delivery, intake);
-
   public static BallColor allianceColor;
   public static BallColor opposingColor;
 
@@ -55,10 +53,7 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
 
-    // Configure intake controls
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(() -> intake.startIntake());
-    operatorRightBumper.whenReleased(() -> intake.idleIntake());
+    // TODO: update intake controls using new commands (work on intake-update branch)
 
     // Configure buttons/switches on operator station
   }

@@ -1,9 +1,10 @@
 package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 // import frc.robot.Constants.BallColor;
 import frc.robot.Constants.Directions;
-import frc.robot.subsystems.DeliveryBigBrother;
+import frc.robot.subsystems.Delivery;
 
 /**
  * Moves a ball into position to be checeked and updates its color value.
@@ -12,22 +13,28 @@ import frc.robot.subsystems.DeliveryBigBrother;
  */
 public class CheckCommand extends CommandBase {
 
-  private final DeliveryBigBrother bigBrother;
+  private final Delivery delivery;
   private Directions rotation;
+  /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean checkFlag;
   
-  public CheckCommand(DeliveryBigBrother bigBrother, Directions rotation) {
+  public CheckCommand(Delivery delivery, Directions rotation) {
     this.rotation = rotation;
-    this.bigBrother = bigBrother;
+    this.delivery = delivery;
   }
 
   @Override
   public void initialize() {
-    // See if we need to wait for a ball to move before checking color
+    // We're moving stuff so it's no longer lined up
+    delivery.linedUp = false;
+    
+    // Check if we need to move a ball before checking to stop and start the motor
     if (rotation == Directions.COUNTER_CLOCKWISE) {
-      checkFlag = bigBrother.storedBalls[1] == null;
+      checkFlag = delivery.getRightColorSensorStatus();
+      delivery.setDeliverySpeed(-Constants.DELIVERY_SPEED);
     } else {
-      checkFlag = bigBrother.storedBalls[3] == null;
+      checkFlag = delivery.getLeftColorSensorStatus();
+      delivery.setDeliverySpeed(Constants.DELIVERY_SPEED);
     }
   }
 
@@ -36,9 +43,9 @@ public class CheckCommand extends CommandBase {
     // If we're waiting for old ball to move, update flag to determine its position
     if(checkFlag){
       if (rotation == Directions.COUNTER_CLOCKWISE) {
-        checkFlag = !bigBrother.getRightColorSensorStatus();
+        checkFlag = delivery.getRightColorSensorStatus();
       } else {
-        checkFlag = !bigBrother.getLeftColorSensorStatus();
+        checkFlag = delivery.getLeftColorSensorStatus();
       }
     }
   }
@@ -47,28 +54,33 @@ public class CheckCommand extends CommandBase {
   public void end(boolean interrupted) {
     // Update ball values
     if (rotation == Directions.COUNTER_CLOCKWISE) {
-      bigBrother.storedBalls[0] = bigBrother.storedBalls[3];
-      bigBrother.storedBalls[2] = bigBrother.storedBalls[1];
-      bigBrother.storedBalls[1] = bigBrother.getRightColorSensorValue(); // 1 is right
-      bigBrother.storedBalls[3] = bigBrother.getLeftColorSensorValue();  // 3 is left
+      delivery.storedBalls[0] = delivery.storedBalls[3];
+      delivery.storedBalls[2] = delivery.storedBalls[1];
+      delivery.storedBalls[1] = delivery.getRightColorSensorValue(); // 1 is right
+      delivery.storedBalls[3] = delivery.getLeftColorSensorValue();  // 3 is left
     } else {
-      bigBrother.storedBalls[0] = bigBrother.storedBalls[1];
-      bigBrother.storedBalls[2] = bigBrother.storedBalls[3];
-      bigBrother.storedBalls[1] = bigBrother.getRightColorSensorValue(); // 1 is right
-      bigBrother.storedBalls[3] = bigBrother.getLeftColorSensorValue();  // 3 is left
+      delivery.storedBalls[0] = delivery.storedBalls[1];
+      delivery.storedBalls[2] = delivery.storedBalls[3];
+      delivery.storedBalls[1] = delivery.getRightColorSensorValue(); // 1 is right
+      delivery.storedBalls[3] = delivery.getLeftColorSensorValue();  // 3 is left
     }
+
+    // Stop delivery
+    delivery.stopDelivery();
   }
 
   @Override
   public boolean isFinished() {
-    // If we're waiting for the other ball to pass, return false
-    if(!checkFlag) return false;
-
-    // Return whether we see a ball in our wanted position or not
-    if (rotation == Directions.COUNTER_CLOCKWISE) {
-      return bigBrother.getRightColorSensorStatus();
+    if (checkFlag) {
+      // If we're waiting for the other ball to pass, return false
+      return false;
     } else {
-      return bigBrother.getLeftColorSensorStatus();
+      // Return whether we see a ball in our wanted position or not
+      if (rotation == Directions.COUNTER_CLOCKWISE) {
+        return delivery.getRightColorSensorStatus();
+      } else {
+        return delivery.getLeftColorSensorStatus();
+      }
     }
   }
 

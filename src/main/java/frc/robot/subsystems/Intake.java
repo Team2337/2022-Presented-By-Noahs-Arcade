@@ -16,37 +16,70 @@ import frc.robot.Constants;
  */
 public class Intake extends SubsystemBase {
 
-  private final TalonFX motor;
+  private final TalonFX firstStage;
+  private final TalonFX secondStage;
   
   public Intake() {
     // Initialize motor
-    motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+    firstStage = new TalonFX(Constants.INTAKE_FIRST_MOTOR_ID);
+    secondStage = new TalonFX(Constants.INTAKE_FIRST_MOTOR_ID);
     
     // TODO: make sure config settings are correct
     //Set settings on motor
-    motor.configFactoryDefault();
+    firstStage.configFactoryDefault();
+    secondStage.configFactoryDefault();
 
-    motor.setInverted(false); //TODO: make sure this is correct
-    motor.setNeutralMode(NeutralMode.Coast);
+    firstStage.setInverted(false); //TODO: make sure inversions are correct
+    firstStage.setNeutralMode(NeutralMode.Coast);
+    secondStage.setInverted(false);
+    secondStage.setNeutralMode(NeutralMode.Coast);
 
-    motor.configOpenloopRamp(0.5);
+    firstStage.configOpenloopRamp(0.5);
+    secondStage.configOpenloopRamp(0.5);
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
     
     ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
-    intakeWidget.addNumber("Speed", this::getIntakeSpeed);
-    intakeWidget.addNumber("Temp", this::getIntakeTemperature);
+    intakeWidget.addDoubleArray("Speed", this::getIntakeSpeeds);
+    intakeWidget.addDoubleArray("Temp", this::getIntakeTemperatures);
   }
 
   @Override
   public void periodic() {}
 
   /**
-   * Starts the intake
+   * Starts the first stage of the intake
+   */
+  public void startFirstStage() {
+    firstStage.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
+  }
+
+  /**
+   * Starts the second stage of the intake
+   */
+  public void startSecondStage() {
+    secondStage.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
+  }
+
+  public void reverseFirstStage(){
+    firstStage.set(ControlMode.PercentOutput, -Constants.INTAKE_SPEED);
+  }
+
+  /**
+   * Calls <code>startFirstStage()</code> and <code>startSecondStage()</code> simultaneously
    */
   public void startIntake() {
-    motor.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
+    startFirstStage();
+    startSecondStage();
+  }
+
+  /**
+   * Reverses the intakes
+   */
+  public void reverseIntake() {
+    firstStage.set(ControlMode.PercentOutput, -Constants.INTAKE_SPEED);
+    secondStage.set(ControlMode.PercentOutput, -Constants.INTAKE_SPEED);
   }
   
   /**
@@ -54,21 +87,28 @@ public class Intake extends SubsystemBase {
    * It is equivalent to an idle state.
    */
   public void idleIntake() {
-    motor.set(ControlMode.PercentOutput, -0.2);
+    firstStage.set(ControlMode.PercentOutput, -0.2);
+    secondStage.set(ControlMode.PercentOutput, 0);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  private double getIntakeSpeed() {
-    return motor.getMotorOutputPercent();
+  private double[] getIntakeSpeeds() {
+    return new double[]{
+      firstStage.getMotorOutputPercent(),
+      secondStage.getMotorOutputPercent()
+    };
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  private double getIntakeTemperature() {
-    return motor.getTemperature();
+  private double[] getIntakeTemperatures() {
+    return new double[]{
+      firstStage.getTemperature(),
+      secondStage.getTemperature()
+    };
   }
 
 }

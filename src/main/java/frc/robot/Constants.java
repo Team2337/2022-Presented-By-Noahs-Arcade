@@ -127,10 +127,11 @@ public final class Constants {
   public static final int MODULE3_ANGLE_CANCODER_ID = 4;
   public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
-  public static final int INTAKE_MOTOR_ID = 6;
+  public static final int INTAKE_FIRST_MOTOR_ID = 6;
+  public static final int INTAKE_SECOND_MOTOR_ID = 7;
   public static final double INTAKE_SPEED = 0.5;
 
-  public static final int DELIVERY_MOTOR_ID = 7;
+  public static final int DELIVERY_MOTOR_ID = 8;
   public static final double DELIVERY_SPEED = 0.5;
 
   // Color stuff
