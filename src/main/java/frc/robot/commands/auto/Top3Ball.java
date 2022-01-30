@@ -25,9 +25,4 @@ public class Top3Ball extends SequentialCommandGroup implements AutoDrivableComm
     );
   }
 
-  @Override
-  public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    return m_currentCommand.calculate(forward, strafe, isFieldOriented);
-  }
-
 }

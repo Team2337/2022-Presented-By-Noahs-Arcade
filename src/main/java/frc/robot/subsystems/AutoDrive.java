@@ -1,13 +1,15 @@
 package frc.robot.subsystems;
 
+import java.lang.ref.WeakReference;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutoDrivableCommand;
 
 public class AutoDrive extends SubsystemBase {
   
+  private WeakReference<AutoDrivableCommand> commandReference;
+
   public static class State {
     public double forward;
     public double strafe;
@@ -21,6 +23,19 @@ public class AutoDrive extends SubsystemBase {
   }
 
   /**
+   * Registered an AutoDrivableCommand to be called when an output is needed for
+   * the SwerveDriveCommand. Note: Only one AutoDrivableCommand can be registered
+   * at a time. Commands calling registerAutoDrivableCommand should require
+   * the AutoDrive subsystem in order to prevent other commands from
+   * registering for callbacks.
+   *
+   * @param command
+   */
+  public void registerAutoDrivableCommand(AutoDrivableCommand command) {
+    this.commandReference = new WeakReference<AutoDrivableCommand>(command);
+  }
+
+  /**
    * Calculate forward/strafe values using the current command. May return null if
    * there is no auto drive command scheduled or the currently auto drive command
    * does not specify an auto drive state.
@@ -31,28 +46,21 @@ public class AutoDrive extends SubsystemBase {
    * @return - A negotiated forward/strafe from the auto driveable command
    */
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    AutoDrivableCommand command = getAutoDrivableCommand();
+    AutoDrivableCommand command = commandReference.get();
     if (command == null) {
       return null;
     }
     return command.calculate(forward, strafe, isFieldOriented);
   }
 
-  /**
-   * Gets the current Command for the subsystem if it's an AutoDrivableCommand.
-   * May return null if the subsystem has no Command or the Command does
-   * not conform to AutoDrivableCommand.
-   */
-  private AutoDrivableCommand getAutoDrivableCommand() {
-    Command command = getCurrentCommand();
+  @Override
+  public void periodic() {
+    AutoDrivableCommand command = commandReference.get();
     if (command != null) {
-      SmartDashboard.putData("AutoDrive Current Command", (CommandBase) command);
-      SmartDashboard.putBoolean("Is AutoDrivableCommand", command instanceof AutoDrivableCommand);
+      SmartDashboard.putString("AutoDrivable Command", command.toString());
+    } else {
+      SmartDashboard.putString("AutoDrivable Command", "N/A");
     }
-    if (command != null && command instanceof AutoDrivableCommand) {
-      return (AutoDrivableCommand) command;
-    }
-    return null;
   }
 
 }

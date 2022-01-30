@@ -49,6 +49,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
   @Override
   public void initialize() {
     heading.enableMaintainHeading();
+    autoDrive.registerAutoDrivableCommand(this);
   }
 
   @Override
