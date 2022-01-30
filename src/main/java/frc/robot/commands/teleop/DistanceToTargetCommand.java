@@ -31,7 +31,6 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
   private AutoDrive autoDrive;
 
   private PIDController xController = new PIDController(1.0, 0, 0);
-  private PIDController yController = new PIDController(1.0, 0, 0);
 
   private double output = 0.0;
 
@@ -67,24 +66,6 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
       robotCoordinate.getRadiusMeters(),
       distanceMeters
     );
-    // outputY = yController.calculate(
-      
-    // );
-    SmartDashboard.putNumber("Robot Coordinate Angle", robotCoordinate.getTheta().getDegrees());
-    SmartDashboard.putNumber("Robot Coordinate Distance", Units.metersToFeet(robotCoordinate.getRadiusMeters()));
-    SmartDashboard.putNumber("Output", output);
-    
-    Pose2d pose = poseSupplier.get();
-    SmartDashboard.putNumber("Robot Pose X", pose.getX());
-    SmartDashboard.putNumber("Robot Pose Y", pose.getY());
-    // Translation2d distanceFieldCoordinate = distanceCoordinate.toFieldCoordinate();
-    // SmartDashboard.putNumber("Target X", distanceFieldCoordinate.getX());
-    // SmartDashboard.putNumber("Target Y", distanceFieldCoordinate.getY());
-    // Add our current chassis speed as a FF value. This will allow us to gradually transition
-    // in to our new speed as opposed to pretending the robot is always starting from zero and jerking
-    //double xCurrentPercentage = chassisSpeedsSupplier.get().vxMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-    //output += xCurrentPercentage;
-
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     output = MathUtil.clamp(
@@ -92,25 +73,13 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
       -maxSpeed,
       maxSpeed
     );
-
-    SmartDashboard.putNumber("Initial X", pose.getX());
-    SmartDashboard.putNumber("Initial Y", pose.getY());
+    
+    Pose2d pose = poseSupplier.get();
     double x = pose.getX() - targetMeters.getX();
     double y = pose.getY() - targetMeters.getY();
-    // pow(tan(x, y), -1)
     double towardsCenterDegrees = Math.atan2(y, x);
-    SmartDashboard.putNumber("Towards Center Degrees (Tangent)", Units.radiansToDegrees(towardsCenterDegrees));
-    SmartDashboard.putNumber("X", x);
-    SmartDashboard.putNumber("Y", y);
-    // Rotation2d desiredRotation =
-    // Rotation2d.fromDegrees((drivetrain.getGyroscopeRotation().getDegrees() +
-    // -Units.radiansToDegrees(towardsCenterDegrees)));
     Rotation2d desiredRotation = Rotation2d.fromDegrees(Units.radiansToDegrees(towardsCenterDegrees) - 180);
-    // Rotation2d desiredRotation = Rotation2d.fromDegrees(0);
-    SmartDashboard.putNumber("Odometry Desired Rotation", desiredRotation.getDegrees());
     heading.setMaintainHeading(desiredRotation);
-
-    // heading.setMaintainHeading(Rotation2d.fromDegrees(-1 * (90 + robotCoordinate.getTheta().getDegrees())));
   }
 
   public AutoDrive.State calculate(double forward, double strafe, boolean isFieldOriented) {
@@ -118,9 +87,9 @@ public class DistanceToTargetCommand extends CommandBase implements AutoDrivable
     // Driver can strafe during this command. Forward should be forward to the robot.
     // Note that this command assumes we're facing the target (use with Heading)
     return new AutoDrive.State(
-      0.0,
+      -output,
       strafe,
-      true
+      false
     );
   }
 

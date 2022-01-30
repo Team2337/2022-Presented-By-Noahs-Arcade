@@ -2,14 +2,21 @@
   "NetworkTables": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/AutoDrive": "Subsystem",
+      "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/Heading": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/AutoDrive Current Command": "Command",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Field2": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "image": "C:\\Users\\EngiNERDS-1\\Downloads\\2022-field.png",
         "window": {
           "visible": true
         }

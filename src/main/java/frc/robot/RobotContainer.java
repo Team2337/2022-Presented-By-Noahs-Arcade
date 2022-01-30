@@ -11,11 +11,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.DistanceToTargetCommand;
+import frc.robot.commands.teleop.PointToPointCommand;
+import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -32,32 +37,46 @@ public class RobotContainer {
   // private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
+  private final SendableChooser<Command> autonChooser = new SendableChooser<>();
+
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
+
+    autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
+    autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(drivetrain, heading, autoDrive));
+
+    SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
   public void resetRobot() {
-    // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
-    drivetrain.resetPosition(new Pose2d(Units.feetToMeters(20), Units.feetToMeters(13.5), new Rotation2d()));
-    // drivetrain.resetOdometry();
     pigeon.setYaw(0, 250);
+    // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.startA.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    // drivetrain.resetOdometry();
+    Pose2d pose = drivetrain.getPose();
+    SmartDashboard.putNumber("Pose X", pose.getX());
+    SmartDashboard.putNumber("Pose Y", pose.getY());
+    SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
   }
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
     // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
     // Maintain 1 ft distance in front of target
     // TODO: Remove some of these values at some point after testing
-    rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(3), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    leftBumper.whileHeld(new Top3Ball(drivetrain, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {
-    return new DoNothingCommand();
+    return autonChooser.getSelected();
   }
 }

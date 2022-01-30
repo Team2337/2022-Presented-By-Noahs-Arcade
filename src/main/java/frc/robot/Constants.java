@@ -53,6 +53,10 @@ public final class Constants {
      * positive-positive quadrant. Top right should be positive X values and
      * negative Y values (shifted to the right of our center).
      */
+    public static final PolarCoordinate startA = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(14) // 80.25 using alliance wall zero
+    );
     // Ball 1 = Ball nearest to the top starting location
     public static final PolarCoordinate kBall1 = new PolarCoordinate(
       Units.inchesToMeters(153),
