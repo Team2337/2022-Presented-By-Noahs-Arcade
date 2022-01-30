@@ -58,14 +58,24 @@ public class DeliveryBigBrother extends SubsystemBase {
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
 
-    ShuffleboardLayout storedLayout = deliveryTab.getLayout("Stored items", BuiltInLayouts.kList)
+    ShuffleboardLayout storedLayout = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
       .withSize(6, 8)
       .withPosition(4, 0);
-    storedLayout.addStringArray("title", () -> new String[]{
+    storedLayout.addStringArray("Ball positions", () -> new String[]{
       "Bottom: " + String.valueOf(storedBalls[0]),
       "Right: "  + String.valueOf(storedBalls[1]),
       "Top: "    + String.valueOf(storedBalls[2]),
       "Left: "   + String.valueOf(storedBalls[3])
+    });
+    storedLayout.addStringArray("Color sensors", () -> new String[]{
+      "Left: "  + String.valueOf(leftSensor.getColor()),
+      "Right: " + String.valueOf(rightSensor.getColor())
+    });
+    storedLayout.addStringArray("Golf ball sensors", () -> new String[]{
+      "Intake: " + intakeBeam.get(),
+      "Top Left: "  + topLeftBeam.get(),
+      "Top Right: "    + topRightBeam.get(),
+      "Shooter: "   + shooterBeam.get()
     });
   }
 
