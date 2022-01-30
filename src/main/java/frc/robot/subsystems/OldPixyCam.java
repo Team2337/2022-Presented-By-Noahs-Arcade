@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.PixySigs;
+import frc.robot.Constants.BallColor;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -192,11 +192,11 @@ public class OldPixyCam extends SubsystemBase {
     return Optional.of(((x / 315) * 60) - 30);
   }
 
-  public PixySigs getLargestTargetColor() {
+  public BallColor getLargestTargetColor() {
     if(lastLargestBlock == null)
-      return PixySigs.None;
+      return null;
     
     // According to programmed values on robot
-    return lastLargestBlock.getSignature() == 1 ? PixySigs.Red : PixySigs.Blue;
+    return lastLargestBlock.getSignature() == 1 ? BallColor.RED : BallColor.BLUE;
   }
 }
