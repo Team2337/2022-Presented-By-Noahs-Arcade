@@ -19,6 +19,7 @@ public class StartShooter extends CommandBase {
 
   }
   public void initialize() {
+    subsystem.startKicker();
     subsystem.currentLimitConfigurationMotor.currentLimit = 50;
     subsystem.topShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
     subsystem.bottomShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
@@ -43,6 +44,7 @@ public class StartShooter extends CommandBase {
     subsystem.bottomShoot.configClosedloopRamp(0.1);
     subsystem.stopTopShooter();
     subsystem.stopBottomShooter();
+    subsystem.stopKicker();
   }
 
 

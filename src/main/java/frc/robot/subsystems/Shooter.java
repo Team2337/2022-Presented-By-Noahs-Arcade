@@ -27,6 +27,7 @@ public class Shooter extends SubsystemBase {
 
     public TalonFX topShoot;
     public TalonFX bottomShoot;
+    public TalonFX kicker;
     public TalonFXConfiguration fxConfig;
     public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
 
@@ -108,6 +109,7 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
         bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
+        kicker = new TalonFX(Constants.KICKER_MOTOR);
         fxConfig = new TalonFXConfiguration();
         
 
@@ -165,12 +167,6 @@ public class Shooter extends SubsystemBase {
     
     @Override
     public void periodic() {
-
-        SmartDashboard.putNumber("Top Shooter Velocity", getTopRPM());
-        SmartDashboard.putNumber("Bottom Shooter Velocity", getBottomRPM());
-        SmartDashboard.putNumber("top shooter temp", topShoot.getTemperature());
-        SmartDashboard.putNumber("bottom shooter temp", bottomShoot.getTemperature());
-        SmartDashboard.putBoolean("Shooter Motor Over Temp", motorOverTemp);
         if (kep.getDouble(0) != kP) {
             kP = kep.getDouble(0);
             configurePID(kP, kI, kD, kF);
@@ -236,6 +232,14 @@ public class Shooter extends SubsystemBase {
  public void stopBottomShooter(){
      bottomShoot.set(ControlMode.PercentOutput, 0);
  }
+
+ public void startKicker(){
+     kicker.set(ControlMode.PercentOutput, 100);
+ }
+
+ public void stopKicker(){
+     kicker.set(ControlMode.PercentOutput, 0);
+ }
  public double getTopShooterSpeed(){
      return topShoot.getMotorOutputPercent();
  }
@@ -289,7 +293,7 @@ public class Shooter extends SubsystemBase {
       return wheelSpeed;
     }
     public void setTopShooterSpeed(double speed){
-        double wheel = speed/((4/12)/2);
+        double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel/60)*(2*Math.PI);
         double rpm = wheelRpm / (16/24);
         double rps = rpm/60;
@@ -305,7 +309,7 @@ public class Shooter extends SubsystemBase {
         
      }
      public void setBottomShooterSpeed(double speed){
-        double wheel = speed/((4/12)/2);
+        double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel/60)*(2*Math.PI);
         double rpm = wheelRpm / (16/24);
         double rps = rpm/60;
