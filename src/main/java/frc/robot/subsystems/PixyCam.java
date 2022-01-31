@@ -61,8 +61,9 @@ public class PixyCam extends SubsystemBase {
     ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
     infoWidget.addNumber("Number of Blocks", () -> blocks.size());
     infoWidget.addNumber("Number of Targets", () -> filteredBlocks.size());
-    infoWidget.addString("Block list", () -> blocks.toString());
-    infoWidget.addString("Target list", () -> filteredBlocks.toString());
+    infoWidget.addString("Target angle", () -> {
+      return blueTarget == null ? "N/A" : String.valueOf(getTargetAngle(blueTarget));
+    });
     infoWidget.addNumber("Pixy State", () -> state);
 
     pixyTab.addBoolean("Sees Target", () -> (numberOfTargets > 0))
@@ -132,11 +133,11 @@ public class PixyCam extends SubsystemBase {
         double area = block.getWidth() * block.getHeight();
         if(block.getSignature() == 1){
           if(redTarget == null || redTarget.getWidth() * redTarget.getHeight() < area){
-            redTarget = block;
+            bestRedBlock = block;
           }
         } else {
           if(blueTarget == null || blueTarget.getWidth() * blueTarget.getHeight() < area){
-            blueTarget = block;
+            bestBlueBlock = block;
           }
         }
       }
