@@ -74,12 +74,12 @@ public class Shooter extends SubsystemBase {
      public NetworkTableEntry topShooter = speeds
         .add("Top Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 50))
+        .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
     public NetworkTableEntry bottomShooter = speeds
         .add("Bottom Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 50))
+        .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
 
         ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
@@ -109,7 +109,7 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
         bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
-        kicker = new TalonFX(Constants.KICKER_MOTOR);
+        //kicker = new TalonFX(Constants.KICKER_MOTOR);
         fxConfig = new TalonFXConfiguration();
         
 
@@ -233,13 +233,13 @@ public class Shooter extends SubsystemBase {
      bottomShoot.set(ControlMode.PercentOutput, 0);
  }
 
- public void startKicker(){
+ /*public void startKicker(){
      kicker.set(ControlMode.PercentOutput, 100);
  }
 
  public void stopKicker(){
-     kicker.set(ControlMode.PercentOutput, 0);
- }
+     kicker.set(ControlMode.PercentOutput, 0); */
+ 
  public double getTopShooterSpeed(){
      return topShoot.getMotorOutputPercent();
  }
@@ -293,35 +293,35 @@ public class Shooter extends SubsystemBase {
       return wheelSpeed;
     }
     public void setTopShooterSpeed(double speed){
-        double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
+       /* double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel/60)*(2*Math.PI);
         double rpm = wheelRpm / (16/24);
         double rps = rpm/60;
         double tps = rps*2048;
         double encoderTicks = tps / 10;
-        topShoot.set(ControlMode.Velocity, (encoderTicks));
-        /* Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        topShoot.set(ControlMode.Velocity, (encoderTicks)); */
+        // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
         double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
         
      }
      public void setBottomShooterSpeed(double speed){
-        double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
+      /*  double wheel = speed/((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel/60)*(2*Math.PI);
         double rpm = wheelRpm / (16/24);
         double rps = rpm/60;
         double tps = rps*2048;
         double encoderTicks = tps / 10;
-        bottomShoot.set(ControlMode.Velocity, (encoderTicks));
-        /* Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        bottomShoot.set(ControlMode.Velocity, (encoderTicks)); */
+        // Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
         double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
         
      }
 }
