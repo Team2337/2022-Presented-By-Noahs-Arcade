@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
@@ -20,9 +22,9 @@ public class PixyCam extends SubsystemBase {
   private int state;
   private boolean connected;
 
-  private int numberOfTargets;
-  private ArrayList<Block> blocks;
-  private ArrayList<Block> filteredBlocks;
+  private int numberOfTargets = 0;
+  private ArrayList<Block> blocks = new ArrayList<Block>();
+  private ArrayList<Block> filteredBlocks = new ArrayList<Block>();
 
   private Block redTarget;
   private Block blueTarget;
@@ -38,7 +40,34 @@ public class PixyCam extends SubsystemBase {
 
     // Initialize variables
     chip = chipselect;
-    numberOfTargets = 0;
+
+    // Prepare Shuffleboard stuff
+    ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
+
+    // Targetting red boolean
+    pixyTab.addBoolean("Targeting red", () -> (redTarget != null))
+      .withSize(4, 4)
+      .withPosition(12, 0)
+      .withProperties(Map.of("Color when true", "#ff6666"))
+      .withProperties(Map.of("Color when false", "#000000"));
+    // Targetting blue boolean
+    pixyTab.addBoolean("Targeting blue", () -> (blueTarget != null))
+      .withSize(4, 4)
+      .withPosition(12, 4)
+      .withProperties(Map.of("Color when true", "#6666ff"))
+      .withProperties(Map.of("Color when false", "#000000"));
+
+    // Info widget
+    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
+    infoWidget.addNumber("Number of Blocks", () -> blocks.size());
+    infoWidget.addNumber("Number of Targets", () -> filteredBlocks.size());
+    infoWidget.addString("Block list", () -> blocks.toString());
+    infoWidget.addString("Target list", () -> filteredBlocks.toString());
+    infoWidget.addNumber("Pixy State", () -> state);
+
+    pixyTab.addBoolean("Sees Target", () -> (numberOfTargets > 0))
+      .withSize(4, 4)
+      .withPosition(4, 0);
   }
 
   @Override
@@ -153,6 +182,21 @@ public class PixyCam extends SubsystemBase {
    */
   public boolean seesBlueTarget(){
     return getBlueTarget().isPresent();
+  }
+
+  /**
+   * @param target The target {@link Block}
+   * @return The target converted to an angle from center of Pixy.
+   * Ranges from -30 to 30.
+   */
+  public double getTargetAngle(Block target){
+    /**
+     * To get the angle, we divide the x (which ranges from 0 to 315, the width
+     * of the camera) by 315 to get it as a percentage from 0-1. We multiply
+     * that by 60 (the field of view of the PixyCam) to get it in terms of
+     * degrees, and then subtract it by 30 to center it.
+     */
+    return ((target.getX() / 315.0) * 60.0) - 30.0;
   }
 
 }
