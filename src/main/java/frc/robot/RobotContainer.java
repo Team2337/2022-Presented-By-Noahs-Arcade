@@ -20,6 +20,7 @@ import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.DistanceToTargetCommand;
 import frc.robot.commands.teleop.PointToPointCommand;
+import frc.robot.commands.teleop.ProfiledPointToPointCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 
@@ -67,13 +68,15 @@ public class RobotContainer {
     JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+    // driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
     // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
     // Maintain 1 ft distance in front of target
     // TODO: Remove some of these values at some point after testing
-    rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    leftBumper.whileHeld(new Top3Ball(drivetrain, heading, autoDrive));
+    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
+    leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {

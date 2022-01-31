@@ -53,6 +53,8 @@ public final class Constants {
      * positive-positive quadrant. Top right should be positive X values and
      * negative Y values (shifted to the right of our center).
      */
+    public static final double kPickupDistanceInches = 17.0;
+
     public static final PolarCoordinate startA = new PolarCoordinate(
       Units.inchesToMeters(90),
       Rotation2d.fromDegrees(14) // 80.25 using alliance wall zero
@@ -62,15 +64,27 @@ public final class Constants {
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(9.75) // 80.25 using alliance wall zero
     );
+    public static final PolarCoordinate kBall1Pickup = new PolarCoordinate(
+      Constants.Auto.kBall1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall1.getTheta()
+    );
     // Ball 2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBall2 = new PolarCoordinate(
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(54.75) // 35.25 using alliance wall zero
     );
+    public static final PolarCoordinate kBall2Pickup = new PolarCoordinate(
+      Constants.Auto.kBall2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall2.getTheta()
+    );
     // Ball 3 = Ball just in front of the Terminal
     public static final PolarCoordinate kBall3 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
       Rotation2d.fromDegrees(67.35) // 22.65 using alliance wall zero
+    );
+    public static final PolarCoordinate kBall3Pickup = new PolarCoordinate(
+      Constants.Auto.kBall3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall3.getTheta()
     );
     // Ball 4 is the human player ball at the Terminal
     // Ball 5 = Ball nearest to the bottom starting location

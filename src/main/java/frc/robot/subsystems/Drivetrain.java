@@ -4,6 +4,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -185,7 +187,7 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    odometry.update(
+    Pose2d pose = odometry.update(
       getGyroscopeRotation(),
       states[0],
       states[1],
@@ -194,6 +196,11 @@ public class Drivetrain extends SubsystemBase {
     );
 
     field.setRobotPose(getPose());
+
+    Logger.getInstance().recordOutput("Odometry/Robot",
+        new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+
+    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
 }

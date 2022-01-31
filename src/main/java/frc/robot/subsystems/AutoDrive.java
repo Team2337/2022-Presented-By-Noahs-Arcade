@@ -35,6 +35,10 @@ public class AutoDrive extends SubsystemBase {
     this.commandReference = new WeakReference<AutoDrivableCommand>(command);
   }
 
+  public void unregisterAutoDrivableCommand() {
+    this.commandReference = null;
+  }
+
   /**
    * Calculate forward/strafe values using the current command. May return null if
    * there is no auto drive command scheduled or the currently auto drive command
@@ -46,6 +50,10 @@ public class AutoDrive extends SubsystemBase {
    * @return - A negotiated forward/strafe from the auto driveable command
    */
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
+    if (commandReference == null) {
+      return null;
+    }
+
     AutoDrivableCommand command = commandReference.get();
     if (command == null) {
       return null;
@@ -55,9 +63,13 @@ public class AutoDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    AutoDrivableCommand command = commandReference.get();
-    if (command != null) {
-      SmartDashboard.putString("AutoDrivable Command", command.toString());
+    if (commandReference != null) {
+      AutoDrivableCommand command = commandReference.get();
+      if (command != null) {
+        SmartDashboard.putString("AutoDrivable Command", command.toString());
+      } else {
+        SmartDashboard.putString("AutoDrivable Command", "N/A");
+      }
     } else {
       SmartDashboard.putString("AutoDrivable Command", "N/A");
     }

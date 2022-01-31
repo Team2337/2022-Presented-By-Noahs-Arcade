@@ -37,7 +37,7 @@ public class SwerveDriveCommand extends CommandBase {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
-    boolean isFieldOriented = !controller.getLeftBumper();
+    boolean isFieldOriented = !controller.getXButton();
 
     // If a driver-initiated rotationis provided, disable our rotation
     // controller to let the driver rotate freely.

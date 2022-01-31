@@ -6,9 +6,11 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,7 +23,7 @@ import frc.robot.subsystems.Heading;
  * Drive a certain distance from a point - regardless of angle - and maintain that
  * distance away from the point.
  */
-public class PointToPointCommand extends CommandBase implements AutoDrivableCommand {
+public class ProfiledPointToPointCommand extends CommandBase implements AutoDrivableCommand {
 
   private PolarCoordinate target;
   private Supplier<Pose2d> poseSupplier;
@@ -29,13 +31,13 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
   private Heading heading;
   private AutoDrive autoDrive;
 
-  private PIDController distanceController = new PIDController(1.0, 0.0, 0.0);
-  private PIDController thetaController = new PIDController(0.05, 0.0, 0.0);
+  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(80), Units.inchesToMeters(160)));
+  private ProfiledPIDController thetaController = new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(30, Math.pow(10, 2)));
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  public PointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive) {
     this.target = target;
     this.poseSupplier = poseSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
@@ -43,7 +45,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
     this.autoDrive = autoDrive;
 
     distanceController.setTolerance(Units.inchesToMeters(1));
-    thetaController.setTolerance(0.05); //In degrees
+    thetaController.setTolerance(0.05); // In degrees
 
     SmartDashboard.putNumber("Target Distance (feet)", Units.metersToFeet(target.getRadiusMeters()));
     SmartDashboard.putNumber("Target Theta (Degrees)", target.getTheta().getDegrees());
@@ -55,12 +57,17 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
   public void initialize() {
     heading.enableMaintainHeading();
     autoDrive.registerAutoDrivableCommand(this);
+
+    PolarCoordinate robotCoordinate = PolarCoordinate.fromFieldCoordinate(
+      poseSupplier.get().getTranslation(),
+      target.getReferencePoint()
+    );
+    thetaController.reset(robotCoordinate.getTheta().getDegrees());
+    distanceController.reset(robotCoordinate.getRadiusMeters());
   }
 
   @Override
   public void execute() {
-    // Find our robot polar coordinate relative to the Hub
-    // -90 (robot is underneath the reference point)
     PolarCoordinate robotCoordinate = PolarCoordinate.fromFieldCoordinate(
       poseSupplier.get().getTranslation(),
       target.getReferencePoint()
@@ -74,31 +81,36 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
       target.getTheta().getDegrees()
     );
 
-    SmartDashboard.putBoolean("distanceController atSetpoint", distanceController.atSetpoint());
-    SmartDashboard.putBoolean("thetaController atSetpoint", thetaController.atSetpoint());
-    Logger.getInstance().recordOutput("PointToPoint/Distance At Setpoint", distanceController.atSetpoint());
-    Logger.getInstance().recordOutput("PointToPoint/Theta At Setpoint", thetaController.atSetpoint());
+    SmartDashboard.putNumber("Robot Coordinate Angle", robotCoordinate.getTheta().getDegrees());
+    SmartDashboard.putNumber("Robot Coordinate Distance", Units.metersToInches(robotCoordinate.getRadiusMeters()));
 
-    SmartDashboard.putNumber("Target Distance (feet)", Units.metersToFeet(target.getRadiusMeters()));
+    SmartDashboard.putNumber("Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
     SmartDashboard.putNumber("Target Theta (Degrees)", target.getTheta().getDegrees());
 
-    SmartDashboard.putNumber("Robot Coordinate Angle", robotCoordinate.getTheta().getDegrees());
-    SmartDashboard.putNumber("Robot Coordinate Distance", Units.metersToFeet(robotCoordinate.getRadiusMeters()));
+    SmartDashboard.putBoolean("distanceController atSetpoint", distanceController.atSetpoint());
+    SmartDashboard.putBoolean("thetaController atSetpoint", thetaController.atSetpoint());
+    
+    SmartDashboard.putBoolean("distanceController atGoal", distanceController.atGoal());
+    SmartDashboard.putBoolean("thetaController atGoal", thetaController.atGoal());
+
+    SmartDashboard.putNumber("Distance Position (inches)", Units.metersToInches(distanceController.getSetpoint().position));
+    SmartDashboard.putNumber("Theta Position", thetaController.getSetpoint().position);
+
+    Logger.getInstance().recordOutput("PointToPoint/Distance Setpoint (Position)", Units.metersToInches(distanceController.getSetpoint().position));
+    Logger.getInstance().recordOutput("PointToPoint/Distance Setpoint (Velocity)", Units.metersToInches(distanceController.getSetpoint().velocity));
+    Logger.getInstance().recordOutput("PointToPoint/Theta Setpoint (Position)", thetaController.getSetpoint().position);
+    Logger.getInstance().recordOutput("PointToPoint/Theta Setpoint (Velocity)", thetaController.getSetpoint().velocity);
+
     Logger.getInstance().recordOutput("PointToPoint/Robot Distance (inches)", Units.metersToInches(robotCoordinate.getRadiusMeters()));
     Logger.getInstance().recordOutput("PointToPoint/Robot Angle (degrees)", robotCoordinate.getTheta().getDegrees());
     
-    SmartDashboard.putNumber("Output", forwardOutput);
     Logger.getInstance().recordOutput("PointToPoint/Distance Error", distanceController.getPositionError());
     Logger.getInstance().recordOutput("PointToPoint/Angle Error", thetaController.getPositionError());
     Logger.getInstance().recordOutput("PointToPoint/Forward Output", forwardOutput);
     Logger.getInstance().recordOutput("PointToPoint/Strafe Output", strafeOutput);
 
-    Pose2d pose = poseSupplier.get();
-    Logger.getInstance().recordOutput("PointToPoint/Pose",
-      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+    SmartDashboard.putNumber("Theta Error", thetaController.getPositionError());
 
-    SmartDashboard.putNumber("Robot Pose X", pose.getX());
-    SmartDashboard.putNumber("Robot Pose Y", pose.getY());
     // Translation2d distanceFieldCoordinate = distanceCoordinate.toFieldCoordinate();
     // SmartDashboard.putNumber("Target X", distanceFieldCoordinate.getX());
     // SmartDashboard.putNumber("Target Y", distanceFieldCoordinate.getY());
@@ -108,7 +120,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
     //output += xCurrentPercentage;
 
     // Clamp to some max speed (should be between [0.0, 1.0])
-    final double maxSpeed = 0.35;
+    final double maxSpeed = 1.0;
     forwardOutput = MathUtil.clamp(
       forwardOutput,
       -maxSpeed,
@@ -121,6 +133,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
       maxSpeed
     );
 
+    Pose2d pose = poseSupplier.get();
     SmartDashboard.putNumber("Initial X", pose.getX());
     SmartDashboard.putNumber("Initial Y", pose.getY());
     double x = pose.getX() - target.getReferencePoint().getX();
@@ -154,7 +167,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
 
   @Override
   public boolean isFinished() {
-    return distanceController.atSetpoint() && thetaController.atSetpoint();
+    return distanceController.atGoal() && thetaController.atGoal();
   }
 
 }
