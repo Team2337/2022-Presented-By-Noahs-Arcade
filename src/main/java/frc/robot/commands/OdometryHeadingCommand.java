@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
@@ -41,7 +40,7 @@ public class OdometryHeadingCommand extends CommandBase {
     double angle = Math.atan2(y, x);  // (-π, π] radians
     // The angle is the angle outward from our center point. In order to face our center
     // point, we need to rotate our angle by 180 degrees.
-    heading.setMaintainHeading(new Rotation2d(angle).unaryMinus());
+    heading.setMaintainHeading(new Rotation2d(angle - Math.PI));
   }
 
 }
