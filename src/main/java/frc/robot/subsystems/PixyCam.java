@@ -61,8 +61,23 @@ public class PixyCam extends SubsystemBase {
     ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
     infoWidget.addNumber("Number of Blocks", () -> blocks.size());
     infoWidget.addNumber("Number of Targets", () -> filteredBlocks.size());
-    infoWidget.addString("Target angle", () -> {
-      return blueTarget == null ? "N/A" : String.valueOf(getTargetAngle(blueTarget));
+    infoWidget.addNumber("Red target x", () -> {
+      return redTarget == null ? -1 : redTarget.getX();
+    });
+    infoWidget.addNumber("Red target y", () -> {
+      return redTarget == null ? -1 : redTarget.getY();
+    });
+    infoWidget.addString("Red target angle", () -> {
+      return redTarget == null ? "" : String.valueOf(getTargetAngle(redTarget));
+    });
+    infoWidget.addNumber("Blue target x", () -> {
+      return blueTarget == null ? -1 : blueTarget.getX();
+    });
+    infoWidget.addNumber("Blue target y", () -> {
+      return blueTarget == null ? -1 : blueTarget.getY();
+    });
+    infoWidget.addString("Blue target angle", () -> {
+      return blueTarget == null ? "" : String.valueOf(getTargetAngle(blueTarget));
     });
     infoWidget.addNumber("Pixy State", () -> state);
 
@@ -107,14 +122,18 @@ public class PixyCam extends SubsystemBase {
    * Filters the targets based on conditions that make them seem "cargo-like"
    */
   private void filterTargets() {
-    // Skip the method if number of targets is 0
-    if(numberOfTargets == 0)
+    // Skip the method if error value
+    if(numberOfTargets < 0)
       return;
     
-    // Filter ArrayList
+    // Clear last entries
     Block bestRedBlock = null;
     Block bestBlueBlock = null;
     filteredBlocks.clear();
+
+    // Skip the filtering if there are no targets
+    if(numberOfTargets == 0)
+      return;
 
     for(Block block : blocks) {
       // Get ratio of width to height
@@ -125,6 +144,7 @@ public class PixyCam extends SubsystemBase {
         ratio = 1 / ratio;
       
       // Check if it matches conditions
+      //FIXME: add proper ball detection
       if(ratio < Constants.PIXY_RATIO_THRESHOLD) {
         // Add it to filtered list
         filteredBlocks.add(block);
@@ -140,6 +160,12 @@ public class PixyCam extends SubsystemBase {
             bestBlueBlock = block;
           }
         }
+      }
+      // TODO: testing, remove after
+      if(block.getSignature() == 1){
+        bestRedBlock = block;
+      } else {
+        bestBlueBlock = block;
       }
     }
 
