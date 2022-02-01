@@ -101,7 +101,8 @@ public class Shooter extends SubsystemBase {
      */
 
     public Shooter() {
-        topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
+        topShoot = new TalonFX(1);
+        //topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
         bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
         //kicker = new TalonFX(Constants.KICKER_MOTOR);
         fxConfig = new TalonFXConfiguration();
@@ -153,8 +154,8 @@ public class Shooter extends SubsystemBase {
         temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
         speed.addNumber("Top Shooter RPM", () -> getTopRPM());
         speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
-        speed.addNumber("Top Shooter Wheel Speed ft/s", () -> getTopWheelSpeed());
-        speed.addNumber("Bottom Shooter Wheel Speed ft/s", () -> getBottomWheelSpeed());
+        speed.addNumber("Top Shooter Wheel Speed", () -> getTopWheelSpeed());
+        speed.addNumber("Bottom Shooter Wheel Speed", () -> getBottomWheelSpeed());
 
         
     }
@@ -277,36 +278,36 @@ public class Shooter extends SubsystemBase {
       return wheelSpeed;
     }
     public void setTopShooterSpeed(double speed){
-        double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
+        /*double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel *60)/(Math.PI * 2);
         double rpm = wheelRpm / (16/24); //Gear Ratio
         double rps = rpm/60;
         double tps = rps*2048;
         double encoderTicks = tps / 10;
-        topShoot.set(ControlMode.Velocity, (encoderTicks)); 
-        /*Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        topShoot.set(ControlMode.Velocity, (encoderTicks)); */
+        //x RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
         double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-        bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
         
      }
      
      public void setBottomShooterSpeed(double speed){
-        double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
+        /*double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
         double wheelRpm = (wheel *60)/(Math.PI * 2);
         double rpm = wheelRpm / (16/24); //Gear Ratio
         double rps = rpm/60;
         double tps = rps*2048;
         double encoderTicks = tps / 10;
-        bottomShoot.set(ControlMode.Velocity, (encoderTicks)); 
-        /*Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+        bottomShoot.set(ControlMode.Velocity, (encoderTicks)); */
+        //Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
         double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-        bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); */
+        bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
         
      }
 }
