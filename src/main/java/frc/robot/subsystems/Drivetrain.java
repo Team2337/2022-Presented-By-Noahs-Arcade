@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotType;
-import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -95,8 +93,8 @@ public class Drivetrain extends SubsystemBase {
         tab.getLayout("Front Right Module", BuiltInLayouts.kList)
           .withSize(4, 8)
           .withPosition(4, 0),
-        RobotType.getRobotType() == Type.SKILLSBOT ? Mk4SwerveModuleHelper.GearRatio.L1 : Mk4SwerveModuleHelper.GearRatio.L1i,
-        Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
+        Mk4SwerveModuleHelper.GearRatio.L1,
+        Constants.MODULE0_DRIVE_MOTOR_ID,
         Constants.MODULE0_ANGLE_MOTOR_ID,
         Constants.MODULE0_ANGLE_CANCODER_ID,
         Constants.MODULE0_ANGLE_OFFSET
@@ -105,7 +103,7 @@ public class Drivetrain extends SubsystemBase {
         tab.getLayout("Front Left Module", BuiltInLayouts.kList)
           .withSize(4, 8)
           .withPosition(0, 0),
-        RobotType.getRobotType() == Type.SKILLSBOT ? Mk4SwerveModuleHelper.GearRatio.L1 : Mk4SwerveModuleHelper.GearRatio.L1i,
+        Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE1_DRIVE_MOTOR_ID,
         Constants.MODULE1_ANGLE_MOTOR_ID,
         Constants.MODULE1_ANGLE_CANCODER_ID,
@@ -115,7 +113,7 @@ public class Drivetrain extends SubsystemBase {
         tab.getLayout("Back Left Module", BuiltInLayouts.kList)
           .withSize(4, 8)
           .withPosition(0, 8),
-        RobotType.getRobotType() == Type.SKILLSBOT ? Mk4SwerveModuleHelper.GearRatio.L1 : Mk4SwerveModuleHelper.GearRatio.L1i,
+        Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE2_DRIVE_MOTOR_ID,
         Constants.MODULE2_ANGLE_MOTOR_ID,
         Constants.MODULE2_ANGLE_CANCODER_ID,
@@ -125,7 +123,7 @@ public class Drivetrain extends SubsystemBase {
         tab.getLayout("Back Right Module", BuiltInLayouts.kList)
           .withSize(4, 8)
           .withPosition(4, 8),
-        RobotType.getRobotType() == Type.SKILLSBOT ? Mk4SwerveModuleHelper.GearRatio.L1 : Mk4SwerveModuleHelper.GearRatio.L1i,
+        Mk4SwerveModuleHelper.GearRatio.L1,
         Constants.MODULE3_DRIVE_MOTOR_ID,
         Constants.MODULE3_ANGLE_MOTOR_ID,
         Constants.MODULE3_ANGLE_CANCODER_ID,
@@ -142,7 +140,6 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
 
     SmartDashboard.putData("Odometry", field);
-    SmartDashboard.putString("Type", RobotType.getRobotType().toString());
   }
 
   public void resetPosition(Pose2d pose) {
