@@ -133,7 +133,7 @@ public final class Constants {
   public static final int DELIVERY_MOTOR_ID = 7;
   public static final double DELIVERY_SPEED = 0.5;
 
-  public static final double PIXY_RATIO_THRESHOLD = 1.5;
+  public static final double PIXY_RATIO_THRESHOLD = 2;
 
   // Color stuff
   public static enum BallColor {
