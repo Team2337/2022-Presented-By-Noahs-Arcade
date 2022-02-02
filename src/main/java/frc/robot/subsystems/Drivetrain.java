@@ -4,6 +4,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,15 +18,21 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
+  /**
+   * Inputs
+   */
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+  /**
+   * Hardware (private)
+   */
   private PigeonIMU pigeon;
 
   /**
@@ -35,6 +43,13 @@ public class Drivetrain extends SubsystemBase {
    * 3 is Back Right
    */
   private SwerveModule[] modules;
+
+  /**
+   * Logging
+   */
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+  private Field2d field = new Field2d();
+  private Logger logger = Logger.getInstance();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -123,6 +138,8 @@ public class Drivetrain extends SubsystemBase {
 
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
+
+    SmartDashboard.putData("Odometry", field);
   }
 
   public void resetPosition(Pose2d pose) {
@@ -175,13 +192,25 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    odometry.update(
+    Pose2d pose = odometry.update(
       getGyroscopeRotation(),
       states[0],
       states[1],
       states[2],
       states[3]
     );
+
+    logger.recordOutput("Drivetrain/vxFeetPerSecond",
+      Units.metersToFeet(chassisSpeeds.vxMetersPerSecond));
+    logger.recordOutput("Drivetrain/vyFeetPerSecond",
+      Units.metersToFeet(chassisSpeeds.vyMetersPerSecond));
+    logger.recordOutput("Drivetrain/omegaDegreesPerSecond",
+      Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
+
+    Logger.getInstance().recordOutput("Odometry/Robot",
+      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+
+    field.setRobotPose(pose);
   }
 
 }
