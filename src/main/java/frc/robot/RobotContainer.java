@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.auto.TestStraightDistance;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.DistanceToTargetCommand;
@@ -36,7 +37,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   // private final Intake intake = new Intake();
-  // private final Vision vision = new Vision();
+  private final Vision vision = new Vision();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -48,6 +49,8 @@ public class RobotContainer {
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(drivetrain, heading, autoDrive));
+    autonChooser.setDefaultOption("Test Distance", new TestStraightDistance(drivetrain, heading, autoDrive));
+
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
@@ -75,8 +78,8 @@ public class RobotContainer {
     // rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    //leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    //rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {

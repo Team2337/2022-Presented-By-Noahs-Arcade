@@ -31,21 +31,29 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
   private Heading heading;
   private AutoDrive autoDrive;
 
-  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(80), Units.inchesToMeters(160)));
-  private ProfiledPIDController thetaController = new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(30, Math.pow(10, 2)));
+  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(120), Units.inchesToMeters(120)));
+  private ProfiledPIDController thetaController = new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(45, Math.pow(15, 2)));
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
+  private double driveP = 3.0;
+  private double strafeP = 0.05;
+  private double forwardAcceleration = Units.inchesToMeters(120);
+  private double strafeAcceleration = Math.pow(15, 2);
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
     this.target = target;
     this.poseSupplier = poseSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.heading = heading;
     this.autoDrive = autoDrive;
+    this.driveP = driveP;
+    this.strafeP = strafeP;
+    this.forwardAcceleration = forwardAcceleration;
+    this.strafeAcceleration = strafeAcceleration;
 
     distanceController.setTolerance(Units.inchesToMeters(1));
-    thetaController.setTolerance(0.05); // In degrees
+    thetaController.setTolerance(0.1); // In degrees
 
     SmartDashboard.putNumber("Target Distance (feet)", Units.metersToFeet(target.getRadiusMeters()));
     SmartDashboard.putNumber("Target Theta (Degrees)", target.getTheta().getDegrees());
@@ -64,6 +72,11 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
     );
     thetaController.reset(robotCoordinate.getTheta().getDegrees());
     distanceController.reset(robotCoordinate.getRadiusMeters());
+
+    distanceController.setP(driveP);
+    thetaController.setP(strafeP);
+    distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
+    thetaController.setConstraints(new TrapezoidProfile.Constraints(45, Math.pow(strafeAcceleration, 2)));
   }
 
   @Override

@@ -59,6 +59,18 @@ public final class Constants {
       Units.inchesToMeters(90),
       Rotation2d.fromDegrees(14) // 80.25 using alliance wall zero
     );
+    public static final PolarCoordinate testStart = new PolarCoordinate(
+      Units.inchesToMeters(20),
+      Rotation2d.fromDegrees(90) // 80.25 using alliance wall zero
+    );
+    public static final PolarCoordinate testStrafe = new PolarCoordinate(
+      Units.inchesToMeters(133),
+      Rotation2d.fromDegrees(90) // 80.25 using alliance wall zero
+    );
+    public static final PolarCoordinate startStrafeTest = new PolarCoordinate(
+      Units.inchesToMeters(133),
+      Rotation2d.fromDegrees(0) // 80.25 using alliance wall zero
+    );
     // Ball 1 = Ball nearest to the top starting location
     public static final PolarCoordinate kBall1 = new PolarCoordinate(
       Units.inchesToMeters(153),
@@ -71,7 +83,7 @@ public final class Constants {
     // Ball 2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBall2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(54.75) // 35.25 using alliance wall zero
+      Rotation2d.fromDegrees(62) // 35.25 using alliance wall zero 54.75
     );
     public static final PolarCoordinate kBall2Pickup = new PolarCoordinate(
       Constants.Auto.kBall2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -80,17 +92,25 @@ public final class Constants {
     // Ball 3 = Ball just in front of the Terminal
     public static final PolarCoordinate kBall3 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(67.35) // 22.65 using alliance wall zero
+      Rotation2d.fromDegrees(75) // 22.65 using alliance wall zero 67.35
     );
     public static final PolarCoordinate kBall3Pickup = new PolarCoordinate(
       Constants.Auto.kBall3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBall3.getTheta()
+    );
+    public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(75) // 22.65 using alliance wall zero 67.35
     );
     // Ball 4 is the human player ball at the Terminal
     // Ball 5 = Ball nearest to the bottom starting location
     public static final PolarCoordinate kBall5 = new PolarCoordinate(
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(122.25) // -32.25 using alliance wall zero
+    );
+    public static final PolarCoordinate kTestDistance = new PolarCoordinate(
+      Units.inchesToMeters(200),
+      Rotation2d.fromDegrees(90) // -32.25 using alliance wall zero
     );
   }
 
