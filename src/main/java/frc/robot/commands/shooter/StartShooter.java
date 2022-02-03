@@ -1,7 +1,6 @@
 package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.Shooter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -22,15 +21,13 @@ public class StartShooter extends CommandBase {
     subsystem.currentLimitConfigurationMotor.currentLimit = 50;
     subsystem.topShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
     subsystem.bottomShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
-    subsystem.topShoot.configClosedloopRamp(0.0);
-    subsystem.bottomShoot.configClosedloopRamp(0.0);
+    subsystem.topShoot.configClosedloopRamp(0.1);
+    subsystem.bottomShoot.configClosedloopRamp(0.1);
   }
 
   @Override
   public void execute() {
     subsystem.setTopShooterSpeed(subsystem.topShooter.getDouble(0));
-    subsystem.setBottomShooterSpeed(subsystem.topShooter.getDouble(0));
-
   }
 
   @Override

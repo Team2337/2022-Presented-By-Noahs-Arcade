@@ -30,11 +30,11 @@ public class Shooter extends SubsystemBase {
     public TalonFX kicker;
     public TalonFXConfiguration fxConfig;
     public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
-
-    private double kP = 1.15;
+    //This is for 40.7 ft/s, RING OF FIRE!!!
+    private double kP = 0.62; 
     private double kI = 0;
-    private double kD = 0.0002;
-    private double kF = 0.1079;
+    private double kD = 0.000;
+    private double kF = 0.055;
 
     private double topSpeed = 0;
     private double bottomSpeed = 0;
@@ -47,11 +47,11 @@ public class Shooter extends SubsystemBase {
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
-        .withSize(2, 4)
+        .withSize(4, 8)
         .withPosition(0, 0);
     ShuffleboardLayout speeds = tab.getLayout("Shooter Speeds", BuiltInLayouts.kList)
-        .withSize(2, 4)
-        .withPosition(2, 0); 
+        .withSize(4, 8)
+        .withPosition(4, 0); 
      public NetworkTableEntry kep = pid
         .add("kP", kP )
         .withWidget(BuiltInWidgets.kTextView)
@@ -77,32 +77,15 @@ public class Shooter extends SubsystemBase {
         .getEntry();
 
         ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
-        .withSize(2, 4)
-        .withPosition(4, 0); 
+        .withSize(4, 8)
+        .withPosition(8, 0); 
 
         ShuffleboardLayout speed = tab.getLayout("Motor Velocities", BuiltInLayouts.kList)
-        .withSize(2, 4)
-        .withPosition(6, 0); 
-        
-        
-        /*
-     public NetworkTableEntry topShootTemp = temps
-     .add("Top Shooter Temp", topShoot.getTemperature())
-     .withWidget(BuiltInWidgets.kDial)
-     .getEntry();
-     public NetworkTableEntry bottomShootTemp = temps
-     .add("Bottom Shooter Temp", bottomShoot.getTemperature())
-     .withWidget(BuiltInWidgets.kDial)
-     .getEntry();
-     public NetworkTableEntry OverTemp = temps
-     .add("OverTemp", motorOverTemp)
-     .withWidget(BuiltInWidgets.kBooleanBox)
-     .getEntry();
-     */
+        .withSize(4, 8)
+        .withPosition(12, 0); 
 
     public Shooter() {
-        topShoot = new TalonFX(1);
-        //topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
+        topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
         bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
         //kicker = new TalonFX(Constants.KICKER_MOTOR);
         fxConfig = new TalonFXConfiguration();
@@ -146,16 +129,19 @@ public class Shooter extends SubsystemBase {
         topShoot.setNeutralMode(NeutralMode.Coast);
         bottomShoot.setNeutralMode(NeutralMode.Coast);
         // Sets up inversions
+        
+        
+        //bottomShoot.set(ControlMode.Follower, Constants.SHOOTER_LEFT_MOTOR);
         topShoot.setInverted(false);
-        bottomShoot.setInverted(true); 
+        bottomShoot.setInverted(true);
 
         temps.addNumber("Top Shooter Temperature", () -> topShoot.getTemperature());
         temps.addNumber("Bottom Shooter Temperature", () -> bottomShoot.getTemperature());
         temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
         speed.addNumber("Top Shooter RPM", () -> getTopRPM());
         speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
-        speed.addNumber("Top Shooter Wheel Speed", () -> getTopWheelSpeed());
-        speed.addNumber("Bottom Shooter Wheel Speed", () -> getBottomWheelSpeed());
+        speed.addNumber("Top Shooter Wheel Speed", () -> topShoot.getSelectedSensorVelocity());
+        speed.addNumber("Bottom Shooter Wheel Speed", () -> bottomShoot.getSelectedSensorVelocity());
 
         
     }
@@ -206,7 +192,7 @@ public class Shooter extends SubsystemBase {
         bottomShoot.config_kP(0, kp);
         bottomShoot.config_kI(0, ki);
         bottomShoot.config_kD(0, kd);
-        bottomShoot.config_kF(0, kf);
+        bottomShoot.config_kF(0, kf); 
   }
 
 
@@ -277,37 +263,28 @@ public class Shooter extends SubsystemBase {
       double wheelSpeed = ((2*Math.PI*wheelRpm)/60)*((wheelDiameter/12)/2); //This turns wheel RPM's into ft/s
       return wheelSpeed;
     }
-    public void setTopShooterSpeed(double speed){
-        /*double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
-        double wheelRpm = (wheel *60)/(Math.PI * 2);
-        double rpm = wheelRpm / (16/24); //Gear Ratio
-        double rps = rpm/60;
-        double tps = rps*2048;
-        double encoderTicks = tps / 10;
-        topShoot.set(ControlMode.Velocity, (encoderTicks)); */
-        //x RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
+    public void setTopShooterSpeed(double speed) {
+        // 4in wheel
+        double wheelDiameterFeet = 4.0 / 12.0;
+        double wheelRadiusFeet = wheelDiameterFeet / 2.0;
+        double feetPerRotation = (Math.PI * 2.0 * wheelRadiusFeet);
+        // 16 / 24 gear ratio
+        double rotationsPerSecond = (speed / feetPerRotation) * (24.0 / 16.0);
+        // 2048 ticks per rotation
+        double ticksPerSecond = rotationsPerSecond * 2048.0;
+        double ticksPerHundredMiliseconds = ticksPerSecond / 10.0;
+        SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
+        topShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
+        bottomShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
+        /*
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
         double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
         topShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
-        
+        */
      }
      
-     public void setBottomShooterSpeed(double speed){
-        /*double wheel = speed /((4/12)/2); //Speed is inputed in ft/s and is converted to encoder ticks per 100 ms which can be set in velocity.
-        double wheelRpm = (wheel *60)/(Math.PI * 2);
-        double rpm = wheelRpm / (16/24); //Gear Ratio
-        double rps = rpm/60;
-        double tps = rps*2048;
-        double encoderTicks = tps / 10;
-        bottomShoot.set(ControlMode.Velocity, (encoderTicks)); */
-        //Max RPM of a Falcon 500 is 6380 RPM, so that would be at 100% power
-        double rps = 6380/60; // Max revolutions per second
-        double tps = rps*2048; // Max encoder ticks per second
-        double maxSpeed = tps/10; // This converts to motor ticks. 
-        double speedAtOnePercent = maxSpeed/100; //Encoder ticks at 1% power?
-        bottomShoot.set(ControlMode.Velocity, (speedAtOnePercent * speed)); 
-        
-     }
+    
+     
 }

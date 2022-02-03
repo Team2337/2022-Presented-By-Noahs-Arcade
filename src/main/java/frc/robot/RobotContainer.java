@@ -22,14 +22,14 @@ public class RobotContainer {
 
   // private final Climber climber = new Climber();
   // private final Delivery delivery = new Delivery();
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  private final Intake intake = new Intake();
+  // private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  // private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
+  // private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Vision vision = new Vision();
 
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+    // drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -40,8 +40,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+    // JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
+    // driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     driverA.whenHeld(new StartShooter(shooter));
   }
