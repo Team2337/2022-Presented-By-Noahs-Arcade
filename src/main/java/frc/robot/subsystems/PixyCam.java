@@ -22,6 +22,8 @@ public class PixyCam extends SubsystemBase {
   private int state;
   private boolean connected;
 
+  // 
+
   // private ArrayList<Block> blocks = new ArrayList<Block>();
 
   private Block redTarget;
@@ -66,7 +68,7 @@ public class PixyCam extends SubsystemBase {
       return redTarget == null ? -1 : redTarget.getY();
     });
     infoWidget.addString("Red target angle", () -> {
-      return redTarget == null ? "" : String.valueOf(getTargetAngle(redTarget));
+      return redTarget == null ? "" : String.valueOf(getTargetAngle(redTarget).get());
     });
     infoWidget.addNumber("Blue target x", () -> {
       return blueTarget == null ? -1 : blueTarget.getX();
@@ -75,7 +77,7 @@ public class PixyCam extends SubsystemBase {
       return blueTarget == null ? -1 : blueTarget.getY();
     });
     infoWidget.addString("Blue target angle", () -> {
-      return blueTarget == null ? "" : String.valueOf(getTargetAngle(blueTarget));
+      return blueTarget == null ? "" : String.valueOf(getTargetAngle(blueTarget).get());
     });
     infoWidget.addNumber("Pixy State", () -> state);
 
@@ -123,6 +125,10 @@ public class PixyCam extends SubsystemBase {
     // Update entries
     Block bestRedBlock = null;
     Block bestBlueBlock = null;
+
+    /**
+     * TODO: get blocks returns largest blocks first, adapt code
+     */
 
     ArrayList<Block> filteredBlocks = new ArrayList<Block>();
 
