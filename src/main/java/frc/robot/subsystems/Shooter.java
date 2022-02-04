@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();  
 
-     public NetworkTableEntry topShooter = speeds
+     public NetworkTableEntry shooter = speeds
         .add("Top Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
@@ -140,8 +140,8 @@ public class Shooter extends SubsystemBase {
         temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
         speed.addNumber("Top Shooter RPM", () -> getTopRPM());
         speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
-        speed.addNumber("Top Shooter Wheel Speed", () -> topShoot.getSelectedSensorVelocity());
-        speed.addNumber("Bottom Shooter Wheel Speed", () -> bottomShoot.getSelectedSensorVelocity());
+        speed.addNumber("Top Shooter Velocity", () -> topShoot.getSelectedSensorVelocity());
+        speed.addNumber("Bottom Shooter Velocity", () -> bottomShoot.getSelectedSensorVelocity());
 
         
     }
@@ -165,15 +165,15 @@ public class Shooter extends SubsystemBase {
             kF = kef.getDouble(0);
             configurePID(kP, kI, kD, kF);
         }
-        if (topShooter.getDouble(0) != topSpeed) {
-            if (prevTopSpeed == topShooter.getDouble(0)) {
+        if (shooter.getDouble(0) != topSpeed) {
+            if (prevTopSpeed == shooter.getDouble(0)) {
                 topCounter++;
             }
             if (topCounter == 50){
-                topSpeed = topShooter.getDouble(0);
+                topSpeed = shooter.getDouble(0);
                 topCounter = 0;
             }
-            prevTopSpeed = topShooter.getDouble(0);
+            prevTopSpeed = shooter.getDouble(0);
 
         }
 
@@ -263,7 +263,7 @@ public class Shooter extends SubsystemBase {
       double wheelSpeed = ((2*Math.PI*wheelRpm)/60)*((wheelDiameter/12)/2); //This turns wheel RPM's into ft/s
       return wheelSpeed;
     }
-    public void setTopShooterSpeed(double speed) {
+    public void setShooterSpeed(double speed) {
         // 4in wheel
         double wheelDiameterFeet = 4.0 / 12.0;
         double wheelRadiusFeet = wheelDiameterFeet / 2.0;
@@ -276,7 +276,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
         topShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
         bottomShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
-        /*
+        /* This code relates to running the motor by giving a percentage of power, instead of a ft/s
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
