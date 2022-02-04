@@ -68,7 +68,7 @@ public final class Constants {
       Rotation2d.fromDegrees(90) // 80.25 using alliance wall zero
     );
     public static final PolarCoordinate startStrafeTest = new PolarCoordinate(
-      Units.inchesToMeters(133),
+      Units.inchesToMeters(150),
       Rotation2d.fromDegrees(0) // 80.25 using alliance wall zero
     );
     // Ball 1 = Ball nearest to the top starting location

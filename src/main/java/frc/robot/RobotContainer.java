@@ -58,7 +58,7 @@ public class RobotContainer {
   public void resetRobot() {
     pigeon.setYaw(0, 250);
     // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.startA.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.startStrafeTest.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
     // drivetrain.resetOdometry();
     Pose2d pose = drivetrain.getPose();
     SmartDashboard.putNumber("Pose X", pose.getX());

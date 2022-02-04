@@ -162,6 +162,10 @@ public class Drivetrain extends SubsystemBase {
     return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
+  public double getGyroscopeCalculateOffset() {
+    return (pigeon.getYaw() + 90);
+  }
+
   public void drive(ChassisSpeeds chassisSpeeds) {
     this.chassisSpeeds = chassisSpeeds;
   }
@@ -202,6 +206,9 @@ public class Drivetrain extends SubsystemBase {
         new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+
+    SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Calculated Offset", (getGyroscopeCalculateOffset()));
   }
 
 }
