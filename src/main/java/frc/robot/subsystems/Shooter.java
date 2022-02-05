@@ -1,10 +1,5 @@
 package frc.robot.subsystems;
 
-
-import java.util.Map;
-
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -95,6 +90,8 @@ public class Shooter extends SubsystemBase {
         // Configures motors to factory default
         topShoot.configFactoryDefault();
         bottomShoot.configFactoryDefault();
+
+        bottomShoot.follow(topShoot);
         // Configures sensors for PID calculations
         fxConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
 
@@ -110,14 +107,11 @@ public class Shooter extends SubsystemBase {
         currentLimitConfigurationMotor.triggerThresholdTime = 3;
         // Implements these current limits on the motors
         topShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
-        bottomShoot.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
 
         // Set a closed-loop ramp rate on the motors
         topShoot.configClosedloopRamp(0.1);
-        bottomShoot.configClosedloopRamp(0.1);
         // Enable voltage compensation for all control modes on the motors
         topShoot.enableVoltageCompensation(true);
-        bottomShoot.enableVoltageCompensation(true);
 
         /** --- CONFIGURE PIDS --- **/
         // Implement variables into the PIDs
@@ -127,13 +121,12 @@ public class Shooter extends SubsystemBase {
         // Sets up control mode.
         // Sets it to neutral mode so that the motors do not brake down to 0.
         topShoot.setNeutralMode(NeutralMode.Coast);
-        bottomShoot.setNeutralMode(NeutralMode.Coast);
         // Sets up inversions
         
         
         //bottomShoot.set(ControlMode.Follower, Constants.SHOOTER_LEFT_MOTOR);
         topShoot.setInverted(false);
-        bottomShoot.setInverted(true);
+        bottomShoot.setInverted(InvertType.OpposeMaster);
 
         temps.addNumber("Top Shooter Temperature", () -> topShoot.getTemperature());
         temps.addNumber("Bottom Shooter Temperature", () -> bottomShoot.getTemperature());
@@ -189,10 +182,6 @@ public class Shooter extends SubsystemBase {
         topShoot.config_kI(0, ki);
         topShoot.config_kD(0, kd);
         topShoot.config_kF(0, kf);
-        bottomShoot.config_kP(0, kp);
-        bottomShoot.config_kI(0, ki);
-        bottomShoot.config_kD(0, kd);
-        bottomShoot.config_kF(0, kf); 
   }
 
 
@@ -200,9 +189,6 @@ public class Shooter extends SubsystemBase {
      topShoot.set(ControlMode.PercentOutput, 0);
  }
  
- public void stopBottomShooter(){
-     bottomShoot.set(ControlMode.PercentOutput, 0);
- }
 
  /*public void startKicker(){
      kicker.set(ControlMode.PercentOutput, 100);
@@ -275,8 +261,7 @@ public class Shooter extends SubsystemBase {
         double ticksPerHundredMiliseconds = ticksPerSecond / 10.0;
         SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
         topShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
-        bottomShoot.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
-        /* This code relates to running the motor by giving a percentage of power, instead of a ft/s
+        /* This code relates to running the motor by giving a percentage of power, instead of a ft/s, Keeping just in case
         double rps = 6380/60; // Max revolutions per second
         double tps = rps*2048; // Max encoder ticks per second
         double maxSpeed = tps/10; // This converts to motor ticks. 
