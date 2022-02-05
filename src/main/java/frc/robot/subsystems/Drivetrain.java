@@ -142,7 +142,6 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
 
     SmartDashboard.putData("Odometry", field);
-    SmartDashboard.putString("Type", RobotType.getRobotType().toString());
   }
 
   public void resetPosition(Pose2d pose) {
