@@ -21,8 +21,6 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
-  public final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
-
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
   private final AutoDrive autoDrive = new AutoDrive();
