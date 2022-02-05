@@ -40,10 +40,10 @@ public class ClimberCommand extends CommandBase {
   @Override
   public void execute(){
     output = climberController.calculate(subsystem.stringPot.getVoltage(), setpoint);
-    speed =  MathUtil.clamp(output, 0, 1);
+    speed =  MathUtil.clamp(output, -1, 1);
     SmartDashboard.putNumber("PID Output", output);
     SmartDashboard.putNumber("PID Speed", speed);
-    subsystem.startClimber((speed * 1000));
+    subsystem.startClimber((speed * 500));
 }
 
   @Override
