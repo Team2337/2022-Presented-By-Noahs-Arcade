@@ -133,6 +133,10 @@ public final class Constants {
   public static final int DELIVERY_MOTOR_ID = 7;
   public static final double DELIVERY_SPEED = 0.5;
 
+  public static final int CLIMBER1_MOTOR_ID = 12;
+  public static final int CLIMBER2_MOTOR_ID = 13;
+  public static final double CLIMBER_SPEED = 0.5;
+
   // Color stuff
   public static enum BallColor {
     RED,

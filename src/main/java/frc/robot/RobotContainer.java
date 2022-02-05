@@ -9,6 +9,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
@@ -19,7 +20,7 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
-  // private final Climber climber = new Climber();
+  private final Climber climber = new Climber();
   // private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
@@ -28,7 +29,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
-
+    
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -40,6 +41,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    operatorA.whenPressed(new ClimberCommand(climber, driverController, 1));
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorB.whenPressed(new ClimberCommand(climber, driverController, 3));
   }
 
   public Command getAutonomousCommand() {
