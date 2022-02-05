@@ -55,7 +55,8 @@ public final class Constants {
 
   public Constants() {
     switch (RobotType.getRobotType()) {
-      case PRACTICE: 
+      case PRACTICE:
+      case COMPETITION:
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
         MODULE0_ANGLE_CANCODER_ID = 1;
@@ -106,9 +107,6 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
         DRIVETRAIN_WHEEL_BASE_INCHES = 17;
-        break;
-      case COMPETITION:
-        MODULE0_DRIVE_MOTOR_ID = 18;
         break;
     }
   }
