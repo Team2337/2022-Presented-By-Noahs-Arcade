@@ -46,8 +46,8 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
-    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
-    driverA.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, pixyCam, autoDrive));
+    JoystickButton driverLeftButton = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    driverLeftButton.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, pixyCam, autoDrive));
   }
 
   public Command getAutonomousCommand() {
