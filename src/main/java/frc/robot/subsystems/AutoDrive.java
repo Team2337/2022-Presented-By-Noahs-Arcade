@@ -34,7 +34,7 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
  *
  * @Override
  * public void initialize() {
- *   autoDrive.registerAutoDrivableCommand(this);
+ *   autoDrive.setDelegate(this);
  * }
  *
  * 3) Generate an output value in your Command's `periodic` function.
@@ -44,16 +44,16 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
  * slowing your forward output to be the requested forward output from the driver.
  * This method can return null if the Command does not wish to provide any
  * movement values for a given cycle.
- * 5) Call `unregisterAutoDrivableCommand` in your Command's `end` function
+ * 5) Call `clearDelegate` in your Command's `end` function
  *
  * @Override
- * publci void end() {
- *   autoDrive.unregisterAutoDrivableCommand();
+ * public void end() {
+ *   autoDrive.clearDelegate();
  * }
  */
 public class AutoDrive extends SubsystemBase {
 
-  private WeakReference<AutoDrivableCommand> commandReference;
+  private WeakReference<AutoDrivableCommand> delegateReference;
 
   public static class State {
     public double forward;
@@ -70,18 +70,18 @@ public class AutoDrive extends SubsystemBase {
   /**
    * Registered an AutoDrivableCommand to be called when an output is needed for
    * the SwerveDriveCommand. Note: Only one AutoDrivableCommand can be registered
-   * at a time. Commands calling registerAutoDrivableCommand should require
+   * at a time. Commands calling setDelegate should require
    * the AutoDrive subsystem in order to prevent other commands from
    * registering for callbacks.
    *
    * @param command
    */
-  public void registerAutoDrivableCommand(AutoDrivableCommand command) {
-    this.commandReference = new WeakReference<AutoDrivableCommand>(command);
+  public void setDelegate(AutoDrivableCommand command) {
+    this.delegateReference = new WeakReference<AutoDrivableCommand>(command);
   }
 
-  public void unregisterAutoDrivableCommand() {
-    this.commandReference = null;
+  public void clearDelegate() {
+    this.delegateReference = null;
   }
 
   /**
@@ -95,11 +95,11 @@ public class AutoDrive extends SubsystemBase {
    * @return - A negotiated forward/strafe from the auto driveable command
    */
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    if (commandReference == null) {
+    if (delegateReference == null) {
       return null;
     }
 
-    AutoDrivableCommand command = commandReference.get();
+    AutoDrivableCommand command = delegateReference.get();
     if (command == null) {
       return null;
     }
@@ -108,8 +108,8 @@ public class AutoDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (commandReference != null) {
-      AutoDrivableCommand command = commandReference.get();
+    if (delegateReference != null) {
+      AutoDrivableCommand command = delegateReference.get();
       if (command != null) {
         SmartDashboard.putString("AutoDrivable Command", command.toString());
       } else {
