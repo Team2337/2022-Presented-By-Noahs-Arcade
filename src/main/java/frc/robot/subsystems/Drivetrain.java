@@ -79,10 +79,11 @@ public class Drivetrain extends SubsystemBase {
    */
   public Drivetrain(PigeonIMU pigeon) {
     this.pigeon = pigeon;
-
+    
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
-
+    
     if(RobotType.getRobotType() == Type.SKILLSBOT) {
+      SmartDashboard.putString("Skills Bot Setup", "Skills");
       modules = new SwerveModule[] {
         Mk3SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
@@ -126,6 +127,7 @@ public class Drivetrain extends SubsystemBase {
         )
       };
     } else {
+      SmartDashboard.putString("Skills Bot Setup", "Practice");
       modules = new SwerveModule[] {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
@@ -180,6 +182,8 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
     
     SmartDashboard.putData("Field", field);
+    SmartDashboard.putString("Type", RobotType.getRobotType().toString());
+    SmartDashboard.putNumber("MODULE0_ANGLE_MOTOR_ID", Constants.getInstance().MODULE0_ANGLE_MOTOR_ID);
   }
 
   public void resetPosition(Pose2d pose) {
