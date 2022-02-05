@@ -123,8 +123,8 @@ public class PixyCam extends SubsystemBase {
     }
     
     // Update entries
-    Block bestRedBlock = null;
-    Block bestBlueBlock = null;
+    redTarget = null;
+    blueTarget = null;
 
     /**
      * TODO: get blocks returns largest blocks first, adapt code
@@ -151,18 +151,15 @@ public class PixyCam extends SubsystemBase {
 
         if (block.getSignature() == 1) {
           if (redTarget == null || redTarget.getWidth() * redTarget.getHeight() < area) {
-            bestRedBlock = block;
+            redTarget = block;
           }
         } else {
           if (blueTarget == null || blueTarget.getWidth() * blueTarget.getHeight() < area) {
-            bestBlueBlock = block;
+            blueTarget = block;
           }
         }
       }
     }
-
-    redTarget = bestRedBlock;
-    blueTarget = bestBlueBlock;
   }
 
   /**
@@ -170,11 +167,8 @@ public class PixyCam extends SubsystemBase {
    * 
    * @return The largest red target that seems "cargo-like"
    */
-  public Optional<Block> getRedTarget() {
-    if(redTarget == null)
-      return Optional.empty();
-    
-    return Optional.of(redTarget);
+  public Block getRedTarget() {
+    return redTarget;
   }
 
   /**
@@ -182,25 +176,22 @@ public class PixyCam extends SubsystemBase {
    * 
    * @return The largest blue target that seems "cargo-like"
    */
-  public Optional<Block> getBlueTarget() {
-    if(blueTarget == null)
-      return Optional.empty();
-    
-    return Optional.of(blueTarget);
+  public Block getBlueTarget() {
+    return blueTarget;
   }
 
   /**
    * @return Whether or not the Pixy sees a red cargo
    */
   public boolean seesRedTarget(){
-    return getRedTarget().isPresent();
+    return getRedTarget() != null;
   }
 
   /**
    * @return Whether or not the Pixy sees a blue cargo
    */
   public boolean seesBlueTarget(){
-    return getBlueTarget().isPresent();
+    return getBlueTarget() != null;
   }
 
   /**
@@ -220,6 +211,10 @@ public class PixyCam extends SubsystemBase {
      * degrees, and then subtract it by 30 to center it.
      */
     return Optional.of(((target.getX() / 315.0) * 60.0) - 30.0);
+  }
+
+  public double getFrameWidth() {
+    return pixycam.getFrameWidth();
   }
 
 }
