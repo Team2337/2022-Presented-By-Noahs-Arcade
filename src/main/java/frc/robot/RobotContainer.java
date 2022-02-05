@@ -24,6 +24,7 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
+  private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
@@ -35,7 +36,7 @@ public class RobotContainer {
   public static BallColor opposingColor;
 
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
     // Set alliance color
     allianceColor = DriverStation.getAlliance() == Alliance.Red ? BallColor.RED : BallColor.BLUE;
@@ -51,11 +52,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
-
-    // TODO: update intake controls using new commands (work on intake-update branch)
-
-    // Configure buttons/switches on operator station
+    driverX.whenPressed(heading::enableMaintainHeading);
   }
 
   public Command getAutonomousCommand() {
