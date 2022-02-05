@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotType;
+import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -80,48 +82,94 @@ public class Drivetrain extends SubsystemBase {
 
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
 
-    modules = new SwerveModule[] {
-      Mk3SwerveModuleHelper.createFalcon500(
-        tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-          .withSize(4, 8)
-          .withPosition(4, 0),
-        Mk3SwerveModuleHelper.GearRatio.STANDARD,
-        Constants.MODULE0_DRIVE_MOTOR_ID,
-        Constants.MODULE0_ANGLE_MOTOR_ID,
-        Constants.MODULE0_ANGLE_CANCODER_ID,
-        Constants.MODULE0_ANGLE_OFFSET
-      ),
-      Mk3SwerveModuleHelper.createFalcon500(
-        tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-          .withSize(4, 8)
-          .withPosition(0, 0),
-        Mk3SwerveModuleHelper.GearRatio.STANDARD,
-        Constants.MODULE1_DRIVE_MOTOR_ID,
-        Constants.MODULE1_ANGLE_MOTOR_ID,
-        Constants.MODULE1_ANGLE_CANCODER_ID,
-        Constants.MODULE1_ANGLE_OFFSET
-      ),
-      Mk3SwerveModuleHelper.createFalcon500(
-        tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-          .withSize(4, 8)
-          .withPosition(0, 8),
-        Mk3SwerveModuleHelper.GearRatio.STANDARD,
-        Constants.MODULE2_DRIVE_MOTOR_ID,
-        Constants.MODULE2_ANGLE_MOTOR_ID,
-        Constants.MODULE2_ANGLE_CANCODER_ID,
-        Constants.MODULE2_ANGLE_OFFSET
-      ),
-      Mk3SwerveModuleHelper.createFalcon500(
-        tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-          .withSize(4, 8)
-          .withPosition(4, 8),
-        Mk3SwerveModuleHelper.GearRatio.STANDARD,
-        Constants.MODULE3_DRIVE_MOTOR_ID,
-        Constants.MODULE3_ANGLE_MOTOR_ID,
-        Constants.MODULE3_ANGLE_CANCODER_ID,
-        Constants.MODULE3_ANGLE_OFFSET
-      )
-    };
+    if(RobotType.getRobotType() == Type.SKILLSBOT) {
+      modules = new SwerveModule[] {
+        Mk3SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(4, 0),
+          Mk3SwerveModuleHelper.GearRatio.STANDARD,
+          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE0_ANGLE_OFFSET
+        ),
+        Mk3SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(0, 0),
+          Mk3SwerveModuleHelper.GearRatio.STANDARD,
+          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE1_ANGLE_OFFSET
+        ),
+        Mk3SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(0, 8),
+          Mk3SwerveModuleHelper.GearRatio.STANDARD,
+          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE2_ANGLE_OFFSET
+        ),
+        Mk3SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(4, 8),
+          Mk3SwerveModuleHelper.GearRatio.STANDARD,
+          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE3_ANGLE_OFFSET
+        )
+      };
+    } else {
+      modules = new SwerveModule[] {
+        Mk4SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(4, 0),
+          Mk4SwerveModuleHelper.GearRatio.L1I,
+          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE0_ANGLE_OFFSET
+        ),
+        Mk4SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(0, 0),
+          Mk4SwerveModuleHelper.GearRatio.L1I,
+          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE1_ANGLE_OFFSET
+        ),
+        Mk4SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(0, 8),
+          Mk4SwerveModuleHelper.GearRatio.L1I,
+          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE2_ANGLE_OFFSET
+        ),
+        Mk4SwerveModuleHelper.createFalcon500(
+          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+            .withSize(4, 8)
+            .withPosition(4, 8),
+          Mk4SwerveModuleHelper.GearRatio.L1I,
+          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
+          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
+          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
+          Constants.getInstance().MODULE3_ANGLE_OFFSET
+        )
+      };
+    }
+    
 
     ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
     chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
