@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-
+import java.util.Map;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 /* @nicholas.stokes If you’d like to own getting the shooter code setup
  and ready to go that would be good. Two Falcons. Make sure we have some Dashboard element pre-built using code that we can 
  configure things like the RPM for each motor, along with the PIDs (keep in mind the PIDs are going to be on the Falcon’s)
@@ -32,11 +31,8 @@ public class Shooter extends SubsystemBase {
     private double kF = 0.055;
 
     private double topSpeed = 0;
-    private double bottomSpeed = 0;
     private double prevTopSpeed = 0;
-    private double prevBottomSpeed = 0;
     private int topCounter = 0;
-    private int bottomCounter = 0;
     private double motorShutdownTemp = 70;
     public boolean motorOverTemp = false;
 
@@ -67,8 +63,13 @@ public class Shooter extends SubsystemBase {
         .getEntry();  
 
      public NetworkTableEntry shooter = speeds
-        .add("Top Shooter Speed", 0)
+        .add("Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
+    public NetworkTableEntry kick3r = speeds
+        .add("Kicker Speed", 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 100))
         .getEntry();
 
         ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
@@ -82,7 +83,7 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         topShoot = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
         bottomShoot = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
-        //kicker = new TalonFX(Constants.KICKER_MOTOR);
+        kicker = new TalonFX(Constants.KICKER_MOTOR);
         fxConfig = new TalonFXConfiguration();
         
 
@@ -94,10 +95,6 @@ public class Shooter extends SubsystemBase {
         bottomShoot.follow(topShoot);
         // Configures sensors for PID calculations
         fxConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-
-        /*Don't allow either motor to run backwards
-        topShoot.configNominalOutputReverse(0);
-        bottomShoot.configNominalOutputReverse(0); */
 
         /** --- SETS UP SETTINGS (Such as current limits) ON MOTORS AND SENSORS --- **/
         // Set up current limits
@@ -190,13 +187,13 @@ public class Shooter extends SubsystemBase {
  }
  
 
- /*public void startKicker(){
-     kicker.set(ControlMode.PercentOutput, 100);
+ public void startKicker(double speed){
+     kicker.set(ControlMode.PercentOutput, speed);
  }
 
  public void stopKicker(){
-     kicker.set(ControlMode.PercentOutput, 0); */
- 
+     kicker.set(ControlMode.PercentOutput, 0); 
+ }
  public double getTopShooterSpeed(){
      return topShoot.getMotorOutputPercent();
  }

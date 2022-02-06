@@ -26,6 +26,7 @@ public class StartShooter extends CommandBase {
   @Override
   public void execute() {
     subsystem.setShooterSpeed(subsystem.shooter.getDouble(0));
+    subsystem.startKicker(subsystem.kick3r.getDouble(0));
   }
 
   @Override
@@ -35,6 +36,7 @@ public class StartShooter extends CommandBase {
     
     subsystem.topShoot.configClosedloopRamp(0.1);
     subsystem.stopTopShooter();
+    subsystem.stopKicker();
   }
 
 
