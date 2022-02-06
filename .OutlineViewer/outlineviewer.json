@@ -1,0 +1,9 @@
+{
+  "NetworkTables Settings": {
+    "mode": "Client",
+    "serverTeam": "2337"
+  },
+  "SmartDashboard": {
+    "open": true
+  }
+}

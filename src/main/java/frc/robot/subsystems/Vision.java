@@ -13,17 +13,28 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Utilities;
+import frc.robot.coordinates.PolarCoordinate;
+import frc.robot.subsystems.Drivetrain;
+
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 
 public class Vision extends SubsystemBase {
 
   private boolean rotateLimelight = false;
   private boolean visionDebug = false;
+  private PigeonIMU pigeon;
+  private Drivetrain drivetrain;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
-  private MedianFilter medianFilter = new MedianFilter(10);
+  private MedianFilter medianFilterX = new MedianFilter(10);
+  private MedianFilter medianFilterY = new MedianFilter(10);
+
   private double calculatedTx;
+  private double calculatedTy;
 
   // Constants such as camera and target height stored. Change per robot and goal!
   final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
@@ -37,7 +48,10 @@ public class Vision extends SubsystemBase {
   final double distanceToCenterOfHub = 0;
 
 
-  public Vision() {
+  public Vision(PigeonIMU pigeon, Drivetrain drivetrain) {
+    this.pigeon = pigeon;
+    this.drivetrain = drivetrain;
+
     ShuffleboardLayout dataWidget = tab.getLayout("Data", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0);
 
     calculatedTx = getDoubleValue("tx");
@@ -93,7 +107,7 @@ public class Vision extends SubsystemBase {
   }
 
   // TODO: Rename
-  public boolean getTv() {
+  public boolean activeTarget() {
     return (int)getDoubleValue("tv") == 1.0 ? true : false;
   }
 
@@ -159,6 +173,12 @@ public class Vision extends SubsystemBase {
    )) + VISION_TARGET_OFFSET_FROM_HUB_CENTER;
   }
 
+  public PolarCoordinate getPolarResetCoordinates() {
+    //Negate gryoscope rotation if using skills bot
+    return new PolarCoordinate(Units.inchesToMeters(getDistanceFromCenterHub()), Rotation2d.fromDegrees(-drivetrain.getGyroscopeCalculateOffset()));
+    //return new PolarCoordinate(118, Rotation2d.fromDegrees(47));
+  }
+
 
 
   @Override
@@ -171,9 +191,15 @@ public class Vision extends SubsystemBase {
        Units.degreesToRadians(getTy())
     );
 
-    calculatedTx = medianFilter.calculate(getDoubleValue("tx"));
+    calculatedTx = medianFilterX.calculate(getDoubleValue("tx"));
+    calculatedTy = medianFilterY.calculate(getDoubleValue("ty"));
+    SmartDashboard.putNumber("tx", getTx());
+    SmartDashboard.putNumber("Calculated tx", calculatedTx);
+    SmartDashboard.putNumber("ty", getTy());
+    SmartDashboard.putNumber("Calculated ty", calculatedTy);
     SmartDashboard.putNumber("Calculate Distance to Target (feet)", Units.metersToInches(range));
     SmartDashboard.putNumber("Distance from center hub", getDistanceFromCenterHub());
+    SmartDashboard.putNumber("Gyro + Tx", pigeon.getYaw() - calculatedTx);
   }
   
     /**
@@ -202,8 +228,8 @@ public class Vision extends SubsystemBase {
             double targetHeightMeters,
             double cameraPitchRadians,
             double targetPitchRadians) {
-        return (targetHeightMeters - cameraHeightMeters)
-                / Math.tan(cameraPitchRadians + targetPitchRadians);
+        return (Constants.getInstance().HUB_HEIGHT - Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT)
+                / Math.tan(Constants.getInstance().LIMEILGHT_CAMERA_ANGLE + targetPitchRadians);
     }
 
     /**

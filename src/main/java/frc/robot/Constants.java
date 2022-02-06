@@ -70,7 +70,7 @@ public Constants() {
     DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
     DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
-    LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(28.5);
+    LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5); //28.5
     LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
     HUB_HEIGHT = Units.inchesToMeters(103.8);
     break;
@@ -97,6 +97,10 @@ public Constants() {
 
     DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
     DRIVETRAIN_WHEEL_BASE_INCHES = 17;
+
+    LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5); //28.5
+    LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
+    HUB_HEIGHT = Units.inchesToMeters(103.8);
     break;
     case COMPETITION:
     MODULE0_DRIVE_MOTOR_ID = 18;
@@ -152,8 +156,12 @@ public static Constants getInstance() {
       Rotation2d.fromDegrees(90) // 80.25 using alliance wall zero
     );
     public static final PolarCoordinate startStrafeTest = new PolarCoordinate(
-      Units.inchesToMeters(150),
+      Units.inchesToMeters(60),
       Rotation2d.fromDegrees(0) // 80.25 using alliance wall zero
+    );
+    public static final PolarCoordinate relocalizationStart = new PolarCoordinate(
+      Units.inchesToMeters(97),
+      Rotation2d.fromDegrees(14) // 80.25 using alliance wall zero
     );
     // Ball 1 = Ball nearest to the top starting location
     public static final PolarCoordinate kBall1 = new PolarCoordinate(

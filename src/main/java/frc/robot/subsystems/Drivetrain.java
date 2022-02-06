@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotType;
 import frc.robot.RobotType.Type;
+import frc.robot.coordinates.PolarCoordinate;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -33,6 +34,10 @@ public class Drivetrain extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   private PigeonIMU pigeon;
+  private PolarCoordinate robotCoordinate;
+
+  public double polarOffset = 0;
+  public double polarCorrectionDegrees = 0;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -81,6 +86,7 @@ public class Drivetrain extends SubsystemBase {
     this.pigeon = pigeon;
     
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
+
     
     if(RobotType.getRobotType() == Type.SKILLSBOT) {
       SmartDashboard.putString("Skills Bot Setup", "Skills");
@@ -184,6 +190,11 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("Field", field);
     SmartDashboard.putString("Type", RobotType.getRobotType().toString());
     SmartDashboard.putNumber("MODULE0_ANGLE_MOTOR_ID", Constants.getInstance().MODULE0_ANGLE_MOTOR_ID);
+
+    Pose2d pose = getPose();
+    SmartDashboard.putNumber("Pose X", pose.getX());
+    SmartDashboard.putNumber("Pose Y", pose.getY());
+    SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
   }
 
   public void resetPosition(Pose2d pose) {
@@ -226,6 +237,14 @@ public class Drivetrain extends SubsystemBase {
     odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
   }
 
+  public Rotation2d getPolarTheta() {
+    return robotCoordinate.getTheta();
+  }
+
+  public double getPolarDistance() {
+    return robotCoordinate.getRadiusMeters();
+  }
+
   /**
    * Stops all of the motors on each module
    */
@@ -259,8 +278,23 @@ public class Drivetrain extends SubsystemBase {
 
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
 
+    robotCoordinate = PolarCoordinate.fromFieldCoordinate(
+      new Translation2d(
+      getPose().getX(),
+      getPose().getY()),
+      Constants.kHub
+    );
+
+      polarCorrectionDegrees = polarOffset + pigeon.getYaw();
+
     SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Pose X", pose.getX());
+    SmartDashboard.putNumber("Pose Y", pose.getY());
     SmartDashboard.putNumber("Calculated Offset", (getGyroscopeCalculateOffset()));
+    SmartDashboard.putNumber("Robot Coordinate Angle", robotCoordinate.getTheta().getDegrees());
+    SmartDashboard.putNumber("Robot Coordinate Distance", Units.metersToFeet(robotCoordinate.getRadiusMeters()));
+    SmartDashboard.putNumber("Polar Offset", polarOffset);
+    SmartDashboard.putNumber("Polar Correction Degrees", polarCorrectionDegrees);
   }
 
 }

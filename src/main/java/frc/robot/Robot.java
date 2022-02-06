@@ -72,6 +72,8 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+  // TODO: Add before competition
+  // m_robotContainer.getPolarOffsetFromGyro();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -86,6 +88,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    //TODO: Remove before compettion
+    m_robotContainer.getPolarOffsetFromGyro();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

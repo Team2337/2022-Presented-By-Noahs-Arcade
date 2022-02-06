@@ -22,6 +22,7 @@ import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.teleop.DistanceToTargetCommand;
 import frc.robot.commands.teleop.PointToPointCommand;
 import frc.robot.commands.teleop.ProfiledPointToPointCommand;
+import frc.robot.commands.teleop.Relocalize;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 
@@ -37,37 +38,39 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   // private final Intake intake = new Intake();
-  private final Vision vision = new Vision();
-
+  private final Vision vision = new Vision(pigeon, drivetrain);
+  
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
-
+  
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-
+    
     // Configure the button bindings
     configureButtonBindings();
-
+    
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(drivetrain, heading, autoDrive));
     autonChooser.setDefaultOption("Test Distance", new TestStraightDistance(drivetrain, heading, autoDrive));
-
-
+    
+    
     SmartDashboard.putData("AutonChooser", autonChooser);
+    vision.switchPipeLine(1);
   }
-
+  
   public void resetRobot() {
     pigeon.setYaw(0, 250);
     // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.startStrafeTest.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.relocalizationStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
     // drivetrain.resetOdometry();
-    Pose2d pose = drivetrain.getPose();
-    SmartDashboard.putNumber("Pose X", pose.getX());
-    SmartDashboard.putNumber("Pose Y", pose.getY());
-    SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
+  }
+  
+  public void getPolarOffsetFromGyro() {
+    drivetrain.polarOffset = drivetrain.getPolarTheta().getDegrees() - pigeon.getYaw();
   }
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
+    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
@@ -75,7 +78,9 @@ public class RobotContainer {
     // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
     // Maintain 1 ft distance in front of target
     // TODO: Remove some of these values at some point after testing
-    // rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(5), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    driverX.whenPressed(new Relocalize(vision, drivetrain));
+    driverA.whenPressed(() -> drivetrain.resetPosition(new Pose2d(Constants.Auto.relocalizationStart.toFieldCoordinate(), Rotation2d.fromDegrees(0))));
     // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
     //leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
