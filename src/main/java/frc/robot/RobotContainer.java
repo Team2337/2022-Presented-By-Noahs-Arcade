@@ -6,23 +6,14 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.auto.TestStraightDistance;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.swerve.SwerveDriveCommand;
-import frc.robot.commands.teleop.DistanceToTargetCommand;
-import frc.robot.commands.teleop.PointToPointCommand;
-import frc.robot.commands.teleop.ProfiledPointToPointCommand;
-import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -49,21 +40,12 @@ public class RobotContainer {
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(drivetrain, heading, autoDrive));
-    autonChooser.setDefaultOption("Test Distance", new TestStraightDistance(drivetrain, heading, autoDrive));
-
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
   public void resetRobot() {
     pigeon.setYaw(0, 250);
-    // TODO: Remove - this is just for testing. 7 meters behind our 0, 0 for DistanceToTargetCommand
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.startTopPosition.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
-    // drivetrain.resetOdometry();
-    Pose2d pose = drivetrain.getPose();
-    SmartDashboard.putNumber("Pose X", pose.getX());
-    SmartDashboard.putNumber("Pose Y", pose.getY());
-    SmartDashboard.putNumber("Pose Angle", pose.getRotation().getDegrees());
   }
 
   private void configureButtonBindings() {

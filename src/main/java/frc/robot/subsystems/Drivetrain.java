@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -143,7 +142,7 @@ public class Drivetrain extends SubsystemBase {
 
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
-    
+
     SmartDashboard.putData("Field", field);
   }
 
@@ -211,10 +210,10 @@ public class Drivetrain extends SubsystemBase {
 
     field.setRobotPose(getPose());
 
-    Logger.getInstance().recordOutput("Odometry/Robot",
-        new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+    logger.recordOutput("Odometry/Robot",
+      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+    logger.recordOutput("Gyro", pigeon.getYaw());
   }
 
 }
