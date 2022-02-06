@@ -41,7 +41,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
     this.autoDrive = autoDrive;
 
     distanceController.setTolerance(Units.inchesToMeters(1));
-    thetaController.setTolerance(0.05); //In degrees
+    thetaController.setTolerance(0.05); // In degrees
 
     SmartDashboard.putNumber("Target Distance (feet)", Units.metersToFeet(target.getRadiusMeters()));
     SmartDashboard.putNumber("Target Theta (Degrees)", target.getTheta().getDegrees());
