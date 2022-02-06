@@ -56,6 +56,33 @@ public final class Constants {
   public Constants() {
     switch (RobotType.getRobotType()) {
       case PRACTICE:
+      MODULE0_DRIVE_MOTOR_ID = 18;
+        MODULE0_ANGLE_MOTOR_ID = 19;
+        MODULE0_ANGLE_CANCODER_ID = 1;
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
+
+        MODULE1_DRIVE_MOTOR_ID = 1;
+        MODULE1_ANGLE_MOTOR_ID = 2;
+        MODULE1_ANGLE_CANCODER_ID = 2;
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+
+        MODULE2_DRIVE_MOTOR_ID = 8;
+        MODULE2_ANGLE_MOTOR_ID = 9;
+        MODULE2_ANGLE_CANCODER_ID = 3;
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+
+        MODULE3_DRIVE_MOTOR_ID = 10;
+        MODULE3_ANGLE_MOTOR_ID = 11;
+        MODULE3_ANGLE_CANCODER_ID = 4;
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
+        break;
       case COMPETITION:
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
@@ -85,7 +112,7 @@ public final class Constants {
         HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
       case SKILLSBOT:
-        MODULE0_DRIVE_MOTOR_ID = 10; 
+        MODULE0_DRIVE_MOTOR_ID = 0; 
         MODULE0_ANGLE_MOTOR_ID = 4;
         MODULE0_ANGLE_CANCODER_ID = 1;
         MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
@@ -107,6 +134,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
         DRIVETRAIN_WHEEL_BASE_INCHES = 17;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
     }
   }
