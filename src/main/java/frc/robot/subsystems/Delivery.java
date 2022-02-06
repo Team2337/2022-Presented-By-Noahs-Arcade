@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.Direction;
 
 /**
  * Subsystem for the delivery mechanism
@@ -38,11 +39,9 @@ public class Delivery extends SubsystemBase {
    * <li><code>[2]</code>: Top
    * <li><code>[3]</code>: Left
    */
-  public final BallColor[] storedBalls = new BallColor[4];
+  private final BallColor[] storedBalls = new BallColor[4];
 
   public int balls = 0;
-
-  public boolean linedUp = false;
 
   /**
    * Initializes the Delivery subsystem with its two color sensors
@@ -91,19 +90,88 @@ public class Delivery extends SubsystemBase {
   // --------------------- //
   ///////////////////////////
 
-  /**
-   * Starts turning the delivery mechanism
-   * @param speed The speed at which to turn as a percent
-   */
-  public void setDeliverySpeed(double speed) {
-    motor.set(ControlMode.PercentOutput, speed);
+  public void startDelivery(Direction direction) {
+    startDelivery(direction, Constants.DELIVERY_SPEED);
   }
-  
+
+  public void startDelivery(Direction direction, double speed) {
+    if (direction == Direction.CLOCKWISE) {
+      // Rotate motor forward
+      motor.set(ControlMode.PercentOutput, speed);
+    } else if (direction == Direction.COUNTER_CLOCKWISE) {
+      // Rotate motor CCW
+      motor.set(ControlMode.PercentOutput, -speed);
+    }
+  }
+
   /**
    * Stops the delivery mechanism
    */
   public void stopDelivery() {
     motor.set(ControlMode.PercentOutput, 0.0);
+  }
+
+
+  ////////////////////////////////////
+  // ------------------------------ //
+  // --- ORGANIZATIONAL METHODS --- //
+  // ------------------------------ //
+  ////////////////////////////////////
+
+  public void addNewBall() {
+    balls++;
+    storedBalls[0] = BallColor.UNKNOWN;
+  }
+
+  public void rotateArrayClockwise() {
+    storedBalls[0] = storedBalls[1];
+    storedBalls[2] = storedBalls[3];
+    storedBalls[1] = getRightColorSensorValue(); // 1 is right
+    storedBalls[3] = getLeftColorSensorValue();  // 3 is left
+  }
+
+  public void rotateArrayCounterClockwise() {
+    storedBalls[0] = storedBalls[3];
+    storedBalls[2] = storedBalls[1];
+    storedBalls[1] = getRightColorSensorValue(); // 1 is right
+    storedBalls[3] = getLeftColorSensorValue();  // 3 is left
+  }
+
+  public Direction getCheckRotation() {
+    if (storedBalls[0] == null) {
+      return null;
+    }
+
+    return storedBalls[3] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
+  }
+
+  public Direction getChamberDirection(BallColor ballColor) {
+    if (storedBalls[3] == ballColor) {
+      // Ball is on the left, rotate clockwise
+      return Direction.CLOCKWISE;
+    } else if (storedBalls[1] == ballColor) {
+      // Ball is on the right, rotate counter-clockwise
+      return Direction.COUNTER_CLOCKWISE;
+    } else {
+      // TODO: figure out what to do if ball *isn't* there OR if the ball is in the bottom
+      return null;
+    }
+  }
+
+  public BallColor getBottomPositionColor() {
+    return storedBalls[0];
+  }
+
+  public BallColor getRightPositionColor() {
+    return storedBalls[1];
+  }
+
+  public BallColor getTopPositionColor() {
+    return storedBalls[2];
+  }
+
+  public BallColor getLeftPositionColor() {
+    return storedBalls[3];
   }
 
 
@@ -143,6 +211,13 @@ public class Delivery extends SubsystemBase {
    */
   public BallColor getRightColorSensorValue() {
     return rightSensor.getColor();
+  }
+
+  /**
+   * @return Whether or not the ball up top is lined up
+   */
+  public boolean isBallLinedUpToShooter() {
+    return getTopLeftSensorStatus() && getTopRightSensorStatus();
   }
 
 

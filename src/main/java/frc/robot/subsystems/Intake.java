@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase {
     secondStage.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
   }
 
-  public void reverseFirstStage(){
+  public void reverseFirstStage() {
     firstStage.set(ControlMode.PercentOutput, -Constants.INTAKE_SPEED);
   }
 
@@ -74,6 +74,7 @@ public class Intake extends SubsystemBase {
     startSecondStage();
   }
 
+  // TODO: keep reverse or idle?
   /**
    * Reverses the intakes
    */

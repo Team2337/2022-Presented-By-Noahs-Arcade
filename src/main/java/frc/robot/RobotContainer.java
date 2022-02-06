@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.BallColor;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.delivery.IntakeBallCommandGroup;
+import frc.robot.commands.delivery.PrepareShooterCommandGroup;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -37,7 +39,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
-    // Set alliance color
+    // Set alliance color (this method gets called when robot is enabled, so set it then)
     allianceColor = DriverStation.getAlliance() == Alliance.Red ? BallColor.RED : BallColor.BLUE;
     opposingColor = allianceColor == BallColor.RED ? BallColor.BLUE : BallColor.RED;
 
@@ -52,6 +54,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
+
+    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+    driverA.whenPressed(new IntakeBallCommandGroup(intake, delivery));
+
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
+    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
   }
 
   public Command getAutonomousCommand() {

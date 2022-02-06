@@ -1,6 +1,7 @@
 package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.Direction;
 import frc.robot.subsystems.Delivery;
 
 /**
@@ -8,27 +9,33 @@ import frc.robot.subsystems.Delivery;
  * 
  * @author Nicholas S, Michael F
  */
-public class LineupCommand extends CommandBase {
+public class LineupTopCommand extends CommandBase {
 
   private final Delivery delivery;
 
-  private final double DELIVERY_SMALL_SPEED = 0.1;
+  private final double DELIVERY_SLOW_SPEED = 0.1;
   
-  public LineupCommand(Delivery delivery) {
+  public LineupTopCommand(Delivery delivery) {
     this.delivery = delivery;
+    addRequirements(delivery);
   }
 
   @Override
   public void initialize() {
-    // Do we need to rotate?
+    if (!delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus()) {
+      // Neither sensor is triggered
+      return;
+    }
+
+    // Determine which way to rotate
     // TODO: are these negatives correct?
     if (delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus()) {
       // Rotate so that right sensor now shows true
-      delivery.setDeliverySpeed(DELIVERY_SMALL_SPEED);
+      delivery.startDelivery(Direction.CLOCKWISE, DELIVERY_SLOW_SPEED);
     } else if (!delivery.getTopLeftSensorStatus() && delivery.getTopRightSensorStatus()) {
       // Rotate so that left sensor now shows true
-      delivery.setDeliverySpeed(-DELIVERY_SMALL_SPEED);
-    } 
+      delivery.startDelivery(Direction.COUNTER_CLOCKWISE, DELIVERY_SLOW_SPEED);
+    }
   }
 
   @Override
@@ -36,13 +43,12 @@ public class LineupCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    delivery.linedUp = true;
     delivery.stopDelivery();
   }
 
   @Override
   public boolean isFinished() {
-    return (delivery.getTopLeftSensorStatus() && delivery.getTopRightSensorStatus());
+    return delivery.isBallLinedUpToShooter() || (!delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus());
   }
 
 }
