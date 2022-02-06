@@ -23,6 +23,7 @@ import frc.robot.commands.teleop.DistanceToTargetCommand;
 import frc.robot.commands.teleop.PointToPointCommand;
 import frc.robot.commands.teleop.ProfiledPointToPointCommand;
 import frc.robot.commands.teleop.Relocalize;
+import frc.robot.commands.teleop.SwitchPipeline;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 
@@ -41,6 +42,8 @@ public class RobotContainer {
   private final Vision vision = new Vision(pigeon, drivetrain);
   
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
+  private double input;
+  private int inputTwo;
   
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -71,6 +74,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+    JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
     JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
