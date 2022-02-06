@@ -33,8 +33,7 @@ public class Top3Ball extends SequentialCommandGroup {
   public void initialize() {
     super.initialize();
 
-    // TODO: This angle is wrong - we probably won't actually be at this angle
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.startTopPosition.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.startTopPosition.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
 }
