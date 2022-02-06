@@ -19,7 +19,7 @@ import frc.robot.Constants;
  * @author  Nicholas S
  */
 public class Climber extends SubsystemBase {
-  public final AnalogInput stringPot;
+  private final AnalogInput stringPot;
   private final TalonFX motor1;
   private final TalonFX motor2;
   public TalonFXConfiguration fxConfig;
@@ -28,11 +28,11 @@ public class Climber extends SubsystemBase {
   
   public Climber() {
     // Initialize motor
-    stringPot = new AnalogInput(3);
+    stringPot = new AnalogInput(Constants.STRING_POT_ID);
     motor1 = new TalonFX(Constants.CLIMBER1_MOTOR_ID);
     motor2 = new TalonFX(Constants.CLIMBER2_MOTOR_ID);
     
-    // TODO: make sure config settings are correct
+    
     //Set settings on motor
     motor1.configFactoryDefault();
     motor2.configFactoryDefault();
@@ -59,28 +59,30 @@ public class Climber extends SubsystemBase {
     ShuffleboardLayout climberWidget = climberTab.getLayout("climber Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
     climberWidget.addNumber("Speed", this::getClimberSpeed);
     climberWidget.addNumber("Temp", this::getClimberTemperature);
+    climberWidget.addNumber("String Pot", this::getStringPotVoltage);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("String Pot", stringPot.getVoltage());
   }
 
   /**
    * Starts the climber
    */
-  public void startClimber(double speed) {
+  public void start(double speed) {
     motor1.set(ControlMode.PercentOutput, speed);
   }
-
-  public void holdClimber(double setpoint){
+  /**
+   * Holds the climber at a set position
+   */
+  public void hold(double setpoint){
     motor1.set(ControlMode.Position, setpoint);
 }
   
   /**
    * Stops the climber
    */
-  public void stopClimber() {
+  public void stop() {
     motor1.set(ControlMode.PercentOutput, 0);
   }
 
@@ -95,8 +97,8 @@ public class Climber extends SubsystemBase {
     return motor1.getSelectedSensorPosition();
   }
 
-  public double getMotorTwoPosition(){
-    return motor2.getSelectedSensorPosition();
+  public double getStringPotVoltage(){
+    return stringPot.getVoltage();
   }
 
 

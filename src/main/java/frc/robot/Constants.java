@@ -135,8 +135,7 @@ public final class Constants {
   // 16 and 3 on practice bot
   public static final int CLIMBER1_MOTOR_ID = 16;
   public static final int CLIMBER2_MOTOR_ID = 3;
-
-  public static final double CLIMBER_SPEED = 0.5;
+  public static final int STRING_POT_ID = 3;
 
   // Color stuff
   public static enum BallColor {

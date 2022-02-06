@@ -43,7 +43,7 @@ public class ClimberCommand extends CommandBase {
   @Override
   public void execute(){
     //If the stringpot reads zero (gets disconnected), or is not autonomous, run this loop
-    if (auto == false || subsystem.stringPot.getVoltage() == 0){
+    if (auto == false || subsystem.getStringPotVoltage() == 0){
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
       double deadband = Utilities.deadband(controller.getRightY(), 0.06);
       if (deadband == 0){
@@ -53,29 +53,29 @@ public class ClimberCommand extends CommandBase {
           firstTime = false;
         }
         //Holds the climber at set position 
-        subsystem.holdClimber(position);
+        subsystem.hold(position);
       }
       else{
         /* The controller is being pressed, use that value to move 
         the climber up and down while resetting the loop in case the controller stops being touched again */
         firstTime = true;
-        subsystem.startClimber(-deadband);
+        subsystem.start(-deadband);
       }
     }
     else{
       //Runs a PID to get the climber to the set position, as designated by the stringpot. Slows down as it reaches target. 
-      output = climberController.calculate(subsystem.stringPot.getVoltage(), setpoint);
+      output = climberController.calculate(subsystem.getStringPotVoltage(), setpoint);
       speed =  MathUtil.clamp(output, -1, 1);
       SmartDashboard.putNumber("PID Output", output);
       SmartDashboard.putNumber("PID Speed", speed);
-      subsystem.startClimber((speed * 100)); 
+      subsystem.start((speed * 100)); 
     }
     
 }
 
   @Override
   public void end(boolean interupted){
-    subsystem.stopClimber();
+    subsystem.stop();
   }
   @Override
   public boolean isFinished() {
