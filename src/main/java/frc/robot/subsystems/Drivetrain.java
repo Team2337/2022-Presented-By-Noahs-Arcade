@@ -46,8 +46,6 @@ public class Drivetrain extends SubsystemBase {
    */
   private SwerveModule[] modules;
 
-  private Field2d field = new Field2d();
-
   /**
    * Logging
    */
@@ -152,10 +150,6 @@ public class Drivetrain extends SubsystemBase {
 
   public Pose2d getPose() {
     return odometry.getPoseMeters();
-  }
-
-  public ChassisSpeeds getChassisSpeeds() {
-    return chassisSpeeds;
   }
 
   public SwerveDriveKinematics getKinematics() {

@@ -39,7 +39,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
-    autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(drivetrain, heading, autoDrive));
+    autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
@@ -56,7 +56,6 @@ public class RobotContainer {
     // driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
     // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
     // Maintain 1 ft distance in front of target
-    // TODO: Remove some of these values at some point after testing
     // rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));

@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.AutoDrivableCommand;
+import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Heading;
@@ -25,7 +25,6 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
 
   private PolarCoordinate target;
   private Supplier<Pose2d> poseSupplier;
-  private Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private Heading heading;
   private AutoDrive autoDrive;
 
@@ -35,10 +34,9 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  public PointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive) {
+  public PointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive) {
     this.target = target;
     this.poseSupplier = poseSupplier;
-    this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.heading = heading;
     this.autoDrive = autoDrive;
 
@@ -54,7 +52,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
   @Override
   public void initialize() {
     heading.enableMaintainHeading();
-    autoDrive.registerAutoDrivableCommand(this);
+    autoDrive.setDelegate(this);
   }
 
   @Override
@@ -149,7 +147,7 @@ public class PointToPointCommand extends CommandBase implements AutoDrivableComm
 
   @Override
   public void end(boolean interrupted) {
-    autoDrive.unregisterAutoDrivableCommand();
+    autoDrive.clearDelegate();
   }
 
   @Override

@@ -15,17 +15,17 @@ public class Top3Ball extends SequentialCommandGroup {
 
   private Drivetrain drivetrain;
 
-  public Top3Ball(Drivetrain drivetrain, Heading heading, AutoDrive autoDrive) {
+  public Top3Ball(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 15),
+      new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 15),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBall3Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive, 3.0, 0.025, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBall3Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.025, Units.inchesToMeters(120), 8),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive, 3.0, 0.01, Units.inchesToMeters(120), 8)
+      new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getPose, heading, autoDrive, 3.0, 0.01, Units.inchesToMeters(120), 8)
     );
   }
 

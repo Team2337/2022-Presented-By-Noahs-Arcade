@@ -5,16 +5,14 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.AutoDrivableCommand;
+import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Heading;
@@ -27,7 +25,6 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
 
   private PolarCoordinate target;
   private Supplier<Pose2d> poseSupplier;
-  private Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private Heading heading;
   private AutoDrive autoDrive;
 
@@ -41,10 +38,9 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
   private double forwardAcceleration = Units.inchesToMeters(120);
   private double strafeAcceleration = Math.pow(15, 2);
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
     this.target = target;
     this.poseSupplier = poseSupplier;
-    this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.heading = heading;
     this.autoDrive = autoDrive;
     this.driveP = driveP;
@@ -64,7 +60,7 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
   @Override
   public void initialize() {
     heading.enableMaintainHeading();
-    autoDrive.registerAutoDrivableCommand(this);
+    autoDrive.setDelegate(this);
 
     PolarCoordinate robotCoordinate = PolarCoordinate.fromFieldCoordinate(
       poseSupplier.get().getTranslation(),
@@ -175,7 +171,7 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
 
   @Override
   public void end(boolean interrupted) {
-    autoDrive.unregisterAutoDrivableCommand();
+    autoDrive.clearDelegate();
   }
 
   @Override
