@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -47,8 +46,6 @@ public class Drivetrain extends SubsystemBase {
    * 3 is Back Right
    */
   private SwerveModule[] modules;
-
-  private Field2d field = new Field2d();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -187,7 +184,6 @@ public class Drivetrain extends SubsystemBase {
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
     
-    SmartDashboard.putData("Field", field);
     SmartDashboard.putString("Type", RobotType.getRobotType().toString());
     SmartDashboard.putNumber("MODULE0_ANGLE_MOTOR_ID", Constants.getInstance().MODULE0_ANGLE_MOTOR_ID);
 
@@ -270,8 +266,6 @@ public class Drivetrain extends SubsystemBase {
       states[2],
       states[3]
     );
-
-    field.setRobotPose(getPose());
 
     Logger.getInstance().recordOutput("Odometry/Robot",
         new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
