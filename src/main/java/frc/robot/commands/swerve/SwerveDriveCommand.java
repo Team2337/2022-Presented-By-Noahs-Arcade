@@ -37,19 +37,19 @@ public class SwerveDriveCommand extends CommandBase {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
     double rotation = -Utilities.modifyAxis(controller.getRightX());
-    boolean isFieldOriented = !controller.getXButton();
-
-    // If a driver-initiated rotationis provided, disable our rotation
-    // controller to let the driver rotate freely.
-    if (rotation != 0 && heading.isEnabled()) {
-      heading.disableMaintainHeading();
-    }
+    boolean isFieldOriented = !controller.getLeftBumper();
 
     AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);
     if (autoDriveState != null) {
       forward = autoDriveState.forward;
       strafe = autoDriveState.strafe;
       isFieldOriented = autoDriveState.isFieldOriented;
+    }
+
+    // If a driver-initiated rotationis provided, disable our rotation
+    // controller to let the driver rotate freely.
+    if (rotation != 0 && heading.isEnabled()) {
+      heading.disableMaintainHeading();
     }
 
     /**
