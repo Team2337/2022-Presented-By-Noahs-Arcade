@@ -30,23 +30,19 @@ public class PowerDistributionHub extends SubsystemBase {
   @Override
   public void periodic() {}
 
-  // Switchable port
-
   /**
    * @param enabled Sets the switchable channel to be enabled/disabled
    */
-  public void setSwitchablePort(boolean enabled) {
+  public void setSwitchableChannel(boolean enabled) {
     pdh.setSwitchableChannel(enabled);
   }
 
   /**
    * @return Whether or not the switchable channel is disabled
    */
-  public boolean getSwitchablePort() {
+  public boolean getSwitchableChannel() {
     return pdh.getSwitchableChannel();
   }
-
-  // Getters for general info
 
   /**
    * @return Temperature of PDH in Celsius
@@ -62,8 +58,6 @@ public class PowerDistributionHub extends SubsystemBase {
     return pdh.getVoltage();
   }
 
-  // Individual channel currents
-
   /**
    * @param channel The channel to check the current of
    * @return The current of the specified channel in Amperes
@@ -72,11 +66,16 @@ public class PowerDistributionHub extends SubsystemBase {
     return pdh.getCurrent(channel);
   }
 
-  // TODO: these are examples, figure out if we want to have individual methods
-  // for this or if we want to have a single method that gets the current
+  /**
+   * Current for the intake motors in amps
+   */
   public double getIntakeCurrent() {
     return getChannelCurrent(Constants.INTAKE_MOTOR_ID);
   }
+
+  /**
+   * Current for the delivery motors in amps
+   */
   public double getDeliveryCurrent() {
     return getChannelCurrent(Constants.DELIVERY_MOTOR_ID);
   }
