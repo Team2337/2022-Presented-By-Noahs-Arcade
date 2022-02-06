@@ -9,8 +9,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.climber.ClimberCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -41,10 +41,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+
+    //True means that the stringpot will be used for movement, otherwise, it is false
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenPressed(new ClimberCommand(climber, driverController, 1));
+    operatorA.whenHeld(new ClimberCommand(climber, operatorController, -0.3, false));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenPressed(new ClimberCommand(climber, driverController, 3));
+    operatorB.whenHeld(new ClimberCommand(climber, operatorController, 1, true));
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    operatorX.whenHeld(new ClimberCommand(climber, operatorController, 0.104, true));
   }
 
   public Command getAutonomousCommand() {

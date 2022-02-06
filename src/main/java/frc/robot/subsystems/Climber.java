@@ -29,8 +29,8 @@ public class Climber extends SubsystemBase {
   public Climber() {
     // Initialize motor
     stringPot = new AnalogInput(3);
-    motor1 = new TalonFX(3);
-    motor2 = new TalonFX(35);
+    motor1 = new TalonFX(Constants.CLIMBER1_MOTOR_ID);
+    motor2 = new TalonFX(Constants.CLIMBER2_MOTOR_ID);
     
     // TODO: make sure config settings are correct
     //Set settings on motor
@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
         // Implements these current limits on the motors
     motor1.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
 
-    motor1.setNeutralMode(NeutralMode.Coast);
+    motor1.setNeutralMode(NeutralMode.Brake);
 
     motor1.configOpenloopRamp(0.5);
     motor1.enableVoltageCompensation(true);
@@ -72,15 +72,16 @@ public class Climber extends SubsystemBase {
   public void startClimber(double speed) {
     motor1.set(ControlMode.PercentOutput, speed);
   }
+
+  public void holdClimber(double setpoint){
+    motor1.set(ControlMode.Position, setpoint);
+}
   
   /**
    * Stops the climber
    */
   public void stopClimber() {
-    double position = motor1.getSelectedSensorPosition();
-    double position2 = motor2.getSelectedSensorPosition();
-    motor1.set(ControlMode.Position, position);
-    motor2.set(ControlMode.Position, position2);
+    motor1.set(ControlMode.PercentOutput, 0);
   }
 
   /**
@@ -89,6 +90,16 @@ public class Climber extends SubsystemBase {
   private double getClimberSpeed() {
     return ((motor1.getMotorOutputPercent() + motor2.getMotorOutputPercent())/2);
   }
+
+  public double getMotorOnePosition(){
+    return motor1.getSelectedSensorPosition();
+  }
+
+  public double getMotorTwoPosition(){
+    return motor2.getSelectedSensorPosition();
+  }
+
+
 
   /**
    * Returns the temperature of the climber motor (in Celsius)
