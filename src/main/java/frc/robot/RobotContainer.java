@@ -42,8 +42,6 @@ public class RobotContainer {
   private final Vision vision = new Vision(pigeon, drivetrain);
   
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
-  private double input;
-  private int inputTwo;
   
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
