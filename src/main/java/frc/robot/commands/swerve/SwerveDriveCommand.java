@@ -66,11 +66,6 @@ public class SwerveDriveCommand extends CommandBase {
     if (drivetrain.polarCorrectionDegrees > 2) {
       Rotation2d input = Rotation2d.fromDegrees(drivetrain.getGyroscopeRotation().getDegrees() - drivetrain.polarCorrectionDegrees);
       heading.setMaintainHeading(input);
-      SmartDashboard.putString("Made it to maintain heading", "value");
-    }
-
-    if (drivetrain.getPolarTheta().getDegrees() > 1) {
-      SmartDashboard.putNumber("Polar Theta", drivetrain.getPolarTheta().getDegrees());
     }
 
     double vxMetersPerSecond = forward * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
