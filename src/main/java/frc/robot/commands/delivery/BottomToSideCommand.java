@@ -13,9 +13,9 @@ public class BottomToSideCommand extends CommandBase {
 
   private final Delivery delivery;
   private Direction direction;
-  private boolean isFinished = false;
+  private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
-  private boolean waitForBallFlag = false;
+  private boolean waitForBallFlag;
   
   public BottomToSideCommand(Delivery delivery) {
     this.delivery = delivery;
@@ -24,6 +24,8 @@ public class BottomToSideCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    isFinished = false;
+    waitForBallFlag = false;
     direction = delivery.getCheckRotation();
 
     if (direction == null) {

@@ -15,9 +15,9 @@ public class SideToTopCommand extends CommandBase {
   private final Delivery delivery;
   private Direction direction;
   private BallColor ballColor;
-  private boolean isFinished = false;
+  private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
-  private boolean waitForBallFlag = false;
+  private boolean waitForBallFlag;
   
   public SideToTopCommand(Delivery delivery, BallColor ballColor){
     this.delivery = delivery;
@@ -27,6 +27,8 @@ public class SideToTopCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    isFinished = false;
+    waitForBallFlag = false;
     direction = delivery.getChamberDirection(ballColor);
 
     if (direction == null) {
