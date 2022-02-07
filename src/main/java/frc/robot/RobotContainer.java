@@ -24,8 +24,9 @@ public class RobotContainer {
   // private final Delivery delivery = new Delivery();
   // private final Drivetrain drivetrain = new Drivetrain(pigeon);
   // private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  // private final Intake intake = new Intake();
+  private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
+  private final Kicker kicker = new Kicker();
   private final Vision vision = new Vision();
 
   public RobotContainer() {
@@ -42,8 +43,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     // driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
-    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
-    driverA.whenHeld(new StartShooter(shooter));
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    operatorA.whenHeld(new StartShooter(shooter));
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorB.whenHeld(new RunKicker(kicker));
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    operatorX.whenHeld(new RunIntake(intake));
+
   }
 
   public Command getAutonomousCommand() {

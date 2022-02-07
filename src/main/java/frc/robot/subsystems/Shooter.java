@@ -66,11 +66,6 @@ public class Shooter extends SubsystemBase {
         .add("Shooter Speed", 0)
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
-    public NetworkTableEntry kick3r = speeds
-        .add("Kicker Speed", 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 100))
-        .getEntry();
 
         ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
         .withSize(4, 8)
@@ -122,7 +117,7 @@ public class Shooter extends SubsystemBase {
         
         
         //bottomShoot.set(ControlMode.Follower, Constants.SHOOTER_LEFT_MOTOR);
-        topShoot.setInverted(false);
+        topShoot.setInverted(true);
         bottomShoot.setInverted(InvertType.OpposeMaster);
 
         temps.addNumber("Top Shooter Temperature", () -> topShoot.getTemperature());
