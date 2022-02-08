@@ -22,14 +22,15 @@ public class RobotContainer {
 
   private final Climber climber = new Climber();
   // private final Delivery delivery = new Delivery();
+  private final AutoDrive autoDrive = new AutoDrive();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   // private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
-    
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -40,7 +41,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
 
     //True means that the stringpot will be used for movement, otherwise, it is false
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
@@ -49,6 +49,7 @@ public class RobotContainer {
     operatorB.whenHeld(new ClimberCommand(climber, operatorController, 1, true));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     operatorX.whenHeld(new ClimberCommand(climber, operatorController, 0.104, true));
+    driverX.whenPressed(heading::enableMaintainHeading);
   }
 
   public Command getAutonomousCommand() {

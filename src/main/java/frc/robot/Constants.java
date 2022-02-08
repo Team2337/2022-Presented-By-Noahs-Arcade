@@ -5,6 +5,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotType.Type;
 import frc.robot.coordinates.PolarCoordinate;
 
 /**
@@ -16,24 +17,139 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public int MODULE0_DRIVE_MOTOR_ID;
+  public int MODULE0_ANGLE_MOTOR_ID;
+  public int MODULE0_ANGLE_CANCODER_ID;
+  public double MODULE0_ANGLE_OFFSET;
+
+  public int MODULE1_DRIVE_MOTOR_ID;
+  public int MODULE1_ANGLE_MOTOR_ID;
+  public int MODULE1_ANGLE_CANCODER_ID;
+  public double MODULE1_ANGLE_OFFSET;
+
+  public int MODULE2_DRIVE_MOTOR_ID;
+  public int MODULE2_ANGLE_MOTOR_ID;
+  public int MODULE2_ANGLE_CANCODER_ID;
+  public double MODULE2_ANGLE_OFFSET;
+
+  public int MODULE3_DRIVE_MOTOR_ID;
+  public int MODULE3_ANGLE_MOTOR_ID;
+  public int MODULE3_ANGLE_CANCODER_ID;
+  public double MODULE3_ANGLE_OFFSET;
+
+  public double DRIVETRAIN_TRACK_WIDTH_INCHES;
+  public double DRIVETRAIN_WHEEL_BASE_INCHES;
+
+  public double LIMELIGHT_CAMERA_HEIGHT;
+  public double LIMEILGHT_CAMERA_ANGLE;
+  public double HUB_HEIGHT;
+
+  private static Constants instance;
+
+  public static Constants getInstance() {
+    if (instance == null) {
+      instance = new Constants();
+    }
+    return instance;
+  }
+
+  public Constants() {
+    switch (RobotType.getRobotType()) {
+      case PRACTICE:
+      MODULE0_DRIVE_MOTOR_ID = 18;
+        MODULE0_ANGLE_MOTOR_ID = 19;
+        MODULE0_ANGLE_CANCODER_ID = 1;
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
+
+        MODULE1_DRIVE_MOTOR_ID = 1;
+        MODULE1_ANGLE_MOTOR_ID = 2;
+        MODULE1_ANGLE_CANCODER_ID = 2;
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+
+        MODULE2_DRIVE_MOTOR_ID = 8;
+        MODULE2_ANGLE_MOTOR_ID = 9;
+        MODULE2_ANGLE_CANCODER_ID = 3;
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+
+        MODULE3_DRIVE_MOTOR_ID = 10;
+        MODULE3_ANGLE_MOTOR_ID = 11;
+        MODULE3_ANGLE_CANCODER_ID = 4;
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
+        break;
+      case COMPETITION:
+        MODULE0_DRIVE_MOTOR_ID = 18;
+        MODULE0_ANGLE_MOTOR_ID = 19;
+        MODULE0_ANGLE_CANCODER_ID = 1;
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
+
+        MODULE1_DRIVE_MOTOR_ID = 1;
+        MODULE1_ANGLE_MOTOR_ID = 2;
+        MODULE1_ANGLE_CANCODER_ID = 2;
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+
+        MODULE2_DRIVE_MOTOR_ID = 8;
+        MODULE2_ANGLE_MOTOR_ID = 9;
+        MODULE2_ANGLE_CANCODER_ID = 3;
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+
+        MODULE3_DRIVE_MOTOR_ID = 10;
+        MODULE3_ANGLE_MOTOR_ID = 11;
+        MODULE3_ANGLE_CANCODER_ID = 4;
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(28.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
+        break;
+      case SKILLSBOT:
+        MODULE0_DRIVE_MOTOR_ID = 0; 
+        MODULE0_ANGLE_MOTOR_ID = 4;
+        MODULE0_ANGLE_CANCODER_ID = 1;
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
+
+        MODULE1_DRIVE_MOTOR_ID = 1;
+        MODULE1_ANGLE_MOTOR_ID = 5;
+        MODULE1_ANGLE_CANCODER_ID = 2;
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
+
+        MODULE2_DRIVE_MOTOR_ID = 14;
+        MODULE2_ANGLE_MOTOR_ID = 10;
+        MODULE2_ANGLE_CANCODER_ID = 3;
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
+
+        MODULE3_DRIVE_MOTOR_ID = 15;
+        MODULE3_ANGLE_MOTOR_ID = 11;
+        MODULE3_ANGLE_CANCODER_ID = 4;
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
+
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 17;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
+        break;
+    }
+  }
+ 
   /**
-   * 17x17in robot - since the values are the same, we'll only define one value
-   * as opposed to having a length and a width. Keep in mind - this will not work
-   * in the future if the robot is not a perfect square.
+   * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
+   * Track width is side to side
+   * Wheel base is fromt to back.
    */
-  private static final double DRIVETRAIN_WIDTH_INCHES = 17;
-  public static final double DRIVETRAIN_LENGTH_INCHES = 17;
-
-  // The module inset from the outside edges of the robot
-  private static final double MODULE_INSET_WIDTH_INCHES = 3.25;
-  private static final double MODULE_INSET_HEIGHT_INCHES = 3.25;
-
-  private static final double DRIVETRAIN_TRACK_WIDTH_INCHES = DRIVETRAIN_WIDTH_INCHES - (MODULE_INSET_WIDTH_INCHES * 2);
-  private static final double DRIVETRAIN_WHEEL_BASE_INCHES = DRIVETRAIN_LENGTH_INCHES - (MODULE_INSET_HEIGHT_INCHES * 2);
-
   // /2 since we're measuring from the center - halfway
-  private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
-  private static final double MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES = DRIVETRAIN_WHEEL_BASE_INCHES / 2;
+  private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
+  private static final double MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES = Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES / 2;
 
   // Radius to the wheel modules can be thought of as a triangle - width and length are the two sides
   public static final double DRIVETRAIN_RADIUS_INCHES = Math.hypot(MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES, MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES);
@@ -104,28 +220,8 @@ public final class Constants {
      */
     // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-      Math.hypot(Units.inchesToMeters(DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
+      Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
-
-  public static final int MODULE0_DRIVE_MOTOR_ID = 0;
-  public static final int MODULE0_ANGLE_MOTOR_ID = 4;
-  public static final int MODULE0_ANGLE_CANCODER_ID = 1;
-  public static final double MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
-
-  public static final int MODULE1_DRIVE_MOTOR_ID = 1;
-  public static final int MODULE1_ANGLE_MOTOR_ID = 5;
-  public static final int MODULE1_ANGLE_CANCODER_ID = 2;
-  public static final double MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
-
-  public static final int MODULE2_DRIVE_MOTOR_ID = 14;
-  public static final int MODULE2_ANGLE_MOTOR_ID = 10;
-  public static final int MODULE2_ANGLE_CANCODER_ID = 3;
-  public static final double MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
-
-  public static final int MODULE3_DRIVE_MOTOR_ID = 15;
-  public static final int MODULE3_ANGLE_MOTOR_ID = 11;
-  public static final int MODULE3_ANGLE_CANCODER_ID = 4;
-  public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
