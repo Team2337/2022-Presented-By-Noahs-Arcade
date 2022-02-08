@@ -35,6 +35,8 @@ public class Delivery extends SubsystemBase {
     motor.setInverted(false); //TODO: see what actual inversion should be
     motor.setNeutralMode(NeutralMode.Brake);
 
+    motor.configOpenloopRamp(0.5);
+
     this.controller = controller;
 
     // Set up shuffleboard stuff
