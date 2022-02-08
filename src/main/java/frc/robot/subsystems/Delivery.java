@@ -29,7 +29,9 @@ public class Delivery extends SubsystemBase {
   public Delivery(XboxController controller) {
     // Initialize motor
     motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-    
+
+    // TODO: make sure config settings are correct
+    //Set settings on motor
     motor.configFactoryDefault();
 
     motor.setInverted(false); //TODO: see what actual inversion should be
@@ -46,10 +48,10 @@ public class Delivery extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (RobotState.isEnabled() && RobotContainer.operatorStation.blueSwitchOn()) {
+    if (RobotState.isEnabled() && RobotContainer.operatorStation.isBlueSwitchOn()) {
       startDelivery(Direction.CLOCKWISE, Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0);
     }
-    SmartDashboard.putBoolean("On", RobotContainer.operatorStation.blueSwitchOn());
+    SmartDashboard.putBoolean("On", RobotContainer.operatorStation.isBlueSwitchOn());
     SmartDashboard.putNumber("Value", controller.getLeftX());
   }
 
