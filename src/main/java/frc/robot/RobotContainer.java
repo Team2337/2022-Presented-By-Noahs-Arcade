@@ -51,17 +51,13 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    JoystickButton rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
+    driverX.whenPressed(heading::enableMaintainHeading);
+
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
-    // Note: Set to maintain a distance from 0, 0 - needs to be dropped once we're on the field
-    // Maintain 1 ft distance in front of target
-    // rightBumper.whileHeld(new DistanceToTargetCommand(Units.feetToMeters(1), drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // leftBumper.whileHeld(new PointToPointCommand(Constants.Auto.kBall1, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    //leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    //rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {
