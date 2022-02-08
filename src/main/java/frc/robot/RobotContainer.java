@@ -16,11 +16,11 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
-
   public final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
+  private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
@@ -28,8 +28,10 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
+  private boolean deliveryOverride = operatorStation.blueSwitchOn();
+
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, heading, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -41,14 +43,10 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::setNextHeadingToMaintainHeading);
+    driverX.whenPressed(heading::enableMaintainHeading);
 
-    // Configure intake controls
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(() -> intake.startIntake());
-    operatorRightBumper.whenReleased(() -> intake.stopIntake());
-
-    // Configure buttons/switches on operator station
+    operatorStation.BlueSwitch.whenPressed(() -> {deliveryOverride = true;});
+    operatorStation.BlueSwitch.whenReleased(() -> {deliveryOverride = false;});
   }
 
   public Command getAutonomousCommand() {
