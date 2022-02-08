@@ -13,26 +13,24 @@ import frc.robot.subsystems.Climber;
 
 /**
  * This command runs the climber using the stringpot or a joystick input
+ * @author Nicholas S
  */
 public class ClimberCommand extends CommandBase {
   // The subsystem the command runs on
-  private final Climber subsystem;
+  private final Climber climber;
   private final XboxController controller;
   private double setpoint;
   private double position;
-  private double position2;
-  private double speed;
-  private double output;
   private boolean auto;
   private boolean firstTime = true;
   private PIDController climberController = new PIDController(0.004, 0.0, 0.0);
 
-  public ClimberCommand(Climber subsystem, XboxController controller, double setpoint, boolean auto) {
-    this.subsystem = subsystem;
+  public ClimberCommand(Climber climber, XboxController controller, double setpoint, boolean auto) {
+    this.climber = climber;
     this.setpoint = setpoint;
     this.controller = controller;
     this.auto = auto;
-    addRequirements(subsystem);
+    addRequirements(climber);
   }
 
   @Override
@@ -43,39 +41,39 @@ public class ClimberCommand extends CommandBase {
   @Override
   public void execute(){
     //If the stringpot reads zero (gets disconnected), or is not autonomous, run this loop
-    if (auto == false || subsystem.getStringPotVoltage() == 0){
+    if (auto == false || climber.getStringPotVoltage() == 0){
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
       double deadband = Utilities.deadband(controller.getRightY(), 0.06);
       if (deadband == 0){
-        //First time through, set the position, so the robot will stay at this position while the controller is not touched, runs by default
+        //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
         if (firstTime == true){
-          position = subsystem.getMotorOnePosition();
+          position = climber.getMotorOnePosition();
           firstTime = false;
         }
         //Holds the climber at set position 
-        subsystem.hold(position);
+        climber.hold(position);
       }
       else{
         /* The controller is being pressed, use that value to move 
         the climber up and down while resetting the loop in case the controller stops being touched again */
         firstTime = true;
-        subsystem.start(-deadband);
+        climber.start(-deadband);
       }
     }
     else{
       //Runs a PID to get the climber to the set position, as designated by the stringpot. Slows down as it reaches target. 
-      output = climberController.calculate(subsystem.getStringPotVoltage(), setpoint);
-      speed =  MathUtil.clamp(output, -1, 1);
+      double output = climberController.calculate(climber.getStringPotVoltage(), setpoint);
+      double speed =  MathUtil.clamp(output, -1, 1);
       SmartDashboard.putNumber("PID Output", output);
       SmartDashboard.putNumber("PID Speed", speed);
-      subsystem.start((speed * 100)); 
+      climber.start((speed * 100)); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
     }
     
 }
 
   @Override
   public void end(boolean interupted){
-    subsystem.stop();
+    climber.stop();
   }
   @Override
   public boolean isFinished() {

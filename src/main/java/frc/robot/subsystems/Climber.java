@@ -33,6 +33,7 @@ public class Climber extends SubsystemBase {
     motor2 = new TalonFX(Constants.CLIMBER2_MOTOR_ID);
     
     
+    
     //Set settings on motor
     motor1.configFactoryDefault();
     motor2.configFactoryDefault();
@@ -58,7 +59,8 @@ public class Climber extends SubsystemBase {
     
     ShuffleboardLayout climberWidget = climberTab.getLayout("climber Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
     climberWidget.addNumber("Speed", this::getClimberSpeed);
-    climberWidget.addNumber("Temp", this::getClimberTemperature);
+    climberWidget.addNumber("Left Temp", this::getLeftClimberTemperature);
+    climberWidget.addNumber("Right Temp", this::getRightClimberTemperature);
     climberWidget.addNumber("String Pot", this::getStringPotVoltage);
   }
 
@@ -90,13 +92,16 @@ public class Climber extends SubsystemBase {
    * @return Gets the climber speed as a percent (between -1 and 1)
    */
   private double getClimberSpeed() {
-    return ((motor1.getMotorOutputPercent() + motor2.getMotorOutputPercent())/2);
+    return (motor1.getMotorOutputPercent());
   }
 
   public double getMotorOnePosition(){
     return motor1.getSelectedSensorPosition();
   }
 
+  /**
+   * Gets the String Pot Voltage 
+   */
   public double getStringPotVoltage(){
     return stringPot.getVoltage();
   }
@@ -104,9 +109,15 @@ public class Climber extends SubsystemBase {
 
 
   /**
-   * Returns the temperature of the climber motor (in Celsius)
+   * Returns the temperature of the left climber motor (in Celsius)
    */
-  private double getClimberTemperature() {
-    return ((motor1.getTemperature() + motor2.getTemperature())/2);
+  private double getLeftClimberTemperature() {
+    return motor1.getTemperature();
+  }
+  /**
+   * Returns the temperature of the right climber motor (in Celsius)
+   */
+  private double getRightClimberTemperature(){
+    return motor2.getTemperature();
   }
 }
