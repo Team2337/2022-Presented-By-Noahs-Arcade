@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -51,8 +50,6 @@ public class Delivery extends SubsystemBase {
     if (RobotState.isEnabled() && RobotContainer.operatorStation.isBlueSwitchOn()) {
       startDelivery(Direction.CLOCKWISE, Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0);
     }
-    SmartDashboard.putBoolean("On", RobotContainer.operatorStation.isBlueSwitchOn());
-    SmartDashboard.putNumber("Value", controller.getLeftX());
   }
 
 
