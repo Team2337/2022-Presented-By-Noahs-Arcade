@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -16,19 +15,17 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
-  public final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
+  public static final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
   private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
-  private final Delivery delivery = new Delivery();
+  private final Delivery delivery = new Delivery(operatorController);
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
-
-  private boolean deliveryOverride = operatorStation.blueSwitchOn();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -44,9 +41,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
-
-    operatorStation.BlueSwitch.whenPressed(() -> {deliveryOverride = true;});
-    operatorStation.BlueSwitch.whenReleased(() -> {deliveryOverride = false;});
   }
 
   public Command getAutonomousCommand() {

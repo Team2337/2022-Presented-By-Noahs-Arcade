@@ -226,7 +226,7 @@ public final class Constants {
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
 
-  public static final int DELIVERY_MOTOR_ID = 7;
+  public static final int DELIVERY_MOTOR_ID = 21;
   public static final double DELIVERY_SPEED = 0.5;
 
   // Color stuff
@@ -234,5 +234,10 @@ public final class Constants {
     RED,
     BLUE,
     UNKNOWN
+  }
+
+  public static enum Direction {
+    CLOCKWISE,
+    COUNTER_CLOCKWISE
   }
 }
