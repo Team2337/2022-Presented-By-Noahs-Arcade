@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
+import frc.robot.commands.interfaces.PosableAuton;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -39,7 +41,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
-    autonChooser.setDefaultOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
@@ -65,5 +67,15 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
+  }
+
+  public void updateAutonStartPose() {
+    Command autonCommand = autonChooser.getSelected();
+    if (autonCommand instanceof PosableAuton) {
+      PosableAuton poseableCommand = (PosableAuton)autonCommand;
+      drivetrain.resetPosition(poseableCommand.getStartingPose());
+    } else {
+      drivetrain.resetPosition(new Pose2d(0, 0, drivetrain.getGyroscopeRotation()));
+    }
   }
 }

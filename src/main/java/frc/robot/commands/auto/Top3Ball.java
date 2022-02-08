@@ -6,12 +6,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.commands.interfaces.PosableAuton;
 import frc.robot.commands.teleop.ProfiledPointToPointCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
-public class Top3Ball extends SequentialCommandGroup {
+public class Top3Ball extends SequentialCommandGroup implements PosableAuton {
 
   private Drivetrain drivetrain;
 
@@ -30,10 +31,12 @@ public class Top3Ball extends SequentialCommandGroup {
   }
 
   @Override
-  public void initialize() {
-    super.initialize();
-
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.startTopPosition.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  public Pose2d getStartingPose() {
+    // Currently only supports starting in the top slot
+    return new Pose2d(
+      Constants.Auto.startTopPosition.toFieldCoordinate(),
+      drivetrain.getGyroscopeRotation()
+    );
   }
 
 }
