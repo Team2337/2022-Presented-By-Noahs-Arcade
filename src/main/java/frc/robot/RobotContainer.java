@@ -41,6 +41,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
+
+    operatorStation.BlueSwitch.whenReleased(delivery::stopDelivery);
   }
 
   public Command getAutonomousCommand() {
