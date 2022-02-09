@@ -4,9 +4,9 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * A simple command that grabs a hatch with the {@link HatchSubsystem}. Written explicitly for
- * pedagogical purposes. Actual code should inline a command this simple with {@link
- * edu.wpi.first.wpilibj2.command.InstantCommand}.
+ *Runs the shooter when a button is held and make sure it stops correctly
+ * 
+ * @author Nicholas S.
  */
 public class StartShooter extends CommandBase {
   // The subsystem the command runs on
@@ -19,8 +19,8 @@ public class StartShooter extends CommandBase {
   }
   public void initialize() {
     subsystem.currentLimitConfigurationMotor.currentLimit = 50;
-    subsystem.topShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
-    subsystem.topShoot.configClosedloopRamp(0.1);
+    subsystem.leftShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
+    subsystem.leftShoot.configClosedloopRamp(0.1);
   }
 
   @Override
@@ -31,10 +31,10 @@ public class StartShooter extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     subsystem.currentLimitConfigurationMotor.currentLimit = 0;
-    subsystem.topShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
+    subsystem.leftShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
     
-    subsystem.topShoot.configClosedloopRamp(0.1);
-    subsystem.stopTopShooter();
+    subsystem.leftShoot.configClosedloopRamp(0.1);
+    subsystem.stopShooter();
   }
 
 

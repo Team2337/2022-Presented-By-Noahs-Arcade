@@ -5,9 +5,9 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * A simple command that grabs a hatch with the {@link HatchSubsystem}. Written explicitly for
- * pedagogical purposes. Actual code should inline a command this simple with {@link
- * edu.wpi.first.wpilibj2.command.InstantCommand}.
+ * Runs the kicker motor
+ * @author Nicholas S
+ * 
  */
 public class RunKicker extends CommandBase {
   // The subsystem the command runs on
