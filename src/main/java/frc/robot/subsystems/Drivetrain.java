@@ -141,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
 
-    SmartDashboard.putData("Odometry", field);
+    SmartDashboard.putData("Field", field);
   }
 
   public void resetPosition(Pose2d pose) {
@@ -202,17 +202,12 @@ public class Drivetrain extends SubsystemBase {
       states[3]
     );
 
-    logger.recordOutput("Drivetrain/vxFeetPerSecond",
-      Units.metersToFeet(chassisSpeeds.vxMetersPerSecond));
-    logger.recordOutput("Drivetrain/vyFeetPerSecond",
-      Units.metersToFeet(chassisSpeeds.vyMetersPerSecond));
-    logger.recordOutput("Drivetrain/omegaDegreesPerSecond",
-      Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
+    field.setRobotPose(getPose());
 
-    Logger.getInstance().recordOutput("Odometry/Robot",
+    logger.recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-    field.setRobotPose(pose);
+    logger.recordOutput("Gyro", pigeon.getYaw());
   }
 
 }

@@ -7,9 +7,12 @@ package frc.robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
@@ -18,8 +21,10 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
+  private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam(0);
 
   // private final Climber climber = new Climber();
   // private final Delivery delivery = new Delivery();
@@ -29,16 +34,21 @@ public class RobotContainer {
   // private final Intake intake = new Intake();
   // private final Vision vision = new Vision();
 
-  private final PixyCam pixyCam = new PixyCam(0);
+  private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
+
+    autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
+    autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
+
+    SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
-  public void resetGyro() {
+  public void resetRobot() {
     pigeon.setYaw(0, 250);
   }
 
@@ -46,11 +56,16 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
-    JoystickButton driverLeftButton = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    driverLeftButton.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, pixyCam, autoDrive));
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    driverLeftBumper.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, pixyCam, autoDrive));
+
+    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
+    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
   }
 
   public Command getAutonomousCommand() {
-    return new DoNothingCommand();
+    return autonChooser.getSelected();
   }
 }

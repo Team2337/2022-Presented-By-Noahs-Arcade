@@ -5,7 +5,6 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.RobotType.Type;
 import frc.robot.coordinates.PolarCoordinate;
 
 /**
@@ -56,6 +55,33 @@ public final class Constants {
   public Constants() {
     switch (RobotType.getRobotType()) {
       case PRACTICE:
+        MODULE0_DRIVE_MOTOR_ID = 18;
+        MODULE0_ANGLE_MOTOR_ID = 19;
+        MODULE0_ANGLE_CANCODER_ID = 1;
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
+
+        MODULE1_DRIVE_MOTOR_ID = 1;
+        MODULE1_ANGLE_MOTOR_ID = 2;
+        MODULE1_ANGLE_CANCODER_ID = 2;
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+
+        MODULE2_DRIVE_MOTOR_ID = 8;
+        MODULE2_ANGLE_MOTOR_ID = 9;
+        MODULE2_ANGLE_CANCODER_ID = 3;
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+
+        MODULE3_DRIVE_MOTOR_ID = 10;
+        MODULE3_ANGLE_MOTOR_ID = 11;
+        MODULE3_ANGLE_CANCODER_ID = 4;
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
+        break;
       case COMPETITION:
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
@@ -85,7 +111,7 @@ public final class Constants {
         HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
       case SKILLSBOT:
-        MODULE0_DRIVE_MOTOR_ID = 10; 
+        MODULE0_DRIVE_MOTOR_ID = 0; 
         MODULE0_ANGLE_MOTOR_ID = 4;
         MODULE0_ANGLE_CANCODER_ID = 1;
         MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
@@ -107,6 +133,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
         DRIVETRAIN_WHEEL_BASE_INCHES = 17;
+
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
+        HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
     }
   }
@@ -138,26 +168,49 @@ public final class Constants {
      * positive-positive quadrant. Top right should be positive X values and
      * negative Y values (shifted to the right of our center).
      */
+    public static final double kPickupDistanceInches = 17.0;
+
+    public static final PolarCoordinate startTopPosition = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(14)
+    );
     // Ball 1 = Ball nearest to the top starting location
     public static final PolarCoordinate kBall1 = new PolarCoordinate(
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(9.75) // 80.25 using alliance wall zero
     );
+    public static final PolarCoordinate kBall1Pickup = new PolarCoordinate(
+      Constants.Auto.kBall1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall1.getTheta()
+    );
     // Ball 2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBall2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(54.75) // 35.25 using alliance wall zero
+      Rotation2d.fromDegrees(62) // 35.25 using alliance wall zero 54.75
+    );
+    public static final PolarCoordinate kBall2Pickup = new PolarCoordinate(
+      Constants.Auto.kBall2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall2.getTheta()
     );
     // Ball 3 = Ball just in front of the Terminal
     public static final PolarCoordinate kBall3 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(67.35) // 22.65 using alliance wall zero
+      Rotation2d.fromDegrees(75) // 22.65 using alliance wall zero 67.35
+    );
+    public static final PolarCoordinate kBall3Pickup = new PolarCoordinate(
+      Constants.Auto.kBall3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBall3.getTheta()
     );
     // Ball 4 is the human player ball at the Terminal
     // Ball 5 = Ball nearest to the bottom starting location
     public static final PolarCoordinate kBall5 = new PolarCoordinate(
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(122.25) // -32.25 using alliance wall zero
+    );
+
+    public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(75)
     );
   }
 
