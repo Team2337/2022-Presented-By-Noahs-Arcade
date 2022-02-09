@@ -258,9 +258,4 @@ public final class Constants {
     UNKNOWN
   }
 
-  public static enum Direction {
-    CLOCKWISE,
-    COUNTER_CLOCKWISE
-  }
-
 }

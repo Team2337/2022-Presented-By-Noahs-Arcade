@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Direction;
 
 /**
  * Subsystem for the delivery mechanism
@@ -13,6 +12,12 @@ import frc.robot.Constants.Direction;
  * @author Michael F, Nicholas S, Alex C
  */
 public class Delivery extends SubsystemBase {
+
+  // Direction enum
+  public static enum Direction {
+    CLOCKWISE,
+    COUNTER_CLOCKWISE
+  }
 
   // Motor
   private final TalonFX motor;
@@ -34,8 +39,10 @@ public class Delivery extends SubsystemBase {
     motor.configOpenloopRamp(0.5);
 
     // Set up shuffleboard stuff
-    // ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
-
+    ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
+    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList);
+    deliveryTab.addNumber("Speed", () -> motor.getMotorOutputPercent());
+    deliveryTab.addNumber("Temperature (C)", () -> motor.getTemperature());
   }
 
   @Override
