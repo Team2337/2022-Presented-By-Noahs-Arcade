@@ -11,84 +11,95 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * The code for retrieving information from the PixyCam using the SPI port
- * 
+ *
  * @author Michael Francis
  */
 public class PixyCam extends SubsystemBase {
 
-  // Variables for PixyCam
-  final private Pixy2 pixycam;
-  final private int chip;
+  final private Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
+  final private int chipselect;
   private int state;
-  private boolean connected;
 
-  // 
+  private Block largestRedTarget;
+  private Block largestBlueTarget;
 
-  // private ArrayList<Block> blocks = new ArrayList<Block>();
-
-  private Block redTarget;
-  private Block blueTarget;
+  /**
+   * Creates a PixyCam connected on the SPI chipselect 0
+   */
+  public PixyCam() {
+    this(0);
+  }
 
   /**
    * Subsystem for the PixyCam
    * @param chipselect The chip the pixy is plugged into on the SPI
    */
   public PixyCam(int chipselect) {
-    // Create a link
-    pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);
-    state = pixycam.init(chipselect);
+    this.chipselect = chipselect;
 
-    // Initialize variables
-    chip = chipselect;
+    connect();
 
-    // Prepare Shuffleboard stuff
+    setupShuffleboardDebug();
+  }
+
+  private void setupShuffleboardDebug() {
     ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
-
-    // Targetting red boolean
-    pixyTab.addBoolean("Targeting red", () -> (redTarget != null))
+    pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
       .withSize(4, 4)
       .withPosition(12, 0)
       .withProperties(Map.of("Color when true", "#ff6666"))
       .withProperties(Map.of("Color when false", "#000000"));
-    // Targetting blue boolean
-    pixyTab.addBoolean("Targeting blue", () -> (blueTarget != null))
+    pixyTab.addBoolean("Targeting blue", () -> (largestBlueTarget != null))
       .withSize(4, 4)
       .withPosition(12, 4)
       .withProperties(Map.of("Color when true", "#6666ff"))
       .withProperties(Map.of("Color when false", "#000000"));
 
-    // Info widget
     ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
-    // infoWidget.addNumber("Number of Blocks", () -> blocks.size());
-    // infoWidget.addNumber("Number of Targets", () -> filteredBlocks.size());
     infoWidget.addNumber("Red target x", () -> {
-      return redTarget == null ? -1 : redTarget.getX();
+      return largestRedTarget == null ? -1 : largestRedTarget.getX();
     });
     infoWidget.addNumber("Red target y", () -> {
-      return redTarget == null ? -1 : redTarget.getY();
+      return largestRedTarget == null ? -1 : largestRedTarget.getY();
     });
     infoWidget.addString("Red target angle", () -> {
-      return redTarget == null ? "" : String.valueOf(getTargetAngle(redTarget).get());
+      return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget).get());
     });
     infoWidget.addNumber("Blue target x", () -> {
-      return blueTarget == null ? -1 : blueTarget.getX();
+      return largestBlueTarget == null ? -1 : largestBlueTarget.getX();
     });
     infoWidget.addNumber("Blue target y", () -> {
-      return blueTarget == null ? -1 : blueTarget.getY();
+      return largestBlueTarget == null ? -1 : largestBlueTarget.getY();
     });
     infoWidget.addString("Blue target angle", () -> {
-      return blueTarget == null ? "" : String.valueOf(getTargetAngle(blueTarget).get());
+      return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget).get());
     });
     infoWidget.addNumber("Pixy State", () -> state);
+  }
 
-    // pixyTab.addBoolean("Sees Target", () -> (blocks.size() > 0))
-    //   .withSize(4, 4)
-    //   .withPosition(4, 0);
+  private void connect() {
+    state = pixycam.init(this.chipselect);
+  }
+
+  private boolean isConnected() {
+    return state == 0;
   }
 
   @Override
   public void periodic() {
-    // Filter target values
+    // Attempt to reconnect to the Pixy if we couldn't connect during setup
+    if (!isConnected()) {
+      connect();
+    }
+    // If we fail to connect/are not connected - bail on our target filtering
+    if (!isConnected()) {
+      return;
+    }
+
+    // Clear our previous blocks in prep for new blocks
+    largestRedTarget = null;
+    largestBlueTarget = null;
+
     filterTargets(updatePixy());
   }
 
@@ -96,20 +107,12 @@ public class PixyCam extends SubsystemBase {
    * Updates the values of the PixyCam
    */
   private ArrayList<Block> updatePixy() {
-    // Check to see if the camera initialized correctly.
-    if(!connected) {
-      // Attempt to reconnect Pixy
-      state = pixycam.init(chip);
-      connected = (state >= 0);
-      if(!connected) return null;
-    }
-
     // Either number of targets or an error code
     int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 20);
 
-    // If there was an error (i.e. Pixy is busy getting new values), don't update variables
-    if(error < 0)
-      return null;
+    if (error < 0) {
+      return new ArrayList<Block>();
+    }
 
     return pixycam.getCCC().getBlockCache();
   }
@@ -118,79 +121,66 @@ public class PixyCam extends SubsystemBase {
    * Filters the targets based on conditions that make them seem "cargo-like"
    */
   private void filterTargets(ArrayList<Block> blocks) {
-    if (blocks == null) {
-      return;
-    }
-    
-    // Update entries
-    redTarget = null;
-    blueTarget = null;
-
-    /**
-     * TODO: get blocks returns largest blocks first, adapt code
-     */
-
-    ArrayList<Block> filteredBlocks = new ArrayList<Block>();
-
-    for(Block block : blocks) {
-      // Get ratio of width to height
+    for (Block block : blocks) {
+      // Get ratio of width to height - looking for perfect squares to identify balls
       double ratio = block.getWidth() / block.getHeight();
 
       // Take reciprocal if less than 1 for simplication purposes
-      if(ratio < 1)
+      if (ratio < 1) {
         ratio = 1 / ratio;
-      
-      // Check if it matches conditions
+      }
+
       //FIXME: add proper ball detection
-      if(ratio < Constants.PIXY_RATIO_THRESHOLD) {
-        // Add it to filtered list
-        filteredBlocks.add(block);
-
-        // Set red or blue target to whatever this one is
-        double area = block.getWidth() * block.getHeight();
-
-        if (block.getSignature() == 1) {
-          if (redTarget == null || redTarget.getWidth() * redTarget.getHeight() < area) {
-            redTarget = block;
+      if (ratio < Constants.Pixy.RATIO_THRESHOLD) {
+        // Red == Block Signature 1, Blue == Block Signature 2
+        int signature = block.getSignature();
+        if (signature == 1) {
+          if (shouldUpdateLargestTarget(largestRedTarget, block)) {
+            largestRedTarget = block;
           }
-        } else {
-          if (blueTarget == null || blueTarget.getWidth() * blueTarget.getHeight() < area) {
-            blueTarget = block;
+        } else if (signature == 2) {
+          if (shouldUpdateLargestTarget(largestBlueTarget, block)) {
+            largestBlueTarget = block;
           }
         }
       }
     }
   }
 
-  /**
-   * <b>Note:</b> this will probably be replaced with a way to specify a trajectory
-   * 
-   * @return The largest red target that seems "cargo-like"
-   */
-  public Block getRedTarget() {
-    return redTarget;
+  private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
+    if (largestBlock == null) {
+      return true;
+    }
+    double largestBlockArea = largestBlock.getWidth() * largestBlock.getHeight();
+    double newBlockArea = newBlock.getWidth() * newBlock.getHeight();
+    return newBlockArea > largestBlockArea;
   }
 
   /**
-   * <b>Note:</b> this will probably be replaced with a way to specify a trajectory
-   * 
+   * @return The largest red target that seems "cargo-like"
+   */
+  public Block getRedTarget() {
+    return largestRedTarget;
+  }
+
+  /**
    * @return The largest blue target that seems "cargo-like"
    */
   public Block getBlueTarget() {
-    return blueTarget;
+    return largestBlueTarget;
   }
 
   /**
    * @return Whether or not the Pixy sees a red cargo
    */
-  public boolean seesRedTarget(){
+  public boolean seesRedTarget() {
     return getRedTarget() != null;
   }
 
   /**
    * @return Whether or not the Pixy sees a blue cargo
    */
-  public boolean seesBlueTarget(){
+  public boolean seesBlueTarget() {
     return getBlueTarget() != null;
   }
 
@@ -199,7 +189,7 @@ public class PixyCam extends SubsystemBase {
    * @return The target converted to an angle from center of Pixy.
    * Ranges from -30 to 30. Returns empty if target is null.
    */
-  public Optional<Double> getTargetAngle(Block target) {
+  public static Optional<Double> getTargetAngle(Block target) {
     if (target == null){
       return Optional.empty();
     }
@@ -214,7 +204,7 @@ public class PixyCam extends SubsystemBase {
   }
 
   public double getFrameWidth() {
-    return pixycam.getFrameWidth();
+    return (double)pixycam.getFrameWidth();
   }
 
 }

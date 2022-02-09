@@ -24,7 +24,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam(0);
+  private final PixyCam pixyCam = new PixyCam();
 
   // private final Climber climber = new Climber();
   // private final Delivery delivery = new Delivery();

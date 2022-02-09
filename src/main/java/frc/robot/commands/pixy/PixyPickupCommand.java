@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-// import frc.robot.Constants.BallColor;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.subsystems.AutoDrive.State;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
@@ -27,7 +26,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private final AutoDrive autoDrive;
 
   private PIDController strafeController = new PIDController(0.05, 0.0, 0.0);
-  
+
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
@@ -38,6 +37,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     this.strategy = strategy;
     this.pixyCam = pixyCam;
     this.autoDrive = autoDrive;
+
     addRequirements(autoDrive);
   }
 
@@ -58,7 +58,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     } else if (strategy == PickupStrategy.BLUE) {
       targetBall = pixyCam.getBlueTarget();
     }
-    
+
     forwardOutput = 0.0;
     strafeOutput = 0.0;
 

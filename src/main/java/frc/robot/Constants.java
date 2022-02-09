@@ -111,7 +111,7 @@ public final class Constants {
         HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
       case SKILLSBOT:
-        MODULE0_DRIVE_MOTOR_ID = 0; 
+        MODULE0_DRIVE_MOTOR_ID = 0;
         MODULE0_ANGLE_MOTOR_ID = 4;
         MODULE0_ANGLE_CANCODER_ID = 1;
         MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
@@ -140,7 +140,7 @@ public final class Constants {
         break;
     }
   }
- 
+
   /**
    * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
    * Track width is side to side
@@ -251,13 +251,14 @@ public final class Constants {
   public static final int DELIVERY_MOTOR_ID = 7;
   public static final double DELIVERY_SPEED = 0.5;
 
-  public static final double PIXY_RATIO_THRESHOLD = 2;
+  public static final class Pixy {
+    public static final double RATIO_THRESHOLD = 2.0;
+  }
 
-  // Color stuff
   public static enum BallColor {
     RED,
     BLUE,
     UNKNOWN
   }
-  
+
 }
