@@ -5,7 +5,6 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.RobotType.Type;
 import frc.robot.coordinates.PolarCoordinate;
 
 /**
@@ -263,4 +262,5 @@ public final class Constants {
     CLOCKWISE,
     COUNTER_CLOCKWISE
   }
+
 }

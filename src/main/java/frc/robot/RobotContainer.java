@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
+import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -24,7 +25,7 @@ public class RobotContainer {
 
   private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
-  private final Delivery delivery = new Delivery(operatorController);
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
   private final Intake intake = new Intake();
@@ -62,7 +63,7 @@ public class RobotContainer {
     //leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     //rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
-    operatorStation.blueSwitch.whenReleased(delivery::stopDelivery);
+    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(delivery, operatorController));
   }
 
   public Command getAutonomousCommand() {

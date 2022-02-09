@@ -2,12 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.Direction;
 
 /**
@@ -20,12 +17,10 @@ public class Delivery extends SubsystemBase {
   // Motor
   private final TalonFX motor;
 
-  private final XboxController controller;
-
   /**
    * Initializes the Delivery subsystem with its two color sensors
    */
-  public Delivery(XboxController controller) {
+  public Delivery() {
     // Initialize motor
     motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
@@ -33,12 +28,10 @@ public class Delivery extends SubsystemBase {
     //Set settings on motor
     motor.configFactoryDefault();
 
-    motor.setInverted(false); //TODO: see what actual inversion should be
+    motor.setInverted(false);
     motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);
-
-    this.controller = controller;
 
     // Set up shuffleboard stuff
     // ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
@@ -46,11 +39,7 @@ public class Delivery extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    if (RobotState.isEnabled() && RobotContainer.operatorStation.isBlueSwitchOn()) {
-      startDelivery(Direction.CLOCKWISE, Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0);
-    }
-  }
+  public void periodic() {}
 
 
   public void startDelivery(Direction direction) {
@@ -58,12 +47,15 @@ public class Delivery extends SubsystemBase {
   }
 
   public void startDelivery(Direction direction, double speed) {
-    if (direction == Direction.CLOCKWISE) {
-      // Rotate motor forward
-      motor.set(ControlMode.PercentOutput, speed);
-    } else if (direction == Direction.COUNTER_CLOCKWISE) {
-      // Rotate motor CCW
-      motor.set(ControlMode.PercentOutput, -speed);
+    switch (direction) {
+      case CLOCKWISE:
+        // Rotate motor forward
+        motor.set(ControlMode.PercentOutput, speed);
+        break;
+      case COUNTER_CLOCKWISE:
+        // Rotate motor CCW
+        motor.set(ControlMode.PercentOutput, -speed);
+        break;
     }
   }
 
