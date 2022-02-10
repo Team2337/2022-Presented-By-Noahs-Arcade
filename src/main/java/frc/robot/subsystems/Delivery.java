@@ -30,7 +30,6 @@ public class Delivery extends SubsystemBase {
 
   // Golf ball sensors
   // TODO: figure out actual slots in DIO for these
-  private final DigitalInput intakeBeam = new DigitalInput(0);
   private final DigitalInput topLeftBeam = new DigitalInput(1);
   private final DigitalInput topRightBeam = new DigitalInput(2);
   private final DigitalInput shooterBeam = new DigitalInput(3);
@@ -68,21 +67,20 @@ public class Delivery extends SubsystemBase {
     infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
     infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
 
-    ShuffleboardLayout storedLayout = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
+    ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
       .withSize(6, 8)
       .withPosition(6, 0);
-    storedLayout.addStringArray("Ball positions", () -> new String[]{
+    sensorsWidget.addStringArray("Ball positions", () -> new String[]{
       "Bottom: " + String.valueOf(storedBalls[0]),
       "Right: "  + String.valueOf(storedBalls[1]),
       "Top: "    + String.valueOf(storedBalls[2]),
       "Left: "   + String.valueOf(storedBalls[3])
     });
-    storedLayout.addStringArray("Color sensors", () -> new String[]{
+    sensorsWidget.addStringArray("Color sensors", () -> new String[]{
       "Left: "  + String.valueOf(leftSensor.getColor()),
       "Right: " + String.valueOf(rightSensor.getColor())
     });
-    storedLayout.addStringArray("Golf ball sensors", () -> new String[]{
-      "Intake: "    + intakeBeam.get(),
+    sensorsWidget.addStringArray("Lineup sensors", () -> new String[]{
       "Top Left: "  + topLeftBeam.get(),
       "Top Right: " + topRightBeam.get(),
       "Shooter: "   + shooterBeam.get()
@@ -238,13 +236,6 @@ public class Delivery extends SubsystemBase {
   // --- GOLF BALL SENSOR GETTERS --- //
   // -------------------------------- //
   //////////////////////////////////////
-
-  /**
-   * @return Gets whether or not the intake golf ball sensor sees something
-   */
-  public boolean getIntakeSensorStatus() {
-    return intakeBeam.get();
-  }
 
   /**
    * @return Gets whether or not the top left golf ball sensor sees something

@@ -1,8 +1,8 @@
 package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Direction;
 import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Delivery.Direction;
 
 /**
  * Moves a ball into position to be checeked and updates its color value.

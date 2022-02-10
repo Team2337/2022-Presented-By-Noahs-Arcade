@@ -45,6 +45,6 @@ public class IntakeCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     //When a ball breaks the first stage of the intake
-    return delivery.getIntakeSensorStatus();
+    return intake.getIntakeSensorStatus();
   }
 }

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -18,6 +19,9 @@ public class Intake extends SubsystemBase {
 
   private final TalonFX firstStage;
   private final TalonFX secondStage;
+  
+  // TODO: figure out actual slots in DIO for this
+  private final DigitalInput intakeBeam = new DigitalInput(0);
   
   public Intake() {
     // Initialize motor
@@ -40,9 +44,16 @@ public class Intake extends SubsystemBase {
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
     
-    ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
+    ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList)
+      .withSize(3,2)
+      .withPosition(4, 0);
     intakeWidget.addDoubleArray("Speed", this::getIntakeSpeeds);
     intakeWidget.addDoubleArray("Temp", this::getIntakeTemperatures);
+
+    ShuffleboardLayout sensorsWidget = intakeTab.getLayout("Sensor", BuiltInLayouts.kList)
+      .withSize(6, 8)
+      .withPosition(6, 0);
+    sensorsWidget.addBoolean("Intake sensor", intakeBeam::get);
   }
 
   @Override
@@ -110,6 +121,13 @@ public class Intake extends SubsystemBase {
       firstStage.getTemperature(),
       secondStage.getTemperature()
     };
+  }
+
+  /**
+   * @return Gets whether or not the intake golf ball sensor sees something
+   */
+  public boolean getIntakeSensorStatus() {
+    return intakeBeam.get();
   }
 
 }
