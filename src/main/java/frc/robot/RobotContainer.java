@@ -7,12 +7,16 @@ package frc.robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.BallColor;
 import frc.robot.commands.auto.DoNothingCommand;
+import frc.robot.commands.auto.Top3Ball;
+import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.IntakeBallCommandGroup;
 import frc.robot.commands.delivery.PrepareShooterCommandGroup;
 import frc.robot.commands.swerve.SwerveDriveCommand;
@@ -35,6 +39,7 @@ public class RobotContainer {
 
   public static BallColor allianceColor;
   public static BallColor opposingColor;
+  private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -45,9 +50,14 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
+    autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
+
+    SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
-  public void resetGyro() {
+  public void resetRobot() {
     pigeon.setYaw(0, 250);
   }
 
@@ -62,9 +72,17 @@ public class RobotContainer {
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
     driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
+
+    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
+    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+
+    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
   public Command getAutonomousCommand() {
-    return new DoNothingCommand();
+    return autonChooser.getSelected();
   }
 }
