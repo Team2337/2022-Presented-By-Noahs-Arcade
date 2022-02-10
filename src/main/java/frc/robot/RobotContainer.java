@@ -5,13 +5,16 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.auto.Top3Ball;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
@@ -41,14 +44,29 @@ public class RobotContainer {
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
+    // autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Red Pos3 One Ball", new RedPos3OneBall(autoDrive, drivetrain, heading));
+    // autonChooser.addOption("Red Pos2 One Ball", new RedPos2OneBall(autoDrive, drivetrain, heading));
+    // autonChooser.addOption("Red Pos1 One Ball", new RedPos1OneBall(autoDrive, drivetrain, heading));
+    // autonChooser.addOption("Red Pos3 Five Ball", new RedPos3FiveBall(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Blue Pos3 One Ball", new BluePos3OneBall(autoDrive, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
   public void resetRobot() {
-    pigeon.setYaw(0, 250);
+    if (DriverStation.getAlliance().toString() == "Red") {
+      pigeon.setYaw(Constants.RED_STARTING_ANGLE, 250);
+    } else {
+      pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
+    }
+    // pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.bluePosition3Start.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 
+  public void resetRobot2() {
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.bluePosition3Start.toFieldCoordinate(), Rotation2d.fromDegrees(60)));
+  }
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);

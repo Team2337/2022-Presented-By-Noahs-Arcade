@@ -16,6 +16,10 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static double BLUE_STARTING_ANGLE = 25;
+  public static double RED_STARTING_ANGLE = 25;
+  
   public int MODULE0_DRIVE_MOTOR_ID;
   public int MODULE0_ANGLE_MOTOR_ID;
   public int MODULE0_ANGLE_CANCODER_ID;
@@ -210,6 +214,36 @@ public final class Constants {
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(25 + 180) // 25 their-side using alliance wall zero
     );
+
+    public static final PolarCoordinate redPosition3Start = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(14)
+    );
+    public static final PolarCoordinate redPosition2Start = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(62)
+    );
+    public static final PolarCoordinate redPosition1Start = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(122.25)
+    );
+    public static final PolarCoordinate bluePosition3Start = new PolarCoordinate(
+      Units.inchesToMeters(90), 
+      Rotation2d.fromDegrees(-166)
+    );
+    public static final PolarCoordinate kBlueBall3Pickup = new PolarCoordinate(
+      Constants.Auto.kBall1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Rotation2d.fromDegrees(-160)
+      );
+      public static final PolarCoordinate kBall4 = new PolarCoordinate(
+        Units.inchesToMeters(153),
+        Rotation2d.fromDegrees(80) // -32.25 using alliance wall zero
+      );
+      public static final PolarCoordinate kBall2ShootPosition = new PolarCoordinate(
+        Constants.Auto.kBall2.getRadiusMeters(),
+        Constants.Auto.kBall2.getTheta()
+      );
+
   }
 
   // Robot-specific configuration for our swerve drive algorithm
