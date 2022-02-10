@@ -19,7 +19,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
-  public static final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
+  private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
@@ -59,7 +59,7 @@ public class RobotContainer {
     // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
-    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(delivery, operatorController));
+    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
   public Command getAutonomousCommand() {

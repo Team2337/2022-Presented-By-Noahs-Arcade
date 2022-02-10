@@ -33,7 +33,6 @@ public class Delivery extends SubsystemBase {
     //Set settings on motor
     motor.configFactoryDefault();
 
-    motor.setInverted(false);
     motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);
@@ -41,8 +40,8 @@ public class Delivery extends SubsystemBase {
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
     ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList);
-    deliveryTab.addNumber("Speed", () -> motor.getMotorOutputPercent());
-    deliveryTab.addNumber("Temperature (C)", () -> motor.getTemperature());
+    infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
+    infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
   }
 
   @Override
