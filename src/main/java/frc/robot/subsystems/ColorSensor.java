@@ -54,7 +54,7 @@ public class ColorSensor extends SubsystemBase {
     currentColor = null;
 
     // Check match
-    if (sensor.getProximity() < COLOR_SENSOR_PROXIMITY) {
+    if (seesBall()) {
       // If not close enough, there is no ball
       return;
     } else if (match.color == matchRed) {
@@ -78,8 +78,18 @@ public class ColorSensor extends SubsystemBase {
     }, null);
   }
 
+  /**
+   * @return Currently viewed color, if any
+   */
   public BallColor getColor() {
     return currentColor;
+  }
+
+  /**
+   * @return Whether or not the proximity sensor detects a close object
+   */
+  public boolean seesBall() {
+    return sensor.getProximity() < COLOR_SENSOR_PROXIMITY;
   }
 
 }
