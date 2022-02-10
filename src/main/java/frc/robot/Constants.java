@@ -245,7 +245,8 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
-  public static final int INTAKE_MOTOR_ID = 6;
+  public static final int INTAKE_FIRST_MOTOR_ID = 6;
+  public static final int INTAKE_SECOND_MOTOR_ID = 7;
   public static final double INTAKE_SPEED = 0.5;
 
   public static final int DELIVERY_MOTOR_ID = 21;
