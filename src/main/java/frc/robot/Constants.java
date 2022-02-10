@@ -245,26 +245,6 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
-  public static final int MODULE0_DRIVE_MOTOR_ID = 0;
-  public static final int MODULE0_ANGLE_MOTOR_ID = 4;
-  public static final int MODULE0_ANGLE_CANCODER_ID = 1;
-  public static final double MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
-
-  public static final int MODULE1_DRIVE_MOTOR_ID = 1;
-  public static final int MODULE1_ANGLE_MOTOR_ID = 5;
-  public static final int MODULE1_ANGLE_CANCODER_ID = 2;
-  public static final double MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
-
-  public static final int MODULE2_DRIVE_MOTOR_ID = 24;
-  public static final int MODULE2_ANGLE_MOTOR_ID = 20;
-  public static final int MODULE2_ANGLE_CANCODER_ID = 3;
-  public static final double MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
-
-  public static final int MODULE3_DRIVE_MOTOR_ID = 15;
-  public static final int MODULE3_ANGLE_MOTOR_ID = 11;
-  public static final int MODULE3_ANGLE_CANCODER_ID = 4;
-  public static final double MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
-
   // Other motor IDs
   public static final int SHOOTER_LEFT_MOTOR = 7;
   public static final int SHOOTER_RIGHT_MOTOR = 14;
@@ -272,7 +252,7 @@ public final class Constants {
   public static final int INTAKE_MOTOR_ID = 15;//TODO: get actual device id on robot
   public static final double INTAKE_SPEED = 0.5;
 
-  public static final int DELIVERY_MOTOR_ID = 7;
+  public static final int DELIVERY_MOTOR_ID = 21;
   public static final double DELIVERY_SPEED = 0.5;
 
   public static final int KICKER_MOTOR = 20;

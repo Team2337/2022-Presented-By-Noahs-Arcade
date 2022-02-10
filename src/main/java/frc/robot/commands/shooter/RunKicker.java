@@ -11,30 +11,29 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class RunKicker extends CommandBase {
   // The subsystem the command runs on
-  private final Kicker subsystem;
+  private final Kicker kicker;
 
   public RunKicker(Kicker kicker) {
-    subsystem = kicker;
-    addRequirements(subsystem);
-
+    this.kicker = kicker;
+    addRequirements(kicker);
   }
-  public void initialize() {
 
+  @Override
+  public void initialize() {
   }
 
   @Override
   public void execute() {
-    subsystem.startKicker(-subsystem.kick3r.getDouble(0));
+    kicker.startKicker(kicker.kick3r.getDouble(0));
   }
 
   @Override
   public void end(boolean interrupted) {
-    subsystem.stopKicker();
+    kicker.stopKicker();
   }
-
 
   @Override
   public boolean isFinished() {
     return false;
-}
+  }
 }

@@ -1,40 +1,38 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.intake;
 
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Kicker;
-import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- *Runs intake
+ *Runs the intake
  *@author Nicholas S.
  */
+
 public class RunIntake extends CommandBase {
   // The subsystem the command runs on
-  private final Intake subsystem;
+  private final Intake intake;
 
   public RunIntake(Intake intake) {
-    subsystem = intake;
-    addRequirements(subsystem);
-
-  }
-  public void initialize() {
-
+    this.intake = intake;
+    addRequirements(intake);
   }
 
   @Override
-  public void execute() {
-    subsystem.startIntake();
+  public void initialize() {
+    intake.startIntake();
+  }
+
+  @Override
+  public void execute() {  
   }
 
   @Override
   public void end(boolean interrupted) {
-    subsystem.stopIntake();;
+    intake.stopIntake();
   }
-
 
   @Override
   public boolean isFinished() {
     return false;
-}
+  }
 }

@@ -9,38 +9,38 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * @author Nicholas S.
  */
 public class StartShooter extends CommandBase {
-  // The subsystem the command runs on
-  private final Shooter subsystem;
+  // The shooter the command runs on
+  private final Shooter shooter;
 
-  public StartShooter(Shooter m_subsystem) {
-    subsystem = m_subsystem;
-    addRequirements(subsystem);
+  public StartShooter(Shooter shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
 
   }
   public void initialize() {
-    subsystem.currentLimitConfigurationMotor.currentLimit = 50;
-    subsystem.leftShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
-    subsystem.leftShoot.configClosedloopRamp(0.1);
+    shooter.currentLimitConfigurationMotor.currentLimit = 50;
+    shooter.leftMotor.configStatorCurrentLimit(shooter.currentLimitConfigurationMotor, 0);
+    shooter.leftMotor.configClosedloopRamp(0.1);
   }
 
   @Override
   public void execute() {
-    subsystem.setShooterSpeed(subsystem.shooter.getDouble(0));
+    shooter.setShooterSpeed(shooter.shooter.getDouble(0));
   }
 
   @Override
   public void end(boolean interrupted) {
-    subsystem.currentLimitConfigurationMotor.currentLimit = 0;
-    subsystem.leftShoot.configStatorCurrentLimit(subsystem.currentLimitConfigurationMotor, 0);
+    shooter.currentLimitConfigurationMotor.currentLimit = 0;
+    shooter.leftMotor.configStatorCurrentLimit(shooter.currentLimitConfigurationMotor, 0);
+    shooter.leftMotor.configClosedloopRamp(0.1);
     
-    subsystem.leftShoot.configClosedloopRamp(0.1);
-    subsystem.stopShooter();
+    shooter.stopShooter();
   }
 
 
   @Override
   public boolean isFinished() {
-    if (subsystem.motorOverTemp) { 
+    if (shooter.motorOverTemp) { 
       return true;
     } else {
       return false;

@@ -21,12 +21,11 @@ public class Intake extends SubsystemBase {
   public Intake() {
     // Initialize motor
     motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-    
-    // TODO: make sure config settings are correct
+
     //Set settings on motor
     motor.configFactoryDefault();
 
-    motor.setInverted(false); //TODO: make sure this is correct
+    motor.setInverted(false); 
     motor.setNeutralMode(NeutralMode.Coast);
 
     motor.configOpenloopRamp(0.5);

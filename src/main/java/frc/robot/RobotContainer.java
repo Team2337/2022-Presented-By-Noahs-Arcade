@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.shooter.*;
 import frc.robot.subsystems.*;
