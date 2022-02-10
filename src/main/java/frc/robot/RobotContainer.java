@@ -44,11 +44,11 @@ public class RobotContainer {
 
     //True means that the stringpot will be used for movement, otherwise, it is false
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenHeld(new ClimberCommand(climber, operatorController, -0.3, false));
+    operatorA.whenHeld(new ClimberCommand(operatorController,0, false, climber));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenHeld(new ClimberCommand(climber, operatorController, Constants.MID_RUNG, true));
+    operatorB.whenHeld(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    operatorX.whenHeld(new ClimberCommand(climber, operatorController, Constants.RICKABOOT, true));
+    operatorX.whenHeld(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
     driverX.whenPressed(heading::enableMaintainHeading);
   }
   public Command getAutonomousCommand() {

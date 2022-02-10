@@ -229,15 +229,15 @@ public final class Constants {
   public static final int DELIVERY_MOTOR_ID = 7;
   public static final double DELIVERY_SPEED = 0.5;
   //CLIMBER CONSTANTS
-  // 16 and 3 on practice bot
-  public static final int CLIMBER1_MOTOR_ID = 16;
-  public static final int CLIMBER2_MOTOR_ID = 3;
-  public static final int STRING_POT_ID = 3;
-  public static final double LOW_RUNG = 1.0;
-  public static final double MID_RUNG = 3.0;
-  public static final double RICKABOOT = 0.5;
-  public static final double START = 0;
-
+  public static final class Climber {
+    public static final int LEFT_CLIMBER_MOTOR_ID = 16;
+    public static final int RIGHT_CLIMBER_MOTOR_ID = 3;
+    public static final int CLIMBER_STRING_POT_ID = 3;
+    public static final double LOW_RUNG = 1.0;
+    public static final double MID_RUNG = 3.0;
+    public static final double RICKABOOT = 0.5;
+    public static final double START = 0;
+  }
 
   // Color stuff
   public static enum BallColor {

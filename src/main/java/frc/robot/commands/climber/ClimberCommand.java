@@ -22,10 +22,10 @@ public class ClimberCommand extends CommandBase {
   private double setpoint;
   private double position;
   private boolean auto;
-  private boolean firstTime = true;
+  private boolean shouldHoldPosition = true;
   private PIDController climberController = new PIDController(0.004, 0.0, 0.0);
 
-  public ClimberCommand(Climber climber, XboxController controller, double setpoint, boolean auto) {
+  public ClimberCommand(XboxController controller, double setpoint, boolean auto, Climber climber) {
     this.climber = climber;
     this.setpoint = setpoint;
     this.controller = controller;
@@ -46,9 +46,9 @@ public class ClimberCommand extends CommandBase {
       double deadband = Utilities.deadband(controller.getRightY(), 0.06);
       if (deadband == 0){
         //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
-        if (firstTime == true){
+        if (shouldHoldPosition){
           position = climber.getMotorOnePosition();
-          firstTime = false;
+          shouldHoldPosition = false;
         }
         //Holds the climber at set position 
         climber.hold(position);
@@ -56,7 +56,7 @@ public class ClimberCommand extends CommandBase {
       else{
         /* The controller is being pressed, use that value to move 
         the climber up and down while resetting the loop in case the controller stops being touched again */
-        firstTime = true;
+        shouldHoldPosition = true;
         climber.start(-deadband);
       }
     }
@@ -67,14 +67,14 @@ public class ClimberCommand extends CommandBase {
       SmartDashboard.putNumber("PID Output", output);
       SmartDashboard.putNumber("PID Speed", speed);
       climber.start((speed * 100)); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
-    }
-    
-}
+    }    
+  }
 
   @Override
   public void end(boolean interupted){
     climber.stop();
   }
+
   @Override
   public boolean isFinished() {
     return false;

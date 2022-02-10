@@ -19,40 +19,31 @@ import frc.robot.Constants;
  * @author  Nicholas S
  */
 public class Climber extends SubsystemBase {
-  private final AnalogInput stringPot;
-  private final TalonFX motor1;
-  private final TalonFX motor2;
-  public TalonFXConfiguration fxConfig;
-  public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
-
+  private final AnalogInput stringPot = new AnalogInput(Constants.Climber.CLIMBER_STRING_POT_ID);
+  private final TalonFX leftMotor = new TalonFX(Constants.Climber.LEFT_CLIMBER_MOTOR_ID);
+  private final TalonFX rightMotor = new TalonFX(Constants.Climber.RIGHT_CLIMBER_MOTOR_ID);
   
   public Climber() {
-    // Initialize motor
-    stringPot = new AnalogInput(Constants.STRING_POT_ID);
-    motor1 = new TalonFX(Constants.CLIMBER1_MOTOR_ID);
-    motor2 = new TalonFX(Constants.CLIMBER2_MOTOR_ID);
-    
-    
-    
+    StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
     //Set settings on motor
-    motor1.configFactoryDefault();
-    motor2.configFactoryDefault();
+    leftMotor.configFactoryDefault();
+    rightMotor.configFactoryDefault();
     
-    motor2.follow(motor1);
+    rightMotor.follow(leftMotor);
 
     currentLimitConfigurationMotor.currentLimit = 50; //50
     currentLimitConfigurationMotor.enable = true;
     currentLimitConfigurationMotor.triggerThresholdCurrent = 40;
     currentLimitConfigurationMotor.triggerThresholdTime = 3;
-        // Implements these current limits on the motors
-    motor1.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
+    // Implements these current limits on the motors
+    leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
 
-    motor1.setNeutralMode(NeutralMode.Brake);
+    leftMotor.setNeutralMode(NeutralMode.Brake);
 
-    motor1.configOpenloopRamp(0.5);
-    motor1.enableVoltageCompensation(true);
-    motor1.setInverted(true);
-    motor2.setInverted(InvertType.OpposeMaster);
+    leftMotor.configOpenloopRamp(0.5);
+    leftMotor.enableVoltageCompensation(true);
+    leftMotor.setInverted(true);
+    rightMotor.setInverted(InvertType.OpposeMaster);
 
     // Set up shuffleboard stuff
     ShuffleboardTab climberTab = Shuffleboard.getTab("Climber");
@@ -72,31 +63,31 @@ public class Climber extends SubsystemBase {
    * Starts the climber
    */
   public void start(double speed) {
-    motor1.set(ControlMode.PercentOutput, speed);
+    leftMotor.set(ControlMode.PercentOutput, speed);
   }
   /**
    * Holds the climber at a set position
    */
   public void hold(double setpoint){
-    motor1.set(ControlMode.Position, setpoint);
-}
+    leftMotor.set(ControlMode.Position, setpoint);
+  }
   
   /**
    * Stops the climber
    */
   public void stop() {
-    motor1.set(ControlMode.PercentOutput, 0);
+    leftMotor.set(ControlMode.PercentOutput, 0);
   }
 
   /**
    * @return Gets the climber speed as a percent (between -1 and 1)
    */
   private double getClimberSpeed() {
-    return (motor1.getMotorOutputPercent());
+    return (leftMotor.getMotorOutputPercent());
   }
 
   public double getMotorOnePosition(){
-    return motor1.getSelectedSensorPosition();
+    return leftMotor.getSelectedSensorPosition();
   }
 
   /**
@@ -106,18 +97,16 @@ public class Climber extends SubsystemBase {
     return stringPot.getVoltage();
   }
 
-
-
   /**
    * Returns the temperature of the left climber motor (in Celsius)
    */
   private double getLeftClimberTemperature() {
-    return motor1.getTemperature();
+    return leftMotor.getTemperature();
   }
   /**
    * Returns the temperature of the right climber motor (in Celsius)
    */
   private double getRightClimberTemperature(){
-    return motor2.getTemperature();
+    return rightMotor.getTemperature();
   }
 }
