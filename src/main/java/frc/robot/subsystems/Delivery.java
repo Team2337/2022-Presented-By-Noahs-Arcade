@@ -8,61 +8,59 @@ import frc.robot.Constants;
 
 /**
  * Subsystem for the delivery mechanism
- * 
- * @author Michael F, Alex C
+ *
+ * @author Michael F, Nicholas S, Alex C
  */
 public class Delivery extends SubsystemBase {
 
-  private final TalonFX motor;
+  public static enum Direction {
+    CLOCKWISE,
+    COUNTER_CLOCKWISE
+  }
 
+  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
+
+  /**
+   * Initializes the Delivery subsystem - no color sensors yet.
+   */
   public Delivery() {
-    // Initializes motor
-    motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-    
-    // TODO: make sure config settings are correct
-    //Set settings on motor
     motor.configFactoryDefault();
 
-    motor.setInverted(false); //TODO: make sure this is correct
-    motor.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(NeutralMode.Brake);
+    motor.configOpenloopRamp(0.5);
 
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
-
-    ShuffleboardLayout deliveryWidget = deliveryTab.getLayout("Delivery Info", BuiltInLayouts.kList).withSize(4,8).withPosition(0, 0);
-    deliveryWidget.addNumber("Speed", this::getDeliverySpeed);
-    deliveryWidget.addNumber("Temp", this::getDeliveryTemperature);
+    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList);
+    infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
+    infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
   }
 
   @Override
   public void periodic() {}
 
-  /**
-   * Starts the delivery mechanism
-   */
-  public void startDelivery() {
-    motor.set(ControlMode.PercentOutput, Constants.DELIVERY_SPEED);
+  public void startDelivery(Direction direction) {
+    startDelivery(direction, Constants.DELIVERY_SPEED);
   }
-  
+
+  public void startDelivery(Direction direction, double speed) {
+    switch (direction) {
+      case CLOCKWISE:
+        // Rotate motor forward
+        motor.set(ControlMode.PercentOutput, speed);
+        break;
+      case COUNTER_CLOCKWISE:
+        // Rotate motor CCW
+        motor.set(ControlMode.PercentOutput, -speed);
+        break;
+    }
+  }
+
   /**
    * Stops the delivery mechanism
    */
   public void stopDelivery() {
     motor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  /**
-   * @return Gets the delivery speed as a percent (between -1 and 1)
-   */
-  private double getDeliverySpeed() {
-    return motor.getMotorOutputPercent();
-  }
-
-  /**
-   * Returns the temperature of the delivery motor (in Celsius)
-   */
-  private double getDeliveryTemperature() {
-    return motor.getTemperature();
   }
 
 }
