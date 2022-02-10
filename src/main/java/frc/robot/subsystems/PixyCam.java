@@ -16,8 +16,8 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
  */
 public class PixyCam extends SubsystemBase {
 
-  final private Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
-  final private int chipselect;
+  private final Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
+  private final int chipselect;
   private int state;
 
   private Block largestRedTarget;
@@ -125,8 +125,8 @@ public class PixyCam extends SubsystemBase {
       // Get ratio of width to height - looking for perfect squares to identify balls
       double ratio = block.getWidth() / block.getHeight();
 
-      // Take reciprocal if less than 1 for simplication purposes
-      if (ratio < 1) {
+      // Take reciprocal if greater than 1 for simplication purposes
+      if (ratio > 1) {
         ratio = 1 / ratio;
       }
 
@@ -189,18 +189,18 @@ public class PixyCam extends SubsystemBase {
    * @return The target converted to an angle from center of Pixy.
    * Ranges from -30 to 30. Returns empty if target is null.
    */
-  public static Optional<Double> getTargetAngle(Block target) {
+  public Optional<Double> getTargetAngle(Block target) {
     if (target == null){
       return Optional.empty();
     }
 
     /**
-     * To get the angle, we divide the x (which ranges from 0 to 315, the width
-     * of the camera) by 315 to get it as a percentage from 0-1. We multiply
-     * that by 60 (the field of view of the PixyCam) to get it in terms of
-     * degrees, and then subtract it by 30 to center it.
+     * To get the angle, we divide the x by the width of the camera to get it
+     * as a percentage from 0-1. We multiply that by 60 (the horizontal field
+     * of view of the PixyCam) to get it in terms of degrees, and then subtract
+     * it by 30 to center it.
      */
-    return Optional.of(((target.getX() / 315.0) * 60.0) - 30.0);
+    return Optional.of(((target.getX() / getFrameWidth()) * 60.0) - 30.0);
   }
 
   public double getFrameWidth() {

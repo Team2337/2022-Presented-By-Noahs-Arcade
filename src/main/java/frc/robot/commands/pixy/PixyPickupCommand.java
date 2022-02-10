@@ -2,6 +2,7 @@ package frc.robot.commands.pixy;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
@@ -30,8 +31,8 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  private final double maxForwardSpeed = 0.05;
-  private final double maxStrafeSpeed = 0.05;
+  private final double maxForwardSpeed = 0.2;
+  private final double maxStrafeSpeed = 0.2;
 
   public PixyPickupCommand(PickupStrategy strategy, PixyCam pixyCam, AutoDrive autoDrive) {
     this.strategy = strategy;
@@ -51,8 +52,17 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     // TODO: Abstract in to Ball class?
     Block targetBall = null;
     if (strategy == PickupStrategy.ANY) {
-      // TODO: Prioritize our balls
-      targetBall = pixyCam.getRedTarget() == null ? pixyCam.getBlueTarget() : pixyCam.getRedTarget();
+      switch (DriverStation.getAlliance()) {
+        default:
+        case Red:
+          // If alliance is red, prioritize red targets if they are there; otherwise get blue targets
+          targetBall = pixyCam.getRedTarget() == null ? pixyCam.getBlueTarget() : pixyCam.getRedTarget();
+          break;
+        case Blue:
+          // If alliance is blue, prioritize blue targets if they are there; otherwise get red targets
+          targetBall = pixyCam.getBlueTarget() == null ? pixyCam.getRedTarget() : pixyCam.getBlueTarget();
+          break;
+      }
     } else if (strategy == PickupStrategy.RED) {
       targetBall = pixyCam.getRedTarget();
     } else if (strategy == PickupStrategy.BLUE) {

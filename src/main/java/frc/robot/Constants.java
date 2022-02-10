@@ -252,7 +252,7 @@ public final class Constants {
   public static final double DELIVERY_SPEED = 0.5;
 
   public static final class Pixy {
-    public static final double RATIO_THRESHOLD = 2.0;
+    public static final double RATIO_THRESHOLD = 0.5;
   }
 
   public static enum BallColor {
