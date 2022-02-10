@@ -30,6 +30,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
+  private boolean seesBall = false;
 
   private final double maxForwardSpeed = 0.2;
   private final double maxStrafeSpeed = 0.2;
@@ -44,6 +45,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   @Override
   public void initialize() {
+    seesBall = false;
     autoDrive.setDelegate(this);
   }
 
@@ -72,7 +74,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     forwardOutput = 0.0;
     strafeOutput = 0.0;
 
-    // TODO: Figure out what to do with our calculate here...
+    seesBall = targetBall != null;
     if (targetBall == null) {
       return;
     }
@@ -103,16 +105,25 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public boolean isFinished() {
     // TODO: when should this end?
+    /**
+     * Here's an idea about how to do this:
+     * When the intake code gets finished, this will be tied in with the intake command.
+     * Currently, that intake command is bundled with the delivery code, it might need
+     * to be separated into its own branch.
+     */
     return false;
   }
 
   @Override
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    // TODO: what happens when we DON'T see a ball?
-    return new AutoDrive.State(
-      forwardOutput,
-      strafeOutput,
-      false
-    );
+    if (seesBall) {
+      return new AutoDrive.State(
+        forwardOutput,
+        strafeOutput,
+        false
+      );
+    } else {
+      return null;
+    }
   }
 }
