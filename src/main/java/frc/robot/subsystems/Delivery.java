@@ -8,33 +8,25 @@ import frc.robot.Constants;
 
 /**
  * Subsystem for the delivery mechanism
- * 
+ *
  * @author Michael F, Nicholas S, Alex C
  */
 public class Delivery extends SubsystemBase {
 
-  // Direction enum
   public static enum Direction {
     CLOCKWISE,
     COUNTER_CLOCKWISE
   }
 
-  // Motor
-  private final TalonFX motor;
+  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
   /**
-   * Initializes the Delivery subsystem with its two color sensors
+   * Initializes the Delivery subsystem - no color sensors yet.
    */
   public Delivery() {
-    // Initialize motor
-    motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-
-    // TODO: make sure config settings are correct
-    //Set settings on motor
     motor.configFactoryDefault();
 
     motor.setNeutralMode(NeutralMode.Brake);
-
     motor.configOpenloopRamp(0.5);
 
     // Set up shuffleboard stuff
@@ -46,7 +38,6 @@ public class Delivery extends SubsystemBase {
 
   @Override
   public void periodic() {}
-
 
   public void startDelivery(Direction direction) {
     startDelivery(direction, Constants.DELIVERY_SPEED);

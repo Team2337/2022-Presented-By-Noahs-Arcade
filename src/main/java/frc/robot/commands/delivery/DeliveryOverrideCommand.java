@@ -7,12 +7,13 @@ import frc.robot.subsystems.Delivery;
 
 public class DeliveryOverrideCommand extends CommandBase {
 
-  private final Delivery delivery;
   private final XboxController controller;
-  
+  private final Delivery delivery;
+
   public DeliveryOverrideCommand(XboxController controller, Delivery delivery) {
-    this.delivery = delivery;
     this.controller = controller;
+    this.delivery = delivery;
+
     addRequirements(delivery);
   }
 
