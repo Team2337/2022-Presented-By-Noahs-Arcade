@@ -10,6 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Utilities;
+import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
@@ -19,7 +21,7 @@ import frc.robot.subsystems.Heading;
  * Drive a certain distance from a point - regardless of angle - and maintain that
  * distance away from the point.
  */
-public class ProfiledPointToPointCommand extends CommandBase implements AutoDrivableCommand {
+public class ProfiledPointToPointCommand extends HeadingToTargetCommand implements AutoDrivableCommand {
 
   private PolarCoordinate target;
   private Supplier<Pose2d> poseSupplier;
@@ -33,6 +35,12 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
   private double strafeOutput = 0.0;
 
   public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
+    super(
+      target.toFieldCoordinate(),
+      () -> poseSupplier.get().getTranslation(),
+      heading
+    );
+
     this.target = target;
     this.poseSupplier = poseSupplier;
     this.heading = heading;
@@ -50,18 +58,20 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
     SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
     SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
 
-    addRequirements(heading, autoDrive);
+    addRequirements(autoDrive);
   }
 
   @Override
   public void initialize() {
+    super.initialize();
+
     heading.enableMaintainHeading();
     autoDrive.setDelegate(this);
 
     // Set our initial setpoint for our profiled PID controllers
     // to avoid a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
-    thetaController.reset(robotCoordinate.getTheta().getDegrees());
+    thetaController.reset(Utilities.convertRotationToRelativeRotation(robotCoordinate.getTheta()).getDegrees());
     distanceController.reset(robotCoordinate.getRadiusMeters());
   }
 
@@ -74,14 +84,16 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
 
   @Override
   public void execute() {
+    super.execute();
+
     PolarCoordinate robotCoordinate = getRobotCoordinate();
     forwardOutput = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
       target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
-      robotCoordinate.getTheta().getDegrees(),
-      target.getTheta().getDegrees()
+      Utilities.convertRotationToRelativeRotation(robotCoordinate.getTheta()).getDegrees(),
+      Utilities.convertRotationToRelativeRotation(target.getTheta()).getDegrees()
     );
 
     // Clamp to some max speed (should be between [0.0, 1.0])
@@ -99,27 +111,21 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
     );
 
     log(robotCoordinate);
-
-    // TODO: DRY this, since we use this elsewhere...
-    Pose2d pose = poseSupplier.get();
-    double x = pose.getX() - target.getReferencePoint().getX();
-    double y = pose.getY() - target.getReferencePoint().getY();
-    double towardsCenterDegrees = Math.atan2(y, x);
-    Rotation2d desiredRotation = Rotation2d.fromDegrees(Units.radiansToDegrees(towardsCenterDegrees) - 180);
-    heading.setMaintainHeading(desiredRotation);
   }
 
   public AutoDrive.State calculate(double forward, double strafe, boolean isFieldOriented) {
     // Note that this command assumes we're facing the target (use with Heading)
     return new AutoDrive.State(
       -forwardOutput,
-      strafeOutput,
+      -strafeOutput,
       false
     );
   }
 
   @Override
   public void end(boolean interrupted) {
+    super.end(interrupted);
+
     autoDrive.clearDelegate();
   }
 

@@ -211,8 +211,8 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("Pose Y", pose.getY());
       SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
   
-      SmartDashboard.putNumber("Target X", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getX());
-      SmartDashboard.putNumber("Target Y", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getY());
+      // SmartDashboard.putNumber("Target X", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getX());
+      // SmartDashboard.putNumber("Target Y", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getY());
 
     logger.recordOutput("Gyro", pigeon.getYaw());
   }

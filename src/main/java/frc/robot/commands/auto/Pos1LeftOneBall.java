@@ -11,16 +11,20 @@ import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
-public class RedPos3OneBall extends SequentialCommandGroup {
+public class Pos1LeftOneBall extends SequentialCommandGroup {
 
   private Drivetrain drivetrain;
 
-  public RedPos3OneBall(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
+  public Pos1LeftOneBall(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
     this.drivetrain = drivetrain;
 
+
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, heading, autoDrive, 0.5, 0.025, Units.inchesToMeters(60), 4),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
       new WaitCommand(1)
     );
+  }
+  public void initialize() {
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.position1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }

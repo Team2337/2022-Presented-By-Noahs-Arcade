@@ -34,8 +34,8 @@ public class PolarCoordinateTest {
   public void testCartesianCoordinateTranslation() {
     // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
     PolarCoordinate ballOne = new PolarCoordinate(
-      Constants.Auto.kBall1.getRadiusMeters(),
-      Constants.Auto.kBall1.getTheta(),
+      Constants.Auto.kBallR3.getRadiusMeters(),
+      Constants.Auto.kBallR3.getTheta(),
       new Translation2d()
     );
     Translation2d coordinate = ballOne.toFieldCoordinate();
@@ -60,8 +60,8 @@ public class PolarCoordinateTest {
     // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
     // Flip our 260.25 to use a relative rotation (-99.75)
     PolarCoordinate ballOne = new PolarCoordinate(
-      Constants.Auto.kBall1.getRadiusMeters(),
-      Utilities.convertRotationToRelativeRotation(Constants.Auto.kBall1.getTheta()),
+      Constants.Auto.kBallR3.getRadiusMeters(),
+      Utilities.convertRotationToRelativeRotation(Constants.Auto.kBallR3.getTheta()),
       new Translation2d()
     );
     Assert.assertEquals(
@@ -97,7 +97,7 @@ public class PolarCoordinateTest {
   @Test
   public void testFieldCoordinateBall1() {
     Translation2d fieldCenter = Constants.kHub;
-    Translation2d location = Constants.Auto.kBall1.toFieldCoordinate();
+    Translation2d location = Constants.Auto.kBallR3.toFieldCoordinate();
     Assert.assertTrue(location.getX() < fieldCenter.getX());
     Assert.assertTrue(location.getY() < fieldCenter.getY());
     // Ball 1 is shifted RIGHT on our X axis from field center by 2.15921 ft
@@ -117,7 +117,7 @@ public class PolarCoordinateTest {
   @Test
   public void testFieldCoordinateBall5() {
     Translation2d fieldCenter = Constants.kHub;
-    Translation2d location = Constants.Auto.kBall5.toFieldCoordinate();
+    Translation2d location = Constants.Auto.kBallR1.toFieldCoordinate();
     Assert.assertTrue(location.getX() < fieldCenter.getX());
     Assert.assertTrue(location.getY() > fieldCenter.getY());
     // Ball 5 is shifted LEFT on our X axis from field center by 10.78303 ft
@@ -192,7 +192,7 @@ public class PolarCoordinateTest {
 
   @Test
   public void testFromFieldCoordinate() {
-    PolarCoordinate[] balls = {Constants.Auto.kBall1, Constants.Auto.kBall2, Constants.Auto.kBall3, Constants.Auto.kBall5};
+    PolarCoordinate[] balls = {Constants.Auto.kBallR3, Constants.Auto.kBallR2, Constants.Auto.kBallR4, Constants.Auto.kBallR1};
     for (PolarCoordinate b : balls) {
       // Round trip from field coordinate -> polar coordinate - make sure polar coordinates are the same
       PolarCoordinate ball = PolarCoordinate.fromFieldCoordinate(b.toFieldCoordinate());
