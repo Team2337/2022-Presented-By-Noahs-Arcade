@@ -15,12 +15,11 @@ public class StartShooter extends CommandBase {
   public StartShooter(Shooter shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
-
   }
+
+  @Override
   public void initialize() {
-    shooter.currentLimitConfigurationMotor.currentLimit = 50;
-    shooter.leftMotor.configStatorCurrentLimit(shooter.currentLimitConfigurationMotor, 0);
-    shooter.leftMotor.configClosedloopRamp(0.1);
+    shooter.configureMotorStart();
   }
 
   @Override
@@ -30,13 +29,9 @@ public class StartShooter extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.currentLimitConfigurationMotor.currentLimit = 0;
-    shooter.leftMotor.configStatorCurrentLimit(shooter.currentLimitConfigurationMotor, 0);
-    shooter.leftMotor.configClosedloopRamp(0.1);
-    
+    shooter.configureMotorStop();
     shooter.stopShooter();
   }
-
 
   @Override
   public boolean isFinished() {
@@ -44,7 +39,6 @@ public class StartShooter extends CommandBase {
       return true;
     } else {
       return false;
-    }
-    
+    }   
   }
 }

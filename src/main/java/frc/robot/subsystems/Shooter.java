@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Utilities;
 /**
  * This subsystem runs the two shooter motors and gets them up to a constant set speed
  * 
@@ -44,6 +45,13 @@ public class Shooter extends SubsystemBase {
   ShuffleboardLayout speeds = tab.getLayout("Shooter Speeds", BuiltInLayouts.kList)
     .withSize(4, 8)
     .withPosition(4, 0); 
+  ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
+    .withSize(4, 8)
+    .withPosition(8, 0); 
+  ShuffleboardLayout speed = tab.getLayout("Motor Velocities", BuiltInLayouts.kList)
+    .withSize(4, 8)
+    .withPosition(12, 0); 
+
   public NetworkTableEntry kep = pid
     .add("kP", kP )
     .withWidget(BuiltInWidgets.kTextView)
@@ -52,32 +60,20 @@ public class Shooter extends SubsystemBase {
     .add("kI", kI )
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();   
- 
   public NetworkTableEntry ked = pid
     .add("kD", kD )
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();  
- 
   public NetworkTableEntry kef = pid
     .add("kF", kF )
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();  
-
   public NetworkTableEntry shooter = speeds
-    .add("Shooter Speed", 0)
+    .add("Shooter Speed", 40.7)
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
 
-  ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
-    .withSize(4, 8)
-    .withPosition(8, 0); 
-
-  ShuffleboardLayout speed = tab.getLayout("Motor Velocities", BuiltInLayouts.kList)
-    .withSize(4, 8)
-    .withPosition(12, 0); 
-
   public Shooter() {
-    
     /** --- CONFIGURE MOTOR AND SENSOR SETTINGS --- **/
     // Configures motors to factory default
     leftMotor.configFactoryDefault();
@@ -118,10 +114,7 @@ public class Shooter extends SubsystemBase {
     speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
     speed.addNumber("Top Shooter Velocity", () -> leftMotor.getSelectedSensorVelocity());
     speed.addNumber("Bottom Shooter Velocity", () -> rightMotor.getSelectedSensorVelocity());
-
-    
   }
-  
   
   @Override
   public void periodic() {
@@ -238,5 +231,26 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
     leftMotor.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
   }
-   
+
+  public boolean isShooterToSpeed(){
+    //TODO: Find out what this deadband range is
+    if (Utilities.deadband((getTopShooterSpeed() - shooter.getDouble(0)), 0.1) == 0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  public void configureMotorStart(){
+    currentLimitConfigurationMotor.currentLimit = 50;
+    leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
+    leftMotor.configClosedloopRamp(0.1);
+  }
+
+  public void configureMotorStop(){
+    currentLimitConfigurationMotor.currentLimit = 0;
+    leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
+    leftMotor.configClosedloopRamp(0.1);
+  }
 }
