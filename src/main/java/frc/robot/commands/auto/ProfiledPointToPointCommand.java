@@ -69,6 +69,9 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     // Set our initial setpoint for our profiled PID controllers
     // to avoid a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
+    // Use a relative heading when talking to our theta controller.
+    // This allows us to take the shortest distance to our desired theta.
+    // Ex: 0 -> 270 would get converted to 0 -> -90 - a shorter path.
     thetaController.reset(
       Utilities.convertRotationToRelativeRotation(
         robotCoordinate.getTheta()
