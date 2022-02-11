@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Utilities;
 
 @RunWith(JUnit4.class)
 public class PolarCoordinateTest {
@@ -26,9 +27,7 @@ public class PolarCoordinateTest {
   public void testGetTheta() {
     Rotation2d theta = Rotation2d.fromDegrees(45);
     PolarCoordinate coord = new PolarCoordinate(0, theta);
-    Assert.assertEquals(
-      theta, coord.getTheta()
-    );
+    Assert.assertEquals(theta, coord.getTheta());
   }
 
   @Test
@@ -41,15 +40,44 @@ public class PolarCoordinateTest {
     );
     Translation2d coordinate = ballOne.toFieldCoordinate();
     // 153 inches to meters -> 3.8862
-    // 9.75 degrees to radians -> 0.17016960206944712
-    // x = 3.8862 * cos(0.17016960206944712) = 3.83007
-    // y = 3.8862 * sin(0.17016960206944712) = 0.658126
-    // Note since it's a field coordinate, we swap our X and Y
+    // 260.25 degrees to radians -> 4.54221938
+    // x = 3.8862 * cos(4.54221938) = -0.658126
+    // y = 3.8862 * sin(4.54221938) = -3.83007
     Assert.assertEquals(
-      3.83007, coordinate.getY(), 0.00001
+      -0.658126,
+      coordinate.getX(),
+      0.00001
     );
     Assert.assertEquals(
-      0.658126, coordinate.getX(), 0.00001
+      -3.83007,
+      coordinate.getY(),
+      0.00001
+    );
+  }
+
+  @Test
+  public void testCartesianCoordinateTranslationRelativeRotation() {
+    // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
+    // Flip our 260.25 to use a relative rotation (-99.75)
+    PolarCoordinate ballOne = new PolarCoordinate(
+      Constants.Auto.kBall1.getRadiusMeters(),
+      Utilities.convertRotationToRelativeRotation(Constants.Auto.kBall1.getTheta()),
+      new Translation2d()
+    );
+    Assert.assertEquals(
+      Rotation2d.fromDegrees(-99.75),
+      ballOne.getTheta()
+    );
+    Translation2d coordinate = ballOne.toFieldCoordinate();
+    // 153 inches to meters -> 3.8862
+    // -99.75 degrees to radians -> -1.74096593
+    // x = 3.8862 * cos(-1.74096593) = -0.658126
+    // y = 3.8862 * sin(-1.74096593) = -3.83007
+    Assert.assertEquals(
+      -0.658126, coordinate.getX(), 0.00001
+    );
+    Assert.assertEquals(
+      -3.83007, coordinate.getY(), 0.00001
     );
   }
 
@@ -59,10 +87,10 @@ public class PolarCoordinateTest {
     PolarCoordinate coord = new PolarCoordinate(0, new Rotation2d());
     Translation2d translation = coord.toFieldCoordinate();
     Assert.assertEquals(
-        translation.getX(), fieldCenter.getX(), 0.00001
+      fieldCenter.getX(), translation.getX(), 0.00001
     );
     Assert.assertEquals(
-        translation.getY(), fieldCenter.getY(), 0.00001
+      fieldCenter.getY(), translation.getY(), 0.00001
     );
   }
 
@@ -70,21 +98,18 @@ public class PolarCoordinateTest {
   public void testFieldCoordinateBall1() {
     Translation2d fieldCenter = Constants.kHub;
     Translation2d location = Constants.Auto.kBall1.toFieldCoordinate();
-    // This is a rough test - we don't actually need to know that Ball 1
-    // is right on the X, Y - the important part is that it's +, + to the
-    // center of the field.
-    Assert.assertTrue(location.getX() > fieldCenter.getX());
-    Assert.assertTrue(location.getY() > fieldCenter.getY());
-    // Ball 1 is shifted UP from field center by 2.15921 ft
+    Assert.assertTrue(location.getX() < fieldCenter.getX());
+    Assert.assertTrue(location.getY() < fieldCenter.getY());
+    // Ball 1 is shifted RIGHT on our X axis from field center by 2.15921 ft
     Assert.assertEquals(
-      fieldCenter.getX() + Units.feetToMeters(2.15921),
+      fieldCenter.getX() - Units.feetToMeters(2.15921),
       location.getX(),
       0.00001
     );
-    // Ball 1 is shifted LEFT from the field center by 12.56584 ft
+    // Ball 1 is shifted DOWN on our Y axis from the field center by 12.56584 ft
     Assert.assertEquals(
-      fieldCenter.getY() + Units.feetToMeters(12.56584),
-      location.getY(),
+      Units.metersToFeet(fieldCenter.getY() - Units.feetToMeters(12.56584)),
+      Units.metersToFeet(location.getY()),
       0.00001
     );
   }
@@ -93,20 +118,17 @@ public class PolarCoordinateTest {
   public void testFieldCoordinateBall5() {
     Translation2d fieldCenter = Constants.kHub;
     Translation2d location = Constants.Auto.kBall5.toFieldCoordinate();
-    // This is a rough test - we don't actually need to know that Ball 5
-    // is right on the X, Y - the important part is that it's +, - to the
-    // center of the field.
-    Assert.assertTrue(location.getX() > fieldCenter.getX());
-    Assert.assertTrue(location.getY() < fieldCenter.getY());
-    // Ball 5 is shifted UP from field center by 10.78303 ft
+    Assert.assertTrue(location.getX() < fieldCenter.getX());
+    Assert.assertTrue(location.getY() > fieldCenter.getY());
+    // Ball 5 is shifted LEFT on our X axis from field center by 10.78303 ft
     Assert.assertEquals(
-      fieldCenter.getX() + Units.feetToMeters(10.78303),
+      fieldCenter.getX() - Units.feetToMeters(10.78303),
       location.getX(),
       0.00001
     );
-    // Ball 5 is shifted RIGHT from the field center by -6.80359 ft
+    // Ball 5 is shifted UP on our Y axis from the field center by -6.80359 ft
     Assert.assertEquals(
-      fieldCenter.getY() + Units.feetToMeters(-6.80359),
+      fieldCenter.getY() + Units.feetToMeters(6.80359),
       location.getY(),
       0.00001
     );
@@ -117,17 +139,17 @@ public class PolarCoordinateTest {
     Translation2d fieldCenter = Constants.kHub;
     PolarCoordinate leftCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(0));
     Translation2d leftFieldCoordinate = leftCoordinate.toFieldCoordinate();
-    Assert.assertTrue(leftFieldCoordinate.getX() == fieldCenter.getX());
-    Assert.assertTrue(leftFieldCoordinate.getY() > fieldCenter.getY());
+    Assert.assertTrue(leftFieldCoordinate.getX() > fieldCenter.getX());
+    Assert.assertTrue(leftFieldCoordinate.getY() == fieldCenter.getY());
   }
 
   @Test
-  public void testFieldCoordinateForward() {
+  public void testFieldCoordinateUp() {
     Translation2d fieldCenter = Constants.kHub;
-    PolarCoordinate forwardCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(90));
-    Translation2d forwardFieldCoordinate = forwardCoordinate.toFieldCoordinate();
-    Assert.assertTrue(forwardFieldCoordinate.getX() > fieldCenter.getX());
-    Assert.assertTrue(forwardFieldCoordinate.getY() == fieldCenter.getY());
+    PolarCoordinate upCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(90));
+    Translation2d upFieldCoordinate = upCoordinate.toFieldCoordinate();
+    Assert.assertTrue(upFieldCoordinate.getX() == fieldCenter.getX());
+    Assert.assertTrue(upFieldCoordinate.getY() > fieldCenter.getY());
   }
 
   @Test
@@ -135,26 +157,26 @@ public class PolarCoordinateTest {
     Translation2d fieldCenter = Constants.kHub;
     PolarCoordinate rightCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(180));
     Translation2d rightFieldCoordinate = rightCoordinate.toFieldCoordinate();
-    Assert.assertTrue(rightFieldCoordinate.getX() == fieldCenter.getX());
-    Assert.assertTrue(rightFieldCoordinate.getY() < fieldCenter.getY());
+    Assert.assertTrue(rightFieldCoordinate.getX() < fieldCenter.getX());
+    Assert.assertTrue(rightFieldCoordinate.getY() == fieldCenter.getY());
   }
 
   @Test
-  public void testFieldCoordinateBackwards() {
+  public void testFieldCoordinateDown() {
     Translation2d fieldCenter = Constants.kHub;
-    PolarCoordinate backwardsCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(270));
-    Translation2d backwardsFieldCoordinate = backwardsCoordinate.toFieldCoordinate();
-    Assert.assertTrue(backwardsFieldCoordinate.getX() < fieldCenter.getX());
-    Assert.assertTrue(backwardsFieldCoordinate.getY() == fieldCenter.getY());
+    PolarCoordinate downCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(270));
+    Translation2d downFieldCoordinate = downCoordinate.toFieldCoordinate();
+    Assert.assertTrue(downFieldCoordinate.getX() == fieldCenter.getX());
+    Assert.assertTrue(downFieldCoordinate.getY() < fieldCenter.getY());
   }
 
   @Test
-  public void testFieldCoordinateBackwardsInverse() {
+  public void testFieldCoordinateDownInverse() {
     Translation2d fieldCenter = Constants.kHub;
-    PolarCoordinate backwardsCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(-90));
-    Translation2d backwardsFieldCoordinate = backwardsCoordinate.toFieldCoordinate();
-    Assert.assertTrue(backwardsFieldCoordinate.getX() < fieldCenter.getX());
-    Assert.assertTrue(backwardsFieldCoordinate.getY() == fieldCenter.getY());
+    PolarCoordinate downCoordinate = new PolarCoordinate(1.0, Rotation2d.fromDegrees(-90));
+    Translation2d downFieldCoordinate = downCoordinate.toFieldCoordinate();
+    Assert.assertTrue(downFieldCoordinate.getX() == fieldCenter.getX());
+    Assert.assertTrue(downFieldCoordinate.getY() < fieldCenter.getY());
   }
 
   @Test
@@ -170,20 +192,24 @@ public class PolarCoordinateTest {
 
   @Test
   public void testFromFieldCoordinate() {
-    PolarCoordinate ball = PolarCoordinate.fromFieldCoordinate(Constants.Auto.kBall1.toFieldCoordinate());
-    Assert.assertEquals(
-      ball.getRadiusMeters(),
-      Constants.Auto.kBall1.getRadiusMeters(),
-      0.0001
-    );
-    Assert.assertEquals(
-      ball.getTheta(),
-      Constants.Auto.kBall1.getTheta()
-    );
-    assertEquals(
-      ball.getReferencePoint(),
-      Constants.Auto.kBall1.getReferencePoint()
-    );
+    PolarCoordinate[] balls = {Constants.Auto.kBall1, Constants.Auto.kBall2, Constants.Auto.kBall3, Constants.Auto.kBall5};
+    for (PolarCoordinate b : balls) {
+      // Round trip from field coordinate -> polar coordinate - make sure polar coordinates are the same
+      PolarCoordinate ball = PolarCoordinate.fromFieldCoordinate(b.toFieldCoordinate());
+      Assert.assertEquals(
+        b.getRadiusMeters(),
+        ball.getRadiusMeters(),
+        0.0001
+      );
+      Assert.assertEquals(
+        b.getTheta(),
+        ball.getTheta()
+      );
+      assertEquals(
+        b.getReferencePoint(),
+        ball.getReferencePoint()
+      );
+    }
   }
 
 }
