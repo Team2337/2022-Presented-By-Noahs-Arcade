@@ -18,118 +18,64 @@ import frc.robot.Utilities;
  */
 public class Intake extends SubsystemBase {
 
-  private final TalonFX firstStage;
-  private final TalonFX secondStage;
+  private final TalonFX motor = new TalonFX(Constants.INTAKE_FIRST_MOTOR_ID);
   
   // Beam break sensor
-  // TODO: figure out actual slots in DIO for this
-  private final DigitalInput intakeBeam = new DigitalInput(0);
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.DIO.INTAKE_SENSOR_ID);
   
   public Intake() {
-    // Initialize motor
-    firstStage = new TalonFX(Constants.INTAKE_FIRST_MOTOR_ID);
-    secondStage = new TalonFX(Constants.INTAKE_SECOND_MOTOR_ID);
-    
-    // TODO: make sure config settings are correct
     //Set settings on motor
-    firstStage.configFactoryDefault();
-    secondStage.configFactoryDefault();
+    motor.configFactoryDefault();
 
-    firstStage.setInverted(false); //TODO: make sure inversions are correct
-    firstStage.setNeutralMode(NeutralMode.Coast);
-    secondStage.setInverted(false);
-    secondStage.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(NeutralMode.Coast);
 
-    firstStage.configOpenloopRamp(0.5);
-    secondStage.configOpenloopRamp(0.5);
+    motor.configOpenloopRamp(0.5);
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
     
     ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
-    intakeWidget.addDoubleArray("Speed (%)", this::getIntakeSpeeds);
-    intakeWidget.addDoubleArray("Temperatures (F)", this::getIntakeTemperatures);
+    intakeWidget.addNumber("Speed (%)", this::getIntakeSpeeds);
+    intakeWidget.addNumber("Temperatures (F)", this::getIntakeTemperatures);
   }
 
   @Override
   public void periodic() {}
 
   /**
-   * Starts the first stage of the intake
-   */
-  public void startFirstStage() {
-    startMotor(firstStage, Constants.INTAKE_SPEED);
-  }
-
-  /**
-   * Reverses the first stage of the intake
-   */
-  public void reverseFirstStage() {
-    startMotor(firstStage, -Constants.INTAKE_SPEED);
-  }
-
-  /**
-   * Starts the second stage of the intake
-   */
-  public void startSecondStage() {
-    startMotor(secondStage, Constants.INTAKE_SPEED);
-  }
-
-  /**
-   * Reverses the second stage of the intake
-   */
-  public void reverseSecondStage() {
-    startMotor(secondStage, -Constants.INTAKE_SPEED);
-  }
-
-  /**
-   * Sets the speed of a certain motor.
-   * @param motor The motor to set the speed of
-   * @param speed The speed (as a percent) to set
-   */
-  private void startMotor(TalonFX motor, double speed) {
-    motor.set(ControlMode.PercentOutput, speed);
-  }
-
-  /**
-   * Calls <code>startFirstStage()</code> and <code>startSecondStage()</code> simultaneously
+   * Starts the intake motor
    */
   public void startIntake() {
-    startFirstStage();
-    startSecondStage();
+    setIntakeSpeed(Constants.INTAKE_SPEED);
+  }
+
+  public void setIntakeSpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
   }
 
   /**
    * Reverses the intakes
    */
   public void reverseIntake() {
-    reverseFirstStage();
-    reverseSecondStage();
+    setIntakeSpeed(-Constants.INTAKE_SPEED);
   }
 
-  public void idleIntake() {
-    startMotor(firstStage, -0.2);
-    startMotor(secondStage, 0.0);
+  public void stopIntake() {
+    setIntakeSpeed(0.0);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  private double[] getIntakeSpeeds() {
-    return new double[]{
-      Utilities.convertCelsiusToFahrenheit(firstStage.getMotorOutputPercent()),
-      Utilities.convertCelsiusToFahrenheit(secondStage.getMotorOutputPercent())
-    };
+  private double getIntakeSpeeds() {
+    return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  private double[] getIntakeTemperatures() {
-    return new double[]{
-      firstStage.getTemperature(),
-      secondStage.getTemperature()
-    };
+  private double getIntakeTemperatures() {
+    return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
   }
   
   /**
