@@ -43,10 +43,8 @@ public class PolarCoordinate {
   }
 
   public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate, Translation2d referencePoint) {
-    // Our "x" is the "width" of our triangle. Field-wise, our y values will get us
-    // that width. Same is true for "y" and "height" + field X.
-    double x = coordinate.getY() - referencePoint.getY();
-    double y = coordinate.getX() - referencePoint.getX();
+    double x = coordinate.getX() - referencePoint.getX();
+    double y = coordinate.getY() - referencePoint.getY();
     // Distance is our hypotenuse of our triangle
     // Angle is our tangent of our two components
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -78,26 +76,12 @@ public class PolarCoordinate {
    *         system relative to the reference point.
    */
   public Translation2d toFieldCoordinate() {
-    Translation2d translation = this.toCartesianCoordinate();
-    /**
-     * We need to add our CC's X (width) to our field Y (width)
-     * and our CC's Y (height) to our field X (height).
-     */
+    double x = radiusMeters * Math.cos(theta.getRadians());
+    double y = radiusMeters * Math.sin(theta.getRadians());
     return new Translation2d(
-      referencePoint.getX() + translation.getY(),
-      referencePoint.getY() + translation.getX()
+      referencePoint.getX() + x,
+      referencePoint.getY() + y
     );
   }
 
-  /**
-   * Translates our polar coordinate to a cartesian coordinate
-   *
-   * @return A x, y of our polar coordinate represented in a cartesian coordinate
-   *         system relative.
-   */
-  private Translation2d toCartesianCoordinate() {
-    double x = radiusMeters * Math.cos(theta.getRadians());
-    double y = radiusMeters * Math.sin(theta.getRadians());
-    return new Translation2d(x, y);
-  }
 }
