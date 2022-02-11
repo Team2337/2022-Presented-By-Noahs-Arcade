@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Utilities;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
@@ -61,7 +62,11 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
     // Set our initial setpoint for our profiled PID controllers
     // to avoid a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
-    thetaController.reset(robotCoordinate.getTheta().getDegrees());
+    thetaController.reset(
+      Utilities.convertRotationToRelativeRotation(
+        robotCoordinate.getTheta()
+      ).getDegrees()
+    );
     distanceController.reset(robotCoordinate.getRadiusMeters());
   }
 
@@ -80,8 +85,12 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
       target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
-      robotCoordinate.getTheta().getDegrees(),
-      target.getTheta().getDegrees()
+      Utilities.convertRotationToRelativeRotation(
+        robotCoordinate.getTheta()
+      ).getDegrees(),
+      Utilities.convertRotationToRelativeRotation(
+        target.getTheta()
+      ).getDegrees()
     );
 
     // Clamp to some max speed (should be between [0.0, 1.0])
@@ -140,7 +149,7 @@ public class ProfiledPointToPointCommand extends CommandBase implements AutoDriv
 
     SmartDashboard.putNumber("ProfiledP2P/Theta Position", thetaController.getSetpoint().position);
     SmartDashboard.putNumber("ProfiledP2P/Theta Error", thetaController.getPositionError());
-    
+
     SmartDashboard.putBoolean("ProfiledP2P/distanceController atGoal", distanceController.atGoal());
     SmartDashboard.putBoolean("ProfiledP2P/thetaController atGoal", thetaController.atGoal());
   }
