@@ -70,11 +70,8 @@ public class PowerDistributionHub extends SubsystemBase {
   /**
    * Current for the intake motors in amps
    */
-  public double[] getIntakeCurrent() {
-    return new double[] {
-      getChannelCurrent(Constants.INTAKE_FIRST_MOTOR_ID),
-      getChannelCurrent(Constants.INTAKE_SECOND_MOTOR_ID)
-    };
+  public double getIntakeCurrent() {
+    return getChannelCurrent(Constants.INTAKE_MOTOR_ID);
   }
 
   /**
