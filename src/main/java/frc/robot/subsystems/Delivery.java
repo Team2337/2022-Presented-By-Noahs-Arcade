@@ -30,9 +30,9 @@ public class Delivery extends SubsystemBase {
 
   // Golf ball sensors
   // TODO: figure out actual slots in DIO for these
-  private final DigitalInput topLeftBeam = new DigitalInput(1);
-  private final DigitalInput topRightBeam = new DigitalInput(2);
-  private final DigitalInput shooterBeam = new DigitalInput(3);
+  private final DigitalInput topLeftBeam = new DigitalInput(Constants.DIO.TOP_LEFT_BEAM_ID);
+  private final DigitalInput topRightBeam = new DigitalInput(Constants.DIO.TOP_RIGHT_BEAM_ID);
+  private final DigitalInput shooterBeam = new DigitalInput(Constants.DIO.SHOOTER_BEAM_ID);
 
   /**
    * Stores the currently held colors by rotating in a counter-clockwise direction:
@@ -241,21 +241,21 @@ public class Delivery extends SubsystemBase {
    * @return Gets whether or not the top left golf ball sensor sees something
    */
   public boolean getTopLeftSensorStatus() {
-    return topLeftBeam.get();
+    return !topLeftBeam.get();
   }
 
   /**
    * @return Gets whether or not the top right golf ball sensor sees something
    */
   public boolean getTopRightSensorStatus() {
-    return topRightBeam.get();
+    return !topRightBeam.get();
   }
 
   /**
    * @return Gets whether or not the shooter (output) golf ball sensor sees something
    */
   public boolean getShooterSensorStatus() {
-    return shooterBeam.get();
+    return !shooterBeam.get();
   }
 
 }

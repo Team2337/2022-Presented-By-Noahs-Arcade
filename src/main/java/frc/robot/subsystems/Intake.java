@@ -21,7 +21,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
   
   // Beam break sensor
-  private final DigitalInput intakeBeam = new DigitalInput(Constants.DIO.INTAKE_SENSOR_ID);
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.DIO.INTAKE_BEAM_ID);
   
   public Intake() {
     //Set settings on motor
@@ -89,7 +89,7 @@ public class Intake extends SubsystemBase {
    * @return Gets whether or not the intake golf ball sensor sees something
    */
   public boolean getIntakeSensorStatus() {
-    return intakeBeam.get();
+    return !intakeBeam.get();
   }
 
 }
