@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
 
   public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
   public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
-  public StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
+  private StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
   //This is for 40.7 ft/s, RING OF FIRE!!!
   private double kP = 0.62; 
   private double kI = 0;
