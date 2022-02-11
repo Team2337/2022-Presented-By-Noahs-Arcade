@@ -65,6 +65,12 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
+    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
+    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     driverA.whenPressed(new IntakeBallCommandGroup(intake, delivery));
 
@@ -73,11 +79,9 @@ public class RobotContainer {
     driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
     driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
 
-    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    operatorRightBumper.whenPressed(intake::startIntake, intake);
+    operatorRightBumper.whenReleased(intake::stopIntake, intake);
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
