@@ -27,18 +27,18 @@ public class IntakeCommand extends CommandBase {
       intake.reverseIntake();
     } else {
       // If there is room, start intaking a ball in
-      intake.startFirstStage();
+      intake.startIntake();
     }
   }
 
   @Override
   public void end(boolean interrupted) {
     // Start the feeding of the ball into the delivery
-    intake.startSecondStage();
+    intake.stopIntake();
 
     // If the system will be full, reverse the first stage to stop any other balls from entering
     if (delivery.balls == 1) {
-      intake.reverseFirstStage();
+      intake.reverseIntake();
     }
   }
 
