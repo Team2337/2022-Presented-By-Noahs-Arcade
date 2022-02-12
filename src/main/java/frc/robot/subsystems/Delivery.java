@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREUtils;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 
@@ -57,6 +58,8 @@ public class Delivery extends SubsystemBase {
 
     motor.setInverted(false); //TODO: see what actual inversion should be
     motor.setNeutralMode(NeutralMode.Brake);
+
+    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");

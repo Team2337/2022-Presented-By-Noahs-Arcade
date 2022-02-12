@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREUtils;
 import frc.robot.Constants;
 import frc.robot.Utilities;
 
@@ -28,8 +29,9 @@ public class Intake extends SubsystemBase {
     motor.configFactoryDefault();
 
     motor.setNeutralMode(NeutralMode.Coast);
-
     motor.configOpenloopRamp(0.5);
+
+    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
@@ -50,14 +52,18 @@ public class Intake extends SubsystemBase {
   public void periodic() {}
 
   /**
+   * Sets the intake speed
+   * @param speed The speed (as a percent, -1.0 to 1.0)
+   */
+  private void setIntakeSpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
+  }
+
+  /**
    * Starts the intake motor
    */
   public void startIntake() {
     setIntakeSpeed(Constants.INTAKE_SPEED);
-  }
-
-  public void setIntakeSpeed(double speed) {
-    motor.set(ControlMode.PercentOutput, speed);
   }
 
   /**

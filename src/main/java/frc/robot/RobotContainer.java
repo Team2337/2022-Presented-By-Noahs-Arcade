@@ -65,6 +65,11 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
+    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    operatorRightBumper.whenPressed(intake::startIntake, intake);
+    operatorRightBumper.whenReleased(intake::stopIntake, intake);
+
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
