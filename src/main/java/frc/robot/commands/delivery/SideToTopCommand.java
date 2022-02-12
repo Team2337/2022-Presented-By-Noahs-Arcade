@@ -29,7 +29,7 @@ public class SideToTopCommand extends CommandBase {
   public void initialize() {
     isFinished = false;
     waitForBallFlag = false;
-    direction = delivery.getChamberDirection(ballColor);
+    direction = delivery.getSideToTopDirection(ballColor);
 
     if (direction == null) {
       isFinished = true;

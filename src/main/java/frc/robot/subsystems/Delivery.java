@@ -23,14 +23,13 @@ public class Delivery extends SubsystemBase {
   }
 
   // Motor
-  private final TalonFX motor;
+  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
   // Color sensors
-  private final ColorSensor leftSensor = new ColorSensor(I2C.Port.kOnboard);
-  private final ColorSensor rightSensor = new ColorSensor(I2C.Port.kMXP);
+  private final REVColorSensor leftSensor = new REVColorSensor(I2C.Port.kOnboard);
+  private final REVColorSensor rightSensor = new REVColorSensor(I2C.Port.kMXP);
 
   // Golf ball sensors
-  // TODO: figure out actual slots in DIO for these
   private final DigitalInput topLeftBeam = new DigitalInput(Constants.TOP_LEFT_BEAM_ID);
   private final DigitalInput topRightBeam = new DigitalInput(Constants.TOP_RIGHT_BEAM_ID);
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
@@ -45,18 +44,15 @@ public class Delivery extends SubsystemBase {
    */
   private final BallColor[] storedBalls = new BallColor[4];
 
-  public int balls = 0;
+  private int balls = 0;
 
   /**
    * Initializes the Delivery subsystem with its two color sensors
    */
   public Delivery() {
-    // Initialize motor
-    motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-    
     motor.configFactoryDefault();
 
-    motor.setInverted(false); //TODO: see what actual inversion should be
+    motor.setInverted(false);
     motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
@@ -150,7 +146,7 @@ public class Delivery extends SubsystemBase {
     storedBalls[3] = getLeftColorSensorValue();  // 3 is left
   }
 
-  public Direction getCheckRotation() {
+  public Direction getBottomToSideRotation() {
     if (storedBalls[0] == null) {
       return null;
     }
@@ -158,7 +154,7 @@ public class Delivery extends SubsystemBase {
     return storedBalls[3] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
   }
 
-  public Direction getChamberDirection(BallColor ballColor) {
+  public Direction getSideToTopDirection(BallColor ballColor) {
     if (storedBalls[3] == ballColor) {
       // Ball is on the left, rotate clockwise
       return Direction.CLOCKWISE;
@@ -166,7 +162,6 @@ public class Delivery extends SubsystemBase {
       // Ball is on the right, rotate counter-clockwise
       return Direction.COUNTER_CLOCKWISE;
     } else {
-      // TODO: figure out what to do if ball *isn't* there OR if the ball is in the bottom
       return null;
     }
   }
@@ -185,6 +180,10 @@ public class Delivery extends SubsystemBase {
 
   public BallColor getLeftPositionColor() {
     return storedBalls[3];
+  }
+
+  public int getNumberOfBalls() {
+    return balls;
   }
 
 

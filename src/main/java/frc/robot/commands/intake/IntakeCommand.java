@@ -23,7 +23,7 @@ public class IntakeCommand extends CommandBase {
   @Override
   public void initialize() {
     // If there are two balls in the delivery, we cannot have any balls, so reverse the intake
-    if (delivery.balls == 2) {
+    if (delivery.getNumberOfBalls() == 2) {
       intake.reverseIntake();
     } else {
       // If there is room, start intaking a ball in
@@ -37,7 +37,7 @@ public class IntakeCommand extends CommandBase {
     intake.stopIntake();
 
     // If the system will be full, reverse the first stage to stop any other balls from entering
-    if (delivery.balls == 1) {
+    if (delivery.getNumberOfBalls() == 1) {
       intake.reverseIntake();
     }
   }

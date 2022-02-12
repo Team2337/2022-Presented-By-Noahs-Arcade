@@ -28,7 +28,6 @@ public class LineupTopCommand extends CommandBase {
     }
 
     // Determine which way to rotate
-    // TODO: are these negatives correct?
     if (delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus()) {
       // Rotate so that right sensor now shows true
       delivery.startDelivery(Direction.CLOCKWISE, DELIVERY_SLOW_SPEED);

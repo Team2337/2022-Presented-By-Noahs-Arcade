@@ -26,7 +26,7 @@ public class BottomToSideCommand extends CommandBase {
   public void initialize() {
     isFinished = false;
     waitForBallFlag = false;
-    direction = delivery.getCheckRotation();
+    direction = delivery.getBottomToSideRotation();
 
     if (direction == null) {
       isFinished = true;
