@@ -30,6 +30,8 @@ public class Delivery extends SubsystemBase {
     motor.setNeutralMode(NeutralMode.Brake);
     motor.configOpenloopRamp(0.5);
 
+    motor.configStatorCurrentLimit(CTREUtils.configureDefaultCurrentLimit());
+
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
     ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList);

@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.swervedrivespecialties.swervelib.ctre.CtreUtils;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -33,7 +31,7 @@ public class Intake extends SubsystemBase {
     motor.setNeutralMode(NeutralMode.Coast);
     motor.configOpenloopRamp(0.5);
 
-    // 
+    motor.configStatorCurrentLimit(CTREUtils.configureDefaultCurrentLimit());
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
