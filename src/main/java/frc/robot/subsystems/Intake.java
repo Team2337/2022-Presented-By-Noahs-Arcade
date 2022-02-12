@@ -2,12 +2,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Utilities;
 
 /**
  * Subsystem for the intake mechanism
@@ -16,16 +18,15 @@ import frc.robot.Constants;
  */
 public class Intake extends SubsystemBase {
 
-  private final TalonFX motor;
+  private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+  
+  // Beam break sensor
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_SENSOR_ID);
   
   public Intake() {
-    // Initialize motor
-    motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-
     //Set settings on motor
     motor.configFactoryDefault();
 
-    motor.setInverted(false); 
     motor.setNeutralMode(NeutralMode.Coast);
 
     motor.configOpenloopRamp(0.5);
@@ -34,39 +35,61 @@ public class Intake extends SubsystemBase {
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
     
     ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
-    intakeWidget.addNumber("Speed", this::getIntakeSpeed);
-    intakeWidget.addNumber("Temp", this::getIntakeTemperature);
+    intakeWidget.addNumber("Speed (%)", this::getIntakeSpeeds);
+    intakeWidget.addNumber("Temperatures (F)", this::getIntakeTemperatures);
   }
 
   @Override
   public void periodic() {}
 
   /**
-   * Starts the intake
+   * Sets the intake speed
+   * @param speed The speed (as a percent, -1.0 to 1.0)
+   */
+  private void setIntakeSpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
+  }
+
+  /**
+   * Starts the intake motor
    */
   public void startIntake() {
-    motor.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
+    setIntakeSpeed(Constants.INTAKE_SPEED);
   }
-  
+
+  /**
+   * Reverses the intakes
+   */
+  public void reverseIntake() {
+    setIntakeSpeed(-Constants.INTAKE_SPEED);
+  }
+
   /**
    * Stops the intake
    */
   public void stopIntake() {
-    motor.set(ControlMode.PercentOutput, 0.0);
+    setIntakeSpeed(0.0);
   }
 
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  private double getIntakeSpeed() {
+  private double getIntakeSpeeds() {
     return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  private double getIntakeTemperature() {
-    return motor.getTemperature();
+  private double getIntakeTemperatures() {
+    return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
+  }
+  
+  /**
+   * @return Gets whether or not the intake golf ball sensor sees something
+   */
+  public boolean getIntakeSensorStatus() {
+    return intakeBeam.get();
   }
 
 }
