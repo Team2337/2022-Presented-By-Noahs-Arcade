@@ -104,16 +104,16 @@ public class Shooter extends SubsystemBase {
     // Sets it to neutral mode so that the motors do not brake down to 0.
     leftMotor.setNeutralMode(NeutralMode.Coast);
     // Sets up inversions
-    leftMotor.setInverted(true);
+    leftMotor.setInverted(TalonFXInvertType.Clockwise);
     rightMotor.setInverted(InvertType.OpposeMaster);
 
     temps.addNumber("Top Shooter Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Bottom Shooter Temperature", () -> rightMotor.getTemperature());
     temps.addBoolean("Motors Overheating?", () -> isMotorOverheated());
-    speed.addNumber("Top Shooter RPM", () -> getTopRPM());
-    speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
-    speed.addNumber("Top Shooter Velocity", () -> leftMotor.getSelectedSensorVelocity());
-    speed.addNumber("Bottom Shooter Velocity", () -> rightMotor.getSelectedSensorVelocity());
+    speed.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
+    speed.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
+    speed.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
+    speed.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
   }
   
   @Override
@@ -174,20 +174,9 @@ public class Shooter extends SubsystemBase {
     return rightMotor.getTemperature() > kMotorShutdownTemp;
   }
 
-  public double getTopRPM() {
-    // Encoder ticks per 100 ms
-    double speed = leftMotor.getSelectedSensorVelocity();
-    // Encoder ticks per second
-    double tps = speed * 10.0;
-    // Encoder revolutions per second
-    double rps = tps / 2048.0;
-    // Convert rps into revolutions per minute
-    double rpm = rps * 60.0;
-    return rpm;
-  }
-  public double getBottomRPM() {
-    // Encoder ticks per 100 ms
-    double speed = rightMotor.getSelectedSensorVelocity();
+  public double getMotorRPM(TalonFX motor){
+    //Encoder ticks per 100 ms
+    double speed = motor.getSelectedSensorVelocity();
     // Encoder ticks per second
     double tps = speed * 10.0;
     // Encoder revolutions per second            
@@ -197,21 +186,14 @@ public class Shooter extends SubsystemBase {
     return rpm;
   }
 
-  public double getTopWheelSpeed(){
+  public double getMotorWheelSpeed(TalonFX motor){
     double wheelDiameter = 4.0; //This is in inches.
-    double rpm = getTopRPM();
+    double rpm = getMotorRPM(motor);
     double wheelRpm = rpm * (16.0/24.0); //16/24 is the gear ratio (16 is the input gear of the falcons, 24 is the output gear of the wheel)
     double wheelSpeed = ((2.0*Math.PI*wheelRpm)/60.0)*((wheelDiameter/12.0)/2.0); //This turns wheel RPM's into ft/s
     return wheelSpeed;
   }
   
-  public double getBottomWheelSpeed(){
-    double wheelDiameter = 4.0; //This is in inches.
-    double rpm = getBottomRPM();
-    double wheelRpm = rpm * (16.0/24.0); //16/24 is the gear ratio (16 is the input gear of the falcons, 24 is the output gear of the wheel)
-    double wheelSpeed = ((2.0*Math.PI*wheelRpm)/60.0)*((wheelDiameter/12.0)/2.0); //This turns wheel RPM's into ft/s
-    return wheelSpeed;
-  }
   public void setShooterSpeed(double speed) {
     // 4in wheel
     double wheelDiameterFeet = 4.0 / 12.0;
@@ -249,12 +231,10 @@ public class Shooter extends SubsystemBase {
   public void configureMotorStart(){
     currentLimitConfigurationMotor.currentLimit = 50;
     leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
-    leftMotor.configClosedloopRamp(0.1);
   }
 
   public void configureMotorStop(){
     currentLimitConfigurationMotor.currentLimit = 0;
     leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
-    leftMotor.configClosedloopRamp(0.1);
   }
 }
