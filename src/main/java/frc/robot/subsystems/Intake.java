@@ -21,7 +21,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
   
   // Beam break sensor
-  private final DigitalInput intakeBeam = new DigitalInput(Constants.DIO.INTAKE_SENSOR_ID);
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_SENSOR_ID);
   
   public Intake() {
     //Set settings on motor
@@ -43,14 +43,18 @@ public class Intake extends SubsystemBase {
   public void periodic() {}
 
   /**
+   * Sets the intake speed
+   * @param speed The speed (as a percent, -1.0 to 1.0)
+   */
+  private void setIntakeSpeed(double speed) {
+    motor.set(ControlMode.PercentOutput, speed);
+  }
+
+  /**
    * Starts the intake motor
    */
   public void startIntake() {
     setIntakeSpeed(Constants.INTAKE_SPEED);
-  }
-
-  public void setIntakeSpeed(double speed) {
-    motor.set(ControlMode.PercentOutput, speed);
   }
 
   /**
@@ -60,6 +64,9 @@ public class Intake extends SubsystemBase {
     setIntakeSpeed(-Constants.INTAKE_SPEED);
   }
 
+  /**
+   * Stops the intake
+   */
   public void stopIntake() {
     setIntakeSpeed(0.0);
   }
