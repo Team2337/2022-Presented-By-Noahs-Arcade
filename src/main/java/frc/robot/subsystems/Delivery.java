@@ -30,9 +30,9 @@ public class Delivery extends SubsystemBase {
 
   // Golf ball sensors
   // TODO: figure out actual slots in DIO for these
-  private final DigitalInput topLeftBeam = new DigitalInput(Constants.DIO.TOP_LEFT_BEAM_ID);
-  private final DigitalInput topRightBeam = new DigitalInput(Constants.DIO.TOP_RIGHT_BEAM_ID);
-  private final DigitalInput shooterBeam = new DigitalInput(Constants.DIO.SHOOTER_BEAM_ID);
+  private final DigitalInput topLeftBeam = new DigitalInput(Constants.TOP_LEFT_BEAM_ID);
+  private final DigitalInput topRightBeam = new DigitalInput(Constants.TOP_RIGHT_BEAM_ID);
+  private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
 
   /**
    * Stores the currently held colors by rotating in a counter-clockwise direction:

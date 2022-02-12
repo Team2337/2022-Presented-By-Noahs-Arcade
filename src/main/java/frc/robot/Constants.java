@@ -243,15 +243,10 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
-  /**
-   * Beam break sensor ids on the DIO
-   */
-  public static final class DIO {
-    public static final int INTAKE_BEAM_ID = 0;
-    public static final int TOP_LEFT_BEAM_ID = 2;
-    public static final int TOP_RIGHT_BEAM_ID = 4;
-    public static final int SHOOTER_BEAM_ID = 6;
-  }
+  public static final int INTAKE_BEAM_ID = 0;
+  public static final int TOP_LEFT_BEAM_ID = 2;
+  public static final int TOP_RIGHT_BEAM_ID = 4;
+  public static final int SHOOTER_BEAM_ID = 6;
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
