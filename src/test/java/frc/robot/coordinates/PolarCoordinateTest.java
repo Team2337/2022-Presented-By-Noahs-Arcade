@@ -1,7 +1,5 @@
 package frc.robot.coordinates;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +24,13 @@ public class PolarCoordinateTest {
   @Test
   public void testGetTheta() {
     Rotation2d theta = Rotation2d.fromDegrees(45);
+    PolarCoordinate coord = new PolarCoordinate(0, theta);
+    Assert.assertEquals(theta, coord.getTheta());
+  }
+
+  @Test
+  public void testGetThetaBig() {
+    Rotation2d theta = Rotation2d.fromDegrees(270);
     PolarCoordinate coord = new PolarCoordinate(0, theta);
     Assert.assertEquals(theta, coord.getTheta());
   }
@@ -205,9 +210,65 @@ public class PolarCoordinateTest {
         b.getTheta(),
         ball.getTheta()
       );
-      assertEquals(
+      Assert.assertEquals(
         b.getReferencePoint(),
         ball.getReferencePoint()
+      );
+    }
+  }
+
+  @Test
+  public void testWithRelativeTheta() {
+    int[] rotations = {45, 90, 135, 180, 270, 360, 450};
+    int[] expectedRotations = {45, 90, 135, 180, -90, 0, 90};
+    Assert.assertEquals(
+      rotations.length,
+      expectedRotations.length
+    );
+
+    for (int i = 0; i < rotations.length; i++) {
+      int rotation = rotations[i];
+      PolarCoordinate coordinate = new PolarCoordinate(10, Rotation2d.fromDegrees(rotation));
+      double expectedRotation = expectedRotations[i];
+      Assert.assertEquals(
+        expectedRotation,
+        coordinate.withRelativeTheta().getTheta().getDegrees(),
+        0.00001
+      );
+    }
+  }
+
+  @Test
+  public void testRotateBy() {
+    PolarCoordinate coordinate = new PolarCoordinate(
+      10,
+      new Rotation2d()
+    );
+    int[] rotations = {45, 90, 135, 180, 270, 360, 450};
+    int[] expectedRotations = {45, 90, 135, 180, -90, 0, 90};
+    Assert.assertEquals(
+      rotations.length,
+      expectedRotations.length
+    );
+
+    for (int i = 0; i < rotations.length; i++) {
+      int rotation = rotations[i];
+      PolarCoordinate rotatedCoordinate = coordinate.rotateBy(Rotation2d.fromDegrees(rotation));
+      double expectedRotation = expectedRotations[i];
+      Assert.assertEquals(
+        expectedRotation,
+        rotatedCoordinate.getTheta().getDegrees(),
+        0.00001
+      );
+      // Make sure distance + reference stay the same
+      Assert.assertEquals(
+        coordinate.getRadiusMeters(),
+        rotatedCoordinate.getRadiusMeters(),
+        0.0
+      );
+      Assert.assertEquals(
+        coordinate.getReferencePoint(),
+        rotatedCoordinate.getReferencePoint()
       );
     }
   }
