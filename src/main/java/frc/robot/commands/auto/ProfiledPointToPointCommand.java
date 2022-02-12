@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Utilities;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
@@ -69,14 +68,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     // Set our initial setpoint for our profiled PID controllers
     // to avoid a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
-    // Use a relative heading when talking to our theta controller.
-    // This allows us to take the shortest distance to our desired theta.
-    // Ex: 0 -> 270 would get converted to 0 -> -90 - a shorter path.
-    thetaController.reset(
-      Utilities.convertRotationToRelativeRotation(
-        robotCoordinate.getTheta()
-      ).getDegrees()
-    );
+    thetaController.reset(robotCoordinate.getTheta().getDegrees());
     distanceController.reset(robotCoordinate.getRadiusMeters());
   }
 
@@ -97,12 +89,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
       target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
-      Utilities.convertRotationToRelativeRotation(
-        robotCoordinate.getTheta()
-      ).getDegrees(),
-      Utilities.convertRotationToRelativeRotation(
-        target.getTheta()
-      ).getDegrees()
+      robotCoordinate.getTheta().getDegrees(),
+      target.getTheta().getDegrees()
     );
 
     // Clamp to some max speed (should be between [0.0, 1.0])
