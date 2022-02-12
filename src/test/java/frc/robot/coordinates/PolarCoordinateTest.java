@@ -31,6 +31,13 @@ public class PolarCoordinateTest {
   }
 
   @Test
+  public void testGetThetaBig() {
+    Rotation2d theta = Rotation2d.fromDegrees(270);
+    PolarCoordinate coord = new PolarCoordinate(0, theta);
+    Assert.assertEquals(theta, coord.getTheta());
+  }
+
+  @Test
   public void testCartesianCoordinateTranslation() {
     // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
     PolarCoordinate ballOne = new PolarCoordinate(
@@ -213,7 +220,7 @@ public class PolarCoordinateTest {
   }
 
   @Test
-  public void testRelativeTheta() {
+  public void testWithRelativeTheta() {
     int[] rotations = {45, 90, 135, 180, 270, 360, 450};
     int[] expectedRotations = {45, 90, 135, 180, -90, 0, 90};
     Assert.assertEquals(
@@ -227,31 +234,10 @@ public class PolarCoordinateTest {
       double expectedRotation = expectedRotations[i];
       Assert.assertEquals(
         expectedRotation,
-        coordinate.getTheta().getDegrees(),
+        coordinate.withRelativeTheta().getTheta().getDegrees(),
         0.00001
       );
     }
-  }
-
-  @Test
-  public void testRelativeThetaFieldCoordinate() {
-    Translation2d fieldCoordinate = Constants.Auto.kBall1.toFieldCoordinate();
-    PolarCoordinate coordinate = PolarCoordinate.fromFieldCoordinate(fieldCoordinate);
-    // Ball 1 should give us a relative rotation - some negative value
-    Assert.assertEquals(
-      -99.75,
-      coordinate.getTheta().getDegrees(),
-      0.00001
-    );
-
-    Translation2d opposingFieldCoordinate = Constants.Auto.kBall1.rotateBy(Rotation2d.fromDegrees(180)).toFieldCoordinate();
-    PolarCoordinate opposingCoordinate = PolarCoordinate.fromFieldCoordinate(opposingFieldCoordinate);
-    // Opposing side Ball 1 should give us some non-relative, positive rotation
-    Assert.assertEquals(
-      80.25,
-      opposingCoordinate.getTheta().getDegrees(),
-      0.00001
-    );
   }
 
 }

@@ -35,16 +35,32 @@ public class PolarCoordinate {
    */
   public PolarCoordinate(double radiusMeters, Rotation2d theta, Translation2d referencePoint) {
     this.radiusMeters = radiusMeters;
-    // Convert our angle to a relative rotation to make sure our polar coordinates
-    // are always returning thetas that are the shortest possible rotational values
-    this.theta = Utilities.convertRotationToRelativeRotation(theta);
+    this.theta = theta;
     this.referencePoint = referencePoint;
   }
 
+  /**
+   * Create a PolarCoordinate from a field coordinate with using the center of the
+   * field (the Hub)
+   *
+   * @param coordinate - The field coordinate to translate from
+   * @return A polar coordinate with the hypotenuse as the distance and the atan
+   *         as the theta. Theta will be in (-180, 180) range.
+   */
   public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate) {
     return fromFieldCoordinate(coordinate, Constants.kHub);
   }
 
+  /**
+   * Create a PolarCoordinate from a field coordinate and a given field coordinate
+   * reference point.
+   *
+   * @param coordinate     - The field coordinate to translate from
+   * @param referencePoint - The field coordinate reference point for the polar
+   *                       coordiate
+   * @return A polar coordinate with the hypotenuse as the distance and the atan
+   *         as the theta. Theta will be in (-180, 180) range.
+   */
   public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate, Translation2d referencePoint) {
     double x = coordinate.getX() - referencePoint.getX();
     double y = coordinate.getY() - referencePoint.getY();
@@ -52,14 +68,9 @@ public class PolarCoordinate {
     // Angle is our tangent of our two components
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     double angle = Math.atan2(y, x); // (-π, π] radians
-    // Convert our angle to a relative rotation to make sure our polar coordinates
-    // are always returning thetas that are the shortest possible rotational values
-    Rotation2d theta = Utilities.convertRotationToRelativeRotation(
-      new Rotation2d(angle)
-    );
     return new PolarCoordinate(
       distance,
-      theta,
+      new Rotation2d(angle),
       referencePoint
     );
   }
@@ -104,6 +115,18 @@ public class PolarCoordinate {
     return new PolarCoordinate(
       radiusMeters,
       theta.rotateBy(other),
+      referencePoint
+    );
+  }
+
+  /**
+   * Returns a new PolarCoordinate with rotational value
+   * constrainted to a single-rotation `(-180, 180)` range
+   */
+  public PolarCoordinate withRelativeTheta() {
+    return new PolarCoordinate(
+      radiusMeters,
+      Utilities.convertRotationToRelativeRotation(theta),
       referencePoint
     );
   }
