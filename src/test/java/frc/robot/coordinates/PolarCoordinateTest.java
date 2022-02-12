@@ -31,6 +31,13 @@ public class PolarCoordinateTest {
   }
 
   @Test
+  public void testGetThetaBig() {
+    Rotation2d theta = Rotation2d.fromDegrees(270);
+    PolarCoordinate coord = new PolarCoordinate(0, theta);
+    Assert.assertEquals(theta, coord.getTheta());
+  }
+
+  @Test
   public void testCartesianCoordinateTranslation() {
     // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
     PolarCoordinate ballOne = new PolarCoordinate(
@@ -208,6 +215,27 @@ public class PolarCoordinateTest {
       assertEquals(
         b.getReferencePoint(),
         ball.getReferencePoint()
+      );
+    }
+  }
+
+  @Test
+  public void testWithRelativeTheta() {
+    int[] rotations = {45, 90, 135, 180, 270, 360, 450};
+    int[] expectedRotations = {45, 90, 135, 180, -90, 0, 90};
+    Assert.assertEquals(
+      rotations.length,
+      expectedRotations.length
+    );
+
+    for (int i = 0; i < rotations.length; i++) {
+      int rotation = rotations[i];
+      PolarCoordinate coordinate = new PolarCoordinate(10, Rotation2d.fromDegrees(rotation));
+      double expectedRotation = expectedRotations[i];
+      Assert.assertEquals(
+        expectedRotation,
+        coordinate.withRelativeTheta().getTheta().getDegrees(),
+        0.00001
       );
     }
   }
