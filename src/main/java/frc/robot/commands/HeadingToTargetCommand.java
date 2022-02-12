@@ -37,7 +37,7 @@ public class HeadingToTargetCommand extends CommandBase {
       robotTranslationSupplier.get(),
       target
     );
-    heading.setMaintainHeading(coordinate.getTheta());
+    heading.setMaintainHeading(coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180)));
   }
 
 }

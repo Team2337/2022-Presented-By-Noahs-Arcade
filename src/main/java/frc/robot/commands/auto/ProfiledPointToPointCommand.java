@@ -36,7 +36,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
 
   public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
     super(
-      target.toFieldCoordinate(),
+      target.getReferencePoint(),
       () -> poseSupplier.get().getTranslation(),
       heading
     );
@@ -45,6 +45,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     this.poseSupplier = poseSupplier;
     this.heading = heading;
     this.autoDrive = autoDrive;
+
+    thetaController.enableContinuousInput(-180, 180);
 
     distanceController.setTolerance(Units.inchesToMeters(1));
     thetaController.setTolerance(0.1); // In degrees
@@ -71,7 +73,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     // Set our initial setpoint for our profiled PID controllers
     // to avoid a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
-    thetaController.reset(Utilities.convertRotationToRelativeRotation(robotCoordinate.getTheta()).getDegrees());
+    thetaController.reset(robotCoordinate.getTheta().getDegrees());
     distanceController.reset(robotCoordinate.getRadiusMeters());
   }
 
@@ -92,7 +94,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
       target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
-      Utilities.convertRotationToRelativeRotation(robotCoordinate.getTheta()).getDegrees(),
+      robotCoordinate.getTheta().getDegrees(),
       Utilities.convertRotationToRelativeRotation(target.getTheta()).getDegrees()
     );
 

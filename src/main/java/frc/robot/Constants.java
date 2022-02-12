@@ -238,6 +238,15 @@ public final class Constants {
       Constants.Auto.kBallR4.getTheta()
     );
 
+    public static final PolarCoordinate testStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(190) 
+    );
+    public static final PolarCoordinate testEnd = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(170) 
+    );
+
     /*
      * Opponent balls 
      */
