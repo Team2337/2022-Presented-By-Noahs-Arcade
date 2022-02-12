@@ -212,4 +212,46 @@ public class PolarCoordinateTest {
     }
   }
 
+  @Test
+  public void testRelativeTheta() {
+    int[] rotations = {45, 90, 135, 180, 270, 360, 450};
+    int[] expectedRotations = {45, 90, 135, 180, -90, 0, 90};
+    Assert.assertEquals(
+      rotations.length,
+      expectedRotations.length
+    );
+
+    for (int i = 0; i < rotations.length; i++) {
+      int rotation = rotations[i];
+      PolarCoordinate coordinate = new PolarCoordinate(10, Rotation2d.fromDegrees(rotation));
+      double expectedRotation = expectedRotations[i];
+      Assert.assertEquals(
+        expectedRotation,
+        coordinate.getTheta().getDegrees(),
+        0.00001
+      );
+    }
+  }
+
+  @Test
+  public void testRelativeThetaFieldCoordinate() {
+    Translation2d fieldCoordinate = Constants.Auto.kBall1.toFieldCoordinate();
+    PolarCoordinate coordinate = PolarCoordinate.fromFieldCoordinate(fieldCoordinate);
+    // Ball 1 should give us a relative rotation - some negative value
+    Assert.assertEquals(
+      -99.75,
+      coordinate.getTheta().getDegrees(),
+      0.00001
+    );
+
+    Translation2d opposingFieldCoordinate = Constants.Auto.kBall1.rotateBy(Rotation2d.fromDegrees(180)).toFieldCoordinate();
+    PolarCoordinate opposingCoordinate = PolarCoordinate.fromFieldCoordinate(opposingFieldCoordinate);
+    // Opposing side Ball 1 should give us some non-relative, positive rotation
+    Assert.assertEquals(
+      80.25,
+      opposingCoordinate.getTheta().getDegrees(),
+      0.00001
+    );
+  }
+
 }
