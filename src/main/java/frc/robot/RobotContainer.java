@@ -84,10 +84,6 @@ public class RobotContainer {
     driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
     driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
 
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::startIntake, intake);
-    operatorRightBumper.whenReleased(intake::stopIntake, intake);
-
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
