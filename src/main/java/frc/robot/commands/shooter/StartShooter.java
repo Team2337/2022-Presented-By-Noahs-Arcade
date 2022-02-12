@@ -35,7 +35,7 @@ public class StartShooter extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    if (shooter.motorOverTemp) { 
+    if (shooter.isMotorOverheated()) { 
       return true;
     } else {
       return false;

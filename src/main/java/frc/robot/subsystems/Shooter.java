@@ -30,12 +30,12 @@ public class Shooter extends SubsystemBase {
   private double kI = 0;
   private double kD = 0.000;
   private double kF = 0.055;
-
+  private double speedTolerance = 0.1;
   private double topSpeed = 0;
   private double prevTopSpeed = 0;
   private int counter = 0;
-  private double motorShutdownTemp = 70;
-  public boolean motorOverTemp = false;
+  private static double kMotorShutdownTemp = 70; //In Degrees Celsius
+
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
@@ -109,7 +109,7 @@ public class Shooter extends SubsystemBase {
 
     temps.addNumber("Top Shooter Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Bottom Shooter Temperature", () -> rightMotor.getTemperature());
-    temps.addBoolean("Motors Overheating?", () -> motorOverTemp);
+    temps.addBoolean("Motors Overheating?", () -> isMotorOverheated());
     speed.addNumber("Top Shooter RPM", () -> getTopRPM());
     speed.addNumber("Bottom Shooter RPM", () -> getBottomRPM());
     speed.addNumber("Top Shooter Velocity", () -> leftMotor.getSelectedSensorVelocity());
@@ -147,12 +147,6 @@ public class Shooter extends SubsystemBase {
       prevTopSpeed = shooter.getDouble(0);
 
     }
-
-    if (getBottomMotorOverTemp() | getTopMotorOverTemp()) {
-      motorOverTemp = true;
-    } else {
-      motorOverTemp = false;
-    }
   }
 
   public void configurePID(double kp, double ki, double kd, double kf){
@@ -165,19 +159,19 @@ public class Shooter extends SubsystemBase {
   public void stopShooter(){
     leftMotor.set(ControlMode.PercentOutput, 0.0);
   }
-  public double getTopShooterSpeed(){
+  public double getTopMotorSpeed(){
     return leftMotor.getMotorOutputPercent();
   }
-  public double getBottomShooterSpeed(){
+  public double getBottomMotorSpeed(){
     return rightMotor.getMotorOutputPercent();
   }
 
   public boolean getTopMotorOverTemp() {
-    return leftMotor.getTemperature() > motorShutdownTemp;
+    return leftMotor.getTemperature() > kMotorShutdownTemp;
   }
 
   public boolean getBottomMotorOverTemp() {
-    return rightMotor.getTemperature() > motorShutdownTemp;
+    return rightMotor.getTemperature() > kMotorShutdownTemp;
   }
 
   public double getTopRPM() {
@@ -234,12 +228,22 @@ public class Shooter extends SubsystemBase {
 
   public boolean isShooterToSpeed(){
     //TODO: Find out what this deadband range is
-    if (Utilities.deadband((getTopShooterSpeed() - shooter.getDouble(0)), 0.1) == 0){
+    if (Utilities.deadband((getTopMotorSpeed() - shooter.getDouble(0)), speedTolerance) == 0){
       return true;
     }
     else{
       return false;
     }
+  }
+
+  public boolean isMotorOverheated(){
+    boolean motorOverTemp = false;
+    if (getBottomMotorOverTemp() | getTopMotorOverTemp()) {
+      motorOverTemp = true;
+    } else {
+      motorOverTemp = false;
+    }
+    return motorOverTemp;
   }
 
   public void configureMotorStart(){

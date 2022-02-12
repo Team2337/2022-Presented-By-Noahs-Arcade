@@ -34,8 +34,7 @@ public class RobotContainer {
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  private final Intake intake = new Intake();
-
+  
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Kicker extends SubsystemBase {
-  private TalonFX kicker; 
+  private TalonFX motor = new TalonFX(Constants.KICKER_MOTOR);; 
   private ShuffleboardTab tab = Shuffleboard.getTab("Kicker");
   public NetworkTableEntry kick3r = tab
     .add("Kicker Speed", 0)
@@ -20,23 +20,21 @@ public class Kicker extends SubsystemBase {
     .withProperties(Map.of("min", 0, "max", 1))
     .getEntry();
 
-public Kicker(){
-  kicker = new TalonFX(Constants.KICKER_MOTOR);
+  public Kicker(){
 
-  kicker.configFactoryDefault();
+    motor.configFactoryDefault();
 
-  kicker.setInverted(true);
-  kicker.setNeutralMode(NeutralMode.Coast);
+    motor.setInverted(true);
+    motor.setNeutralMode(NeutralMode.Coast);
 
-  kicker.configOpenloopRamp(0.5);
-}
+    motor.configOpenloopRamp(0.5);
+  }
 
-public void startKicker(double speed){
-  kicker.set(ControlMode.PercentOutput, speed);
-}
+  public void startKicker(double speed){
+    motor.set(ControlMode.PercentOutput, speed);
+  }
 
-public void stopKicker(){
-  kicker.set(ControlMode.PercentOutput, 0); 
-}
-
+  public void stopKicker(){
+    motor.set(ControlMode.PercentOutput, 0); 
+  }
 }

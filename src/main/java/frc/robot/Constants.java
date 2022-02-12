@@ -247,7 +247,7 @@ public final class Constants {
   public static final int SHOOTER_LEFT_MOTOR = 7;
   public static final int SHOOTER_RIGHT_MOTOR = 14;
   
-  public static final int INTAKE_MOTOR_ID = 15;//TODO: get actual device id on robot
+  public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
 
   public static final int DELIVERY_MOTOR_ID = 21;
