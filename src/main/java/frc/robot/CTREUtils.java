@@ -4,6 +4,11 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 
 public class CTREUtils {
 
+  /**
+   * Creates a current limit configuration with some generic values.
+   * 
+   * @return The generic current limit configuration
+   */
   public static StatorCurrentLimitConfiguration defaultCurrentLimit() {
     /**
      * TODO: What values do we actually want for these?
@@ -18,6 +23,20 @@ public class CTREUtils {
     return configuration;
   }
 
+  /**
+   * Creates a custom current limit configuration. Equivalent to calling the constructor, but this
+   * one actually has a Javadoc explaining the parameters. All units relating to current are in
+   * amperes.
+   * 
+   * @param enable Whether or not the current limit feature is enabled.
+   * @param currentLimit The "holding" current to limit when the feature is enabled
+   * @param triggerThresholdCurrent Current must exceed this value for the current limit to start
+   * taking effect. If larger than <code>currentLimit</code>, that value will be used.
+   * @param triggerThresholdTime How long the current must exceed the threshold before the current
+   * limit starts taking effect.
+   * 
+   * @return The custom current limit configuration
+   */
   public static StatorCurrentLimitConfiguration createCurrentLimit(boolean enable, double currentLimit, double triggerThresholdCurrent, double triggerThresholdTime) {
     return new StatorCurrentLimitConfiguration(enable, currentLimit, triggerThresholdCurrent, triggerThresholdTime);
   }
