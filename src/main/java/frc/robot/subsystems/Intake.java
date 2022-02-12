@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
     motor.setNeutralMode(NeutralMode.Coast);
     motor.configOpenloopRamp(0.5);
 
-    motor.configStatorCurrentLimit(CTREUtils.configureDefaultCurrentLimit());
+    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
