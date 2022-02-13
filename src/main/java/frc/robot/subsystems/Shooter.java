@@ -64,6 +64,8 @@ public class Shooter extends SubsystemBase {
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
 
+  private StatorCurrentLimitConfiguration currentLimitConfiguration = new StatorCurrentLimitConfiguration(true, 50, 40, 3);
+
   public Shooter() {
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
@@ -74,7 +76,7 @@ public class Shooter extends SubsystemBase {
     leftMotor.setInverted(TalonFXInvertType.Clockwise);
     rightMotor.setInverted(InvertType.OpposeMaster);
 
-    leftMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 40, 3), 0);
+    leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     leftMotor.configClosedloopRamp(0.1);
     leftMotor.enableVoltageCompensation(true);
 
@@ -191,11 +193,9 @@ public class Shooter extends SubsystemBase {
   }
 
   private void toggleMotorCurrentLimiting(boolean enable) {
-    StatorCurrentLimitConfiguration configuration = new StatorCurrentLimitConfiguration();
-    leftMotor.configGetStatorCurrentLimit(configuration);
-    if (configuration.enable != enable) {
-      configuration.enable = enable;
-      leftMotor.configStatorCurrentLimit(configuration, 0);
+    if (currentLimitConfiguration.enable != enable) {
+      currentLimitConfiguration.enable = enable;
+      leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     }
   }
 
