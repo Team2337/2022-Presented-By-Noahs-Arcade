@@ -22,7 +22,7 @@ import frc.robot.Utilities;
 public class Shooter extends SubsystemBase {
 
   private static double kMotorShutdownTempCelcius = 70;
-  private static double kShooterSpeedTolerance = 0.1;
+  private static double kShooterSpeedFeetPerSecondTolerance = 0.1;
 
   // Top Wheel == Left Motor, Bottom Wheel == Right Motor
   public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
@@ -145,7 +145,7 @@ public class Shooter extends SubsystemBase {
 
   public boolean isShooterToSpeed() {
     // TODO: Tune our deadband range
-    return Utilities.withinTolerance(shooterSpeedFeetPerSecondWidget.getDouble(0), getMotorWheelSpeed(leftMotor), kShooterSpeedTolerance);
+    return Utilities.withinTolerance(shooterSpeedFeetPerSecondWidget.getDouble(0), getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
   public boolean isOverheated() {
