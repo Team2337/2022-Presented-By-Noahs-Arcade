@@ -170,7 +170,7 @@ public final class Constants {
      * is our 0 degrees line (positive X axis). 180 is added to our thetas in order
      * to get them to be on our side of the field, as opposed to the opposing side.
      */
-    public static final double kPickupDistanceInches = 17.0;
+    public static final double kPickupDistanceInches = 22.0;
 
     //Starting Positions
     public static final PolarCoordinate position1LeftStart = new PolarCoordinate(
@@ -235,7 +235,7 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Constants.Auto.kBallR4.getTheta()
+      Rotation2d.fromDegrees(201.65) 
     );
 
     public static final PolarCoordinate testStart = new PolarCoordinate(

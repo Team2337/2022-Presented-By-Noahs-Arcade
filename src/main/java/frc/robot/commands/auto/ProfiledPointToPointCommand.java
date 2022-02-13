@@ -55,8 +55,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
     thetaController.setConstraints(new TrapezoidProfile.Constraints(45, Math.pow(strafeAcceleration, 2)));
 
-    SmartDashboard.putNumber("ProfiledP2P/Point Distance (inches)", Units.metersToInches(point.getRadiusMeters()));
-    SmartDashboard.putNumber("ProfiledP2P/Point Theta (Degrees)", point.getTheta().getDegrees());
+    SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
+    SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
 
     addRequirements(autoDrive);
   }
@@ -78,7 +78,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private PolarCoordinate getRobotCoordinate() {
     return PolarCoordinate.fromFieldCoordinate(
       poseSupplier.get().getTranslation(),
-      point.getReferencePoint()
+      target.getReferencePoint()
     );
   }
 
@@ -89,7 +89,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     PolarCoordinate robotCoordinate = getRobotCoordinate();
     forwardOutput = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
-      point.getRadiusMeters()
+      target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
       robotCoordinate.getTheta().getDegrees(),

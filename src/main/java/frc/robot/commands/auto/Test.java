@@ -19,7 +19,7 @@ public class Test extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.testEnd, drivetrain::getPose, heading, autoDrive, 0.5, 0.025, Units.inchesToMeters(60), 4),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getPose, heading, autoDrive, 0.5, 0.025, Units.inchesToMeters(60), 4),
       new WaitCommand(1)
     );
   }
