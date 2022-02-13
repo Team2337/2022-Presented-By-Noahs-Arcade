@@ -250,15 +250,17 @@ public final class Constants {
 
   public static final int DELIVERY_MOTOR_ID = 21;
   public static final double DELIVERY_SPEED = 0.5;
+
   //CLIMBER CONSTANTS
+  public static final int LEFT_CLIMBER_MOTOR_ID = 16;
+  public static final int RIGHT_CLIMBER_MOTOR_ID = 3;
+  public static final int CLIMBER_STRING_POT_ID = 3;
+
   public static final class Climber {
-    public static final int LEFT_CLIMBER_MOTOR_ID = 16;
-    public static final int RIGHT_CLIMBER_MOTOR_ID = 3;
-    public static final int CLIMBER_STRING_POT_ID = 3;
-    public static final double LOW_RUNG = 1.0;
-    public static final double MID_RUNG = 3.0;
-    public static final double RICKABOOT = 0.5;
     public static final double START = 0;
+    public static final double LOW_RUNG = 1.0;
+    public static final double MID_RUNG = 1.5;
+    public static final double RICKABOOT = 0.7;
   }
 
   // Color stuff

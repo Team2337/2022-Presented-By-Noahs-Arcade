@@ -21,36 +21,36 @@ public class ClimberCommand extends CommandBase {
   private final XboxController controller;
   private double setpoint;
   private double position;
-  private boolean auto;
+  private boolean useStringPot;
   private boolean shouldHoldPosition = true;
-  private PIDController climberController = new PIDController(0.004, 0.0, 0.0);
+  private PIDController climberController = new PIDController(0.4, 0.0, 0.0);
 
-  public ClimberCommand(XboxController controller, double setpoint, boolean auto, Climber climber) {
+  public ClimberCommand(XboxController controller, double setpoint, boolean useStringPot, Climber climber) {
     this.climber = climber;
     this.setpoint = setpoint;
     this.controller = controller;
-    this.auto = auto;
+    this.useStringPot = useStringPot;
     addRequirements(climber);
   }
 
   @Override
   public void initialize() {
-    
+    climberController.setTolerance(0.1);
   }
 
   @Override
   public void execute(){
-    //If the stringpot reads zero (gets disconnected), or is not autonomous, run this loop
-    if (auto == false || climber.getStringPotVoltage() == 0){
+    //If the stringpot reads zero (gets disconnected), or is not useStringPotnomous, run this loop
+    if (useStringPot == false || climber.getStringPotVoltage() == 0){
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
       double deadband = Utilities.deadband(controller.getRightY(), 0.06);
+      SmartDashboard.putNumber("Deadband", deadband);
       if (deadband == 0){
         //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
         if (shouldHoldPosition){
           position = climber.getMotorOnePosition();
           shouldHoldPosition = false;
         }
-        //Holds the climber at set position 
         climber.hold(position);
       }
       else{
@@ -66,7 +66,7 @@ public class ClimberCommand extends CommandBase {
       double speed =  MathUtil.clamp(output, -1, 1);
       SmartDashboard.putNumber("PID Output", output);
       SmartDashboard.putNumber("PID Speed", speed);
-      climber.start((speed * 100)); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
+      climber.start((speed)); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
     }    
   }
 

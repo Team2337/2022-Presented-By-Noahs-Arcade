@@ -57,9 +57,9 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     operatorA.whenHeld(new ClimberCommand(operatorController,0, false, climber));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenHeld(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
+    operatorB.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    operatorX.whenHeld(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
+    operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
     driverX.whenPressed(heading::enableMaintainHeading);
 
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);

@@ -19,9 +19,9 @@ import frc.robot.Constants;
  * @author  Nicholas S
  */
 public class Climber extends SubsystemBase {
-  private final AnalogInput stringPot = new AnalogInput(Constants.Climber.CLIMBER_STRING_POT_ID);
-  private final TalonFX leftMotor = new TalonFX(Constants.Climber.LEFT_CLIMBER_MOTOR_ID);
-  private final TalonFX rightMotor = new TalonFX(Constants.Climber.RIGHT_CLIMBER_MOTOR_ID);
+  private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
+  private final TalonFX leftMotor = new TalonFX(Constants.LEFT_CLIMBER_MOTOR_ID);
+  private final TalonFX rightMotor = new TalonFX(Constants.RIGHT_CLIMBER_MOTOR_ID);
   
   public Climber() {
     StatorCurrentLimitConfiguration currentLimitConfigurationMotor = new StatorCurrentLimitConfiguration();
@@ -39,6 +39,12 @@ public class Climber extends SubsystemBase {
     leftMotor.configStatorCurrentLimit(currentLimitConfigurationMotor, 0);
 
     leftMotor.setNeutralMode(NeutralMode.Brake);
+    leftMotor.config_kP(0, .15);
+    leftMotor.config_kI(0, 0);
+    leftMotor.config_kD(0, 0);
+    leftMotor.configAllowableClosedloopError(0, 100);
+    leftMotor.configNominalOutputForward(.1);
+    leftMotor.configNominalOutputReverse(.1);
 
     leftMotor.configOpenloopRamp(0.5);
     leftMotor.enableVoltageCompensation(true);
@@ -53,6 +59,8 @@ public class Climber extends SubsystemBase {
     climberWidget.addNumber("Left Temp", this::getLeftClimberTemperature);
     climberWidget.addNumber("Right Temp", this::getRightClimberTemperature);
     climberWidget.addNumber("String Pot", this::getStringPotVoltage);
+    climberWidget.addNumber("Left Motor Position", this::getMotorOnePosition);
+    climberWidget.addNumber("Right Motor Position", this::getMotorTwoPosition);
   }
 
   @Override
@@ -69,7 +77,7 @@ public class Climber extends SubsystemBase {
    * Holds the climber at a set position
    */
   public void hold(double setpoint){
-    leftMotor.set(ControlMode.Position, setpoint);
+    leftMotor.set(TalonFXControlMode.Position, setpoint);
   }
   
   /**
@@ -88,6 +96,10 @@ public class Climber extends SubsystemBase {
 
   public double getMotorOnePosition(){
     return leftMotor.getSelectedSensorPosition();
+  }
+
+  public double getMotorTwoPosition(){
+    return rightMotor.getSelectedSensorPosition();
   }
 
   /**
