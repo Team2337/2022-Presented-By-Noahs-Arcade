@@ -111,7 +111,7 @@ public final class Constants {
         HUB_HEIGHT = Units.inchesToMeters(103.8);
         break;
       case SKILLSBOT:
-        MODULE0_DRIVE_MOTOR_ID = 0; 
+        MODULE0_DRIVE_MOTOR_ID = 0;
         MODULE0_ANGLE_MOTOR_ID = 4;
         MODULE0_ANGLE_CANCODER_ID = 1;
         MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
@@ -140,7 +140,7 @@ public final class Constants {
         break;
     }
   }
- 
+
   /**
    * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
    * Track width is side to side
@@ -162,22 +162,20 @@ public final class Constants {
   public static final class Auto {
     /**
      * Our polar coordinates for our balls are based off of the center of the field.
-     * Note that the angles are measured where the left-hand field perimeter
-     * (y = 27) is our 0 degrees. This is because when our center point is in the
-     * middle of the field, the top-left quadrant in a cartesian system is our
-     * positive-positive quadrant. Top right should be positive X values and
-     * negative Y values (shifted to the right of our center).
+     * Note that the angles are measured where the opposing alliance wall
+     * is our 0 degrees line (positive X axis). 180 is added to our thetas in order
+     * to get them to be on our side of the field, as opposed to the opposing side.
      */
     public static final double kPickupDistanceInches = 17.0;
 
     public static final PolarCoordinate startTopPosition = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(14)
+      Rotation2d.fromDegrees(76 + 180)
     );
     // Ball 1 = Ball nearest to the top starting location
     public static final PolarCoordinate kBall1 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(9.75) // 80.25 using alliance wall zero
+      Rotation2d.fromDegrees(80.25 + 180) // 80.25 their-side using alliance wall zero
     );
     public static final PolarCoordinate kBall1Pickup = new PolarCoordinate(
       Constants.Auto.kBall1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -186,7 +184,7 @@ public final class Constants {
     // Ball 2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBall2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(62) // 35.25 using alliance wall zero 54.75
+      Rotation2d.fromDegrees(35.25 + 180) // 35.25 their-side using alliance wall zero
     );
     public static final PolarCoordinate kBall2Pickup = new PolarCoordinate(
       Constants.Auto.kBall2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -195,7 +193,7 @@ public final class Constants {
     // Ball 3 = Ball just in front of the Terminal
     public static final PolarCoordinate kBall3 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(75) // 22.65 using alliance wall zero 67.35
+      Rotation2d.fromDegrees(22.65 + 180) // 22.65 their-side using alliance wall zero
     );
     public static final PolarCoordinate kBall3Pickup = new PolarCoordinate(
       Constants.Auto.kBall3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -205,12 +203,12 @@ public final class Constants {
     // Ball 5 = Ball nearest to the bottom starting location
     public static final PolarCoordinate kBall5 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(122.25) // -32.25 using alliance wall zero
+      Rotation2d.fromDegrees(-32.25 + 180) // -32.25 their-side using alliance wall zero
     );
 
     public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(75)
+      Rotation2d.fromDegrees(25 + 180) // 25 their-side using alliance wall zero
     );
   }
 
@@ -244,6 +242,8 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
+
+  public static final int INTAKE_SENSOR_ID = 0;
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
