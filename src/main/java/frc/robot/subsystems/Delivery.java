@@ -26,6 +26,9 @@ public class Delivery extends SubsystemBase {
 
   private final TCSColorSensor sensor = new TCSColorSensor(I2C.Port.kMXP);
 
+  private RawColor rawColor;
+  private Color color;
+
   /**
    * Initializes the Delivery subsystem - no color sensors yet.
    */
@@ -49,16 +52,23 @@ public class Delivery extends SubsystemBase {
       .withSize(4, 8)
       .withPosition(4, 0);
     colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
-    colorWidget.addDoubleArray("RGB", () -> {
-      RawColor color = sensor.getSensor().getRawColor();
-      return new double[]{
-        (double)color.red, (double)color.green, (double)color.blue
-      };
+    colorWidget.addNumber("Average", () -> {
+      return (double)(rawColor.red+rawColor.green+rawColor.blue) / 3.0;
     });
+    colorWidget.addNumber("Red", () -> rawColor.red);
+    colorWidget.addNumber("Green", () -> rawColor.green);
+    colorWidget.addNumber("Blue", () -> rawColor.blue);
+    colorWidget.addNumber("Clear", () -> rawColor.clear);
+    colorWidget.addNumber("Luminance", () -> rawColor.luminance);
+    colorWidget.addNumber("Sum", () -> {return rawColor.red + rawColor.green + rawColor.blue;});
+    colorWidget.addDoubleArray("Numbers", () -> new double[]{color.red, color.green, color.blue});
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    rawColor = sensor.getSensor().getRawColor();
+    color = sensor.getSensor().getColor();
+  }
 
   public void startDelivery(Direction direction) {
     startDelivery(direction, Constants.DELIVERY_SPEED);

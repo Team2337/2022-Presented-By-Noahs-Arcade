@@ -17,34 +17,54 @@ public class TCS34275 {
   private static final byte DEVICE_ADDRESS = 0x29;
 
   private I2C device;
-  // private SimDevice simDevice;
 
   public enum Register {
-    kEnable(0x00),
-    kRGBCTime(0x01),
-    kWaitTime(0x03),
-    kClearInterruptLowThresholdLowByte(0x04),
-    kClearInterruptLowThresholdHighByte(0x05),
-    kClearInterruptHighThresholdLowByte(0x06),
-    kClearInterruptHighThresholdHighByte(0x07),
-    kInterruptPersistenceFilter(0x0C),
-    kConfiguration(0x0D),
-    kControl(0x0F),
-    kDeviceID(0x12),
-    kDeviceStatus(0x13),
-    kClearDataLowByte(0x14),
-    kClearDataHighByte(0x15),
-    kRedDataLowByte(0x16),
-    kRedDataHighByte(0x17),
-    kGreenDataLowByte(0x18),
-    kGreenDataHighByte(0x19),
-    kBlueDataLowByte(0x1A),
-    kBlueDataHighByte(0x1B);
+    // Registers are named as they are in the documentation.
+    /** Enables states and interrupts */
+    ENABLE(0x80),
+    /** RGBC time */
+    ATIME(0x81),
+    /** Wait time */
+    WTIME(0x83),
+    /** Clear interrupt low threshold low byte */
+    AILTL(0x84),
+    /** Clear interrupt low threshold high byte */
+    AILTH(0x85),
+    /** Clear interrupt high threshold low byte */
+    AIHTL(0x86),
+    /** Clear interrupt high threshold high byte */
+    AIHTH(0x87),
+    /** Interrupt persistence filter */
+    PERS(0x8C),
+    /** Configuration */
+    CONFIG(0x8D),
+    /** Control */
+    CONTROL(0x8F),
+    /** Device ID */
+    ID(0x92),
+    /** Device status */
+    STATUS(0x93),
+    /** Clear data low byte */
+    CDATAL(0x94),
+    /** Clear data high byte */
+    CDATAH(0x95),
+    /** Red data low byte */
+    RDATAL(0x96),
+    /** Red data high byte */
+    RDATAH(0x97),
+    /** Green data low byte */
+    GDATAL(0x98),
+    /** Green data high byte */
+    GDATAH(0x99),
+    /** Blue data low byte */
+    BDATAL(0x9A),
+    /** Blue data high byte */
+    BDATAH(0x9B);
 
-    public final int bVal;
+    public final int value;
 
     Register(int i) {
-      this.bVal = /* (byte) */ i;
+      this.value = /* (byte) */ i;
     }
   }
 
@@ -71,7 +91,7 @@ public class TCS34275 {
   private void initializeDevice() {
 		// Select enable register
 		// Power ON, RGBC enable, wait time disable
-		device.write(0x80, 0x03);
+		device.write(Register.ENABLE.value, 0x03);
 		// Select ALS time register
 		/**
      * According to the documentation, the values for the second parameter here are:
@@ -88,24 +108,40 @@ public class TCS34275 {
      * 
      * Time values are in ms.
      */
-		device.write(0x81, 0xF6);
+		device.write(Register.ATIME.value, 0xF6);
 		// Select Wait Time register
 		// WTIME : 2.4ms
-		device.write(0x83, 0xFF);
+		device.write(Register.WTIME.value, 0xFF);
 		// Select control register
-		// AGAIN = 1x
-		device.write(0x8F, 0x00);
+    /**
+     * According to the documentation, the values for the second parameter here are:
+     * 
+     * |------|-------|
+     * | Gain | Value |
+     * |------|-------|
+     * | 1x   | 0b00  |
+     * | 4x   | 0b01  |
+     * | 16x  | 0b10  | <--
+     * | 60x  | 0b11  |
+     * |------|-------|
+     * 
+     */
+		device.write(Register.CONTROL.value, 0b10);
   }
 
   private RawColor readData() {
 		// Read 8 bytes of data
 		// cData lsb, cData msb, red lsb, red msb, green lsb, green msb, blue lsb, blue msb
 		byte[] data = new byte[8];
-    device.read(0x94, 8, data);
+    device.read(Register.CDATAL.value, 8, data);
 		// Convert the data
+    //           Register.CDATAH           Register.CDATAL
 		int clear = ((data[1] & 0xFF) * 256) + (data[0] & 0xFF);
+    //         Register.RDATAH           Register.RDATAL
 		int red = ((data[3] & 0xFF) * 256) + (data[2] & 0xFF);
-		int green = ((data[5] & 0xFF) * 256) + (data[4] & 0xFF); 
+    //           Register.GDATAH           Register.GDATAL
+		int green = ((data[5] & 0xFF) * 256) + (data[4] & 0xFF);
+    //          Register.BDATAH           Register.BDATAL 
 		int blue = ((data[7] & 0xFF) * 256) + (data[6] & 0xFF);
  
 		// Calculate final lux
@@ -123,12 +159,17 @@ public class TCS34275 {
     // Get raw data
     RawColor data = getRawColor();
 
-    // Convert raw data to number between [0:1]
-    // We normalize the vectors to mimic REV's color sensor
-    double length = Math.sqrt(data.red*data.red + data.green*data.green + data.blue*data.blue);
-    double red = (double)data.red / length;
-    double green = (double)data.green / length;
-    double blue = (double)data.blue / length;
+    /*
+     * Convert raw data to number between [0:1].
+     * 
+     * To mimic the REV sensor, they need to add up to 1. To do this, we divide each number
+     * by the sum. This preserves the ratios. This doesn't work with negative numbers, but
+     * we don't use those so it doesn't matter.
+     */
+    double sum = (double)(data.red + data.green + data.blue);
+    double red = (double)data.red / sum;
+    double green = (double)data.green / sum;
+    double blue = (double)data.blue / sum;
     return new Color(red, green, blue);
   }
 }

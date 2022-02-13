@@ -16,15 +16,18 @@ import frc.robot.subsystems.TCS34275.RawColor;
  */
 public class TCSColorSensor extends SubsystemBase {
 
-  private final int COLOR_SENSOR_PROXIMITY = 300; //TODO: find value of this
+  // private final int COLOR_SENSOR_PROXIMITY = 10; //TODO: find value of this
+  private final double LUMINANCE_MAX_THRESHOLD = 96.0;
 
   // The sensor
   private final TCS34275 sensor;
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
-  private final Color matchRed  = new Color(0.4529, 0.2117, 0.0980);
-  private final Color matchBlue = new Color(0.1078, 0.2608, 0.3921);
+  private final Color matchRed  = new Color(0.40, 0.30, 0.30);
+  private final Color matchBlue = new Color(0.20, 0.40, 0.40);
+  private final Color matchBlue2 = new Color(0.25, 0.35, 0.40);
+  private final Color matchBlack = new Color(0.3333, 0.3333, 0.3333);
 
   // Other variables
   private BallColor currentColor = null;
@@ -40,6 +43,8 @@ public class TCSColorSensor extends SubsystemBase {
     // Color match
     colorMatcher.addColorMatch(matchRed);
     colorMatcher.addColorMatch(matchBlue);
+    colorMatcher.addColorMatch(matchBlue2);
+    colorMatcher.addColorMatch(matchBlack);
   }
 
   @Override
@@ -58,7 +63,7 @@ public class TCSColorSensor extends SubsystemBase {
     } else if (match.color == matchRed) {
       // Red ball
       currentColor = BallColor.RED;
-    } else if (match.color == matchBlue) {
+    } else if (match.color == matchBlue || match.color == matchBlue2) {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
@@ -88,11 +93,9 @@ public class TCSColorSensor extends SubsystemBase {
    */
   public boolean seesBall() {
     // TODO: this sensor doesn't return proximity, figure out how to do this
-    // Right now, we're taking advantage of the fact that the closer an object is, the larger raw
-    // color values are. It mimics how the REV sensor works, where it's inverse exponential.
-    RawColor color = sensor.getRawColor();
-    double avg = (double)(color.red + color.green + color.blue);
-    return avg > COLOR_SENSOR_PROXIMITY;
+
+    // Luminance max threshold
+    return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
   }
 
   public TCS34275 getSensor() {
