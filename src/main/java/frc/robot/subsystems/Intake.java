@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREUtils;
 import frc.robot.Constants;
 import frc.robot.Utilities;
 
@@ -28,8 +29,9 @@ public class Intake extends SubsystemBase {
     motor.configFactoryDefault();
 
     motor.setNeutralMode(NeutralMode.Coast);
-
     motor.configOpenloopRamp(0.5);
+
+    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     // Set up shuffleboard stuff
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");

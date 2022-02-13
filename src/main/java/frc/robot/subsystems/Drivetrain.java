@@ -196,10 +196,10 @@ public class Drivetrain extends SubsystemBase {
 
     Pose2d pose = odometry.update(
       getGyroscopeRotation(),
-      states[0],
-      states[1],
-      states[2],
-      states[3]
+      getModuleState(modules[0]),
+      getModuleState(modules[1]),
+      getModuleState(modules[2]),
+      getModuleState(modules[3])
     );
 
     field.setRobotPose(getPose());
@@ -208,6 +208,13 @@ public class Drivetrain extends SubsystemBase {
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     logger.recordOutput("Gyro", pigeon.getYaw());
+  }
+
+  private static final SwerveModuleState getModuleState(SwerveModule module) {
+    return new SwerveModuleState(
+        module.getDriveVelocity(),
+        new Rotation2d(module.getSteerAngle())
+      );
   }
 
 }
