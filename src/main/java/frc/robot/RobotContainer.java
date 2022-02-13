@@ -14,7 +14,8 @@ import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
-import frc.robot.commands.shooter.*;
+import frc.robot.commands.shooter.RunKicker;
+import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
