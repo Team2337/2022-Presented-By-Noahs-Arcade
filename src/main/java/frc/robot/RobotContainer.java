@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
-import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.commands.shooter.*;
@@ -58,8 +57,6 @@ public class RobotContainer {
     operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorB.whenHeld(new RunKicker(kicker));
-    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    operatorX.whenHeld(new RunIntake(intake));
 
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
@@ -69,8 +66,8 @@ public class RobotContainer {
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
 
-    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
     // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
