@@ -13,7 +13,7 @@ import frc.robot.Utilities;
  * The Heading subsystem is a "fake" subsystem (no hardware) that is used to coordinate
  * mutual exclusivity around maintaining the heading of the robot.
  * Ex: Commands that request the robot to maintain a heading should require
- * the Heading subsystem. Only one command should be updating the robot's heading 
+ * the Heading subsystem. Only one command should be updating the robot's heading
  * at a time.
  */
 public class Heading extends SubsystemBase {
@@ -115,6 +115,10 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
+  }
+
+  public Rotation2d getMaintainHeading() {
+    return maintainHeading;
   }
 
   public boolean shouldMaintainHeading() {

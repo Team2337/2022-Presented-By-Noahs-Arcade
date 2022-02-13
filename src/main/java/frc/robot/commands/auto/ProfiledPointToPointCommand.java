@@ -5,11 +5,9 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Utilities;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
@@ -18,8 +16,8 @@ import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Heading;
 
 /**
- * Drive a certain distance from a point - regardless of angle - and maintain that
- * distance away from the point.
+ * Generate movement values to drive the robot between it's current position and
+ * the specified point. Depends on the robot facing the Hub.
  */
 public class ProfiledPointToPointCommand extends HeadingToTargetCommand implements AutoDrivableCommand {
 
@@ -57,8 +55,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
     thetaController.setConstraints(new TrapezoidProfile.Constraints(45, Math.pow(strafeAcceleration, 2)));
 
-    SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
-    SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
+    SmartDashboard.putNumber("ProfiledP2P/Point Distance (inches)", Units.metersToInches(point.getRadiusMeters()));
+    SmartDashboard.putNumber("ProfiledP2P/Point Theta (Degrees)", point.getTheta().getDegrees());
 
     addRequirements(autoDrive);
   }
@@ -80,7 +78,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private PolarCoordinate getRobotCoordinate() {
     return PolarCoordinate.fromFieldCoordinate(
       poseSupplier.get().getTranslation(),
-      target.getReferencePoint()
+      point.getReferencePoint()
     );
   }
 
@@ -91,7 +89,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     PolarCoordinate robotCoordinate = getRobotCoordinate();
     forwardOutput = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
-      target.getRadiusMeters()
+      point.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
       robotCoordinate.getTheta().getDegrees(),
@@ -116,7 +114,6 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   }
 
   public AutoDrive.State calculate(double forward, double strafe, boolean isFieldOriented) {
-    // Note that this command assumes we're facing the target (use with Heading)
     return new AutoDrive.State(
       -forwardOutput,
       -strafeOutput,
@@ -148,7 +145,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
 
     SmartDashboard.putNumber("ProfiledP2P/Theta Position", thetaController.getSetpoint().position);
     SmartDashboard.putNumber("ProfiledP2P/Theta Error", thetaController.getPositionError());
-    
+
     SmartDashboard.putBoolean("ProfiledP2P/distanceController atGoal", distanceController.atGoal());
     SmartDashboard.putBoolean("ProfiledP2P/thetaController atGoal", thetaController.atGoal());
   }

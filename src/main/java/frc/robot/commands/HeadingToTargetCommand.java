@@ -37,7 +37,11 @@ public class HeadingToTargetCommand extends CommandBase {
       robotTranslationSupplier.get(),
       target
     );
-    heading.setMaintainHeading(coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180)));
+    // The angle is the angle outward from our center point. In order to face our center
+    // point, we need to rotate our angle by 180 degrees.
+    heading.setMaintainHeading(
+      coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180))
+    );
   }
 
 }

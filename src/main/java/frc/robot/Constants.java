@@ -90,22 +90,22 @@ public final class Constants {
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
         MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(75.58359375);
 
         MODULE1_DRIVE_MOTOR_ID = 1;
         MODULE1_ANGLE_MOTOR_ID = 2;
         MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(203.63437500000003);
 
         MODULE2_DRIVE_MOTOR_ID = 8;
         MODULE2_ANGLE_MOTOR_ID = 9;
         MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(198.89296875000002);
 
         MODULE3_DRIVE_MOTOR_ID = 10;
         MODULE3_ANGLE_MOTOR_ID = 11;
         MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(257.51250000000005);
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
@@ -135,8 +135,8 @@ public final class Constants {
         MODULE3_ANGLE_CANCODER_ID = 4;
         MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
 
-        DRIVETRAIN_TRACK_WIDTH_INCHES = 17;
-        DRIVETRAIN_WHEEL_BASE_INCHES = 17;
+        DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
+        DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
 
         LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
         LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
@@ -148,7 +148,7 @@ public final class Constants {
   /**
    * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
    * Track width is side to side
-   * Wheel base is fromt to back.
+   * Wheel base is front to back.
    */
   // /2 since we're measuring from the center - halfway
   private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
@@ -287,6 +287,8 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
+
+  public static final int INTAKE_SENSOR_ID = 0;
 
   public static final int INTAKE_MOTOR_ID = 6;
   public static final double INTAKE_SPEED = 0.5;
