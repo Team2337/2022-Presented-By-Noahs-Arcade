@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.lang.management.OperatingSystemMXBean;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -58,7 +60,7 @@ public class RobotContainer {
     operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorB.whenHeld(new RunKicker(kicker));
-
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
@@ -74,6 +76,7 @@ public class RobotContainer {
     // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
   public Command getAutonomousCommand() {

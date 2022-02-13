@@ -26,7 +26,7 @@ public class Kicker extends SubsystemBase {
     motor.configFactoryDefault();
 
     motor.setInverted(TalonFXInvertType.Clockwise);
-    motor.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);
   }
