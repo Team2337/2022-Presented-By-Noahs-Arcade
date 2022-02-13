@@ -34,7 +34,7 @@ public class RobotContainer {
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  
+
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
@@ -66,8 +66,8 @@ public class RobotContainer {
 
     // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::startIntake, intake);
-    operatorRightBumper.whenReleased(intake::stopIntake, intake);
+    operatorRightBumper.whenPressed(intake::start, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
 
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
