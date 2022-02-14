@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
+import frc.robot.commands.pixy.PixyPickupCommand;
+import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
@@ -60,6 +62,8 @@ public class RobotContainer {
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    driverLeftBumper.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
