@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
   public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
 
   // This is for 40.7 ft/s, RING OF FIRE!!!
-  private double kP = 0.62;
+  private double kP = 0.54;
   private double kI = 0;
   private double kD = 0.000;
   private double kF = 0.055;
@@ -73,8 +73,8 @@ public class Shooter extends SubsystemBase {
     rightMotor.follow(leftMotor);
     leftMotor.setNeutralMode(NeutralMode.Coast);
 
-    leftMotor.setInverted(TalonFXInvertType.Clockwise);
-    rightMotor.setInverted(InvertType.OpposeMaster);
+    leftMotor.setInverted(TalonFXInvertType.CounterClockwise);
+    rightMotor.setInverted(TalonFXInvertType.Clockwise);
 
     leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     leftMotor.configClosedloopRamp(0.1);

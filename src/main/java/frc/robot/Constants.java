@@ -252,7 +252,8 @@ public final class Constants {
   public static final double DELIVERY_SPEED = 0.5;
 
   public static final int INTAKE_MOTOR_ID = 15;
-  public static final double INTAKE_SPEED = 0.5;
+  public static final double INTAKE_FORWARD_SPEED = 1;
+  public static final double INTAKE_REVERSE_SPEED = -0.5;
 
   public static final int INTAKE_SENSOR_ID = 0;
 
