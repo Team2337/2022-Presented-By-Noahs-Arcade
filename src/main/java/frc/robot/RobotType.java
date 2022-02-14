@@ -16,6 +16,7 @@ public class RobotType {
   }
 
   private static String kPracticeBotMAC = "00:80:2F:17:89:85";
+
   private static String kSkillsBotMAC = "00:80:2F:30:2E:F2";
 
   public static Type getRobotType() {

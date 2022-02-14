@@ -3,9 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Utilities;
+
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Optional;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -63,7 +64,7 @@ public class PixyCam extends SubsystemBase {
       return largestRedTarget == null ? -1 : largestRedTarget.getY();
     });
     infoWidget.addString("Red target angle", () -> {
-      return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget).get());
+      return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget));
     });
     infoWidget.addNumber("Blue target x", () -> {
       return largestBlueTarget == null ? -1 : largestBlueTarget.getX();
@@ -72,7 +73,7 @@ public class PixyCam extends SubsystemBase {
       return largestBlueTarget == null ? -1 : largestBlueTarget.getY();
     });
     infoWidget.addString("Blue target angle", () -> {
-      return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget).get());
+      return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
     });
     infoWidget.addNumber("Pixy State", () -> state);
   }
@@ -90,10 +91,11 @@ public class PixyCam extends SubsystemBase {
     // Attempt to reconnect to the Pixy if we couldn't connect during setup
     if (!isConnected()) {
       connect();
-    }
-    // If we fail to connect/are not connected - bail on our target filtering
-    if (!isConnected()) {
-      return;
+
+      // If we fail to connect/are not connected - bail on our target filtering
+      if (!isConnected()) {
+        return;
+      }
     }
 
     // Clear our previous blocks in prep for new blocks
@@ -130,8 +132,8 @@ public class PixyCam extends SubsystemBase {
         ratio = 1 / ratio;
       }
 
-      //FIXME: add proper ball detection
-      if (ratio < Constants.Pixy.RATIO_THRESHOLD) {
+      // +/- 0.2 tolerance on "perfect square" to detect balls
+      if (Utilities.withinTolerance(1.0, ratio, Constants.Pixy.RATIO_TOLERANCE)) {
         // Red == Block Signature 1, Blue == Block Signature 2
         int signature = block.getSignature();
         if (signature == 1) {
@@ -189,9 +191,9 @@ public class PixyCam extends SubsystemBase {
    * @return The target converted to an angle from center of Pixy.
    * Ranges from -30 to 30. Returns empty if target is null.
    */
-  public Optional<Double> getTargetAngle(Block target) {
+  public Double getTargetAngle(Block target) {
     if (target == null){
-      return Optional.empty();
+      return null;
     }
 
     /**
@@ -200,7 +202,7 @@ public class PixyCam extends SubsystemBase {
      * of view of the PixyCam) to get it in terms of degrees, and then subtract
      * it by 30 to center it.
      */
-    return Optional.of(((target.getX() / getFrameWidth()) * 60.0) - 30.0);
+    return ((target.getX() / getFrameWidth()) * 60.0) - 30.0;
   }
 
   public double getFrameWidth() {
