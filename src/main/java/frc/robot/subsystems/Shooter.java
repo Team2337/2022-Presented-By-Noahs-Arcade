@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 /**
  * This subsystem runs the two shooter motors and gets them up to a constant set speed
  *

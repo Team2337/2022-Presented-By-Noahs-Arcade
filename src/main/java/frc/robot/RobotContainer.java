@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.lang.management.OperatingSystemMXBean;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +14,7 @@ import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
