@@ -3,6 +3,7 @@ package frc.robot.coordinates;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 public class PolarCoordinate {
 
@@ -38,10 +39,28 @@ public class PolarCoordinate {
     this.referencePoint = referencePoint;
   }
 
+  /**
+   * Create a PolarCoordinate from a field coordinate with using the center of the
+   * field (the Hub)
+   *
+   * @param coordinate - The field coordinate to translate from
+   * @return A polar coordinate with the hypotenuse as the distance and the atan
+   *         as the theta. Theta will be in (-180, 180) range.
+   */
   public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate) {
     return fromFieldCoordinate(coordinate, Constants.kHub);
   }
 
+  /**
+   * Create a PolarCoordinate from a field coordinate and a given field coordinate
+   * reference point.
+   *
+   * @param coordinate     - The field coordinate to translate from
+   * @param referencePoint - The field coordinate reference point for the polar
+   *                       coordiate
+   * @return A polar coordinate with the hypotenuse as the distance and the atan
+   *         as the theta. Theta will be in (-180, 180) range.
+   */
   public static PolarCoordinate fromFieldCoordinate(Translation2d coordinate, Translation2d referencePoint) {
     double x = coordinate.getX() - referencePoint.getX();
     double y = coordinate.getY() - referencePoint.getY();
@@ -81,6 +100,34 @@ public class PolarCoordinate {
     return new Translation2d(
       referencePoint.getX() + x,
       referencePoint.getY() + y
+    );
+  }
+
+  /**
+   * Rotate our coordinate around the reference point by some
+   * rotational value.
+   *
+   * Ex: Rotating 45 degrees by 90 -> 135 degrees
+   * Ex: Rotating 45 degrees by -90 -> -45 degrees
+   * Ex: Rotating 90 degrees by 180 -> -90 degrees
+   */
+  public PolarCoordinate rotateBy(Rotation2d other) {
+    return new PolarCoordinate(
+      radiusMeters,
+      theta.rotateBy(other),
+      referencePoint
+    );
+  }
+
+  /**
+   * Returns a new PolarCoordinate with rotational value
+   * constrainted to a single-rotation `(-180, 180)` range
+   */
+  public PolarCoordinate withRelativeTheta() {
+    return new PolarCoordinate(
+      radiusMeters,
+      Utilities.convertRotationToRelativeRotation(theta),
+      referencePoint
     );
   }
 

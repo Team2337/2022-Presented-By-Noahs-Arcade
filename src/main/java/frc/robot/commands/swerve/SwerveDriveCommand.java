@@ -1,10 +1,11 @@
 package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
@@ -46,9 +47,11 @@ public class SwerveDriveCommand extends CommandBase {
       isFieldOriented = autoDriveState.isFieldOriented;
     }
 
-    // If a driver-initiated rotationis provided, disable our rotation
+    // If a driver-initiated rotation is provided, disable our rotation
     // controller to let the driver rotate freely.
-    if (rotation != 0 && heading.isEnabled()) {
+    // Never allow this flow in autonomous (protect against floating joystick
+    // values coming from our controllers)
+    if (DriverStation.isTeleopEnabled() && rotation != 0 && heading.isEnabled()) {
       heading.disableMaintainHeading();
     }
 
