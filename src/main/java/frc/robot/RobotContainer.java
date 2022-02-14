@@ -61,18 +61,22 @@ public class RobotContainer {
     operatorB.whenHeld(new RunKicker(kicker));
 
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-
-    //True means that the stringpot will be used for movement, otherwise, it is false
-    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenHeld(new ClimberCommand(operatorController,0, false, climber));
-    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
-    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
     driverX.whenPressed(heading::enableMaintainHeading);
 
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    //True means that the stringpot will be used for movement, otherwise, it is false
+    JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+    JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+
+
+    operatorStart.whenHeld(new ClimberCommand(operatorController,0, false, climber));
+    operatorBack.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
+    operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
+    operatorY.whenPressed(new ClimberCommand(operatorController, Constants.Climber.LOW_RUNG, true, climber));
+
+    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
 

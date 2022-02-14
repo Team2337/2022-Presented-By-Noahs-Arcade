@@ -23,7 +23,7 @@ public class ClimberCommand extends CommandBase {
   private double position;
   private boolean useStringPot;
   private boolean shouldHoldPosition = true;
-  private PIDController climberController = new PIDController(0.4, 0.0, 0.0);
+  private PIDController climberController = new PIDController(2, 0.0, 0.0);
 
   public ClimberCommand(XboxController controller, double setpoint, boolean useStringPot, Climber climber) {
     this.climber = climber;
@@ -64,9 +64,10 @@ public class ClimberCommand extends CommandBase {
       //Runs a PID to get the climber to the set position, as designated by the stringpot. Slows down as it reaches target. 
       double output = climberController.calculate(climber.getStringPotVoltage(), setpoint);
       double speed =  MathUtil.clamp(output, -1, 1);
-      SmartDashboard.putNumber("PID Output", output);
-      SmartDashboard.putNumber("PID Speed", speed);
-      climber.start((speed)); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
+      SmartDashboard.putNumber("PIDD Error", climberController.getPositionError());
+      SmartDashboard.putNumber("PIDD Output", output);
+      SmartDashboard.putNumber("PIDD Speed", speed);
+      climber.start(speed); //Takes the PID output and multiplies into a number large enough to run a motor slowly.
     }    
   }
 

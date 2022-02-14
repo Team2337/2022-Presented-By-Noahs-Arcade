@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
     leftMotor.configNominalOutputForward(.1);
     leftMotor.configNominalOutputReverse(.1);
 
-    leftMotor.configOpenloopRamp(0.5);
+    leftMotor.configOpenloopRamp(0);
     leftMotor.enableVoltageCompensation(true);
     leftMotor.setInverted(true);
     rightMotor.setInverted(InvertType.OpposeMaster);
