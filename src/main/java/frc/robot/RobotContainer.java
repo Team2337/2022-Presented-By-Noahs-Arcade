@@ -61,7 +61,7 @@ public class RobotContainer {
     
     autonChooser.addOption("Pos3 Right One Ball", new Pos3RightOneBall(autoDrive, drivetrain, heading));
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, drivetrain, heading, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, drivetrain, heading));
 
