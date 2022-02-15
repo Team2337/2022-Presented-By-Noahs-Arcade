@@ -48,21 +48,16 @@ public class ClimberCommand extends CommandBase {
       if (deadband == 0){
         //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
         if (shouldHoldPosition){
-          position = climber.getStringPotVoltage();
+          position = climber.getMotorOnePosition();
           shouldHoldPosition = false;
         }
-        
+        climber.hold(position);
       }
       else{
         /* The controller is being pressed, use that value to move 
         the climber up and down while resetting the loop in case the controller stops being touched again */
         shouldHoldPosition = true;
-        double output = climberController.calculate(climber.getStringPotVoltage(), setpoint);
-        double speed =  MathUtil.clamp(output, -1, 1);
-        SmartDashboard.putNumber("PIDD Error", climberController.getPositionError());
-        SmartDashboard.putNumber("PIDD Output", output);
-        SmartDashboard.putNumber("PIDD Speed", speed);
-        climber.start(speed);
+        climber.start(-deadband);
       }
     }
     else{
