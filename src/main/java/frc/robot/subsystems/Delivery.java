@@ -4,11 +4,9 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTREUtils;
 import frc.robot.Constants;
-import frc.robot.subsystems.TCSSensor.RawColor;
 
 /**
  * Subsystem for the delivery mechanism
@@ -25,9 +23,6 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
   private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
-
-  private RawColor rawColor;
-  private Color color;
 
   /**
    * Initializes the Delivery subsystem - no color sensors yet.
@@ -52,23 +47,10 @@ public class Delivery extends SubsystemBase {
       .withSize(4, 8)
       .withPosition(4, 0);
     colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
-    colorWidget.addNumber("Average", () -> {
-      return (double)(rawColor.red+rawColor.green+rawColor.blue) / 3.0;
-    });
-    colorWidget.addNumber("Red", () -> rawColor.red);
-    colorWidget.addNumber("Green", () -> rawColor.green);
-    colorWidget.addNumber("Blue", () -> rawColor.blue);
-    colorWidget.addNumber("Clear", () -> rawColor.clear);
-    colorWidget.addNumber("Luminance", () -> rawColor.luminance);
-    colorWidget.addNumber("Sum", () -> {return rawColor.red + rawColor.green + rawColor.blue;});
-    colorWidget.addDoubleArray("Numbers", () -> new double[]{color.red, color.green, color.blue});
   }
 
   @Override
-  public void periodic() {
-    rawColor = sensor.getSensor().getRawColor();
-    color = sensor.getSensor().getColor();
-  }
+  public void periodic() {}
 
   public void startDelivery(Direction direction) {
     startDelivery(direction, Constants.DELIVERY_SPEED);

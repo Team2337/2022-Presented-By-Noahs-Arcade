@@ -7,14 +7,13 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
-import frc.robot.subsystems.TCSSensor.RawColor;
 
 /**
  * Subsystem for the TCS34275 color sensor. Plugs in to the I2C port. Based on {@link ColorSensorREV}
  * 
  * @author Michael Francis
  */
-public class ColorSensorTCS extends SubsystemBase {
+public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
   // private final int COLOR_SENSOR_PROXIMITY = 10; //TODO: find value of this
   private final double LUMINANCE_MAX_THRESHOLD = 96.0;
@@ -24,10 +23,10 @@ public class ColorSensorTCS extends SubsystemBase {
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
-  private final Color matchRed  = new Color(0.40, 0.30, 0.30);
-  private final Color matchBlue = new Color(0.20, 0.40, 0.40);
-  private final Color matchBlue2 = new Color(0.25, 0.35, 0.40);
-  private final Color matchBlack = new Color(0.3333, 0.3333, 0.3333);
+  private static final Color kMatchRed  = new Color(0.40, 0.30, 0.30);
+  private static final Color kMatchBlue = new Color(0.20, 0.40, 0.40);
+  private static final Color kMatchBlue2 = new Color(0.25, 0.35, 0.40);
+  private static final Color kMatchBlack = new Color(0.3333, 0.3333, 0.3333);
 
   // Other variables
   private BallColor currentColor = null;
@@ -41,10 +40,10 @@ public class ColorSensorTCS extends SubsystemBase {
     sensor = new TCSSensor(port);
 
     // Color match
-    colorMatcher.addColorMatch(matchRed);
-    colorMatcher.addColorMatch(matchBlue);
-    colorMatcher.addColorMatch(matchBlue2);
-    colorMatcher.addColorMatch(matchBlack);
+    colorMatcher.addColorMatch(kMatchRed);
+    colorMatcher.addColorMatch(kMatchBlue);
+    colorMatcher.addColorMatch(kMatchBlue2);
+    colorMatcher.addColorMatch(kMatchBlack);
   }
 
   @Override
@@ -60,10 +59,10 @@ public class ColorSensorTCS extends SubsystemBase {
     if (!seesBall()) {
       // If not close enough, there is no ball
       return;
-    } else if (match.color == matchRed) {
+    } else if (match.color == kMatchRed) {
       // Red ball
       currentColor = BallColor.RED;
-    } else if (match.color == matchBlue || match.color == matchBlue2) {
+    } else if (match.color == kMatchBlue || match.color == kMatchBlue2) {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
@@ -71,35 +70,28 @@ public class ColorSensorTCS extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("ColorSensor");
+    builder.setSmartDashboardType("ColorSensorTCS");
     builder.addStringProperty("Match", () -> {
-      switch(getColor()){
-        case RED:    return "Red";
-        case BLUE:   return "Blue";
-        default:     return "None";
+      switch(getColor()) {
+        case RED:
+          return "Red";
+        case BLUE:
+          return "Blue";
+        default:
+          return "None";
       }
     }, null);
   }
 
-  /**
-   * @return Currently viewed color, if any
-   */
   public BallColor getColor() {
     return currentColor;
   }
 
-  /**
-   * @return Whether or not the proximity sensor detects a close object
-   */
   public boolean seesBall() {
     // TODO: this sensor doesn't return proximity, figure out how to do this
 
     // Luminance max threshold
     return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
-  }
-
-  public TCSSensor getSensor() {
-    return sensor;
   }
 
 }
