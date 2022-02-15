@@ -6,6 +6,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,6 +53,8 @@ public class Drivetrain extends SubsystemBase {
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
   private Field2d field = new Field2d();
   private Logger logger = Logger.getInstance();
+
+
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -142,6 +145,7 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
 
     SmartDashboard.putData("Field", field);
+
   }
 
   public void resetPosition(Pose2d pose) {
@@ -166,6 +170,14 @@ public class Drivetrain extends SubsystemBase {
    */
   public Rotation2d getGyroscopeRotation() {
     return Rotation2d.fromDegrees(pigeon.getYaw());
+  }
+
+  public double getGyroscopeRoll() {
+    return pigeon.getRoll();
+  }
+
+  public double getGyroScopePitch() {
+    return pigeon.getPitch();
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -208,6 +220,9 @@ public class Drivetrain extends SubsystemBase {
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     logger.recordOutput("Gyro", pigeon.getYaw());
+    SmartDashboard.putNumber("Pitch", getGyroScopePitch());
+    SmartDashboard.putNumber("Roll", getGyroscopeRoll());
+
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {
