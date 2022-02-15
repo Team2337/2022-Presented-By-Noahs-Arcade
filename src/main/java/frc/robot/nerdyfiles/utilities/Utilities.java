@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.nerdyfiles.utilities;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -74,7 +74,7 @@ public class Utilities {
 
   /**
    * Converts a temperature in Celsius to Fahrenheit
-   * 
+   *
    * @param celsius The degrees in Celsius
    * @return The degrees in Fahrenheit
    */

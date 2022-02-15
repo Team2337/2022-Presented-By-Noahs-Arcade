@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * @author Michael F

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.lang.management.OperatingSystemMXBean;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +14,7 @@ import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
@@ -26,6 +25,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam();
 
   // private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -68,12 +68,6 @@ public class RobotContainer {
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
-
-    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));

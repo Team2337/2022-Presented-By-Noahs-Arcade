@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CTREUtils;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.CTREUtils;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * Subsystem for the intake mechanism
