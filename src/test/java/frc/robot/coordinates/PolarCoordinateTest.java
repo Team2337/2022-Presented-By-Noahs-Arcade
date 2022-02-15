@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 @RunWith(JUnit4.class)
 public class PolarCoordinateTest {

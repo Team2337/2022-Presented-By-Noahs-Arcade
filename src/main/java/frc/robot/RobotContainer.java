@@ -18,6 +18,9 @@ import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.RunKicker;
+import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -26,14 +29,17 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam();
 
-  private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  private final Kicker kicker = new Kicker();
+  private final Vision vision = new Vision();
+  private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  private final Intake intake = new Intake();
-  // private final Vision vision = new Vision();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -83,21 +89,21 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    operatorA.whenHeld(new StartShooter(shooter));
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorB.whenHeld(new RunKicker(kicker));
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
     // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::startIntake, intake);
-    operatorRightBumper.whenReleased(intake::stopIntake, intake);
-
-    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    operatorRightBumper.whenPressed(intake::start, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
   public Command getAutonomousCommand() {
