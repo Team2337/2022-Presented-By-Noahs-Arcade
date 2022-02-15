@@ -112,22 +112,6 @@ public class TCSSensor {
      * Time values are in ms. See table 6 in PDF.
      */
     device.write(Register.ATIME.value, 0xF6);
-    // Select Wait Time register
-    /**
-     * According to the documentation, the values for the second parameter here are:
-     * 
-     * |------|-------|
-     * | Time | Value |
-     * |------|-------|
-     * | 2.4  | 0xFF  | <--
-     * | 204  | 0xAB  |
-     * | 614  | 0x00  |
-     * |------|-------|
-     * 
-     * Time values are in ms. See table 7 in PDF.
-     */
-    // WTIME : 2.4ms
-    device.write(Register.WTIME.value, 0xFF);
     // Select control register
     /**
      * According to the documentation, the values for the second parameter here are:
