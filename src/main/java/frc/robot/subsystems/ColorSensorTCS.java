@@ -7,20 +7,20 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
-import frc.robot.subsystems.TCS34275.RawColor;
+import frc.robot.subsystems.TCSSensor.RawColor;
 
 /**
- * Subsystem for the TCS34275 color sensor. Plugs in to the I2C port. Based on {@link REVColorSensor}
+ * Subsystem for the TCS34275 color sensor. Plugs in to the I2C port. Based on {@link ColorSensorREV}
  * 
  * @author Michael Francis
  */
-public class TCSColorSensor extends SubsystemBase {
+public class ColorSensorTCS extends SubsystemBase {
 
   // private final int COLOR_SENSOR_PROXIMITY = 10; //TODO: find value of this
   private final double LUMINANCE_MAX_THRESHOLD = 96.0;
 
   // The sensor
-  private final TCS34275 sensor;
+  private final TCSSensor sensor;
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
@@ -36,9 +36,9 @@ public class TCSColorSensor extends SubsystemBase {
    * Initializes a REV Robotics Color Sensor v3
    * @param port The I2C port the sensor is plugged into
    */
-  public TCSColorSensor(I2C.Port port) {
+  public ColorSensorTCS(I2C.Port port) {
     // Set up sensor with a specific port
-    sensor = new TCS34275(port);
+    sensor = new TCSSensor(port);
 
     // Color match
     colorMatcher.addColorMatch(matchRed);
@@ -98,7 +98,7 @@ public class TCSColorSensor extends SubsystemBase {
     return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
   }
 
-  public TCS34275 getSensor() {
+  public TCSSensor getSensor() {
     return sensor;
   }
 

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTREUtils;
 import frc.robot.Constants;
-import frc.robot.subsystems.TCS34275.RawColor;
+import frc.robot.subsystems.TCSSensor.RawColor;
 
 /**
  * Subsystem for the delivery mechanism
@@ -24,7 +24,7 @@ public class Delivery extends SubsystemBase {
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
-  private final TCSColorSensor sensor = new TCSColorSensor(I2C.Port.kMXP);
+  private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   private RawColor rawColor;
   private Color color;

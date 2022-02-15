@@ -16,7 +16,7 @@ import frc.robot.Constants.BallColor;
  * 
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
-public class REVColorSensor extends SubsystemBase {
+public class ColorSensorREV extends SubsystemBase {
 
   private final int COLOR_SENSOR_PROXIMITY = 300; //TODO: tune me
 
@@ -35,7 +35,7 @@ public class REVColorSensor extends SubsystemBase {
    * Initializes a REV Robotics Color Sensor v3
    * @param port The I2C port the sensor is plugged into
    */
-  public REVColorSensor(I2C.Port port) {
+  public ColorSensorREV(I2C.Port port) {
     // Set up sensor with a specific port
     sensor = new ColorSensorV3(port);
 

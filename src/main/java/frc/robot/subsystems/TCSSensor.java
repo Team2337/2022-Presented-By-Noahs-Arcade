@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.util.Color;
  * 
  * @author Michael F
  */
-public class TCS34275 {
+public class TCSSensor {
   
   private static final byte DEVICE_ADDRESS = 0x29;
 
@@ -83,7 +83,7 @@ public class TCS34275 {
     }
   }
 
-  public TCS34275(I2C.Port port) {
+  public TCSSensor(I2C.Port port) {
     device = new I2C(port, DEVICE_ADDRESS);
     initializeDevice();
   }
