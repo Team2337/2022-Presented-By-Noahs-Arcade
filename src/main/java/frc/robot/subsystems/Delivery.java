@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the delivery mechanism
@@ -28,6 +29,8 @@ public class Delivery extends SubsystemBase {
 
     motor.setNeutralMode(NeutralMode.Brake);
     motor.configOpenloopRamp(0.5);
+
+    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     // Set up shuffleboard stuff
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");

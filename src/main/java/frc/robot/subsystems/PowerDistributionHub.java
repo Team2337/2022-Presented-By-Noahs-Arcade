@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * @author Michael F
@@ -19,7 +20,7 @@ public class PowerDistributionHub extends SubsystemBase {
       .withSize(6, 12)
       .withPosition(0, 0);
     widget.addNumber("Temperature (F)", () -> {
-      return (getTemperature() * (9.0/5.0)) + 32;
+      return Utilities.convertCelsiusToFahrenheit(getTemperature());
     });
     widget.addNumber("Voltage", this::getVoltage);
     widget.addNumber("Total Current (Amps)", pdh::getTotalCurrent);

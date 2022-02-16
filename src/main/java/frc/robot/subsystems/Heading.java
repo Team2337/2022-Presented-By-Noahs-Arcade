@@ -7,13 +7,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * The Heading subsystem is a "fake" subsystem (no hardware) that is used to coordinate
  * mutual exclusivity around maintaining the heading of the robot.
  * Ex: Commands that request the robot to maintain a heading should require
- * the Heading subsystem. Only one command should be updating the robot's heading 
+ * the Heading subsystem. Only one command should be updating the robot's heading
  * at a time.
  */
 public class Heading extends SubsystemBase {
@@ -115,6 +115,10 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
+  }
+
+  public Rotation2d getMaintainHeading() {
+    return maintainHeading;
   }
 
   public boolean shouldMaintainHeading() {
