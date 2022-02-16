@@ -32,31 +32,28 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new StartShooter(shooter),
-      new StartIntake(intake),
-      new ParallelCommandGroup(
+      //new StartShooter(shooter),
+      //new StartIntake(intake),
+      //new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8).withTimeout(2),
-        new WaitCommand(0.2),
-        new RunKicker(kicker).withTimeout(1)
-      ),
+        new WaitCommand(1),
+        //new RunKicker(kicker).withTimeout(1)
+      //),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 15).withTimeout(3),
-      new WaitCommand(0.25),
+      new WaitCommand(1),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 15).withTimeout(2),
-      new WaitCommand(0.2),
-      new ParallelCommandGroup(
-        new RunKicker(kicker).withTimeout(2),
-        new StartDelivery(delivery).withTimeout(2)
-      ),
+      new WaitCommand(1),
+      //new ParallelCommandGroup(
+        //new RunKicker(kicker).withTimeout(2),
+        //new StartDelivery(delivery).withTimeout(2)
+      //),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.025, Units.inchesToMeters(120), 8).withTimeout(4),
       new WaitCommand(2),
-      new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getPose, heading, autoDrive, 3.0, 0.01, Units.inchesToMeters(120), 8).withTimeout(4),
-      new ParallelCommandGroup(
-        new RunKicker(kicker).withTimeout(2),
-        new StartDelivery(delivery).withTimeout(2)
-      )
+      new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getPose, heading, autoDrive, 3.0, 0.01, Units.inchesToMeters(120), 8).withTimeout(4)
+      //new ParallelCommandGroup(
+        //new RunKicker(kicker).withTimeout(2),
+        //new StartDelivery(delivery).withTimeout(2)
+      //)
     );
-  }
-  public void initialize() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position3RightStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }

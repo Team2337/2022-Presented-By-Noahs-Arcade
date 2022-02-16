@@ -75,12 +75,12 @@ public class RobotContainer {
       pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
     }
     */
-    pigeon.setYaw(25, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kBallR2.toFieldCoordinate(), Rotation2d.fromDegrees(25)));
+    pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
   
   public void resetRobot2() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kBallR2.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {
@@ -95,6 +95,8 @@ public class RobotContainer {
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
+    JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
+    driverY.whenPressed(new ReturnToPosition3RightStart(autoDrive, drivetrain, heading));
 
     // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);

@@ -11,16 +11,16 @@ import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
-public class Test extends SequentialCommandGroup {
+public class ReturnToPosition3RightStart extends SequentialCommandGroup {
 
   private Drivetrain drivetrain;
 
-  public Test(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
+  public ReturnToPosition3RightStart(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.backup, drivetrain::getPose, heading, autoDrive, 0.5, 0.05, Units.inchesToMeters(60), 12).withTimeout(5),
-      new WaitCommand(5)
+      new ProfiledPointToPointCommand(Constants.Auto.position3RightStart, drivetrain::getPose, heading, autoDrive, 0.5, 0.025, Units.inchesToMeters(60), 4),
+      new WaitCommand(1)
     );
   }
 }

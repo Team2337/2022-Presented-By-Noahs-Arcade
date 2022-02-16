@@ -185,6 +185,14 @@ public final class Constants {
       Units.inchesToMeters(90),
       Rotation2d.fromDegrees(76 + 180)
     );
+    public static final PolarCoordinate testStartForward = new PolarCoordinate(
+      Units.inchesToMeters(10),
+      Rotation2d.fromDegrees(0)
+    );
+    public static final PolarCoordinate backup = new PolarCoordinate(
+      Units.inchesToMeters(20),
+      Rotation2d.fromDegrees(0)
+    );
 
     //Ball/Shooting Positions
     // Ball R1 = Ball nearest to the left starting location
