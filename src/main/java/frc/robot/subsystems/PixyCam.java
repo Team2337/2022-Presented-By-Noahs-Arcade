@@ -40,10 +40,10 @@ public class PixyCam extends SubsystemBase {
 
     connect();
 
-    setupShuffleboardDebug();
+    setupShuffleboard();
   }
 
-  private void setupShuffleboardDebug() {
+  private void setupShuffleboard() {
     ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
     pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
       .withSize(4, 4)
@@ -187,7 +187,7 @@ public class PixyCam extends SubsystemBase {
    * Ranges from -30 to 30. Returns empty if target is null.
    */
   public Double getTargetAngle(Block target) {
-    if (target == null){
+    if (target == null ){
       return null;
     }
 
