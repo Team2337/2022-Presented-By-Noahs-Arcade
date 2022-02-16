@@ -44,7 +44,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
+    // heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -75,12 +75,12 @@ public class RobotContainer {
       pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
     }
     */
-    pigeon.setYaw(0, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    pigeon.setYaw(60, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.position3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
   
   public void resetRobot2() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.position3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {

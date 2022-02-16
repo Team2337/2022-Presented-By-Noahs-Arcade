@@ -186,12 +186,12 @@ public final class Constants {
       Rotation2d.fromDegrees(76 + 180)
     );
     public static final PolarCoordinate testStartForward = new PolarCoordinate(
-      Units.inchesToMeters(10),
-      Rotation2d.fromDegrees(0)
+      Units.inchesToMeters(50),
+      Rotation2d.fromDegrees(179)
     );
     public static final PolarCoordinate backup = new PolarCoordinate(
-      Units.inchesToMeters(20),
-      Rotation2d.fromDegrees(0)
+      Units.inchesToMeters(60),
+      Rotation2d.fromDegrees(179)
     );
 
     //Ball/Shooting Positions
