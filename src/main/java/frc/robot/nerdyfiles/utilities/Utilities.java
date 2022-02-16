@@ -38,9 +38,19 @@ public class Utilities {
     return Math.copySign(Math.pow(value, 2), value);
   }
 
+  /**
+   * Deadband + square joystick axis values.
+   */
   public static double modifyAxis(double value) {
+    return modifyAxis(value, 0.05);
+  }
+
+  /**
+   * Deadband + square joystick axis values.
+   */
+  public static double modifyAxis(double value, double deadband) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, deadband);
     // Square the axis
     return Math.copySign(value * value, value);
   }
