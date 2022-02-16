@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
   public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
 
   // This is for 40.7 ft/s, RING OF FIRE!!!
-  private double kP = 0.54;
+  private double kP = 0.15;
   private double kI = 0;
   private double kD = 0.000;
   private double kF = 0.055;
