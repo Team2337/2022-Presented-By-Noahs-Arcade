@@ -83,6 +83,10 @@ public class Shooter extends SubsystemBase {
 
     configurePID(kP, kI, kD, kF);
 
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
     speeds.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
     speeds.addNumber("Top Wheel Speed (ft/s)", () -> getMotorWheelSpeed(leftMotor));

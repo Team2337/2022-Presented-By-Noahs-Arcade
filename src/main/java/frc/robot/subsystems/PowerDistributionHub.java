@@ -15,6 +15,10 @@ public class PowerDistributionHub extends SubsystemBase {
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public PowerDistributionHub() {
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     ShuffleboardTab pdhTab = Shuffleboard.getTab("PDH");
     ShuffleboardLayout widget = pdhTab.getLayout("Diagnostics", BuiltInLayouts.kList)
       .withSize(6, 12)
