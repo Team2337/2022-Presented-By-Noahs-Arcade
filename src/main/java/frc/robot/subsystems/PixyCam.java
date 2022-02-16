@@ -55,7 +55,9 @@ public class PixyCam extends SubsystemBase {
       .withProperties(Map.of("Color when true", "#6666ff"))
       .withProperties(Map.of("Color when false", "#000000"));
 
-    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
+    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList)
+      .withSize(8, 8)
+      .withPosition(4, 0);
     infoWidget.addNumber("Red target x", () -> {
       return largestRedTarget == null ? -1 : largestRedTarget.getX();
     });
@@ -87,10 +89,6 @@ public class PixyCam extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Attempt to reconnect to the Pixy if we couldn't connect during setup
-    if (!isConnected()) {
-      connect();
-    }
     // If we fail to connect/are not connected - bail on our target filtering
     if (!isConnected()) {
       return;

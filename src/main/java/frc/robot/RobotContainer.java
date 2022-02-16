@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.pixy.PixyPickupCommand;
-import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.subsystems.*;
 
@@ -55,9 +53,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
-
-    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    driverLeftBumper.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, pixyCam, autoDrive));
 
     JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
