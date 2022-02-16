@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.BasePigeon;
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -35,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Hardware (private)
    */
-  private PigeonIMU pigeon;
+  private final BasePigeon pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -85,8 +87,12 @@ public class Drivetrain extends SubsystemBase {
    * and the calculations from the joystick inputs is handled.
    * Field orientation is set here as well
    */
-  public Drivetrain(PigeonIMU pigeon) {
-    this.pigeon = pigeon;
+  public Drivetrain() {
+    if (RobotType.getRobotType() == RobotType.Type.COMPETITION) {
+      this.pigeon = new Pigeon2(0);
+    } else {
+      this.pigeon = new PigeonIMU(0);
+    }
 
     odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
 
@@ -144,10 +150,6 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("Field", field);
   }
 
-  public void resetPosition(Pose2d pose) {
-    odometry.resetPosition(pose, getGyroscopeRotation());
-  }
-
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
@@ -172,8 +174,12 @@ public class Drivetrain extends SubsystemBase {
     this.chassisSpeeds = chassisSpeeds;
   }
 
-  public void resetOdometry() {
-    odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
+  public void resetGyro(double yaw) {
+    pigeon.setYaw(yaw, 250);
+  }
+
+  public void resetPosition(Pose2d pose) {
+    odometry.resetPosition(pose, getGyroscopeRotation());
   }
 
   /**

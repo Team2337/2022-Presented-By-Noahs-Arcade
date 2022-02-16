@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +23,6 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(1);
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
-  private final PigeonIMU pigeon = new PigeonIMU(0);
-
   // private final Climber climber = new Climber();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
@@ -33,7 +30,7 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Drivetrain drivetrain = new Drivetrain();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -51,7 +48,7 @@ public class RobotContainer {
   }
 
   public void resetRobot() {
-    pigeon.setYaw(0, 250);
+    drivetrain.resetGyro(0);
   }
 
   private void configureButtonBindings() {
