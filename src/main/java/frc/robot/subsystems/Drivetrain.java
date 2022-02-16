@@ -133,6 +133,12 @@ public class Drivetrain extends SubsystemBase {
       )
     };
 
+    SmartDashboard.putData("Field", field);
+
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
     chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
     chassisSpeedsWidget.addNumber("vy meters/s", () -> chassisSpeeds.vyMetersPerSecond);
@@ -140,8 +146,6 @@ public class Drivetrain extends SubsystemBase {
 
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
-
-    SmartDashboard.putData("Field", field);
   }
 
   public void resetPosition(Pose2d pose) {
