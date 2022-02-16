@@ -4,18 +4,18 @@
 
 package frc.robot;
 
-import java.lang.management.OperatingSystemMXBean;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
@@ -26,6 +26,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam();
 
   // private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -41,6 +42,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
+    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
 
     // Configure the button bindings
     configureButtonBindings();

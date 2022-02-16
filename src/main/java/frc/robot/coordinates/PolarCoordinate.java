@@ -3,7 +3,7 @@ package frc.robot.coordinates;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 public class PolarCoordinate {
 

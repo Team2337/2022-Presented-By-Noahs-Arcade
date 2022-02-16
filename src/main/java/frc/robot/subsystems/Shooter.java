@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.CTREUtils;
+import frc.robot.nerdyfiles.utilities.Utilities;
 /**
  * This subsystem runs the two shooter motors and gets them up to a constant set speed
  *
@@ -64,7 +65,7 @@ public class Shooter extends SubsystemBase {
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
 
-  private StatorCurrentLimitConfiguration currentLimitConfiguration = new StatorCurrentLimitConfiguration(true, 50, 40, 3);
+  private StatorCurrentLimitConfiguration currentLimitConfiguration = CTREUtils.defaultCurrentLimit();
 
   public Shooter() {
     leftMotor.configFactoryDefault();
@@ -82,6 +83,10 @@ public class Shooter extends SubsystemBase {
 
     configurePID(kP, kI, kD, kF);
 
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
     speeds.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
     speeds.addNumber("Top Wheel Speed (ft/s)", () -> getMotorWheelSpeed(leftMotor));

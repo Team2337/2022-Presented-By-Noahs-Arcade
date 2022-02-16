@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
@@ -37,7 +37,7 @@ public class SwerveDriveCommand extends CommandBase {
   public void execute() {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
-    double rotation = -Utilities.modifyAxis(controller.getRightX());
+    double rotation = -Utilities.modifyAxis(controller.getRightX(), 0.1);
     boolean isFieldOriented = !controller.getLeftBumper();
 
     AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);
