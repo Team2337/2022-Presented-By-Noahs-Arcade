@@ -25,11 +25,16 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private Heading heading;
   private AutoDrive autoDrive;
 
-  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(120), Units.inchesToMeters(120)));
-  private ProfiledPIDController thetaController = new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(45, Math.pow(15, 2)));
+  // See values below and individual commands for P values and acceleration
+  private ProfiledPIDController distanceController = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(0), Units.inchesToMeters(0)));
+  private ProfiledPIDController thetaController = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(0, Math.pow(0, 2)));
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
+  private double forwardVelocity = Units.inchesToMeters(160);
+  private double strafeVelocity = 60;
+  private double forwardAcceleration = Units.inchesToMeters(90);
+  private double strafeAcceleration = 12;
 
   public ProfiledPointToPointCommand(PolarCoordinate point, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
     super(
@@ -50,8 +55,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     distanceController.setP(driveP);
     thetaController.setP(strafeP);
 
-    distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
-    thetaController.setConstraints(new TrapezoidProfile.Constraints(45, Math.pow(strafeAcceleration, 2)));
+    distanceController.setConstraints(new TrapezoidProfile.Constraints(forwardVelocity, forwardAcceleration));
+    thetaController.setConstraints(new TrapezoidProfile.Constraints(strafeVelocity, Math.pow(strafeAcceleration, 2)));
 
     SmartDashboard.putNumber("ProfiledP2P/Point Distance (inches)", Units.metersToInches(point.getRadiusMeters()));
     SmartDashboard.putNumber("ProfiledP2P/Point Theta (Degrees)", point.getTheta().getDegrees());
