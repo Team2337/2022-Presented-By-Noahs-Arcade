@@ -159,6 +159,10 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  public Translation2d getTranslation() {
+    return getPose().getTranslation();
+  }
+
   public SwerveDriveKinematics getKinematics() {
     return kinematics;
   }

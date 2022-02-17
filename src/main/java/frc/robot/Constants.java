@@ -86,22 +86,22 @@ public final class Constants {
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
         MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(75.58359375);
+        MODULE0_ANGLE_OFFSET = -Math.toRadians(76.37109375);
 
         MODULE1_DRIVE_MOTOR_ID = 1;
         MODULE1_ANGLE_MOTOR_ID = 2;
         MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(203.63437500000003);
+        MODULE1_ANGLE_OFFSET = -Math.toRadians(204.430078125);
 
         MODULE2_DRIVE_MOTOR_ID = 8;
         MODULE2_ANGLE_MOTOR_ID = 9;
         MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(198.89296875000002);
+        MODULE2_ANGLE_OFFSET = -Math.toRadians(195.37382812500002);
 
         MODULE3_DRIVE_MOTOR_ID = 10;
         MODULE3_ANGLE_MOTOR_ID = 11;
         MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(257.51250000000005);
+        MODULE3_ANGLE_OFFSET = -Math.toRadians(255.3140625);
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
@@ -166,49 +166,84 @@ public final class Constants {
      * is our 0 degrees line (positive X axis). 180 is added to our thetas in order
      * to get them to be on our side of the field, as opposed to the opposing side.
      */
-    public static final double kPickupDistanceInches = 17.0;
+    public static final double kPickupDistanceInches = 22.0;
 
-    public static final PolarCoordinate startTopPosition = new PolarCoordinate(
+    // Starting Locations
+
+    public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(122.25)
+    );
+    public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(62)
+    );
+    public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
       Units.inchesToMeters(90),
       Rotation2d.fromDegrees(76 + 180)
     );
-    // Ball 1 = Ball nearest to the top starting location
-    public static final PolarCoordinate kBall1 = new PolarCoordinate(
-      Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(80.25 + 180) // 80.25 their-side using alliance wall zero
-    );
-    public static final PolarCoordinate kBall1Pickup = new PolarCoordinate(
-      Constants.Auto.kBall1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Constants.Auto.kBall1.getTheta()
-    );
-    // Ball 2 = Ball nearest to the middle starting location
-    public static final PolarCoordinate kBall2 = new PolarCoordinate(
-      Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(35.25 + 180) // 35.25 their-side using alliance wall zero
-    );
-    public static final PolarCoordinate kBall2Pickup = new PolarCoordinate(
-      Constants.Auto.kBall2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Constants.Auto.kBall2.getTheta()
-    );
-    // Ball 3 = Ball just in front of the Terminal
-    public static final PolarCoordinate kBall3 = new PolarCoordinate(
-      Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(22.65 + 180) // 22.65 their-side using alliance wall zero
-    );
-    public static final PolarCoordinate kBall3Pickup = new PolarCoordinate(
-      Constants.Auto.kBall3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Constants.Auto.kBall3.getTheta()
-    );
-    // Ball 4 is the human player ball at the Terminal
-    // Ball 5 = Ball nearest to the bottom starting location
-    public static final PolarCoordinate kBall5 = new PolarCoordinate(
-      Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(-32.25 + 180) // -32.25 their-side using alliance wall zero
-    );
 
+    /**
+     * Alliance Balls + Shooting Positions
+     */
+
+    // Ball R1 = Ball nearest to the left starting location
+    public static final PolarCoordinate kBallR1 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(147.75)
+    );
+    public static final PolarCoordinate kBallR1Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR1.getTheta()
+    );
+    //Shoot postition between ball R2 and ball D2
+    public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(205)
+    );
+    //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(25 + 180) // 25 their-side using alliance wall zero
+      Rotation2d.fromDegrees(205)
+    );
+    // Ball R2 = Ball nearest to the middle starting location
+    public static final PolarCoordinate kBallR2 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(215.25)
+    );
+    public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR2.getTheta()
+    );
+    // Ball R3 = Ball nearest to the right starting location
+    public static final PolarCoordinate kBallR3 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(260.25)
+    );
+    public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR3.getTheta()
+    );
+    public static final PolarCoordinate kBallR2ShootPosition = new PolarCoordinate(
+      Constants.Auto.kBallR2.getRadiusMeters(),
+      Constants.Auto.kBallR2.getTheta()
+    );
+    // Ball R4 = Ball just in front of the Terminal
+    public static final PolarCoordinate kBallR4 = new PolarCoordinate(
+      Units.inchesToMeters(305.66),
+      Rotation2d.fromDegrees(202.65)
+    );
+    public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Rotation2d.fromDegrees(201.65)
+    );
+
+    /*
+     * Opponent balls
+     */
+    public static final PolarCoordinate kBallD2 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(190.05)
     );
   }
 

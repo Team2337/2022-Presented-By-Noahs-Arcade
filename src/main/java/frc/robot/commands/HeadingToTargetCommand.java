@@ -15,7 +15,7 @@ import frc.robot.subsystems.Heading;
  */
 public class HeadingToTargetCommand extends CommandBase {
 
-  private Translation2d target;
+  private Translation2d targetMeters;
   private Supplier<Translation2d> robotTranslationSupplier;
   private Heading heading;
 
@@ -23,20 +23,25 @@ public class HeadingToTargetCommand extends CommandBase {
     this(Constants.kHub, robotTranslationSupplier, heading);
   }
 
-  public HeadingToTargetCommand(Translation2d target, Supplier<Translation2d> robotTranslationSupplier, Heading heading) {
-    this.target = target;
+  public HeadingToTargetCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, Heading heading) {
+    this.targetMeters = targetMeters;
     this.robotTranslationSupplier = robotTranslationSupplier;
     this.heading = heading;
 
     addRequirements(heading);
   }
 
+  protected PolarCoordinate getRobotCoordinate() {
+    // Find our robot polar coordinate relative to the target
+    return PolarCoordinate.fromFieldCoordinate(
+      robotTranslationSupplier.get(),
+      targetMeters
+    );
+  }
+
   @Override
   public void execute() {
-    PolarCoordinate coordinate = PolarCoordinate.fromFieldCoordinate(
-      robotTranslationSupplier.get(),
-      target
-    );
+    PolarCoordinate coordinate = getRobotCoordinate();
     // The angle is the angle outward from our center point. In order to face our center
     // point, we need to rotate our angle by 180 degrees.
     heading.setMaintainHeading(

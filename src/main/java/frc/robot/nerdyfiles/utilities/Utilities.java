@@ -41,14 +41,14 @@ public class Utilities {
   /**
    * Deadband + square joystick axis values.
    */
-  public static double modifyAxis(double value) {
-    return modifyAxis(value, 0.05);
+  public static double deadbandAndSquare(double value) {
+    return deadbandAndSquare(value, 0.05);
   }
 
   /**
    * Deadband + square joystick axis values.
    */
-  public static double modifyAxis(double value, double deadband) {
+  public static double deadbandAndSquare(double value, double deadband) {
     // Deadband
     value = deadband(value, deadband);
     // Square the axis

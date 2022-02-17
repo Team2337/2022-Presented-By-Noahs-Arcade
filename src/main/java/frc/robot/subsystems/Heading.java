@@ -2,10 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -51,7 +52,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.004, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.007, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -65,6 +66,24 @@ public class Heading extends SubsystemBase {
     rotationController.enableContinuousInput(-180, 180);
     // +/- 1 degree position error tolerance
     rotationController.setTolerance(1.0);
+  }
+
+
+  @Override
+  public void periodic() {
+    if (maintainHeading != null) {
+      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", maintainHeading.getDegrees());
+    } else {
+      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", "null");
+    }
+    if (nextHeading != null) {
+      Logger.getInstance().recordOutput("Heading/Next Heading (Degrees)", nextHeading.getDegrees());
+    } else {
+      Logger.getInstance().recordOutput("Heading/Next Heading (Degrees)", "null");
+    }
+    Logger.getInstance().recordOutput("Heading/Rotation Controller Error", rotationController.getPositionError());
+    Logger.getInstance().recordOutput("Heading/Enabled", enabled);
+    Logger.getInstance().recordOutput("Heading/At Maintain Heading", atMaintainHeading());
   }
 
   public void enableMaintainHeading() {
@@ -82,8 +101,6 @@ public class Heading extends SubsystemBase {
 
   private void setEnabled(boolean enabled) {
     this.enabled = enabled;
-
-    SmartDashboard.putBoolean("Heading/Enabled", enabled);
   }
 
   public boolean isEnabled() {
@@ -121,16 +138,14 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
-
-    if (maintainHeading != null) {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", "null");
-    }
   }
 
   public Rotation2d getMaintainHeading() {
     return maintainHeading;
+  }
+
+  public boolean atMaintainHeading() {
+    return rotationController.atSetpoint();
   }
 
   public boolean shouldMaintainHeading() {
@@ -151,12 +166,6 @@ public class Heading extends SubsystemBase {
       nextHeading = Utilities.convertRotationToRelativeRotation(nextHeading);
     }
     this.nextHeading = nextHeading;
-
-    if (nextHeading != null) {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", String.valueOf(nextHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", "null");
-    }
   }
 
   /**
@@ -178,11 +187,13 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
@@ -191,8 +202,7 @@ public class Heading extends SubsystemBase {
       currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
-    SmartDashboard.putNumber("Heading/Rotation Controller Error", rotationController.getPositionError());
-    SmartDashboard.putNumber("Heading/Rotation Controller Output", output);
+    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clamedOutput = MathUtil.clamp(
