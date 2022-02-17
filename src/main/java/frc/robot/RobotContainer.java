@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
@@ -41,6 +42,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
+    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -68,10 +70,19 @@ public class RobotContainer {
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    operatorLeftBumper.whenPressed(intake::reverse, intake);
+    operatorLeftBumper.whenReleased(intake::stop, intake);
+    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
+    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
-    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    //operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
+
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();

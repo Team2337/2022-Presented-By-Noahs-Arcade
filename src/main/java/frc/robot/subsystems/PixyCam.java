@@ -40,10 +40,10 @@ public class PixyCam extends SubsystemBase {
 
     connect();
 
-    setupShuffleboardDebug();
+    setupShuffleboard();
   }
 
-  private void setupShuffleboardDebug() {
+  private void setupShuffleboard() {
     ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
     pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
       .withSize(4, 4)
@@ -88,14 +88,9 @@ public class PixyCam extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Attempt to reconnect to the Pixy if we couldn't connect during setup
+    // If we aren't connected, bail on doing stuff to avoid null pointer exceptions
     if (!isConnected()) {
-      connect();
-
-      // If we fail to connect/are not connected - bail on our target filtering
-      if (!isConnected()) {
-        return;
-      }
+      return;
     }
 
     // Clear our previous blocks in prep for new blocks

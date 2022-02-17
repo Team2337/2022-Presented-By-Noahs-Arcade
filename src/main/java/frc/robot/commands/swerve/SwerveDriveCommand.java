@@ -37,7 +37,7 @@ public class SwerveDriveCommand extends CommandBase {
   public void execute() {
     double forward = -Utilities.modifyAxis(controller.getLeftY());
     double strafe = -Utilities.modifyAxis(controller.getLeftX());
-    double rotation = -Utilities.modifyAxis(controller.getRightX());
+    double rotation = -Utilities.modifyAxis(controller.getRightX(), 0.1);
     boolean isFieldOriented = !controller.getLeftBumper();
 
     AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);

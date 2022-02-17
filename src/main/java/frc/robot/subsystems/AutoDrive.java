@@ -111,12 +111,12 @@ public class AutoDrive extends SubsystemBase {
     if (delegateReference != null) {
       AutoDrivableCommand command = delegateReference.get();
       if (command != null) {
-        SmartDashboard.putString("AutoDrivable Command", command.toString());
+        SmartDashboard.putString("AutoDrive/Command", command.toString());
       } else {
-        SmartDashboard.putString("AutoDrivable Command", "N/A");
+        SmartDashboard.putString("AutoDrive/Command", "N/A");
       }
     } else {
-      SmartDashboard.putString("AutoDrivable Command", "N/A");
+      SmartDashboard.putString("AutoDrive/Command", "N/A");
     }
   }
 

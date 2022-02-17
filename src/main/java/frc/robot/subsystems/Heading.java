@@ -73,11 +73,17 @@ public class Heading extends SubsystemBase {
     if (!this.enabled) {
       resetRotationController();
     }
-    this.enabled = true;
+    setEnabled(true);
   }
 
   public void disableMaintainHeading() {
-    this.enabled = false;
+    setEnabled(false);
+  }
+
+  private void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+
+    SmartDashboard.putBoolean("Heading/Enabled", enabled);
   }
 
   public boolean isEnabled() {
@@ -115,6 +121,12 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
+
+    if (maintainHeading != null) {
+      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
+    } else {
+      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", "null");
+    }
   }
 
   public Rotation2d getMaintainHeading() {
@@ -139,6 +151,12 @@ public class Heading extends SubsystemBase {
       nextHeading = Utilities.convertRotationToRelativeRotation(nextHeading);
     }
     this.nextHeading = nextHeading;
+
+    if (nextHeading != null) {
+      SmartDashboard.putString("Heading/Next Heading (Degrees)", String.valueOf(nextHeading.getDegrees()));
+    } else {
+      SmartDashboard.putString("Heading/Next Heading (Degrees)", "null");
+    }
   }
 
   /**
@@ -173,8 +191,8 @@ public class Heading extends SubsystemBase {
       currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
-    SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
-    SmartDashboard.putNumber("Rotation Controller Output", output);
+    SmartDashboard.putNumber("Heading/Rotation Controller Error", rotationController.getPositionError());
+    SmartDashboard.putNumber("Heading/Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clamedOutput = MathUtil.clamp(

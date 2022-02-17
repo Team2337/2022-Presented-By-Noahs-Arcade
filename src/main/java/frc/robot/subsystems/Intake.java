@@ -25,7 +25,6 @@ public class Intake extends SubsystemBase {
   private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_SENSOR_ID);
 
   public Intake() {
-    //Set settings on motor
     motor.configFactoryDefault();
 
     motor.setNeutralMode(NeutralMode.Coast);
@@ -33,7 +32,10 @@ public class Intake extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    // Set up shuffleboard stuff
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
 
     ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
@@ -56,14 +58,14 @@ public class Intake extends SubsystemBase {
    * Starts the intake motor
    */
   public void start() {
-    setSpeed(Constants.INTAKE_SPEED);
+    setSpeed(Constants.INTAKE_FORWARD_SPEED);
   }
 
   /**
    * Reverses the intakes
    */
   public void reverse() {
-    setSpeed(-Constants.INTAKE_SPEED);
+    setSpeed(Constants.INTAKE_REVERSE_SPEED);
   }
 
   /**
