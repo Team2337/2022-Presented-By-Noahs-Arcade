@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.climber.ClimberCommand;
+import frc.robot.commands.climber.ClimberDefaultCommand;
 import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
@@ -40,6 +40,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
+    climber.setDefaultCommand(new ClimberDefaultCommand(operatorController, climber));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -64,6 +65,7 @@ public class RobotContainer {
     driverX.whenPressed(heading::enableMaintainHeading);
 
     //True means that the stringpot will be used for movement, otherwise, it is false
+    //JoystickButton operatorStart --- this button being used as a safety to enable climber.  Do not use for otherthings right now!
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
@@ -71,10 +73,10 @@ public class RobotContainer {
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
 
-    operatorStart.whenHeld(new ClimberCommand(operatorController,0, false, climber));
-    operatorBack.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
-    operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
-    operatorY.whenPressed(new ClimberCommand(operatorController, Constants.Climber.LOW_RUNG, true, climber));
+    //operatorStart.whenHeld(new ClimberCommand(operatorController,0, false, climber));
+    //operatorBack.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
+    //operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
+    //operatorY.whenPressed(new ClimberCommand(operatorController, Constants.Climber.LOW_RUNG, true, climber));
 
     // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
