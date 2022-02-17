@@ -83,7 +83,6 @@ public class Heading extends SubsystemBase {
     rotationController.setTolerance(1.0);
   }
 
-
   @Override
   public void periodic() {
     if (maintainHeading != null) {
