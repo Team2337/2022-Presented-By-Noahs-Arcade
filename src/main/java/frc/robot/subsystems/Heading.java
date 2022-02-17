@@ -7,7 +7,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -102,8 +101,6 @@ public class Heading extends SubsystemBase {
 
   private void setEnabled(boolean enabled) {
     this.enabled = enabled;
-
-    SmartDashboard.putBoolean("Heading/Enabled", enabled);
   }
 
   public boolean isEnabled() {
@@ -141,12 +138,6 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
-
-    if (maintainHeading != null) {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", "null");
-    }
   }
 
   public Rotation2d getMaintainHeading() {
@@ -175,12 +166,6 @@ public class Heading extends SubsystemBase {
       nextHeading = Utilities.convertRotationToRelativeRotation(nextHeading);
     }
     this.nextHeading = nextHeading;
-
-    if (nextHeading != null) {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", String.valueOf(nextHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", "null");
-    }
   }
 
   /**
