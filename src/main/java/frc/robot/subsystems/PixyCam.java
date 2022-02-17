@@ -40,7 +40,7 @@ public class PixyCam extends SubsystemBase {
 
     connect();
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   private void setupShuffleboard() {
@@ -128,7 +128,7 @@ public class PixyCam extends SubsystemBase {
       }
 
       // +/- 0.2 tolerance on "perfect square" to detect balls
-      if (Utilities.withinTolerance(1.0, ratio, Constants.Pixy.RATIO_TOLERANCE)) {
+      if (Utilities.withinTolerance(1.0, ratio, 0.8)) {
         // Red == Block Signature 1, Blue == Block Signature 2
         int signature = block.getSignature();
         if (signature == 1) {

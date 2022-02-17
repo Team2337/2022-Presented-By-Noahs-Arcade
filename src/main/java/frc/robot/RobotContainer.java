@@ -31,12 +31,12 @@ public class RobotContainer {
   private final PigeonIMU pigeon = new PigeonIMU(0);
 
   // private final Climber climber = new Climber();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final Kicker kicker = new Kicker();
+  // private final Intake intake = new Intake();
+  // private final Shooter shooter = new Shooter();
+  // private final Kicker kicker = new Kicker();
   private final Vision vision = new Vision();
   private final AutoDrive autoDrive = new AutoDrive();
-  private final Delivery delivery = new Delivery();
+  // private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
 
@@ -60,7 +60,7 @@ public class RobotContainer {
     
     autonChooser.addOption("Pos3 Right One Ball", new Pos3RightOneBall(autoDrive, drivetrain, heading));
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    // autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, drivetrain, heading));
 
@@ -75,12 +75,12 @@ public class RobotContainer {
       pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
     }
     */
-    pigeon.setYaw(60, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
   
   public void resetRobot2() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {
@@ -89,9 +89,9 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenHeld(new StartShooter(shooter));
+    // operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenHeld(new RunKicker(kicker));
+    // operatorB.whenHeld(new RunKicker(kicker));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
@@ -100,8 +100,8 @@ public class RobotContainer {
 
     // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::start, intake);
-    operatorRightBumper.whenReleased(intake::stop, intake);
+    // operatorRightBumper.whenPressed(intake::start, intake);
+    // operatorRightBumper.whenReleased(intake::stop, intake);
 
     // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
@@ -109,7 +109,7 @@ public class RobotContainer {
     // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
-    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 

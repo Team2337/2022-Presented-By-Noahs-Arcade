@@ -15,7 +15,7 @@ public class PowerDistributionHub extends SubsystemBase {
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public PowerDistributionHub() {
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   private void setupShuffleboard() {

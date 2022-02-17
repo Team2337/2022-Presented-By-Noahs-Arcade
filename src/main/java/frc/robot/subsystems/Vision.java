@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
-import org.littletonrobotics.junction.Logger;
+// import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,7 +16,7 @@ public class Vision extends SubsystemBase {
   /**
    * Logging
    */
-  private Logger logger = Logger.getInstance();
+  // private Logger logger = Logger.getInstance();
 
   public Optional<Double> getLatency() {
     return getDoubleValue("tl");
@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     Optional<Double> latency = getLatency();
     if (latency.isPresent()) {
-      logger.recordOutput("Limelight/latency", latency.get());
+      // logger.recordOutput("Limelight/latency", latency.get());
     }
   }
 

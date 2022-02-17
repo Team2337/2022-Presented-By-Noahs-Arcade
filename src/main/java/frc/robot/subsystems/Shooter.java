@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase {
 
     configurePID(kP, kI, kD, kF);
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   private void setupShuffleboard() {

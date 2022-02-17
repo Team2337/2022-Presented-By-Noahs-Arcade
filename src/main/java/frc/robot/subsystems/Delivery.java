@@ -32,7 +32,7 @@ public class Delivery extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   private void setupShuffleboard() {

@@ -26,11 +26,13 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private Heading heading;
   private AutoDrive autoDrive;
 
-  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(160), Units.inchesToMeters(120)));
-  private ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0.0, 0.0, new TrapezoidProfile.Constraints(130, Math.pow(15, 2)));
+  private ProfiledPIDController distanceController = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(0), Units.inchesToMeters(0)));
+  private ProfiledPIDController thetaController = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(0, Math.pow(0, 2)));
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
+  private double forwardVelocity = Units.inchesToMeters(160);
+  private double strafeVelocity = 60;
 
   public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
     super(
@@ -52,8 +54,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     distanceController.setP(driveP);
     thetaController.setP(strafeP);
 
-    distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
-    thetaController.setConstraints(new TrapezoidProfile.Constraints(60, Math.pow(strafeAcceleration, 2)));
+    distanceController.setConstraints(new TrapezoidProfile.Constraints(forwardVelocity, forwardAcceleration));
+    thetaController.setConstraints(new TrapezoidProfile.Constraints(strafeVelocity, Math.pow(strafeAcceleration, 2)));
 
     SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
     SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
