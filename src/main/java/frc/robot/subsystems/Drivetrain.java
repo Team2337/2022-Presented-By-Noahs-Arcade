@@ -4,6 +4,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import org.littletonrobotics.junction.Logger;
+
 // import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -51,7 +53,6 @@ public class Drivetrain extends SubsystemBase {
    */
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
   private Field2d field = new Field2d();
-  // private Logger logger = Logger.getInstance();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -208,17 +209,17 @@ public class Drivetrain extends SubsystemBase {
 
     field.setRobotPose(getPose());
 
-    // logger.recordOutput("Odometry/Robot",
-      // new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+    Logger.getInstance().recordOutput("Odometry/Robot",
+      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
       SmartDashboard.putNumber("Pose X", pose.getX());
       SmartDashboard.putNumber("Pose Y", pose.getY());
       SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
-  
+
       // SmartDashboard.putNumber("Target X", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getX());
       // SmartDashboard.putNumber("Target Y", Constants.Auto.kBlueBall3Pickup.toFieldCoordinate().getY());
 
-    //  logger.recordOutput("Gyro", pigeon.getYaw());
+     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {

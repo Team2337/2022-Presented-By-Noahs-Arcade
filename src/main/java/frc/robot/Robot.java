@@ -4,10 +4,10 @@
 
 package frc.robot;
 
-// import org.littletonrobotics.junction.LoggedRobot;
-// import org.littletonrobotics.junction.Logger;
-// import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-// import org.littletonrobotics.junction.io.LogSocketServer;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.io.LogSocketServer;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -32,22 +32,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Logger logger = Logger.getInstance();
+    Logger logger = Logger.getInstance();
 
     // Run as fast as possible during replay
-    // setUseTiming(isReal());
+    setUseTiming(isReal());
     // Log & replay "SmartDashboard" values (no tables are logged by default).
-    // LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
+    LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     // Set a metadata value
-    // logger.recordMetadata("ProjectName", "2022Relentless");
+    logger.recordMetadata("ProjectName", "2022Relentless");
 
     // Log to USB stick (name will be selected automatically)
     // logger.addDataReceiver(new ByteLogReceiver("/media/sda1/"));
     // Provide log data over the network, viewable in Advantage Scope.
-    // logger.addDataReceiver(new LogSocketServer(5800));
+    logger.addDataReceiver(new LogSocketServer(5800));
 
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    // logger.start();
+    logger.start();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -79,9 +79,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-    SmartDashboard.putString("Get Alliance", DriverStation.getAlliance().toString());
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

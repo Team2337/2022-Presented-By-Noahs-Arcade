@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,7 +58,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos2 Middle One Ball", new Pos2MidOneBall(autoDrive, drivetrain, heading));
     autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, drivetrain, heading));
     autonChooser.addOption("Pos2 Middle Four Ball", new Pos2MidFourBall(autoDrive, drivetrain, heading));
-    
+
     autonChooser.addOption("Pos3 Right One Ball", new Pos3RightOneBall(autoDrive, drivetrain, heading));
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, drivetrain, heading));
     // autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -69,7 +70,7 @@ public class RobotContainer {
 
   public void resetRobot() {
     /*
-    if (DriverStation.getAlliance().toString() == "Red") {
+    if (DriverStation.getAlliance() == Alliance.Red) {
       pigeon.setYaw(Constants.RED_STARTING_ANGLE, 250);
     } else {
       pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
@@ -78,7 +79,7 @@ public class RobotContainer {
     pigeon.setYaw(0, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
-  
+
   public void resetRobot2() {
     drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }

@@ -73,17 +73,11 @@ public class Heading extends SubsystemBase {
     if (!this.enabled) {
       resetRotationController();
     }
-    setEnabled(true);
+    this.enabled = true;
   }
 
   public void disableMaintainHeading() {
-    setEnabled(false);
-  }
-
-  private void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-
-    SmartDashboard.putBoolean("Heading/Enabled", enabled);
+    this.enabled = false;
   }
 
   public boolean isEnabled() {
@@ -121,12 +115,6 @@ public class Heading extends SubsystemBase {
     }
     this.maintainHeading = maintainHeading;
     resetRotationController();
-
-    if (maintainHeading != null) {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", "null");
-    }
   }
 
   public Rotation2d getMaintainHeading() {
@@ -134,16 +122,6 @@ public class Heading extends SubsystemBase {
   }
 
   public boolean shouldMaintainHeading() {
-    if (this.enabled) {
-      SmartDashboard.putString("Rotation Controller (should maintain)/calculateRotation", "enabled");
-    } else {
-      SmartDashboard.putString("Rotation Controller (should maintain)/calculateRotation", "disabled");
-    }
-    if (maintainHeading == null) {
-      SmartDashboard.putString("Rotation Controller (should maintain)/maintainHeading", "null");
-    } else {
-      SmartDashboard.putString("Rotation Controller (should maintain)/maintainHeading", String.valueOf(maintainHeading));
-    }
     return this.enabled && maintainHeading != null;
   }
 
@@ -161,12 +139,6 @@ public class Heading extends SubsystemBase {
       nextHeading = Utilities.convertRotationToRelativeRotation(nextHeading);
     }
     this.nextHeading = nextHeading;
-
-    if (nextHeading != null) {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", String.valueOf(nextHeading.getDegrees()));
-    } else {
-      SmartDashboard.putString("Heading/Next Heading (Degrees)", "null");
-    }
   }
 
   /**
@@ -188,18 +160,12 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
-      SmartDashboard.putString("Rotation Controller/calculateRotation", "disabled");
       return 0.0;
-    } else {
-      SmartDashboard.putString("Rotation Controller/calculateRotation", "enabled");
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
-      SmartDashboard.putString("Rotation Controller/maintainHeading", "null");
       return 0.0;
-    } else {
-      SmartDashboard.putString("Rotation Controller/maintainHeading", String.valueOf(maintainHeading));
     }
 
     Rotation2d currentHeading = currentHeading();
@@ -207,8 +173,8 @@ public class Heading extends SubsystemBase {
       currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
-    SmartDashboard.putNumber("Heading/Rotation Controller Error", rotationController.getPositionError());
-    SmartDashboard.putNumber("Heading/Rotation Controller Output", output);
+    SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
+    SmartDashboard.putNumber("Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clamedOutput = MathUtil.clamp(
