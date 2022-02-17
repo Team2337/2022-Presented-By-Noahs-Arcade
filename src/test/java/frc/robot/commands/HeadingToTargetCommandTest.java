@@ -26,10 +26,10 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetBall1Hub() {
-    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBall1);
+  public void testHeadingToTargetBallR3Hub() {
+    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBallR3);
 
-    // When we're at Ball 1, heading should be 80.25
+    // When we're at Ball 3, heading should be 80.25
     Assert.assertEquals(
       Rotation2d.fromDegrees(80.25),
       maintainHeading
@@ -37,10 +37,10 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetBall2Hub() {
-    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBall2);
+  public void testHeadingToTargetBallR2Hub() {
+    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBallR2);
 
-    // When we're at Ball 2, heading should be 35.25
+    // When we're at Ball R2, heading should be 35.25
     Assert.assertEquals(
       Rotation2d.fromDegrees(35.25),
       maintainHeading
@@ -48,10 +48,10 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetBall5Hub() {
-    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBall5);
+  public void testHeadingToTargetBallR1Hub() {
+    Rotation2d maintainHeading = headingToTargetMaintainHeading(Constants.Auto.kBallR1);
 
-    // When we're at Ball 5, heading should be -32.25
+    // When we're at Ball R1, heading should be -32.25
     Assert.assertEquals(
       Rotation2d.fromDegrees(-32.25),
       maintainHeading
@@ -59,13 +59,13 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetOpposingBall1Hub() {
+  public void testHeadingToTargetOpposingBallR3Hub() {
     // Flip theta by 180 to get position on other side of field
     Rotation2d maintainHeading = headingToTargetMaintainHeading(
-      Constants.Auto.kBall1.rotateBy(Rotation2d.fromDegrees(180))
+      Constants.Auto.kBallR3.rotateBy(Rotation2d.fromDegrees(180))
     );
 
-    // When we're at Opposing Ball 1, heading should be -99.75
+    // When we're at Opposing Ball R3, heading should be -99.75
     Assert.assertEquals(
       Rotation2d.fromDegrees(-99.75),
       maintainHeading
@@ -73,13 +73,13 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetOpposingBall2Hub() {
+  public void testHeadingToTargetOpposingBallR2Hub() {
     // Flip theta by 180 to get position on other side of field
     Rotation2d maintainHeading = headingToTargetMaintainHeading(
-      Constants.Auto.kBall2.rotateBy(Rotation2d.fromDegrees(180))
+      Constants.Auto.kBallR2.rotateBy(Rotation2d.fromDegrees(180))
     );
 
-    // When we're at Opposing Ball 2, heading should be -144.75
+    // When we're at Opposing Ball R2, heading should be -144.75
     Assert.assertEquals(
       Rotation2d.fromDegrees(-144.75),
       maintainHeading
@@ -87,13 +87,13 @@ public class HeadingToTargetCommandTest {
   }
 
   @Test
-  public void testHeadingToTargetOpposingBall5Hub() {
+  public void testHeadingToTargetOpposingBallR1Hub() {
     // Flip theta by 180 to get position on other side of field
     Rotation2d maintainHeading = headingToTargetMaintainHeading(
-      Constants.Auto.kBall5.rotateBy(Rotation2d.fromDegrees(180))
+      Constants.Auto.kBallR1.rotateBy(Rotation2d.fromDegrees(180))
     );
 
-    // When we're at Opposing Ball 5, heading should be 147.75
+    // When we're at Opposing Ball R1, heading should be 147.75
     Assert.assertEquals(
       Rotation2d.fromDegrees(147.75),
       maintainHeading
