@@ -17,7 +17,7 @@ public class Kicker extends SubsystemBase {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Kicker");
   public NetworkTableEntry kickerSpeedPercentageWidget = tab
-    .add("Kicker Speed (Percentage)", 0)
+    .add("Kicker Speed (Percentage)", 0.5)
     .withWidget(BuiltInWidgets.kNumberSlider)
     .withProperties(Map.of("min", 0, "max", 1))
     .getEntry();
@@ -26,7 +26,7 @@ public class Kicker extends SubsystemBase {
     motor.configFactoryDefault();
 
     motor.setInverted(TalonFXInvertType.Clockwise);
-    motor.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);
   }

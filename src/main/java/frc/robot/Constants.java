@@ -243,6 +243,10 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
+  public static final class Pixy {
+    public static final double RATIO_TOLERANCE = 0.2;
+  }
+
   public static final int KICKER_MOTOR = 20;
 
   public static final int SHOOTER_LEFT_MOTOR = 7;
@@ -265,7 +269,8 @@ public final class Constants {
 
   // Color stuff
   public static final int INTAKE_MOTOR_ID = 15;
-  public static final double INTAKE_SPEED = 0.5;
+  public static final double INTAKE_FORWARD_SPEED = 1;
+  public static final double INTAKE_REVERSE_SPEED = -0.5;
 
   public static final int INTAKE_SENSOR_ID = 0;
 

@@ -11,9 +11,9 @@ import frc.robot.Constants.BallColor;
 
 /**
  * Subsystem for the REV Robotics Color Sensor V3. Plugs in to the I2C port.
- * 
+ *
  * @author Michael Francis
- * 
+ *
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
 public class ColorSensor extends SubsystemBase {
@@ -70,10 +70,13 @@ public class ColorSensor extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("ColorSensor");
     builder.addStringProperty("Match", () -> {
-      switch(getColor()){
-        case RED:    return "Red";
-        case BLUE:   return "Blue";
-        default:     return "None";
+      switch(getColor()) {
+        case RED:
+          return "Red";
+        case BLUE:
+          return "Blue";
+        default:
+          return "None";
       }
     }, null);
   }
