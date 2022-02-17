@@ -32,7 +32,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   private BallColor currentColor = null;
 
   /**
-   * Initializes a REV Robotics Color Sensor v3
+   * Initializes a TCS34725 color sensor
    * @param port The I2C port the sensor is plugged into
    */
   public ColorSensorTCS(I2C.Port port) {
@@ -88,9 +88,13 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   }
 
   public boolean seesBall() {
-    // TODO: this sensor doesn't return proximity, figure out how to do this
-
-    // Luminance max threshold
+    /**
+     * Luminance max threshold
+     * 
+     * This is a terrible way to go about this. If we can find a better way to do this, such as
+     * using a Time of Flight sensor instead (there is code in the 2020 repo), it would be much
+     * better. The current solution works, but it's a very sketchy solution.
+     */
     return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
   }
 

@@ -192,7 +192,7 @@ public class PixyCam extends SubsystemBase {
    * Ranges from -30 to 30. Returns empty if target is null.
    */
   public Double getTargetAngle(Block target) {
-    if (target == null){
+    if (target == null) {
       return null;
     }
 

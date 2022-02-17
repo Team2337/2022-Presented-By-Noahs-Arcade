@@ -145,7 +145,20 @@ public class TCSSensor {
     //           Register.BDATAH           Register.BDATAL 
     int blue =  ((data[7] & 0xFF) << 8) + (data[6] & 0xFF);
  
-    // Calculate final lux
+    /**
+     * Calculate final lux (luminescense).
+     * 
+     * Color math is weird, these values come from the C++ version of this code (the Y value, or luminescense)
+     * https://github.com/adafruit/Adafruit_TCS34725/blob/0a13cbfd9ac1a79681241767f469daf95517b343/Adafruit_TCS34725.cpp#L286-L292
+     * 
+     * Further reading material if you wish to go down a rabbit hole:
+     *   - https://ams.com/documents/20143/80162/ColorSensors_AN000166_1-00.pdf/c0b4a4b4-9948-f2a7-f8a1-36a8208bd0a9
+     *   - https://ams.com/documents/20143/80162/TCS34xx_AN000517_1-00.pdf/1efe49f7-4f92-ba88-ca7c-5121691daff7 (page 5 also has these values)
+     *   - https://en.wikipedia.org/wiki/CIE_1931_color_space
+     *   - https://en.wikipedia.org/wiki/LMS_color_space
+     * 
+     * Don't change the numbers unless you have better numbers.
+     */
     double luminance = (-0.32466 * red) + (1.57837 * green) + (-0.73191 * blue);
 
     // Return new color

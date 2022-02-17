@@ -70,10 +70,13 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("ColorSensorREV");
     builder.addStringProperty("Match", () -> {
-      switch(getColor()){
-        case RED:    return "Red";
-        case BLUE:   return "Blue";
-        default:     return "None";
+      switch(getColor()) {
+        case RED:
+          return "Red";
+        case BLUE:
+          return "Blue";
+        default:
+          return "None";
       }
     }, null);
   }
