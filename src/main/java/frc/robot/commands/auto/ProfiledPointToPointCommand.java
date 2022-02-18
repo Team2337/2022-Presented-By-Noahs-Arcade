@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Heading;
 
@@ -21,37 +22,53 @@ import frc.robot.subsystems.Heading;
  */
 public class ProfiledPointToPointCommand extends HeadingToTargetCommand implements AutoDrivableCommand {
 
-  private PolarCoordinate point;
+  // These are confirmed tuned values for our Point to Point moves. Can be adjusted
+  // individually per move if necessary.
+  private static final double forwardP = 1.5;
+  private static final double strafeP = 0.05;
+  private static final double forwardVelocity = Units.inchesToMeters(160);
+  private static final double forwardAcceleration = Units.inchesToMeters(90);
+  private static final double strafeVelocity = 60;
+  private static final double strafeAcceleration = 12;
+
+  private PolarCoordinate target;
   private Heading heading;
   private AutoDrive autoDrive;
 
-  private ProfiledPIDController distanceController = new ProfiledPIDController(3, 0.0, 0.0, new TrapezoidProfile.Constraints(Units.inchesToMeters(120), Units.inchesToMeters(120)));
-  private ProfiledPIDController thetaController = new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(45, Math.pow(15, 2)));
+  private ProfiledPIDController distanceController;
+  private ProfiledPIDController thetaController;
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  public ProfiledPointToPointCommand(PolarCoordinate point, Supplier<Translation2d> translationSupplier, Heading heading, AutoDrive autoDrive, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, AutoDrive autoDrive, Heading heading) {
+    this(target, poseSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading);
+  }
+
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
     super(
-      point.getReferencePoint(),
-      translationSupplier,
+      target.getReferencePoint(),
+      () -> poseSupplier.get().getTranslation(),
       heading
     );
 
-    // Convert our polar coordinate to a polar coordinate with a rotation value
-    // between (-180, 180) so make as small of rotational moves as possible
-    this.point = point.withRelativeTheta();
+    this.target = target;
     this.heading = heading;
     this.autoDrive = autoDrive;
 
+    distanceController = new ProfiledPIDController(
+      driveP, 0.0, 0.0,
+      new TrapezoidProfile.Constraints(forwardVelocity, forwardAcceleration)
+    );
+    thetaController = new ProfiledPIDController(
+      strafeP, 0.0, 0.0,
+      new TrapezoidProfile.Constraints(strafeVelocity, Math.pow(strafeAcceleration, 2))
+    );
+
+    thetaController.enableContinuousInput(-180, 180);
+
     distanceController.setTolerance(Units.inchesToMeters(1));
     thetaController.setTolerance(0.1); // In degrees
-
-    distanceController.setP(driveP);
-    thetaController.setP(strafeP);
-
-    distanceController.setConstraints(new TrapezoidProfile.Constraints(Units.inchesToMeters(120), forwardAcceleration));
-    thetaController.setConstraints(new TrapezoidProfile.Constraints(45, Math.pow(strafeAcceleration, 2)));
 
     addRequirements(autoDrive);
 
@@ -79,11 +96,11 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     PolarCoordinate robotCoordinate = getRobotCoordinate();
     forwardOutput = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
-      point.getRadiusMeters()
+      target.getRadiusMeters()
     );
     strafeOutput = thetaController.calculate(
       robotCoordinate.getTheta().getDegrees(),
-      point.getTheta().getDegrees()
+      Utilities.convertRotationToRelativeRotation(target.getTheta()).getDegrees()
     );
 
     // Clamp to some max speed (should be between [0.0, 1.0])
@@ -106,7 +123,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   public AutoDrive.State calculate(double forward, double strafe, boolean isFieldOriented) {
     return new AutoDrive.State(
       -forwardOutput,
-      strafeOutput,
+      -strafeOutput,
       false
     );
   }
@@ -124,8 +141,8 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   }
 
   private void log(PolarCoordinate robotCoordinate) {
-    SmartDashboard.putNumber("ProfiledP2P/Point Distance (inches)", Units.metersToInches(point.getRadiusMeters()));
-    SmartDashboard.putNumber("ProfiledP2P/Point Theta (Degrees)", point.getTheta().getDegrees());
+    SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
+    SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
 
     SmartDashboard.putNumber("ProfiledP2P/Robot Angle (degrees)", robotCoordinate.getTheta().getDegrees());
     SmartDashboard.putNumber("ProfiledP2P/Robot Distance (inches)", Units.metersToInches(robotCoordinate.getRadiusMeters()));
