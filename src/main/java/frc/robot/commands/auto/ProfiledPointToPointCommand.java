@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +32,6 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private static final double strafeAcceleration = 12;
 
   private PolarCoordinate target;
-  private Supplier<Pose2d> poseSupplier;
   private Heading heading;
   private AutoDrive autoDrive;
 
@@ -53,7 +53,6 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     );
 
     this.target = target;
-    this.poseSupplier = poseSupplier;
     this.heading = heading;
     this.autoDrive = autoDrive;
 
@@ -71,10 +70,9 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     distanceController.setTolerance(Units.inchesToMeters(1));
     thetaController.setTolerance(0.1); // In degrees
 
-    SmartDashboard.putNumber("ProfiledP2P/Point Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
-    SmartDashboard.putNumber("ProfiledP2P/Point Theta (Degrees)", target.getTheta().getDegrees());
-
     addRequirements(autoDrive);
+
+    log(getRobotCoordinate());
   }
 
   @Override
@@ -89,13 +87,6 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     PolarCoordinate robotCoordinate = getRobotCoordinate();
     thetaController.reset(robotCoordinate.getTheta().getDegrees());
     distanceController.reset(robotCoordinate.getRadiusMeters());
-  }
-
-  private PolarCoordinate getRobotCoordinate() {
-    return PolarCoordinate.fromFieldCoordinate(
-      poseSupplier.get().getTranslation(),
-      target.getReferencePoint()
-    );
   }
 
   @Override
@@ -150,6 +141,9 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   }
 
   private void log(PolarCoordinate robotCoordinate) {
+    SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
+    SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
+
     SmartDashboard.putNumber("ProfiledP2P/Robot Angle (degrees)", robotCoordinate.getTheta().getDegrees());
     SmartDashboard.putNumber("ProfiledP2P/Robot Distance (inches)", Units.metersToInches(robotCoordinate.getRadiusMeters()));
 

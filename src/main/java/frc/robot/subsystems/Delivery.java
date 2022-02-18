@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,6 +22,8 @@ public class Delivery extends SubsystemBase {
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
+  private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
+
   /**
    * Initializes the Delivery subsystem - no color sensors yet.
    */
@@ -37,9 +40,16 @@ public class Delivery extends SubsystemBase {
 
   private void setupShuffleboard() {
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
-    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList);
+    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)
+      .withSize(4, 8)
+      .withPosition(0, 0);
     infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
     infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
+
+    ShuffleboardLayout colorWidget = deliveryTab.getLayout("Sensor", BuiltInLayouts.kList)
+      .withSize(4, 8)
+      .withPosition(4, 0);
+    colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
   }
 
   @Override
