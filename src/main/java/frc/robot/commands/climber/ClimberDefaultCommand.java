@@ -48,12 +48,13 @@ SmartDashboard.putNumber("pot set point", setpoint);
 SmartDashboard.putNumber("pot error", climberController.getPositionError());
 
 
-    //If the stringpot is greater than minimum value AND lower than max value AND <Start> button is pressed 
-    //then it is okay to operate, else stop climber.
+    //When the start button is released, reset firstTimeThrough. This makes it so that we aren't going to a previous setpoint every
+    //time we press the button and will set a new one every time.
     if(!controller.getStartButton()){
       firstTimeThru = true;
     }
-
+    //If the stringpot is greater than minimum value AND lower than max value AND <Start> button is pressed 
+    //then it is okay to operate, else stop climber.
     if (climber.getStringPotVoltage() > minStringpotValue && climber.getStringPotVoltage() < maxStringpotValue && controller.getStartButton()){
 
 
@@ -67,6 +68,7 @@ SmartDashboard.putNumber("pot error", climberController.getPositionError());
           firstTimeThru = false;
         }
         output = climberController.calculate(climber.getStringPotVoltage(), setpoint);
+        //setTolerance only works with atSetpoint, so we make sure the climber stops within a set tolerance to prevent oscilation.
         if(climberController.atSetpoint()){
           output = 0;
         }
@@ -85,7 +87,7 @@ SmartDashboard.putNumber("pot error", climberController.getPositionError());
 
     } 
     else{
-      // if stringpot out of acceptable range (or zero becasue it's disconnected), then stop motor
+      // if stringpot out of acceptable range (or zero because it's disconnected), then stop motor
       climber.stop();
     }   
   }
