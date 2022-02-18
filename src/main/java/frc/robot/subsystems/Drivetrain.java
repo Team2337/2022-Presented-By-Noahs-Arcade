@@ -6,7 +6,6 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -179,11 +178,11 @@ public class Drivetrain extends SubsystemBase {
     return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
-  public double getGyroscopeRoll() {
+  public double getGyroscopeRoll(){
     return pigeon.getRoll();
   }
 
-  public double getGyroScopePitch() {
+  public double getGyroscopePitch(){
     return pigeon.getPitch();
   }
 
@@ -227,8 +226,6 @@ public class Drivetrain extends SubsystemBase {
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     logger.recordOutput("Gyro", pigeon.getYaw());
-    SmartDashboard.putNumber("Pitch", getGyroScopePitch());
-    SmartDashboard.putNumber("Roll", getGyroscopeRoll());
 
   }
 
