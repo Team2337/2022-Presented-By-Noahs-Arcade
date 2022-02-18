@@ -19,9 +19,9 @@ public class Test extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.backup, drivetrain::getPose, heading, autoDrive, 1.5, 0.05, Units.inchesToMeters(90), 12).withTimeout(5),
+      new ProfiledPointToPointCommand(Constants.Auto.backup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading).withTimeout(5),
       new WaitCommand(2.5),
-      new ProfiledPointToPointCommand(Constants.Auto.testStartForward, drivetrain::getPose, heading, autoDrive, 0.5, 0.05, Units.inchesToMeters(30), 12).withTimeout(5),
+      new ProfiledPointToPointCommand(Constants.Auto.testStartForward, drivetrain::getTranslation, 0.5, 0.05, Units.inchesToMeters(30), 12, autoDrive, heading).withTimeout(5),
       new WaitCommand(5)
     );
   }

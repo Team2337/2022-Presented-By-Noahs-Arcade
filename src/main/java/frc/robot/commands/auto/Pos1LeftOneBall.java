@@ -20,11 +20,11 @@ public class Pos1LeftOneBall extends SequentialCommandGroup {
 
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1)
     );
   }
   public void initialize() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }

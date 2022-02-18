@@ -19,19 +19,19 @@ public class Pos1LeftR1D2PR2 extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR1Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR1Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD2, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallD2, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1)
     );
   }
   public void initialize() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }

@@ -19,11 +19,11 @@ public class Pos3RightTwoBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1)
     );
   }

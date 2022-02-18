@@ -19,7 +19,7 @@ public class Pos3RightOneBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getPose, heading, autoDrive, 0.5, 0.025, Units.inchesToMeters(60), 4),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 0.5, 0.025, Units.inchesToMeters(60), 4, autoDrive, heading),
       new WaitCommand(1)
     );
   }

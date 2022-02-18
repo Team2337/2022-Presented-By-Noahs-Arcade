@@ -7,10 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,22 +27,23 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam();
 
   // private final Climber climber = new Climber();
-  // private final Intake intake = new Intake();
-  // private final Shooter shooter = new Shooter();
-  // private final Kicker kicker = new Kicker();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  private final Kicker kicker = new Kicker();
   private final Vision vision = new Vision();
   private final AutoDrive autoDrive = new AutoDrive();
-  // private final Delivery delivery = new Delivery();
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    // heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
+    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -77,11 +75,11 @@ public class RobotContainer {
     }
     */
     pigeon.setYaw(0, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void resetRobot2() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.testStartForward.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {
@@ -89,30 +87,34 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    // operatorA.whenHeld(new StartShooter(shooter));
-    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    // operatorB.whenHeld(new RunKicker(kicker));
-    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    /** Driver Controller */
+    // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
+    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+    driverA.whileHeld(new RunKicker(kicker));
+    JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    driverB.whileHeld(new StartShooter(shooter));
     JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
     driverY.whenPressed(new ReturnToPosition3RightStart(autoDrive, drivetrain, heading));
 
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    /** Operator Controller * */
+    // Note: Left X axis is used by DeliveryOverrideCommand
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    // operatorA.whenHeld(new StartShooter(shooter));
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorB.whenHeld(new RunKicker(kicker));
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    // operatorRightBumper.whenPressed(intake::start, intake);
-    // operatorRightBumper.whenReleased(intake::stop, intake);
+    operatorRightBumper.whenPressed(intake::start, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    operatorLeftBumper.whenPressed(intake::reverse, intake);
+    operatorLeftBumper.whenReleased(intake::stop, intake);
 
-    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-
-    // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
+
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();

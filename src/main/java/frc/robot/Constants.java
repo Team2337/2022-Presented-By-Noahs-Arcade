@@ -5,6 +5,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.coordinates.PolarCoordinate;
 
 /**
@@ -19,7 +20,7 @@ public final class Constants {
 
   public static double BLUE_STARTING_ANGLE = 25;
   public static double RED_STARTING_ANGLE = 25;
-  
+
   public int MODULE0_DRIVE_MOTOR_ID;
   public int MODULE0_ANGLE_MOTOR_ID;
   public int MODULE0_ANGLE_CANCODER_ID;
@@ -57,7 +58,9 @@ public final class Constants {
   }
 
   public Constants() {
-    switch (RobotType.getRobotType()) {
+    RobotType.Type robotType = RobotType.getRobotType();
+    SmartDashboard.putString("Constants Robot Type", robotType.description);
+    switch (robotType) {
       case PRACTICE:
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
@@ -172,20 +175,7 @@ public final class Constants {
      */
     public static final double kPickupDistanceInches = 22.0;
 
-    //Starting Positions
-    public static final PolarCoordinate position1LeftStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(122.25)
-    );
-    public static final PolarCoordinate position2MiddleStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(62)
-    );
-    public static final PolarCoordinate position3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(76 + 180)
-    );
-    public static final PolarCoordinate testStartForward = new PolarCoordinate(
+     public static final PolarCoordinate testStartForward = new PolarCoordinate(
       Units.inchesToMeters(50),
       Rotation2d.fromDegrees(179)
     );
@@ -194,30 +184,48 @@ public final class Constants {
       Rotation2d.fromDegrees(179)
     );
 
-    //Ball/Shooting Positions
+    // Starting Locations
+
+    public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(122.25)
+    );
+    public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(62)
+    );
+    public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(76 + 180)
+    );
+
+    /**
+     * Alliance Balls + Shooting Positions
+     */
+
     // Ball R1 = Ball nearest to the left starting location
     public static final PolarCoordinate kBallR1 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(147.75) 
+      Rotation2d.fromDegrees(147.75)
     );
     public static final PolarCoordinate kBallR1Pickup = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR1.getTheta()
     );
     //Shoot postition between ball R2 and ball D2
-    public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
-      Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(205) 
-    );
-    //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(205) 
+      Rotation2d.fromDegrees(205)
+    );
+    //Shoot postition between ball R2 and ball D2
+    public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(205)
     );
     // Ball R2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBallR2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(215.25) 
+      Rotation2d.fromDegrees(215.25)
     );
     public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -226,7 +234,7 @@ public final class Constants {
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(260.25) 
+      Rotation2d.fromDegrees(260.25)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -239,28 +247,19 @@ public final class Constants {
     // Ball R4 = Ball just in front of the Terminal
     public static final PolarCoordinate kBallR4 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(202.65) 
+      Rotation2d.fromDegrees(202.65)
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Rotation2d.fromDegrees(201.65) 
-    );
-
-    public static final PolarCoordinate testStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(190) 
-    );
-    public static final PolarCoordinate testEnd = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(170) 
+      Rotation2d.fromDegrees(201.65)
     );
 
     /*
-     * Opponent balls 
+     * Opponent balls
      */
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(190.05) 
+      Rotation2d.fromDegrees(190.05)
     );
 
   }
@@ -296,6 +295,10 @@ public final class Constants {
       Math.hypot(Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES) / 2.0, Units.inchesToMeters(Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES) / 2.0);
   }
 
+  public static final class Pixy {
+    public static final double RATIO_TOLERANCE = 0.2;
+  }
+
   public static final int KICKER_MOTOR = 20;
 
   public static final int SHOOTER_LEFT_MOTOR = 7;
@@ -305,7 +308,8 @@ public final class Constants {
   public static final double DELIVERY_SPEED = 0.5;
 
   public static final int INTAKE_MOTOR_ID = 15;
-  public static final double INTAKE_SPEED = 0.5;
+  public static final double INTAKE_FORWARD_SPEED = 1;
+  public static final double INTAKE_REVERSE_SPEED = -0.5;
 
   public static final int INTAKE_SENSOR_ID = 0;
 

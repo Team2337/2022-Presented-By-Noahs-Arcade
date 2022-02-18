@@ -19,11 +19,11 @@ public class Pos2MidOneBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2, drivetrain::getPose, heading, autoDrive, 3.0, 0.05, Units.inchesToMeters(120), 8),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1)
     );
   }
   public void initialize() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.position2MiddleStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition2MiddleStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }

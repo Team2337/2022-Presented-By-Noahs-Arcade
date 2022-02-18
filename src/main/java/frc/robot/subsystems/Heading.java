@@ -2,10 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -17,6 +18,9 @@ import frc.robot.nerdyfiles.utilities.Utilities;
  * at a time.
  */
 public class Heading extends SubsystemBase {
+
+  private static double NOMINAL_OUTPUT_STATIONARY = 0.03;
+  private static double NOMINAL_OUTPUT_MOVING = 0.02;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -36,6 +40,14 @@ public class Heading extends SubsystemBase {
    */
   private Supplier<Rotation2d> gyroAngleSupplier;
   /**
+   * Supplier to provide if the drivetrain is moving or not. This should be
+   * calculated using the drivetrain's chassis speeds. This is used to set a
+   * dynamic nominal value for the heading controller - higher if we're stationary,
+   * lower if we're moving - since it takes less power to achieve our heading
+   * while we're driving then when we're stationary.
+   */
+  private Supplier<Boolean> drivetrainIsMovingSupplier;
+  /**
    * The maintain heading is the heading we would like the robot to maintain.
    * Can be null if the robot should not maintain any specific heading.
    */
@@ -51,20 +63,42 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.004, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.007, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
    *
-   * @param gyroAngleSupplier A Supplier to provide the gyro value of the robot.
-   *                          Should come from the Pigeon.
+   * @param gyroAngleSupplier          A Supplier to provide the gyro value of the
+   *                                   robot.
+   *                                   Should come from the Pigeon.
+   * @param drivetrainIsMovingSupplier A supplier to provide if the drivetrain is
+   *                                   moving or not.
    */
-  public Heading(Supplier<Rotation2d> gyroAngleSupplier) {
+  public Heading(Supplier<Rotation2d> gyroAngleSupplier, Supplier<Boolean> drivetrainIsMovingSupplier) {
     this.gyroAngleSupplier = gyroAngleSupplier;
+    this.drivetrainIsMovingSupplier = drivetrainIsMovingSupplier;
 
     rotationController.enableContinuousInput(-180, 180);
     // +/- 1 degree position error tolerance
     rotationController.setTolerance(1.0);
+  }
+
+
+  @Override
+  public void periodic() {
+    if (maintainHeading != null) {
+      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", maintainHeading.getDegrees());
+    } else {
+      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", "null");
+    }
+    if (nextHeading != null) {
+      Logger.getInstance().recordOutput("Heading/Next Heading (Degrees)", nextHeading.getDegrees());
+    } else {
+      Logger.getInstance().recordOutput("Heading/Next Heading (Degrees)", "null");
+    }
+    Logger.getInstance().recordOutput("Heading/Rotation Controller Error", rotationController.getPositionError());
+    Logger.getInstance().recordOutput("Heading/Enabled", enabled);
+    Logger.getInstance().recordOutput("Heading/At Maintain Heading", atMaintainHeading());
   }
 
   public void enableMaintainHeading() {
@@ -121,6 +155,10 @@ public class Heading extends SubsystemBase {
     return maintainHeading;
   }
 
+  public boolean atMaintainHeading() {
+    return rotationController.atSetpoint();
+  }
+
   public boolean shouldMaintainHeading() {
     return this.enabled && maintainHeading != null;
   }
@@ -160,11 +198,13 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
@@ -173,16 +213,27 @@ public class Heading extends SubsystemBase {
       currentHeading.getDegrees(),
       maintainHeading.getDegrees()
     );
-    SmartDashboard.putNumber("Rotation Controller Error", rotationController.getPositionError());
-    SmartDashboard.putNumber("Rotation Controller Output", output);
+    // If our controller is within our tolerance - do not provide a nominal output
+    if (rotationController.atSetpoint()) {
+      return 0.0;
+    }
+    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
-    double clamedOutput = MathUtil.clamp(
+    double clampedOutput = MathUtil.clamp(
       output,
       -maxSpeed,
       maxSpeed
     );
-    return clamedOutput;
+    double nominalClampedOutput = Math.copySign(
+      Math.max(
+        Math.abs(clampedOutput),
+        drivetrainIsMovingSupplier.get() ? NOMINAL_OUTPUT_MOVING : NOMINAL_OUTPUT_STATIONARY
+      ),
+      clampedOutput
+    );
+    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", nominalClampedOutput);
+    return nominalClampedOutput;
   }
 
   /**

@@ -37,7 +37,7 @@ public class PolarCoordinateTest {
 
   @Test
   public void testCartesianCoordinateTranslation() {
-    // Create a polar coordinate using our information from Ball 1 but with a 0, 0 center
+    // Create a polar coordinate using our information from Ball R3 but with a 0, 0 center
     PolarCoordinate ballOne = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters(),
       Constants.Auto.kBallR3.getTheta(),
@@ -197,7 +197,7 @@ public class PolarCoordinateTest {
 
   @Test
   public void testFromFieldCoordinate() {
-    PolarCoordinate[] balls = {Constants.Auto.kBallR3, Constants.Auto.kBallR2, Constants.Auto.kBallR4, Constants.Auto.kBallR1};
+    PolarCoordinate[] balls = {Constants.Auto.kBallR3, Constants.Auto.kBallR2, Constants.Auto.kBallR1, Constants.Auto.kBallR4};
     for (PolarCoordinate b : balls) {
       // Round trip from field coordinate -> polar coordinate - make sure polar coordinates are the same
       PolarCoordinate ball = PolarCoordinate.fromFieldCoordinate(b.toFieldCoordinate());
