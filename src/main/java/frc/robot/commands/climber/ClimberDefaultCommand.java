@@ -13,6 +13,7 @@ import frc.robot.subsystems.Climber;
  * This command runs the climber using the stringpot or a joystick input
  * @author Nicholas S
  */
+
 public class ClimberDefaultCommand extends CommandBase {
   // The subsystem the command runs on
   private final Climber climber;
@@ -41,12 +42,11 @@ public class ClimberDefaultCommand extends CommandBase {
   @Override
   public void execute(){
 
-SmartDashboard.putBoolean("start button pressed", controller.getStartButton());
-SmartDashboard.putNumber("joystick", controller.getRightY());
-SmartDashboard.putNumber("pot value", climber.getStringPotVoltage());
-SmartDashboard.putNumber("pot set point", setpoint);
-SmartDashboard.putNumber("pot error", climberController.getPositionError());
-
+    /*SmartDashboard.putBoolean("start button pressed", controller.getStartButton());
+    SmartDashboard.putNumber("joystick", controller.getRightY());
+    SmartDashboard.putNumber("pot value", climber.getStringPotVoltage());
+    SmartDashboard.putNumber("pot set point", setpoint);
+    SmartDashboard.putNumber("pot error", climberController.getPositionError()); */
 
     //When the start button is released, reset firstTimeThrough. This makes it so that we aren't going to a previous setpoint every
     //time we press the button and will set a new one every time.
@@ -56,7 +56,6 @@ SmartDashboard.putNumber("pot error", climberController.getPositionError());
     //If the stringpot is greater than minimum value AND lower than max value AND <Start> button is pressed 
     //then it is okay to operate, else stop climber.
     if (climber.getStringPotVoltage() > minStringpotValue && climber.getStringPotVoltage() < maxStringpotValue && controller.getStartButton()){
-
 
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
       double joystick = Utilities.deadband(controller.getRightY(), 0.15);
@@ -82,7 +81,6 @@ SmartDashboard.putNumber("pot error", climberController.getPositionError());
       }
       // limit speed to maxSpeed
       output =  MathUtil.clamp(output, -maxSpeed, +maxSpeed);
-
       climber.start(output);
 
     } 
