@@ -176,6 +176,14 @@ public class Drivetrain extends SubsystemBase {
     return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
+  public double getGyroscopeRoll(){
+    return pigeon.getRoll();
+  }
+
+  public double getGyroscopePitch(){
+    return pigeon.getPitch();
+  }
+
   public void drive(ChassisSpeeds chassisSpeeds) {
     this.chassisSpeeds = chassisSpeeds;
   }
