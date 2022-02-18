@@ -66,7 +66,7 @@ public class RobotContainer {
     driverB.whileHeld(new StartShooter(shooter));
 
     /** Operator Controller * */
-    // Note: Left X is used by DeliveryOverrideCommand
+    // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
