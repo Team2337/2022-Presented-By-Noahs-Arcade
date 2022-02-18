@@ -151,7 +151,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
     }
 
     private static class ControllerImplementation implements SteerController {
-        private static final int ENCODER_RESET_ITERATIONS = 500;
+        private static final int ENCODER_RESET_ITERATIONS = 125;
         private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
         private final TalonFX motor;
@@ -162,7 +162,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
         private double referenceAngleRadians = 0.0;
 
-        private double resetIteration = 0;
+        private double resetIteration = ENCODER_RESET_ITERATIONS;
 
         private ControllerImplementation(TalonFX motor,
                                          double motorEncoderPositionCoefficient,
