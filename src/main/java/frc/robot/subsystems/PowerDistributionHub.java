@@ -42,6 +42,17 @@ public class PowerDistributionHub extends SubsystemBase {
     pdh.setSwitchableChannel(enabled);
   }
 
+
+  // Enables power to port 23 on the PDH
+  public void setSwitchableChannelOn() {
+    pdh.setSwitchableChannel(true);
+  }
+
+  // Disables power to port 23 on the PDH
+  public void setSwitchableChannelOff() {
+    pdh.setSwitchableChannel(false);
+  }
+
   /**
    * @return Whether or not the switchable channel is disabled
    */
