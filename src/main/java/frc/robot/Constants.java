@@ -5,6 +5,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.coordinates.PolarCoordinate;
 
 /**
@@ -53,7 +54,9 @@ public final class Constants {
   }
 
   public Constants() {
-    switch (RobotType.getRobotType()) {
+    RobotType.Type robotType = RobotType.getRobotType();
+    SmartDashboard.putString("Constants Robot Type", robotType.description);
+    switch (robotType) {
       case PRACTICE:
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
