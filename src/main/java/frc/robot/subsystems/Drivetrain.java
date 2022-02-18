@@ -6,6 +6,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -174,6 +175,14 @@ public class Drivetrain extends SubsystemBase {
    */
   public Rotation2d getGyroscopeRotation() {
     return Rotation2d.fromDegrees(pigeon.getYaw());
+  }
+
+  public double getGyroscopeRoll(){
+    return pigeon.getRoll();
+  }
+
+  public double getGyroscopePitch(){
+    return pigeon.getPitch();
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
