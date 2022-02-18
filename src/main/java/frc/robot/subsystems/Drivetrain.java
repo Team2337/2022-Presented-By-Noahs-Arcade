@@ -28,10 +28,11 @@ import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
 
-  /**
-   * Inputs
-   */
+  // The chassis speeds is the actual chassis speeds object of the robot
+  // calculated using the kinematics model + the module states
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  // The drive chassis speeds are the requested chassis speeds to be moving
+  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   /**
    * Hardware (private)
@@ -233,7 +234,25 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    this.chassisSpeeds = chassisSpeeds;
+    this.driveChassisSpeeds = chassisSpeeds;
+  }
+
+  /**
+   * Get the current chassis speeds object for the drivetrain.
+   */
+  public ChassisSpeeds getChassisSpeeds() {
+    return chassisSpeeds;
+  }
+
+  /**
+   * Get the combined vx + vy velocity vector for the robot.
+   */
+  public double velocity() {
+    return Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+  }
+
+  public boolean isMoving() {
+    return velocity() > 0;
   }
 
   public void resetOdometry() {
@@ -244,12 +263,12 @@ public class Drivetrain extends SubsystemBase {
    * Stops all of the motors on each module
    */
   public void stopMotors() {
-    this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    this.driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   }
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(driveChassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (int i = 0; i < states.length; i++) {
@@ -266,6 +285,13 @@ public class Drivetrain extends SubsystemBase {
       getModuleState(modules[3])
     );
 
+    chassisSpeeds = kinematics.toChassisSpeeds(
+      getModuleState(modules[0]),
+      getModuleState(modules[1]),
+      getModuleState(modules[2]),
+      getModuleState(modules[3])
+    );
+
     field.setRobotPose(getPose());
 
     logger.recordOutput("Odometry/Robot",
@@ -276,9 +302,9 @@ public class Drivetrain extends SubsystemBase {
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {
     return new SwerveModuleState(
-        module.getDriveVelocity(),
-        new Rotation2d(module.getSteerAngle())
-      );
+      module.getDriveVelocity(),
+      new Rotation2d(module.getSteerAngle())
+    );
   }
 
 }
