@@ -56,29 +56,30 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    /** Driver Controller */
+    // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
+    JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
+    driverX.whenPressed(heading::enableMaintainHeading);
+    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+    driverA.whileHeld(new RunKicker(kicker));
+    JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    driverB.whileHeld(new StartShooter(shooter));
+
+    /** Operator Controller * */
+    // Note: Left X is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorB.whenHeld(new RunKicker(kicker));
-    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::enableMaintainHeading);
-
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     operatorLeftBumper.whenPressed(intake::reverse, intake);
     operatorLeftBumper.whenReleased(intake::stop, intake);
-    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
 
-    //operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-    operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
 
