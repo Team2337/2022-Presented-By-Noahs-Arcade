@@ -41,14 +41,14 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, AutoDrive autoDrive, Heading heading) {
-    this(target, poseSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading);
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, AutoDrive autoDrive, Heading heading) {
+    this(target, translationSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading);
   }
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Pose2d> poseSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
     super(
       target.getReferencePoint(),
-      () -> poseSupplier.get().getTranslation(),
+      translationSupplier,
       heading
     );
 
