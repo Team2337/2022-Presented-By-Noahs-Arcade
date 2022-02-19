@@ -40,42 +40,44 @@ public class PixyCam extends SubsystemBase {
 
     connect();
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.PIXYLOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
-    pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
-      .withSize(4, 4)
-      .withPosition(12, 0)
-      .withProperties(Map.of("Color when true", "#ff6666"))
-      .withProperties(Map.of("Color when false", "#000000"));
-    pixyTab.addBoolean("Targeting blue", () -> (largestBlueTarget != null))
-      .withSize(4, 4)
-      .withPosition(12, 4)
-      .withProperties(Map.of("Color when true", "#6666ff"))
-      .withProperties(Map.of("Color when false", "#000000"));
+  private void setupShuffleboard(Boolean logEnable) {
+    if (logEnable) {
+      ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
+      pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
+        .withSize(4, 4)
+        .withPosition(12, 0)
+        .withProperties(Map.of("Color when true", "#ff6666"))
+        .withProperties(Map.of("Color when false", "#000000"));
+      pixyTab.addBoolean("Targeting blue", () -> (largestBlueTarget != null))
+        .withSize(4, 4)
+        .withPosition(12, 4)
+        .withProperties(Map.of("Color when true", "#6666ff"))
+        .withProperties(Map.of("Color when false", "#000000"));
 
-    ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
-    infoWidget.addNumber("Red target x", () -> {
-      return largestRedTarget == null ? -1 : largestRedTarget.getX();
-    });
-    infoWidget.addNumber("Red target y", () -> {
-      return largestRedTarget == null ? -1 : largestRedTarget.getY();
-    });
-    infoWidget.addString("Red target angle", () -> {
-      return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget));
-    });
-    infoWidget.addNumber("Blue target x", () -> {
-      return largestBlueTarget == null ? -1 : largestBlueTarget.getX();
-    });
-    infoWidget.addNumber("Blue target y", () -> {
-      return largestBlueTarget == null ? -1 : largestBlueTarget.getY();
-    });
-    infoWidget.addString("Blue target angle", () -> {
-      return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
-    });
-    infoWidget.addNumber("Pixy State", () -> state);
+      ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
+      infoWidget.addNumber("Red target x", () -> {
+        return largestRedTarget == null ? -1 : largestRedTarget.getX();
+      });
+      infoWidget.addNumber("Red target y", () -> {
+        return largestRedTarget == null ? -1 : largestRedTarget.getY();
+      });
+      infoWidget.addString("Red target angle", () -> {
+        return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget));
+      });
+      infoWidget.addNumber("Blue target x", () -> {
+        return largestBlueTarget == null ? -1 : largestBlueTarget.getX();
+      });
+      infoWidget.addNumber("Blue target y", () -> {
+        return largestBlueTarget == null ? -1 : largestBlueTarget.getY();
+      });
+      infoWidget.addString("Blue target angle", () -> {
+        return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
+      });
+      infoWidget.addNumber("Pixy State", () -> state);
+   }
   }
 
   private void connect() {

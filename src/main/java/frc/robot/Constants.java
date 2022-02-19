@@ -45,6 +45,18 @@ public final class Constants {
 
   private static Constants instance;
 
+  public static final class DashboardLogging {
+    public static final boolean CLIMBERLOG = true;
+    public static final boolean DELIVERYLOG = true;
+    public static final boolean DRIVETRAINLOG = true;
+    public static final boolean HEADINGLOG = true;
+    public static final boolean INTAKELOG = true;
+    public static final boolean KICKERLOG = true;
+    public static final boolean PDHLOG = true;
+    public static final boolean PIXYLOG = true;
+    public static final boolean SHOOTERLOG = true;
+  }
+
   public static Constants getInstance() {
     if (instance == null) {
       instance = new Constants();
