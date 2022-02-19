@@ -61,8 +61,17 @@ public class AutoDrive extends SubsystemBase {
     public boolean isFieldOriented;
 
     public State(double forward, double strafe, boolean isFieldOriented) {
-      this.forward = forward;
-      this.strafe = strafe;
+      // AutoDrive.State forward + reverse should add up to 1 - like with joysticks.
+      // If these numbers do not add up to 1, we will scale them to be a maximum
+      // output of 1.
+      if (Math.abs(forward) + Math.abs(strafe) > 1) {
+        double total = Math.abs(forward) + Math.abs(strafe);
+        this.forward = forward / total;
+        this.strafe = strafe / total;
+      } else {
+        this.forward = forward;
+        this.strafe = strafe;
+      }
       this.isFieldOriented = isFieldOriented;
     }
   }
