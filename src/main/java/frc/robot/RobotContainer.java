@@ -51,10 +51,6 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
 
-    // Set alliance color (this method gets called when robot is enabled, so set it then)
-    allianceColor = DriverStation.getAlliance() == Alliance.Red ? BallColor.RED : BallColor.BLUE;
-    opposingColor = allianceColor == BallColor.RED ? BallColor.BLUE : BallColor.RED;
-
     // Configure the button bindings
     configureButtonBindings();
 
