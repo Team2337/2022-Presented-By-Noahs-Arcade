@@ -72,9 +72,6 @@ public class RobotContainer {
     operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorB.whenHeld(new RunKicker(kicker));
-    JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::enableMaintainHeading);
-
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
     operatorStart.whenHeld(new ClimberJoystickCommand(operatorController, climber));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
