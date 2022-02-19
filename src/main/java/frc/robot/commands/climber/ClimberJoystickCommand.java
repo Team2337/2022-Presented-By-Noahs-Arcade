@@ -43,37 +43,42 @@ public class ClimberJoystickCommand extends CommandBase {
 
   @Override
   public void execute() {
-      //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
-      double joystick = -Utilities.deadband(controller.getRightY(), 0.15);
-      SmartDashboard.putNumber("joystick after deadband", joystick);
-      if (joystick == 0) {
-        //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
-        if (shouldHoldCurrentPosition) {
-          climberController.setSetpoint(climber.getStringPotVoltage());
-          shouldHoldCurrentPosition = false;
-        }
-        output = climberController.calculate(climber.getStringPotVoltage());
-        //setTolerance only works with atSetpoint, so we make sure the climber stops within a set tolerance to prevent oscilation.
-        if(climberController.atSetpoint()) {
-          output = 0;
-        }
+    /*SmartDashboard.putBoolean("start button pressed", controller.getStartButton());
+    SmartDashboard.putNumber("joystick", controller.getRightY());
+    SmartDashboard.putNumber("pot value", climber.getStringPotVoltage());
+    SmartDashboard.putNumber("pot set point", climberController.getSetpoint());
+    SmartDashboard.putNumber("pot error", climberController.getPositionError()); */
+    
+    //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
+    double joystick = -Utilities.deadband(controller.getRightY(), 0.15);
+    SmartDashboard.putNumber("joystick after deadband", joystick);
+    if (joystick == 0) {
+      //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
+      if (shouldHoldCurrentPosition) {
+        climberController.setSetpoint(climber.getStringPotVoltage());
+        shouldHoldCurrentPosition = false;
       }
-      else {
-        /* The joystick is being used, use that value to move 
-        the climber up and down while resetting the 'system reset' tracker */
-        shouldHoldCurrentPosition = true;
-        output =  joystick;
-
-      }
-      // If we are below our min and going down or we are above our max and going up, we are out of control and need to stop, otherwise, we are free to move.
-      if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output < 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output > 0))) {
+      output = climberController.calculate(climber.getStringPotVoltage());
+      //setTolerance only works with atSetpoint, so we make sure the climber stops within a set tolerance to prevent oscilation.
+      if(climberController.atSetpoint()) {
         output = 0;
       }
-      else {
-        output =  MathUtil.clamp(output, -MAX_SPEED, +MAX_SPEED);
-      }
-      climber.setSpeed(output);
     }
+    else {
+      /* The joystick is being used, use that value to move 
+      the climber up and down while resetting the 'system reset' tracker */
+      shouldHoldCurrentPosition = true;
+      output =  joystick;
+    }
+    // If we are below our min and going down or we are above our max and going up, we are out of control and need to stop, otherwise, we are free to move.
+    if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output < 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output > 0))) {
+      output = 0;
+    }
+    else {
+      output =  MathUtil.clamp(output, -MAX_SPEED, +MAX_SPEED);
+    }
+    climber.setSpeed(output);
+  }
 
   @Override
   public void end(boolean interupted) {
