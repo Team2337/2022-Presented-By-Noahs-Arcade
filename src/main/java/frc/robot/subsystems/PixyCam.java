@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.Utilities;
-
 import java.util.ArrayList;
 import java.util.Map;
 import io.github.pseudoresonance.pixy2api.*;
@@ -16,6 +16,21 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
  * @author Michael Francis
  */
 public class PixyCam extends SubsystemBase {
+
+  public class Ball {
+    public final int x, y;
+    public final BallColor color;
+
+    Ball(int x, int y, BallColor color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+    }
+
+    public double getAngle() {
+      return ((x / getFrameWidth()) * 60.0) - 30.0;
+    }
+  }
 
   private final Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
   private final int chipselect;
