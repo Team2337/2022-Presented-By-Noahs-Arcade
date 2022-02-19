@@ -22,6 +22,19 @@ public class Delivery extends SubsystemBase {
     COUNTER_CLOCKWISE
   }
 
+  private static enum Slot {
+    BOTTOM(0),
+    RIGHT(1),
+    TOP(2),
+    LEFT(3);
+
+    public final int value;
+
+    private Slot(int value) {
+      this.value = value;
+    }
+  }
+
   // Motor
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
@@ -70,10 +83,10 @@ public class Delivery extends SubsystemBase {
       .withSize(6, 8)
       .withPosition(6, 0);
     sensorsWidget.addStringArray("Ball positions", () -> new String[]{
-      "Bottom: " + String.valueOf(storedBalls[0]),
-      "Right: "  + String.valueOf(storedBalls[1]),
-      "Top: "    + String.valueOf(storedBalls[2]),
-      "Left: "   + String.valueOf(storedBalls[3])
+      "Bottom: " + String.valueOf(storedBalls[Slot.BOTTOM.value]),
+      "Right: "  + String.valueOf(storedBalls[Slot.RIGHT.value]),
+      "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
+      "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
     });
     sensorsWidget.addStringArray("Color sensors", () -> new String[]{
       "Left: "  + String.valueOf(leftSensor.getColor()),
@@ -129,36 +142,41 @@ public class Delivery extends SubsystemBase {
 
   public void addNewBall() {
     balls++;
-    storedBalls[0] = BallColor.UNKNOWN;
+    storedBalls[Slot.BOTTOM.value] = BallColor.UNKNOWN;
+  }
+
+  public void removeTopBall() {
+    balls--;
+    storedBalls[Slot.TOP.value] = null;
   }
 
   public void rotateArrayClockwise() {
-    storedBalls[0] = storedBalls[1];
-    storedBalls[2] = storedBalls[3];
-    storedBalls[1] = getRightColorSensorValue(); // 1 is right
-    storedBalls[3] = getLeftColorSensorValue();  // 3 is left
+    storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
+    storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
+    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue(); // 1 is right
+    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();   // 3 is left
   }
 
   public void rotateArrayCounterClockwise() {
-    storedBalls[0] = storedBalls[3];
-    storedBalls[2] = storedBalls[1];
-    storedBalls[1] = getRightColorSensorValue(); // 1 is right
-    storedBalls[3] = getLeftColorSensorValue();  // 3 is left
+    storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
+    storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
+    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue(); // 1 is right
+    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();   // 3 is left
   }
 
   public Direction getBottomToSideRotation() {
-    if (storedBalls[0] == null) {
+    if (storedBalls[Slot.BOTTOM.value] == null) {
       return null;
     }
 
-    return storedBalls[3] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
+    return storedBalls[Slot.LEFT.value] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
   }
 
   public Direction getSideToTopDirection(BallColor ballColor) {
-    if (storedBalls[3] == ballColor) {
+    if (storedBalls[Slot.LEFT.value] == ballColor) {
       // Ball is on the left, rotate clockwise
       return Direction.CLOCKWISE;
-    } else if (storedBalls[1] == ballColor) {
+    } else if (storedBalls[Slot.RIGHT.value] == ballColor) {
       // Ball is on the right, rotate counter-clockwise
       return Direction.COUNTER_CLOCKWISE;
     } else {
@@ -167,19 +185,19 @@ public class Delivery extends SubsystemBase {
   }
 
   public BallColor getBottomPositionColor() {
-    return storedBalls[0];
+    return storedBalls[Slot.BOTTOM.value];
   }
 
   public BallColor getRightPositionColor() {
-    return storedBalls[1];
+    return storedBalls[Slot.RIGHT.value];
   }
 
   public BallColor getTopPositionColor() {
-    return storedBalls[2];
+    return storedBalls[Slot.TOP.value];
   }
 
   public BallColor getLeftPositionColor() {
-    return storedBalls[3];
+    return storedBalls[Slot.LEFT.value];
   }
 
   public int getNumberOfBalls() {
