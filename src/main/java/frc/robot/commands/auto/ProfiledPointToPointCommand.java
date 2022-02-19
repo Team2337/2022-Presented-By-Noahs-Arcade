@@ -123,8 +123,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   public AutoDrive.State calculate(double forward, double strafe, boolean isFieldOriented) {
     return new AutoDrive.State(
       -forwardOutput,
-      -strafeOutput,
-      false
+      -strafeOutput
     );
   }
 
