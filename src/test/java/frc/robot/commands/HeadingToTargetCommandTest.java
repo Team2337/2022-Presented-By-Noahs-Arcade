@@ -15,7 +15,7 @@ import frc.robot.subsystems.Heading;
 public class HeadingToTargetCommandTest {
 
   private Rotation2d headingToTargetMaintainHeading(PolarCoordinate coordinate) {
-    Heading heading = new Heading(() -> new Rotation2d());
+    Heading heading = new Heading(() -> new Rotation2d(), () -> false);
     Translation2d target = coordinate.toFieldCoordinate();
     HeadingToTargetCommand command = new HeadingToTargetCommand(
       () -> target,
