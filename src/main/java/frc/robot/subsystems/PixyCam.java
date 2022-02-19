@@ -21,6 +21,10 @@ public class PixyCam extends SubsystemBase {
   private final int chipselect;
   private int state;
 
+  private int countRed = 0;
+  private int countBlue = 0;
+  private final int MAX_COUNT = 3;
+
   private Block largestRedTarget;
   private Block largestBlueTarget;
 
@@ -93,10 +97,6 @@ public class PixyCam extends SubsystemBase {
       return;
     }
 
-    // Clear our previous blocks in prep for new blocks
-    largestRedTarget = null;
-    largestBlueTarget = null;
-
     filterTargets(updatePixy());
   }
 
@@ -105,7 +105,7 @@ public class PixyCam extends SubsystemBase {
    */
   private ArrayList<Block> updatePixy() {
     // Either number of targets or an error code
-    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 20);
+    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 8);
 
     if (error < 0) {
       return new ArrayList<Block>();
@@ -118,6 +118,10 @@ public class PixyCam extends SubsystemBase {
    * Filters the targets based on conditions that make them seem "cargo-like"
    */
   private void filterTargets(ArrayList<Block> blocks) {
+    // Set up temporary variables
+    Block newLargestRedTarget = null;
+    Block newLargestBlueTarget = null;
+
     for (Block block : blocks) {
       // Get ratio of width to height - looking for perfect squares to identify balls
       double ratio = block.getWidth() / block.getHeight();
@@ -132,16 +136,46 @@ public class PixyCam extends SubsystemBase {
         // Red == Block Signature 1, Blue == Block Signature 2
         int signature = block.getSignature();
         if (signature == 1) {
-          if (shouldUpdateLargestTarget(largestRedTarget, block)) {
-            largestRedTarget = block;
+          if (shouldUpdateLargestTarget(newLargestRedTarget, block)) {
+            newLargestRedTarget = block;
           }
         } else if (signature == 2) {
-          if (shouldUpdateLargestTarget(largestBlueTarget, block)) {
-            largestBlueTarget = block;
+          if (shouldUpdateLargestTarget(newLargestBlueTarget, block)) {
+            newLargestBlueTarget = block;
           }
         }
       }
     }
+
+    /**
+     * Update largest target variables
+     * 
+     * This works in three cases
+     * 1. If we see a target, reset counter and update largest target variables
+     * 2. If we don't see a target and the counter is greater than a threshold, set largest target to null.
+     * 3. If we don't see a target and the counter is less than the threshold, keep the old value (no code needed).
+     * 
+     * In all cases, we increment the counter.
+     */
+    // Red
+    if (newLargestRedTarget != null) {
+      countRed = 0;
+      largestRedTarget = newLargestRedTarget;
+    } else if (countRed >= MAX_COUNT) {
+      largestRedTarget = null;
+    }
+    // Blue
+    if (newLargestBlueTarget != null) {
+      // If it sees a target, reset counter and update variable
+      countBlue = 0;
+      largestBlueTarget = newLargestBlueTarget;
+    } else if (countBlue >= MAX_COUNT) {
+      largestBlueTarget = null;
+    }
+
+    // Update counters
+    countRed++;
+    countBlue++;
   }
 
   private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
