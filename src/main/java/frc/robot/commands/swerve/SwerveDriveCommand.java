@@ -1,11 +1,12 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
@@ -18,6 +19,12 @@ public class SwerveDriveCommand extends CommandBase {
   private final AutoDrive autoDrive;
   private final Heading heading;
   private final Drivetrain drivetrain;
+
+  // Smooth our our joystick values
+  private static double kSlewRateOfChangePerSecond = 1.2;
+  SlewRateLimiter forwardSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
+  SlewRateLimiter strafeSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
+  SlewRateLimiter rotationSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
 
   /**
    * Command running the swerve calculations with the joystick
@@ -35,9 +42,15 @@ public class SwerveDriveCommand extends CommandBase {
 
   @Override
   public void execute() {
-    double forward = -Utilities.modifyAxis(controller.getLeftY());
-    double strafe = -Utilities.modifyAxis(controller.getLeftX());
-    double rotation = -Utilities.modifyAxis(controller.getRightX());
+    double forward = -Utilities.deadbandAndSquare(controller.getLeftY());
+    forward = forwardSlew.calculate(forward);
+
+    double strafe = -Utilities.deadbandAndSquare(controller.getLeftX());
+    strafe = strafeSlew.calculate(strafe);
+
+    double rotation = -Utilities.deadbandAndSquare(controller.getRightX(), 0.1);
+    rotation = rotationSlew.calculate(rotation);
+
     boolean isFieldOriented = !controller.getLeftBumper();
 
     AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);

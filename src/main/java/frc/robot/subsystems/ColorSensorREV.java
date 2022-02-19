@@ -16,17 +16,17 @@ import frc.robot.Constants.BallColor;
  * 
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
-public class REVColorSensor extends SubsystemBase {
+public class ColorSensorREV extends SubsystemBase implements ColorSensor {
 
-  private final int COLOR_SENSOR_PROXIMITY = 300; //TODO: test number in delivery, see if there are actual units here
+  private final int COLOR_SENSOR_PROXIMITY = 300; //TODO: tune me
 
   // The sensor
   private final ColorSensorV3 sensor;
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
-  private final Color matchRed  = new Color(0.4529, 0.2117, 0.0980);
-  private final Color matchBlue = new Color(0.1078, 0.2608, 0.3921);
+  private static final Color kMatchRed  = new Color(0.4529, 0.2117, 0.0980);
+  private static final Color kMatchBlue = new Color(0.1078, 0.2608, 0.3921);
 
   // Other variables
   private BallColor currentColor = null;
@@ -35,13 +35,13 @@ public class REVColorSensor extends SubsystemBase {
    * Initializes a REV Robotics Color Sensor v3
    * @param port The I2C port the sensor is plugged into
    */
-  public REVColorSensor(I2C.Port port) {
+  public ColorSensorREV(I2C.Port port) {
     // Set up sensor with a specific port
     sensor = new ColorSensorV3(port);
 
     // Color match
-    colorMatcher.addColorMatch(matchRed);
-    colorMatcher.addColorMatch(matchBlue);
+    colorMatcher.addColorMatch(kMatchRed);
+    colorMatcher.addColorMatch(kMatchBlue);
   }
 
   @Override
@@ -57,10 +57,10 @@ public class REVColorSensor extends SubsystemBase {
     if (seesBall()) {
       // If not close enough, there is no ball
       return;
-    } else if (match.color == matchRed) {
+    } else if (match.color == kMatchRed) {
       // Red ball
       currentColor = BallColor.RED;
-    } else if (match.color == matchBlue) {
+    } else if (match.color == kMatchBlue) {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
@@ -68,28 +68,25 @@ public class REVColorSensor extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("ColorSensor");
+    builder.setSmartDashboardType("ColorSensorREV");
     builder.addStringProperty("Match", () -> {
-      switch(getColor()){
-        case RED:    return "Red";
-        case BLUE:   return "Blue";
-        default:     return "None";
+      switch(getColor()) {
+        case RED:
+          return "Red";
+        case BLUE:
+          return "Blue";
+        default:
+          return "None";
       }
     }, null);
   }
 
-  /**
-   * @return Currently viewed color, if any
-   */
   public BallColor getColor() {
     return currentColor;
   }
 
-  /**
-   * @return Whether or not the proximity sensor detects a close object
-   */
   public boolean seesBall() {
-    return sensor.getProximity() < COLOR_SENSOR_PROXIMITY;
+    return sensor.getProximity() > COLOR_SENSOR_PROXIMITY;
   }
 
 }

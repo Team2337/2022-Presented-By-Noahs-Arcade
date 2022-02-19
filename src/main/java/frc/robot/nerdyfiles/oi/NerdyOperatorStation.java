@@ -1,11 +1,11 @@
-package frc.robot;
+package frc.robot.nerdyfiles.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 /**
  * Code for operator station.
- * 
+ *
  * Copied from 2020 code
  * @see https://github.com/Team2337/2020-Perpetual-Supercharger/blob/master/src/main/java/frc/robot/nerdyfiles/controller/NerdyOperatorStation.java
  */
@@ -17,7 +17,7 @@ public class NerdyOperatorStation extends Joystick {
 
   /*
     * --- DRIVER STATION CONTROLS ---
-    * 
+    *
     * These button/switch names and ports will need to be updated each year if the
     * driver's station is redesigned.
     *

@@ -14,12 +14,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.BallColor;
+import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.auto.Top3Ball;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.IntakeBallCommandGroup;
 import frc.robot.commands.delivery.PrepareShooterCommandGroup;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.RunKicker;
+import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -28,14 +31,17 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
+  private final PixyCam pixyCam = new PixyCam();
 
-  private final AutoDrive autoDrive = new AutoDrive();
   // private final Climber climber = new Climber();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  private final Kicker kicker = new Kicker();
+  private final Vision vision = new Vision();
+  private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
-  private final Intake intake = new Intake();
-  // private final Vision vision = new Vision();
+  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   public static BallColor allianceColor;
   public static BallColor opposingColor;
@@ -43,6 +49,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
 
     // Set alliance color (this method gets called when robot is enabled, so set it then)
     allianceColor = DriverStation.getAlliance() == Alliance.Red ? BallColor.RED : BallColor.BLUE;
@@ -52,7 +59,6 @@ public class RobotContainer {
     configureButtonBindings();
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
-    autonChooser.addOption("Top 3 Ball", new Top3Ball(autoDrive, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
@@ -62,19 +68,23 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    /** Driver Controller */
+    // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    /** Operator Controller * */
+    // Note: Left X axis is used by DeliveryOverrideCommand
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    operatorA.whenHeld(new StartShooter(shooter));
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    operatorB.whenHeld(new RunKicker(kicker));
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     operatorRightBumper.whenPressed(intake::startIntake, intake);
     operatorRightBumper.whenReleased(intake::stopIntake, intake);
-
-    JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    operatorLeftBumper.whenPressed(intake::reverseIntake, intake);
+    operatorLeftBumper.whenReleased(intake::stopIntake, intake);
 
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     driverA.whenPressed(new IntakeBallCommandGroup(intake, delivery));
@@ -86,6 +96,7 @@ public class RobotContainer {
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
+
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();

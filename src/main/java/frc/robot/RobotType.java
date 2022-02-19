@@ -10,9 +10,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotType {
 
   public enum Type {
-    COMPETITION,
-    SKILLSBOT,
-    PRACTICE
+    COMPETITION("Comp"),
+    SKILLSBOT("Skills"),
+    PRACTICE("Practice");
+
+    public final String description;
+
+    private Type(String description) {
+      this.description = description;
+    }
   }
 
   private static String kPracticeBotMAC = "00:80:2F:17:89:85";
@@ -41,7 +47,7 @@ public class RobotType {
       // Remove once validated.
       SmartDashboard.putString("Mac-Address", sb.toString());
       return sb.toString();
-    } catch (UnknownHostException | SocketException e) {
+    } catch (UnknownHostException | SocketException | NullPointerException e) {
       e.printStackTrace();
     }
     return null;

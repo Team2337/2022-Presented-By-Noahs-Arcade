@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CTREUtils;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the delivery mechanism
@@ -39,8 +39,8 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
   // Color sensors
-  private final REVColorSensor leftSensor = new REVColorSensor(I2C.Port.kOnboard);
-  private final REVColorSensor rightSensor = new REVColorSensor(I2C.Port.kMXP);
+  private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
+  private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   // Golf ball sensors
   private final DigitalInput topLeftBeam = new DigitalInput(Constants.TOP_LEFT_BEAM_ID);
@@ -70,7 +70,10 @@ public class Delivery extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    // Set up shuffleboard stuff
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
 
     ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)

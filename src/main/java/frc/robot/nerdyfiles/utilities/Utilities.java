@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.nerdyfiles.utilities;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -38,9 +38,19 @@ public class Utilities {
     return Math.copySign(Math.pow(value, 2), value);
   }
 
-  public static double modifyAxis(double value) {
+  /**
+   * Deadband + square joystick axis values.
+   */
+  public static double deadbandAndSquare(double value) {
+    return deadbandAndSquare(value, 0.05);
+  }
+
+  /**
+   * Deadband + square joystick axis values.
+   */
+  public static double deadbandAndSquare(double value, double deadband) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, deadband);
     // Square the axis
     return Math.copySign(value * value, value);
   }
@@ -74,7 +84,7 @@ public class Utilities {
 
   /**
    * Converts a temperature in Celsius to Fahrenheit
-   * 
+   *
    * @param celsius The degrees in Celsius
    * @return The degrees in Fahrenheit
    */

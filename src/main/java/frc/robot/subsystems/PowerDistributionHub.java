@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Utilities;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * @author Michael F
@@ -15,6 +15,10 @@ public class PowerDistributionHub extends SubsystemBase {
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public PowerDistributionHub() {
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
     ShuffleboardTab pdhTab = Shuffleboard.getTab("PDH");
     ShuffleboardLayout widget = pdhTab.getLayout("Diagnostics", BuiltInLayouts.kList)
       .withSize(6, 12)
