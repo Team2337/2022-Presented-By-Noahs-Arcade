@@ -18,13 +18,18 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 public class PixyCam extends SubsystemBase {
 
   public class Ball {
-    public final int x, y;
+    public final int x, y, area;
     public final BallColor color;
 
-    Ball(int x, int y, BallColor color) {
+    Ball(int x, int y, int width, int height, int signature) {
       this.x = x;
       this.y = y;
-      this.color = color;
+      this.area = width * height;
+      this.color = signature == 1 ? BallColor.RED : BallColor.BLUE;
+    }
+
+    Ball(Block block) {
+      this(block.getX(), block.getY(), block.getWidth(), block.getHeight(), block.getSignature());
     }
 
     public double getAngle() {
@@ -36,8 +41,8 @@ public class PixyCam extends SubsystemBase {
   private final int chipselect;
   private int state;
 
-  private Block largestRedTarget;
-  private Block largestBlueTarget;
+  private Ball largestRedTarget;
+  private Ball largestBlueTarget;
 
   /**
    * Creates a PixyCam connected on the SPI chipselect 0
@@ -73,22 +78,22 @@ public class PixyCam extends SubsystemBase {
 
     ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
     infoWidget.addNumber("Red target x", () -> {
-      return largestRedTarget == null ? -1 : largestRedTarget.getX();
+      return largestRedTarget == null ? -1 : largestRedTarget.x;
     });
     infoWidget.addNumber("Red target y", () -> {
-      return largestRedTarget == null ? -1 : largestRedTarget.getY();
+      return largestRedTarget == null ? -1 : largestRedTarget.y;
     });
     infoWidget.addString("Red target angle", () -> {
-      return largestRedTarget == null ? "" : String.valueOf(getTargetAngle(largestRedTarget));
+      return largestRedTarget == null ? "" : String.valueOf(largestRedTarget.getAngle());
     });
     infoWidget.addNumber("Blue target x", () -> {
-      return largestBlueTarget == null ? -1 : largestBlueTarget.getX();
+      return largestBlueTarget == null ? -1 : largestBlueTarget.x;
     });
     infoWidget.addNumber("Blue target y", () -> {
-      return largestBlueTarget == null ? -1 : largestBlueTarget.getY();
+      return largestBlueTarget == null ? -1 : largestBlueTarget.y;
     });
     infoWidget.addString("Blue target angle", () -> {
-      return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
+      return largestBlueTarget == null ? "" : String.valueOf(largestBlueTarget.getAngle());
     });
     infoWidget.addNumber("Pixy State", () -> state);
   }
@@ -148,22 +153,22 @@ public class PixyCam extends SubsystemBase {
         int signature = block.getSignature();
         if (signature == 1) {
           if (shouldUpdateLargestTarget(largestRedTarget, block)) {
-            largestRedTarget = block;
+            largestRedTarget = new Ball(block);
           }
         } else if (signature == 2) {
           if (shouldUpdateLargestTarget(largestBlueTarget, block)) {
-            largestBlueTarget = block;
+            largestBlueTarget = new Ball(block);
           }
         }
       }
     }
   }
 
-  private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
+  private static boolean shouldUpdateLargestTarget(Ball largestBlock, Block newBlock) {
     if (largestBlock == null) {
       return true;
     }
-    double largestBlockArea = largestBlock.getWidth() * largestBlock.getHeight();
+    double largestBlockArea = largestBlock.area;
     double newBlockArea = newBlock.getWidth() * newBlock.getHeight();
     return newBlockArea > largestBlockArea;
   }
@@ -171,14 +176,14 @@ public class PixyCam extends SubsystemBase {
   /**
    * @return The largest red target that seems "cargo-like"
    */
-  public Block getRedTarget() {
+  public Ball getRedTarget() {
     return largestRedTarget;
   }
 
   /**
    * @return The largest blue target that seems "cargo-like"
    */
-  public Block getBlueTarget() {
+  public Ball getBlueTarget() {
     return largestBlueTarget;
   }
 
