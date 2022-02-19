@@ -213,7 +213,17 @@ public class Shooter extends SubsystemBase {
     double speed = leftMotor.getSelectedSensorVelocity();
     //If our shooter speed is not within a given tolerance of our previous speed, this means it recieved resistance, and a ball was shot. This method can be used to
     //determine whether to bring control back to drivers after a ball is shot.
-    return (!(Utilities.withinTolerance(previousSpeed, speed, 15)));
+    if (Utilities.withinTolerance(speedTarget, previousSpeed, 15)) {
+      if(!(Utilities.withinTolerance(previousSpeed, speed, 15))) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
   }
-
+  
 }
