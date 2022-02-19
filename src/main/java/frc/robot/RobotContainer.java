@@ -60,10 +60,6 @@ public class RobotContainer {
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
-    JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
-    driverA.whileHeld(new RunKicker(kicker));
-    JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
-    driverB.whileHeld(new StartShooter(shooter));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
