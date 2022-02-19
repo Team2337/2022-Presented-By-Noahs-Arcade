@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.climber.ClimberDefaultCommand;
+import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -42,7 +42,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    climber.setDefaultCommand(new ClimberDefaultCommand(operatorController, climber));
     heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
 
     // Configure the button bindings
@@ -65,15 +64,10 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
 
-    //True means that the stringpot will be used for movement, otherwise, it is false
-    //JoystickButton operatorStart --- this button being used as a safety to enable climber.  Do not use for otherthings right now!
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
-    JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    operatorStart.whenHeld(new ClimberJoystickCommand(operatorController, climber));
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
@@ -84,10 +78,10 @@ public class RobotContainer {
     // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
     // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
     // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-
     //operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
+
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
   }

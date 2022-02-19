@@ -53,8 +53,6 @@ public class Drivetrain extends SubsystemBase {
   private Field2d field = new Field2d();
   private Logger logger = Logger.getInstance();
 
-
-
   /**
    * Should be in the same order as the swerve modules (see above)
    * Positive x values represent moving toward the front of the robot
