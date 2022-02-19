@@ -35,6 +35,10 @@ public class Shooter extends SubsystemBase {
   private double kD = 0.000;
   private double kF = 0.055;
 
+  //Store speeds for API calculations
+  private double previousSpeed = 0.0;
+  private double speedTarget = 40.7;
+
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
   private ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
@@ -120,6 +124,7 @@ public class Shooter extends SubsystemBase {
       kF = kef.getDouble(0);
       configurePID(kP, kI, kD, kF);
     }
+    previousSpeed = leftMotor.getSelectedSensorVelocity();
   }
 
   public void configurePID(double kp, double ki, double kd, double kf) {
@@ -202,6 +207,13 @@ public class Shooter extends SubsystemBase {
       currentLimitConfiguration.enable = enable;
       leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     }
+  }
+
+  private boolean isBallShot(){
+    double speed = leftMotor.getSelectedSensorVelocity();
+    //If our shooter speed is not within a given tolerance of our previous speed, this means it recieved resistance, and a ball was shot. This method can be used to
+    //determine whether to bring control back to drivers after a ball is shot.
+    return (!(Utilities.withinTolerance(previousSpeed, speed, 15)));
   }
 
 }
