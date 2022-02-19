@@ -43,21 +43,21 @@ public class SwerveDriveCommand extends CommandBase {
   @Override
   public void execute() {
     double forward = -Utilities.deadbandAndSquare(controller.getLeftY());
-    forward = forwardSlew.calculate(forward);
-
     double strafe = -Utilities.deadbandAndSquare(controller.getLeftX());
-    strafe = strafeSlew.calculate(strafe);
-
     double rotation = -Utilities.deadbandAndSquare(controller.getRightX(), 0.1);
-    rotation = rotationSlew.calculate(rotation);
-
     boolean isFieldOriented = !controller.getLeftBumper();
-
+    
     AutoDrive.State autoDriveState = autoDrive.calculate(forward, strafe, isFieldOriented);
     if (autoDriveState != null) {
       forward = autoDriveState.forward;
       strafe = autoDriveState.strafe;
       isFieldOriented = autoDriveState.isFieldOriented;
+    }
+    
+    if (DriverStation.isTeleopEnabled()) {
+      forward = forwardSlew.calculate(forward);
+      strafe = strafeSlew.calculate(strafe);
+      rotation = rotationSlew.calculate(rotation);
     }
 
     // If a driver-initiated rotation is provided, disable our rotation

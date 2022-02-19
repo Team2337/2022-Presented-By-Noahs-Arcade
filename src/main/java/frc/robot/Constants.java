@@ -280,7 +280,7 @@ public final class Constants {
   }
 
   public static final class Pixy {
-    public static final double RATIO_TOLERANCE = 0.2;
+    public static final double RATIO_TOLERANCE = 1.0;
   }
 
   public static final int KICKER_MOTOR = 20;

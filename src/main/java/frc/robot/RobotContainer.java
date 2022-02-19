@@ -63,7 +63,7 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     driverX.whenPressed(heading::enableMaintainHeading);
     JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    driverLeftBumper.whenPressed(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
+    driverLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand

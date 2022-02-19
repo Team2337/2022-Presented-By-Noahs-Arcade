@@ -7,6 +7,9 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import org.littletonrobotics.junction.Logger;
+
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -20,6 +23,10 @@ public class PixyCam extends SubsystemBase {
   private final Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
   private final int chipselect;
   private int state;
+
+  private int cycleRed;
+  private int cycleBlue;
+  private final int MAX_CYCLE = 3;
 
   private Block largestRedTarget;
   private Block largestBlueTarget;
@@ -93,11 +100,13 @@ public class PixyCam extends SubsystemBase {
       return;
     }
 
-    // Clear our previous blocks in prep for new blocks
-    largestRedTarget = null;
-    largestBlueTarget = null;
-
     filterTargets(updatePixy());
+    if (largestBlueTarget == null) {
+      Logger.getInstance().recordOutput("Pixycam/Target Blue Age", -1);
+    } else {
+      Logger.getInstance().recordOutput("Pixycam/Target Blue Age", largestBlueTarget.getAge());
+    }
+    Logger.getInstance().recordOutput("Pixycam/Targeting Blue", largestBlueTarget != null);
   }
 
   /**
@@ -105,7 +114,7 @@ public class PixyCam extends SubsystemBase {
    */
   private ArrayList<Block> updatePixy() {
     // Either number of targets or an error code
-    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 20);
+    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 8);
 
     if (error < 0) {
       return new ArrayList<Block>();
@@ -118,6 +127,10 @@ public class PixyCam extends SubsystemBase {
    * Filters the targets based on conditions that make them seem "cargo-like"
    */
   private void filterTargets(ArrayList<Block> blocks) {
+    Block newLargestRedTarget = null;
+    Block newLargestBlueTarget = null;
+
+    // Iterate through targets
     for (Block block : blocks) {
       // Get ratio of width to height - looking for perfect squares to identify balls
       double ratio = block.getWidth() / block.getHeight();
@@ -132,16 +145,36 @@ public class PixyCam extends SubsystemBase {
         // Red == Block Signature 1, Blue == Block Signature 2
         int signature = block.getSignature();
         if (signature == 1) {
-          if (shouldUpdateLargestTarget(largestRedTarget, block)) {
-            largestRedTarget = block;
+          if (shouldUpdateLargestTarget(newLargestRedTarget, block)) {
+            newLargestRedTarget = block;
           }
         } else if (signature == 2) {
-          if (shouldUpdateLargestTarget(largestBlueTarget, block)) {
-            largestBlueTarget = block;
+          if (shouldUpdateLargestTarget(newLargestBlueTarget, block)) {
+            newLargestBlueTarget = block;
           }
         }
       }
     }
+
+    // Update largest targets
+    // Red
+    if (newLargestRedTarget != null) {
+      cycleRed = 0;
+      largestRedTarget = newLargestRedTarget;
+    } else if (cycleRed >= MAX_CYCLE) {
+      largestRedTarget = null;
+    }
+    // Blue
+    if (newLargestBlueTarget != null) {
+      cycleBlue = 0;
+      largestBlueTarget = newLargestBlueTarget;
+    } else if (cycleBlue >= MAX_CYCLE) {
+      largestBlueTarget = null;
+    }
+
+    // Increase cycles
+    cycleRed++;
+    cycleBlue++;
   }
 
   private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
