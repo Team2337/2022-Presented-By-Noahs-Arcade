@@ -32,17 +32,20 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      //new StartShooter(shooter),
-      //new StartIntake(intake),
-      //new ParallelCommandGroup(
+      new StartShooter(shooter),
+      new StartIntake(intake),
+      new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(2),
-        new WaitCommand(1),
+        new WaitCommand(1)
         //new RunKicker(kicker).withTimeout(1)
-      //),
+      )
+      /*
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(3),
       new WaitCommand(1),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(2),
-      new WaitCommand(1),
+      new WaitCommand(1)
+      */
+      /*
       //new ParallelCommandGroup(
         //new RunKicker(kicker).withTimeout(2),
         //new StartDelivery(delivery).withTimeout(2)
@@ -54,6 +57,7 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
         //new RunKicker(kicker).withTimeout(2),
         //new StartDelivery(delivery).withTimeout(2)
       //)
+      */
     );
   }
 }
