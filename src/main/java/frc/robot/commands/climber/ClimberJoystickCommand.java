@@ -43,12 +43,8 @@ public class ClimberJoystickCommand extends CommandBase {
 
   @Override
   public void execute() {
-    //If the stringpot is greater or equal to minimum value AND lower or equal to the max value
-    //then it is okay to operate as we are within our logical limits, else stop climber.
-    if (climber.getStringPotVoltage() >= MIN_STRINGPOT_VALUE && climber.getStringPotVoltage() <= MAX_STRINGPOT_VALUE) {
-
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
-      double joystick = Utilities.deadband(controller.getRightY(), 0.15);
+      double joystick = -Utilities.deadband(controller.getRightY(), 0.15);
       SmartDashboard.putNumber("joystick after deadband", joystick);
       if (joystick == 0) {
         //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
@@ -69,21 +65,18 @@ public class ClimberJoystickCommand extends CommandBase {
         output =  joystick;
 
       }
-      // limit speed to maxSpeed
-      output =  MathUtil.clamp(output, -MAX_SPEED, +MAX_SPEED);
+      // If we are below our min and going down or we are above our max and going up, we are out of control and need to stop, otherwise, we are free to move.
+      if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output < 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output > 0))) {
+        output = 0;
+      }
+      else {
+        output =  MathUtil.clamp(output, -MAX_SPEED, +MAX_SPEED);
+      }
       climber.setSpeed(output);
-
-    } 
-    else {
-      // if stringpot out of acceptable range (or zero because it's disconnected), then stop motor
-      // In the future, potentially we can use the motors encoders for holding the position if the string pot gets disconnected, but that is a stretch goal right now
-      climber.stop();
-    }   
-  }
+    }
 
   @Override
   public void end(boolean interupted) {
-    shouldHoldCurrentPosition = true;
     climber.stop();
   }
 
