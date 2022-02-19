@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -38,18 +37,9 @@ public class Climber extends SubsystemBase {
 
     // Implements these current limits on the motors
     leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
-    leftMotor.configClosedloopRamp(0.1);
     leftMotor.enableVoltageCompensation(true);
 
     leftMotor.setNeutralMode(NeutralMode.Brake);
-    leftMotor.config_kP(0, .15);
-    leftMotor.config_kI(0, 0);
-    leftMotor.config_kD(0, 0);
-    //Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048 ticks in a rotation. Overall loss with this tolerance: 0.019 inches
-    leftMotor.configAllowableClosedloopError(0, 100);
-    leftMotor.configNominalOutputForward(.1);
-    leftMotor.configNominalOutputReverse(.1);
-
     //setUpShuffleboard();
   }
 
@@ -63,13 +53,7 @@ public class Climber extends SubsystemBase {
   public void setSpeed(double speed) {
     leftMotor.set(ControlMode.PercentOutput, speed);
   }
-  /**
-   * Holds the climber at a set position
-   */
-  public void hold(double setpoint){
-    leftMotor.set(TalonFXControlMode.Position, setpoint);
-  }
-  
+
   /**
    * Stops the climber
    */
@@ -84,18 +68,10 @@ public class Climber extends SubsystemBase {
     return (leftMotor.getMotorOutputPercent());
   }
 
-  public double getLeftMotorPosition(){
-    return leftMotor.getSelectedSensorPosition();
-  }
-
-  public double getRightMotorPosition(){
-    return rightMotor.getSelectedSensorPosition();
-  }
-
   /**
    * Gets the String Pot Voltage 
    */
-  public double getStringPotVoltage(){
+  public double getStringPotVoltage() {
     return stringPot.getVoltage();
   }
 
@@ -108,18 +84,16 @@ public class Climber extends SubsystemBase {
   /**
    * Returns the temperature of the right climber motor (in Celsius)
    */
-  private double getRightMotorTemperature(){
+  private double getRightMotorTemperature() {
     return rightMotor.getTemperature();
   }
 
-  private void setupShuffleboard(){
+  private void setupShuffleboard() {
     ShuffleboardTab climberTab = Shuffleboard.getTab("Climber");
     ShuffleboardLayout climberWidget = climberTab.getLayout("climber Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
     climberWidget.addNumber("Speed", this::getLeftMotorSpeed);
     climberWidget.addNumber("Left Temp", this::getLeftMotorTemperature);
     climberWidget.addNumber("Right Temp", this::getRightMotorTemperature);
     climberWidget.addNumber("String Pot", this::getStringPotVoltage);
-    climberWidget.addNumber("Left Motor Position", this::getLeftMotorPosition);
-    climberWidget.addNumber("Right Motor Position", this::getRightMotorPosition);
   } 
 }

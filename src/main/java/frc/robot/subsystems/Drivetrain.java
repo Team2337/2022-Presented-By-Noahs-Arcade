@@ -298,7 +298,6 @@ public class Drivetrain extends SubsystemBase {
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     logger.recordOutput("Gyro", pigeon.getYaw());
-
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {

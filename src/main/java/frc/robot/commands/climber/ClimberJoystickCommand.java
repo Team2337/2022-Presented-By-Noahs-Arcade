@@ -19,53 +19,42 @@ public class ClimberJoystickCommand extends CommandBase {
   // The subsystem the command runs on
   private final Climber climber;
   private final XboxController controller;
-  private double setpoint;
   private double output;
-  private boolean systemReset = true;
+  private boolean shouldHoldCurrentPosition = true;
   private PIDController climberController = new PIDController(2, 0.0, 0.0);
 
   private static final double MAX_SPEED = 0.25;
 
-  private double minStringpotValue = Constants.Climber.START;
-  private double maxStringpotValue = Constants.Climber.MID_RUNG;
+  private static final double MIN_STRINGPOT_VALUE = Constants.Climber.START;
+  private static final double MAX_STRINGPOT_VALUE = Constants.Climber.MID_RUNG;
 
   public ClimberJoystickCommand(XboxController controller, Climber climber) {
     this.climber = climber;
     this.controller = controller;
     addRequirements(climber);
-    climberController.setTolerance(0.1);
+    climberController.setTolerance(0.1); //TODO: Find out what this correlates to in inches on the climber
   }
 
   @Override
   public void initialize() {
+    shouldHoldCurrentPosition = true;
     climberController.reset();
   }
 
   @Override
   public void execute() {
-    /*SmartDashboard.putBoolean("start button pressed", controller.getStartButton());
-    SmartDashboard.putNumber("joystick", controller.getRightY());
-    SmartDashboard.putNumber("pot value", climber.getStringPotVoltage());
-    SmartDashboard.putNumber("pot set point", setpoint);
-    SmartDashboard.putNumber("pot error", climberController.getPositionError()); */
-
-    //When the start button is released, reset firstTimeThrough. This makes it so that we aren't going to a previous setpoint every
-    //time we press the button and will set a new one every time.
-    if(!controller.getStartButton()) {
-      systemReset = true;
-    }
-    //If the stringpot is greater than minimum value AND lower than max value AND <Start> button is pressed 
-    //then it is okay to operate, else stop climber.
-    if (climber.getStringPotVoltage() > minStringpotValue && climber.getStringPotVoltage() < maxStringpotValue) {
+    //If the stringpot is greater or equal to minimum value AND lower or equal to the max value
+    //then it is okay to operate as we are within our logical limits, else stop climber.
+    if (climber.getStringPotVoltage() >= MIN_STRINGPOT_VALUE && climber.getStringPotVoltage() <= MAX_STRINGPOT_VALUE) {
 
       //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
       double joystick = Utilities.deadband(controller.getRightY(), 0.15);
       SmartDashboard.putNumber("joystick after deadband", joystick);
       if (joystick == 0) {
         //First time through, set the position, so the robot will stay at this position while the controller is not touched, otherwise it would slip
-        if (systemReset) {
+        if (shouldHoldCurrentPosition) {
           climberController.setSetpoint(climber.getStringPotVoltage());
-          systemReset = false;
+          shouldHoldCurrentPosition = false;
         }
         output = climberController.calculate(climber.getStringPotVoltage());
         //setTolerance only works with atSetpoint, so we make sure the climber stops within a set tolerance to prevent oscilation.
@@ -76,7 +65,7 @@ public class ClimberJoystickCommand extends CommandBase {
       else {
         /* The joystick is being used, use that value to move 
         the climber up and down while resetting the 'system reset' tracker */
-        systemReset = true;
+        shouldHoldCurrentPosition = true;
         output =  joystick;
 
       }
@@ -94,7 +83,7 @@ public class ClimberJoystickCommand extends CommandBase {
 
   @Override
   public void end(boolean interupted) {
-    systemReset = true;
+    shouldHoldCurrentPosition = true;
     climber.stop();
   }
 
