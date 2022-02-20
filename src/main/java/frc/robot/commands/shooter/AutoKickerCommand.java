@@ -1,6 +1,7 @@
 package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.Kicker;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -11,22 +12,30 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoKickerCommand extends CommandBase {
 
   private final Kicker kicker;
-  private double timeout;
+  private double wait;
+  private double waitCounter;
 
-  public AutoKickerCommand(Kicker kicker, double timeout) {
+  public AutoKickerCommand(Kicker kicker, double wait) {
     this.kicker = kicker;
-    this.timeout = timeout;
+    this.wait = wait;
+    //Puts wait into iterations from seconds
+    wait = wait / 50; 
     addRequirements(kicker);
   }
 
   @Override 
   public void initialize() {
-    
+    waitCounter = 0;
   }
 
   @Override
   public void execute() {
-    kicker.start(kicker.kickerSpeedPercentageWidget.getDouble(0));
+    SmartDashboard.putNumber("Wait Counter", waitCounter);
+    if (waitCounter >= wait) {
+      kicker.start(0.5);
+    } else {
+      waitCounter++;
+    }
   }
 
   @Override

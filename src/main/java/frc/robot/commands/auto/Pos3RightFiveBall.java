@@ -8,8 +8,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
+import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.delivery.StartDelivery;
 import frc.robot.commands.intake.StartIntake;
+import frc.robot.commands.shooter.AutoKickerCommand;
+import frc.robot.commands.shooter.AutoStartShooter;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.AutoDrive;
@@ -32,19 +35,24 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new StartShooter(shooter),
-      new StartIntake(intake),
+      new AutoStartShooter(shooter),
       new ParallelCommandGroup(
-        new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(2),
-        new WaitCommand(1)
-        //new RunKicker(kicker).withTimeout(1)
-      )
-      /*
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(3),
-      new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(2),
-      new WaitCommand(1)
-      */
+        new StartIntake(intake),
+        new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(2)
+        ),
+      new AutoKickerCommand(kicker, 0).withTimeout(0.5),    
+      new ParallelCommandGroup(
+        new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(3),
+        new AutoStartDelivery(delivery).withTimeout(0.75)
+        ),  
+        new AutoKickerCommand(kicker, 0).withTimeout(0.5),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(1),
+      new ParallelCommandGroup(
+        new AutoKickerCommand(kicker, 0).withTimeout(1.5),    
+        new AutoStartDelivery(delivery).withTimeout(1.5)
+      ),
+      new WaitCommand(5),
+      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3)
       /*
       //new ParallelCommandGroup(
         //new RunKicker(kicker).withTimeout(2),

@@ -7,22 +7,23 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
+import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.subsystems.AutoDrive;
+import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
 
 public class Test extends SequentialCommandGroup {
 
   private Drivetrain drivetrain;
+  private Delivery delivery;
 
-  public Test(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
+  public Test(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading) {
     this.drivetrain = drivetrain;
+    this.delivery = delivery;
 
     addCommands(
-      new ProfiledPointToPointCommand(Constants.Auto.backup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading).withTimeout(5),
-      new WaitCommand(2.5),
-      new ProfiledPointToPointCommand(Constants.Auto.testStartForward, drivetrain::getTranslation, 0.5, 0.05, Units.inchesToMeters(30), 12, autoDrive, heading).withTimeout(5),
-      new WaitCommand(5)
+      new AutoStartDelivery(delivery).withTimeout(0.6)
     );
   }
 }
