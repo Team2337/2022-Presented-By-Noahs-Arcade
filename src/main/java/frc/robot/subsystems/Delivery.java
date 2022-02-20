@@ -36,21 +36,23 @@ public class Delivery extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.DELIVERYLOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
-    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)
-      .withSize(4, 8)
-      .withPosition(0, 0);
-    infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
-    infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
+  private void setupShuffleboard(Boolean logEnable) {
+    if (logEnable) {
+      ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
+      ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(0, 0);
+      infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
+      infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
 
-    ShuffleboardLayout colorWidget = deliveryTab.getLayout("Sensor", BuiltInLayouts.kList)
-      .withSize(4, 8)
-      .withPosition(4, 0);
-    colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
+      ShuffleboardLayout colorWidget = deliveryTab.getLayout("Sensor", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(4, 0);
+      colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
+    }
   }
 
   @Override
