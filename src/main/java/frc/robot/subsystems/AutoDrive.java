@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.lang.ref.WeakReference;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
@@ -58,12 +59,33 @@ public class AutoDrive extends SubsystemBase {
   public static class State {
     public double forward;
     public double strafe;
-    public boolean isFieldOriented;
+    // Auto drive commands should ALWAYS generate robot-centric moves
+    public final boolean isFieldOriented = false;
 
-    public State(double forward, double strafe, boolean isFieldOriented) {
-      this.forward = forward;
-      this.strafe = strafe;
-      this.isFieldOriented = isFieldOriented;
+    public State(double forward, double strafe) {
+      // AutoDrive.State forward + reverse should add up to 1 - like with joysticks.
+      // If these numbers do not add up to 1, we will scale them to be a maximum
+      // output of 1.
+      if (Math.abs(forward) + Math.abs(strafe) > 1) {
+        double total = Math.abs(forward) + Math.abs(strafe);
+        this.forward = forward / total;
+        this.strafe = strafe / total;
+      } else {
+        this.forward = forward;
+        this.strafe = strafe;
+      }
+    }
+
+    public AutoDrive.State toFieldRelativeState(Rotation2d robotAngle) {
+      /**
+       * This calculation is VERY similar to the ChassisSpeeds.fromFieldRelativeSpeeds
+       * calculation, but it's different. We invert our sin multiplications in order
+       * to get the proper field-oriented speeds.
+       */
+      return new AutoDrive.State(
+        forward * robotAngle.getCos() + -strafe * robotAngle.getSin(),
+        forward * robotAngle.getSin() + strafe * robotAngle.getCos()
+      );
     }
   }
 
