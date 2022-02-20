@@ -213,8 +213,12 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  public void isBallShot(boolean shot){
+  public void ballShot(boolean shot) {
     isBallShot = shot;
+  }
+
+  public boolean getBallShot() {
+    return isBallShot;
   }
 
 }

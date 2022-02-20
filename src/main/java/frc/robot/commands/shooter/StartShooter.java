@@ -34,7 +34,7 @@ public class StartShooter extends CommandBase {
         isBallShot = false;
       }
     }
-    shooter.isBallShot(isBallShot);
+    shooter.ballShot(isBallShot);
   }
 
   @Override
