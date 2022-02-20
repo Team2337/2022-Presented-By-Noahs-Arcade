@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class StartShooter extends CommandBase {
 
   private final Shooter shooter;
-  private double reachSetpointTime;
-  private boolean start = true;
+  private double reachSetpointCycleCounter;
+  private boolean isShooterComingUpToSpeed = true;
   private double previousSetpoint;
   private double newSetpoint;
 
@@ -25,23 +25,26 @@ public class StartShooter extends CommandBase {
 
   @Override
   public void initialize(){
-    reachSetpointTime = 0;
-    start = true;
+    reachSetpointCycleCounter = 0;
+    isShooterComingUpToSpeed = true;
   }
   @Override
   public void execute() {
-    newSetpoint = shooter.shooterSpeedFeetPerSecondWidget.getDouble(0);
+    double targetSetpoint = shooter.shooterSpeedFeetPerSecondWidget.getDouble(0);
+    newSetpoint = targetSetpoint;
     shooter.setSpeed(shooter.shooterSpeedFeetPerSecondWidget.getDouble(0));
-    if (start || (previousSetpoint != newSetpoint)) {
+    if (isShooterComingUpToSpeed || (previousSetpoint != newSetpoint)) {
       if (!shooter.isShooterToSpeed()) {
-        reachSetpointTime ++;
+        reachSetpointCycleCounter ++;
+        //20 ms in a cycle, so we multiply our cycle time by 50 to get the amount of milliseconds, divide by 1000 to get seconds.
+        SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointCycleCounter * 50) / 1000));
       }
       else {
-      start = false;
-      SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointTime * 50) / 1000));
+      isShooterComingUpToSpeed = false;
+      SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointCycleCounter * 50) / 1000));
       }
     }
-    previousSetpoint = shooter.shooterSpeedFeetPerSecondWidget.getDouble(0);
+    previousSetpoint = targetSetpoint;
   }
 
   @Override
