@@ -14,8 +14,7 @@ import frc.robot.Constants.BallColor;
  */
 public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
-  // private final int COLOR_SENSOR_PROXIMITY = 10; //TODO: find value of this
-  private final double LUMINANCE_MAX_THRESHOLD = 96.0;
+  private final double LUMINANCE_MAX_THRESHOLD = 12.0; //TODO: tune this
 
   // The sensor
   private final TCSSensor sensor;
@@ -30,7 +29,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   // Other variables
   private BallColor currentColor = null;
 
-  private int cycle = 0;
+  // private int cycle = 0;
 
   /**
    * Initializes a TCS34725 color sensor
@@ -50,11 +49,11 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   @Override
   public void periodic() {
     // Only retrieve every other tick
-    cycle++;
-    cycle %= 2;
-    if(cycle == 0) {
-      return;
-    }
+    // cycle++;
+    // cycle %= 2;
+    // if(cycle == 0) {
+    //   return;
+    // }
 
     // Get color and what its closest color is
     Color detectedColor = sensor.getColor();
