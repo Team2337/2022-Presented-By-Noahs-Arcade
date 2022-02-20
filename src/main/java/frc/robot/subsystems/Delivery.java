@@ -21,8 +21,9 @@ public class Delivery extends SubsystemBase {
   }
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-
+  
   private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
+
 
   /**
    * Initializes the Delivery subsystem - no color sensors yet.
