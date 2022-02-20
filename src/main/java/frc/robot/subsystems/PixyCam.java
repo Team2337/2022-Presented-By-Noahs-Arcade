@@ -21,8 +21,8 @@ public class PixyCam extends SubsystemBase {
   private final int chipselect;
   private int state;
 
-  private int countRed = 0;
-  private int countBlue = 0;
+  private int lastSeenCounterRed = 0;
+  private int lastSeenCounterBlue = 0;
   private final int MAX_COUNT = 3;
 
   private Block largestRedTarget;
@@ -159,23 +159,21 @@ public class PixyCam extends SubsystemBase {
      */
     // Red
     if (newLargestRedTarget != null) {
-      countRed = 0;
+      lastSeenCounterRed = 0;
       largestRedTarget = newLargestRedTarget;
-    } else if (countRed >= MAX_COUNT) {
+    } else if (lastSeenCounterRed >= MAX_COUNT) {
       largestRedTarget = null;
     }
+    lastSeenCounterRed++;
     // Blue
     if (newLargestBlueTarget != null) {
       // If it sees a target, reset counter and update variable
-      countBlue = 0;
+      lastSeenCounterBlue = 0;
       largestBlueTarget = newLargestBlueTarget;
-    } else if (countBlue >= MAX_COUNT) {
+    } else if (lastSeenCounterBlue >= MAX_COUNT) {
       largestBlueTarget = null;
     }
-
-    // Update counters
-    countRed++;
-    countBlue++;
+    lastSeenCounterBlue++;
   }
 
   private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
