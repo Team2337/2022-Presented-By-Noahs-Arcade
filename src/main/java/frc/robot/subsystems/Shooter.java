@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
   private double kD = 0.000;
   private double kF = 0.005;
 
-  private double targetSpeed = 35.0;
+  private double targetSpeed = 0.0;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
@@ -145,7 +145,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setSpeed(double speedFeetPerSecond) {
-    if (speedFeetPerSecond != targetSpeed){
+    if(speedFeetPerSecond != targetSpeed){
       targetSpeed = speedFeetPerSecond;
     }
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
