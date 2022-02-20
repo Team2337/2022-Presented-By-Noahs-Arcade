@@ -43,7 +43,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
 
     // Configure the button bindings
     configureButtonBindings();
