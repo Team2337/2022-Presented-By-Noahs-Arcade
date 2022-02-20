@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
   private double kP = 0.06;
   private double kI = 0;
   private double kD = 0.000;
-  private double kF = 0.005;
+  private double kF = 0.05;
 
   private double targetSpeed = 0.0;
 

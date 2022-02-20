@@ -22,7 +22,7 @@ public class Delivery extends SubsystemBase {
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
-  private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
+  // private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
 
 
   /**
@@ -51,7 +51,7 @@ public class Delivery extends SubsystemBase {
       ShuffleboardLayout colorWidget = deliveryTab.getLayout("Sensor", BuiltInLayouts.kList)
         .withSize(4, 8)
         .withPosition(4, 0);
-      colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
+      // colorWidget.addString("Color", () -> String.valueOf(sensor.getColor()));
     }
   }
 

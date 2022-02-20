@@ -195,7 +195,7 @@ public final class Constants {
       Rotation2d.fromDegrees(62)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90), 
+      Units.inchesToMeters(112), 
       Rotation2d.fromDegrees(76 + 180)
     );
 

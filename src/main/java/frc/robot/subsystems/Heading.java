@@ -63,7 +63,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.007, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.006, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
