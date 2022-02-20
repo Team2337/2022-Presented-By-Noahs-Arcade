@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.Status;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,21 +19,22 @@ public class TimeOfFlightSensor extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Distance (in)", getDistanceInches());
-    SmartDashboard.putString("Status", getStatus());
+    SmartDashboard.putString("Status", getStatus().toString());
   }
 
-  public String getStatus() {
-    return sensor.getStatus().toString();
+  public Status getStatus() {
+    return sensor.getStatus();
   }
 
   public double getDistanceMM() {
     return sensor.getRange();
   }
-
+  
   public double getDistanceInches() {
-    if (getStatus().equals("Valid")){
-      previousDistance = (sensor.getRange() / 25.4);
-      return sensor.getRange() / 25.4; // mm to in
+    if (getStatus() == Status.Valid){
+      double distance = Units.metersToInches((getDistanceMM() / 1000));
+      previousDistance = distance;
+      return distance;
     }
     else {
       return previousDistance;
