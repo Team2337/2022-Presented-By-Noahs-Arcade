@@ -35,11 +35,13 @@ public class Shooter extends SubsystemBase {
   private double kP = 0.06;
   private double kI = 0;
   private double kD = 0.000;
-  private double kF = 0.005
-  ;
+  private double kF = 0.005;
+
+  private double targetSpeed = 0.0;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
+  private ShuffleboardLayout temps;
   private ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
     .withSize(4, 8)
     .withPosition(0, 0);
@@ -64,10 +66,10 @@ public class Shooter extends SubsystemBase {
     .withSize(4, 8)
     .withPosition(4, 0);
   public NetworkTableEntry shooterSpeedFeetPerSecondWidget = speeds
-    .add("Set Wheel Speed (ft/s)", 40.7)
+    .add("Set Wheel Speed (ft/s)", targetSpeed)
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
-
+  
   private StatorCurrentLimitConfiguration currentLimitConfiguration = CTREUtils.defaultCurrentLimit();
 
   public Shooter() {
@@ -87,23 +89,25 @@ public class Shooter extends SubsystemBase {
 
     configurePID(kP, kI, kD, kF);
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.SHOOTERLOG);
   }
 
-  private void setupShuffleboard() {
-    speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
-    speeds.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
-    speeds.addNumber("Top Wheel Speed (ft/s)", () -> getMotorWheelSpeed(leftMotor));
-    speeds.addNumber("Bottom Wheel Speed (ft/s)", () -> getMotorWheelSpeed(rightMotor));
-    speeds.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
-    speeds.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
-
-    ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
-      .withSize(4, 8)
-      .withPosition(8, 0);
+  private void setupShuffleboard(Boolean logEnable) {
+    temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
     temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
     temps.addBoolean("Motors Overheating?", () -> isOverheated());
+
+
+    if (logEnable) {
+      speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
+      speeds.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
+      speeds.addNumber("Top Wheel Speed (ft per s)", () -> getMotorWheelSpeed(leftMotor));
+      speeds.addNumber("Bottom Wheel Speed (ft per s)", () -> getMotorWheelSpeed(rightMotor));
+      speeds.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
+      speeds.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
+    }
+
   }
 
   @Override
@@ -144,6 +148,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setSpeed(double speedFeetPerSecond) {
+    if(speedFeetPerSecond != targetSpeed){
+      targetSpeed = speedFeetPerSecond;
+    }
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
     SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
 
@@ -162,7 +169,7 @@ public class Shooter extends SubsystemBase {
 
   public boolean isShooterToSpeed() {
     // TODO: Tune our deadband range
-    return Utilities.withinTolerance(shooterSpeedFeetPerSecondWidget.getDouble(0), getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
+    return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
   public boolean isOverheated() {
@@ -213,5 +220,4 @@ public class Shooter extends SubsystemBase {
       leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     }
   }
-
 }

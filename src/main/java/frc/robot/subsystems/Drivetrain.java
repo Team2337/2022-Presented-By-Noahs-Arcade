@@ -97,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
         Mk3SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
             .withSize(4, 8)
-            .withPosition(4, 0),
+            .withPosition(8, 0),
           Mk3SwerveModuleHelper.GearRatio.STANDARD,
           Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
@@ -107,7 +107,7 @@ public class Drivetrain extends SubsystemBase {
         Mk3SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Left Module", BuiltInLayouts.kList)
             .withSize(4, 8)
-            .withPosition(0, 0),
+            .withPosition(4, 0),
           Mk3SwerveModuleHelper.GearRatio.STANDARD,
           Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
@@ -117,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
         Mk3SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Left Module", BuiltInLayouts.kList)
             .withSize(4, 8)
-            .withPosition(0, 8),
+            .withPosition(4, 8),
           Mk3SwerveModuleHelper.GearRatio.STANDARD,
           Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
@@ -127,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
         Mk3SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Right Module", BuiltInLayouts.kList)
             .withSize(4, 8)
-            .withPosition(4, 8),
+            .withPosition(8, 8),
           Mk3SwerveModuleHelper.GearRatio.STANDARD,
           Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
@@ -141,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
               .withSize(4, 8)
-              .withPosition(4, 0),
+              .withPosition(8, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
@@ -151,7 +151,7 @@ public class Drivetrain extends SubsystemBase {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Left Module", BuiltInLayouts.kList)
               .withSize(4, 8)
-              .withPosition(0, 0),
+              .withPosition(4, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
@@ -161,7 +161,7 @@ public class Drivetrain extends SubsystemBase {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Left Module", BuiltInLayouts.kList)
               .withSize(4, 8)
-              .withPosition(0, 8),
+              .withPosition(4, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
@@ -171,7 +171,7 @@ public class Drivetrain extends SubsystemBase {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Right Module", BuiltInLayouts.kList)
               .withSize(4, 8)
-              .withPosition(4, 8),
+              .withPosition(8, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
@@ -183,15 +183,17 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.DRIVETRAINLOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
-    chassisSpeedsWidget.addNumber("vx meters/s", () -> chassisSpeeds.vxMetersPerSecond);
-    chassisSpeedsWidget.addNumber("vy meters/s", () -> chassisSpeeds.vyMetersPerSecond);
-    chassisSpeedsWidget.addNumber("omega radians/s", () -> chassisSpeeds.omegaRadiansPerSecond);
-
+  private void setupShuffleboard(Boolean logEnable) {
+    
+    if (logEnable) {
+      ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
+      chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
+      chassisSpeedsWidget.addNumber("vy meters per s", () -> chassisSpeeds.vyMetersPerSecond);
+      chassisSpeedsWidget.addNumber("omega radians per s", () -> chassisSpeeds.omegaRadiansPerSecond);
+    }
     ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }

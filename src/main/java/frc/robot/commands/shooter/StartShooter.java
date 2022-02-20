@@ -21,7 +21,7 @@ public class StartShooter extends CommandBase {
 
   @Override
   public void execute() {
-    shooter.setSpeed(shooter.shooterSpeedFeetPerSecondWidget.getDouble(0));
+    shooter.setSpeed(40.7);
   }
 
   @Override

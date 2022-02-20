@@ -8,6 +8,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +18,7 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.swerve.SwerveDriveCommand;
+import frc.robot.nerdyfiles.Controller.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
@@ -44,7 +46,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -84,26 +86,37 @@ public class RobotContainer {
     /** Driver Controller */
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::enableMaintainHeading);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
-    driverA.whileHeld(new RunKicker(kicker));
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
+    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
+
+    driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
+    driverTriggerRight.whileHeld(new RunKicker(kicker));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenHeld(new RunKicker(kicker));
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::start, intake);
-    operatorRightBumper.whenReleased(intake::stop, intake);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(intake::reverse, intake);
-    operatorLeftBumper.whenReleased(intake::stop, intake);
+    JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(operatorController, 2);
+    JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
+    operatorA.whenHeld(new StartShooter(shooter));
+    operatorB.whenHeld(new RunKicker(kicker));
+    
+    operatorTriggerRight.whenPressed(intake::start, intake);
+    operatorTriggerRight.whenReleased(intake::stop, intake);
+    
+    operatorRightBumper.whenPressed(intake::reverse, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
+    
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
+    /** Driverstation Controls * */
+
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 

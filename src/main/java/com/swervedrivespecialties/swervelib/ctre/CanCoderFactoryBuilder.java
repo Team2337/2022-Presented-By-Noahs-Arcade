@@ -1,5 +1,6 @@
 package com.swervedrivespecialties.swervelib.ctre;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
@@ -39,6 +40,11 @@ public class CanCoderFactoryBuilder {
             this.encoder = encoder;
         }
 
+        public ErrorCode getError() {
+            ErrorCode error = encoder.getLastError();
+            return error;
+        }
+
         @Override
         public double getAbsoluteAngle() {
             double angle = Math.toRadians(encoder.getAbsolutePosition());
@@ -46,11 +52,10 @@ public class CanCoderFactoryBuilder {
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
             }
-
             return angle;
         }
     }
-
+    
     public enum Direction {
         CLOCKWISE,
         COUNTER_CLOCKWISE
