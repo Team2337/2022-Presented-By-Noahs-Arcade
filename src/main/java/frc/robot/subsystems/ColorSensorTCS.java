@@ -30,6 +30,8 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   // Other variables
   private BallColor currentColor = null;
 
+  private int cycle = 0;
+
   /**
    * Initializes a TCS34725 color sensor
    * @param port The I2C port the sensor is plugged into
@@ -47,6 +49,13 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
   @Override
   public void periodic() {
+    // Only retrieve every other tick
+    cycle++;
+    cycle %= 2;
+    if(cycle == 0) {
+      return;
+    }
+
     // Get color and what its closest color is
     Color detectedColor = sensor.getColor();
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
