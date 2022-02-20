@@ -15,21 +15,23 @@ public class PowerDistributionHub extends SubsystemBase {
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public PowerDistributionHub() {
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.PDHLOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardTab pdhTab = Shuffleboard.getTab("PDH");
-    ShuffleboardLayout widget = pdhTab.getLayout("Diagnostics", BuiltInLayouts.kList)
-      .withSize(6, 12)
-      .withPosition(0, 0);
-    widget.addNumber("Temperature (F)", () -> {
-      return Utilities.convertCelsiusToFahrenheit(getTemperature());
-    });
-    widget.addNumber("Voltage", this::getVoltage);
-    widget.addNumber("Total Current (Amps)", pdh::getTotalCurrent);
-    widget.addNumber("Total Energy (Joules)", pdh::getTotalEnergy);
-    widget.addNumber("Total Power (Watts)", pdh::getTotalPower);
+  private void setupShuffleboard(Boolean logEnable) {
+    if (logEnable) {
+      ShuffleboardTab pdhTab = Shuffleboard.getTab("PDH");
+      ShuffleboardLayout widget = pdhTab.getLayout("Diagnostics", BuiltInLayouts.kList)
+        .withSize(6, 12)
+        .withPosition(0, 0);
+      widget.addNumber("Temperature (F)", () -> {
+        return Utilities.convertCelsiusToFahrenheit(getTemperature());
+      });
+      widget.addNumber("Voltage", this::getVoltage);
+      widget.addNumber("Total Current (Amps)", pdh::getTotalCurrent);
+      widget.addNumber("Total Energy (Joules)", pdh::getTotalEnergy);
+      widget.addNumber("Total Power (Watts)", pdh::getTotalPower);
+   }
   }
 
   @Override
@@ -40,6 +42,17 @@ public class PowerDistributionHub extends SubsystemBase {
    */
   public void setSwitchableChannel(boolean enabled) {
     pdh.setSwitchableChannel(enabled);
+  }
+
+
+  // Enables power to port 23 on the PDH
+  public void setSwitchableChannelOn() {
+    pdh.setSwitchableChannel(true);
+  }
+
+  // Disables power to port 23 on the PDH
+  public void setSwitchableChannelOff() {
+    pdh.setSwitchableChannel(false);
   }
 
   /**
