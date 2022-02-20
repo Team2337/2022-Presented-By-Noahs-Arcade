@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
   private double kD = 0.000;
   private double kF = 0.005;
 
-  private double speedTarget = 35.0;
+  private double targetSpeed = 35.0;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
     .withSize(4, 8)
     .withPosition(4, 0);
   public NetworkTableEntry shooterSpeedFeetPerSecondWidget = speeds
-    .add("Set Wheel Speed (ft/s)", 35)
+    .add("Set Wheel Speed (ft/s)", targetSpeed)
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
 
@@ -145,6 +145,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setSpeed(double speedFeetPerSecond) {
+    if (speedFeetPerSecond != targetSpeed){
+      targetSpeed = speedFeetPerSecond;
+    }
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
     SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
 
@@ -159,7 +162,7 @@ public class Shooter extends SubsystemBase {
 
   public boolean isShooterToSpeed() {
     // TODO: Tune our deadband range
-    return Utilities.withinTolerance(speedTarget, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
+    return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
   public boolean isOverheated() {
@@ -210,9 +213,4 @@ public class Shooter extends SubsystemBase {
       leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     }
   }
-
-  public void updateSpeedTarget(double speed) {
-    speedTarget = speed;
-  }
-
 }
