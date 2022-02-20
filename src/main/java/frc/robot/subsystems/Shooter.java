@@ -23,7 +23,7 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 public class Shooter extends SubsystemBase {
 
   private static double kMotorShutdownTempCelcius = 70;
-  private static double kShooterSpeedFeetPerSecondTolerance = 0.1;
+  private static double kShooterSpeedFeetPerSecondTolerance = 3;
 
   // Top Wheel == Left Motor, Bottom Wheel == Right Motor
   public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
@@ -36,8 +36,9 @@ public class Shooter extends SubsystemBase {
   private double kF = 0.055;
 
   //Store speeds for API calculations
-  private double previousSpeed = 0.0;
   private double speedTarget = 35.0;
+
+  private boolean isBallShot = false;
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
 
@@ -108,7 +109,9 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Ball Shot?", isBallShot());
+    SmartDashboard.putBoolean("Ball Shot?", isBallShot);
+    SmartDashboard.putBoolean("Shooter to Speed?", isShooterToSpeed());
+
     if (kep.getDouble(0) != kP) {
       kP = kep.getDouble(0);
       configurePID(kP, kI, kD, kF);
@@ -125,7 +128,6 @@ public class Shooter extends SubsystemBase {
       kF = kef.getDouble(0);
       configurePID(kP, kI, kD, kF);
     }
-    previousSpeed = leftMotor.getSelectedSensorVelocity();
   }
 
   public void configurePID(double kp, double ki, double kd, double kf) {
@@ -211,39 +213,8 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  private boolean isBallShot(){
-    double speed = leftMotor.getSelectedSensorVelocity();
-    SmartDashboard.putBoolean("Within Shoot Tolerance", Utilities.withinTolerance(feetPerSecondToTicksPerOneHundredMs(speedTarget), previousSpeed, 12));
-    SmartDashboard.putBoolean("Did Ball Velocity Drop?", !(Utilities.withinTolerance(previousSpeed, speed, 15)));
-    SmartDashboard.putNumber("Speed", speed);
-    SmartDashboard.putNumber("Prev Speed", previousSpeed);
-    SmartDashboard.putNumber("Speed Target to ticks", feetPerSecondToTicksPerOneHundredMs(speedTarget));
-    SmartDashboard.putBoolean("Shooter to Speed", isShooterToSpeed());
-    SmartDashboard.putNumber("Motor Wheel Speed", getMotorWheelSpeed(leftMotor));
-    SmartDashboard.putNumber("Shuffleboard Point", shooterSpeedFeetPerSecondWidget.getDouble(0));
-    //If our shooter speed is not within a given tolerance of our previous speed, this means it recieved resistance, and a ball was shot. This method can be used to
-    //determine whether to bring control back to drivers after a ball is shot.
-    if (Utilities.withinTolerance(feetPerSecondToTicksPerOneHundredMs(speedTarget), previousSpeed, 12)) {
-      if(!(Utilities.withinTolerance(previousSpeed, speed, 15))) {
-        if ((speed - previousSpeed) < 0.0) {
-          if (speed < feetPerSecondToTicksPerOneHundredMs(speedTarget)) {
-            return true;
-          }
-          else {
-            return false;
-          }
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
-    else {
-      return false;
-    }
+  public void isBallShot(boolean shot){
+    isBallShot = shot;
   }
 
 }
