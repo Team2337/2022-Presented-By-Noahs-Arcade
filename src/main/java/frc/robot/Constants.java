@@ -17,9 +17,7 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
-  public static double BLUE_STARTING_ANGLE = 25;
-  public static double RED_STARTING_ANGLE = 25;
+  public static double STARTING_ANGLE = 25;
 
   public int MODULE0_DRIVE_MOTOR_ID;
   public int MODULE0_ANGLE_MOTOR_ID;
@@ -176,15 +174,6 @@ public final class Constants {
     public static final double kPickupDistanceInches = 22.0;
     public static final double kRunOverDistanceInches = 4.0;
 
-     public static final PolarCoordinate testStartForward = new PolarCoordinate(
-      Units.inchesToMeters(50),
-      Rotation2d.fromDegrees(179)
-    );
-    public static final PolarCoordinate backup = new PolarCoordinate(
-      Units.inchesToMeters(210),
-      Rotation2d.fromDegrees(179)
-    );
-
     // Starting Locations
 
     public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
@@ -196,7 +185,7 @@ public final class Constants {
       Rotation2d.fromDegrees(62)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(112), //90
+      Units.inchesToMeters(90), 
       Rotation2d.fromDegrees(76 + 180)
     );
 

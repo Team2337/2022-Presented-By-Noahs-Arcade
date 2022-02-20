@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
     motor.configFactoryDefault();
 
     motor.setNeutralMode(NeutralMode.Coast);
+    motor.configOpenloopRamp(0.5);
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 

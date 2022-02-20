@@ -16,6 +16,7 @@ public class Vision extends SubsystemBase {
   /**
    * Logging
    */
+  private Logger logger = Logger.getInstance();
 
   public Optional<Double> getLatency() {
     return getDoubleValue("tl");
@@ -40,7 +41,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     Optional<Double> latency = getLatency();
     if (latency.isPresent()) {
-      Logger.getInstance().recordOutput("Limelight/latency", latency.get());
+      logger.recordOutput("Limelight/latency", latency.get());
     }
   }
 

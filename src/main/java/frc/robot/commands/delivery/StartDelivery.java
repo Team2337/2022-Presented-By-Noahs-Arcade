@@ -1,8 +1,6 @@
 package frc.robot.commands.delivery;
 
 import frc.robot.subsystems.Delivery;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Delivery.Direction;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 

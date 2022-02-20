@@ -21,8 +21,7 @@ public class StartShooter extends CommandBase {
 
   @Override
   public void execute() {
-    shooter.setSpeed(30);
-    SmartDashboard.putString("In the shooter command", "In the shooter command");
+    shooter.setSpeed(shooter.shooterSpeedFeetPerSecondWidget.getDouble(0));
   }
 
   @Override

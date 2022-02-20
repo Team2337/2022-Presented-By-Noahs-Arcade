@@ -10,7 +10,7 @@ import frc.robot.Constants;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.delivery.StartDelivery;
-import frc.robot.commands.intake.StartIntake;
+import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.shooter.AutoKickerCommand;
 import frc.robot.commands.shooter.AutoStartShooter;
 import frc.robot.commands.shooter.RunKicker;
@@ -37,7 +37,7 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
     addCommands(
       new AutoStartShooter(shooter),
       new ParallelCommandGroup(
-        new StartIntake(intake),
+        new AutoStartIntake(intake),
         new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(2)
         ),
       new AutoKickerCommand(kicker, 0).withTimeout(0.5),    

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.intake.StartIntake;
+import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
@@ -68,18 +68,11 @@ public class RobotContainer {
   }
 
   public void resetRobot() {
-    /*
-    if (DriverStation.getAlliance() == Alliance.Red) {
-      pigeon.setYaw(Constants.RED_STARTING_ANGLE, 250);
-    } else {
-      pigeon.setYaw(Constants.BLUE_STARTING_ANGLE, 250);
-    }
-    */
-    pigeon.setYaw(60, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    pigeon.setYaw(0, 250);
   }
 
   public void resetRobot2() {
+    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
@@ -96,13 +89,11 @@ public class RobotContainer {
     driverA.whileHeld(new RunKicker(kicker));
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
     driverB.whileHeld(new StartShooter(shooter));
-    JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
-    driverY.whenPressed(new ReturnToPosition3RightStart(autoDrive, drivetrain, heading));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    // operatorA.whenHeld(new StartShooter(shooter));
+    operatorA.whenHeld(new StartShooter(shooter));
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     operatorB.whenHeld(new RunKicker(kicker));
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);

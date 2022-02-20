@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * Runs the kicker motor
- * @author Nicholas S
+ * @author Madison J.
  *
  */
 public class AutoKickerCommand extends CommandBase {
