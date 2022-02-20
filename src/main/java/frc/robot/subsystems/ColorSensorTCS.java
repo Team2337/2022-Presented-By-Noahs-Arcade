@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,21 +65,6 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("ColorSensorTCS");
-    builder.addStringProperty("Match", () -> {
-      switch(getColor()) {
-        case RED:
-          return "Red";
-        case BLUE:
-          return "Blue";
-        default:
-          return "None";
-      }
-    }, null);
   }
 
   public BallColor getColor() {
