@@ -38,7 +38,6 @@ public class RobotContainer {
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
-  private final PowerDistributionHub pdh = new PowerDistributionHub();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -77,8 +76,8 @@ public class RobotContainer {
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(driverController, 2);
-    JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(driverController, 3);
+    JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(operatorController, 2);
+    JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
     operatorA.whenHeld(new StartShooter(shooter));
     operatorB.whenHeld(new RunKicker(kicker));
@@ -92,8 +91,6 @@ public class RobotContainer {
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     /** Driverstation Controls * */
-    operatorStation.clearSwitch.whenPressed(pdh::setSwitchableChannelOn);
-    operatorStation.clearSwitch.whenReleased(pdh::setSwitchableChannelOff);
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
