@@ -53,7 +53,6 @@ public class Drivetrain extends SubsystemBase {
    */
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
   private Field2d field = new Field2d();
-  private Logger logger = Logger.getInstance();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -296,10 +295,14 @@ public class Drivetrain extends SubsystemBase {
 
     field.setRobotPose(getPose());
 
-    logger.recordOutput("Odometry/Robot",
+    Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-    logger.recordOutput("Gyro", pigeon.getYaw());
+      SmartDashboard.putNumber("Pose X", pose.getX());
+      SmartDashboard.putNumber("Pose Y", pose.getY());
+      SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
+
+     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {

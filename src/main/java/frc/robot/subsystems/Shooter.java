@@ -158,6 +158,10 @@ public class Shooter extends SubsystemBase {
     leftMotor.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
   }
 
+  public double getSpeed() {
+    return leftMotor.getSelectedSensorVelocity();
+  }
+
   public void stop() {
     disableMotorCurrentLimiting();
     leftMotor.set(ControlMode.PercentOutput, 0.0);

@@ -17,10 +17,12 @@ import frc.robot.coordinates.PolarCoordinate;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public final int MODULE0_DRIVE_MOTOR_ID;
-  public final int MODULE0_ANGLE_MOTOR_ID;
-  public final int MODULE0_ANGLE_CANCODER_ID;
-  public final double MODULE0_ANGLE_OFFSET;
+  public static double STARTING_ANGLE = 25;
+
+  public int MODULE0_DRIVE_MOTOR_ID;
+  public int MODULE0_ANGLE_MOTOR_ID;
+  public int MODULE0_ANGLE_CANCODER_ID;
+  public double MODULE0_ANGLE_OFFSET;
 
   public final int MODULE1_DRIVE_MOTOR_ID;
   public final int MODULE1_ANGLE_MOTOR_ID;
@@ -180,6 +182,7 @@ public final class Constants {
      * to get them to be on our side of the field, as opposed to the opposing side.
      */
     public static final double kPickupDistanceInches = 22.0;
+    public static final double kRunOverDistanceInches = 4.0;
 
     // Starting Locations
 
@@ -192,7 +195,7 @@ public final class Constants {
       Rotation2d.fromDegrees(62)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
+      Units.inchesToMeters(90), 
       Rotation2d.fromDegrees(76 + 180)
     );
 
@@ -222,7 +225,7 @@ public final class Constants {
     // Ball R2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBallR2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(215.25)
+      Rotation2d.fromDegrees(212) //215.25
     );
     public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -234,7 +237,7 @@ public final class Constants {
       Rotation2d.fromDegrees(260.25)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
-      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR3.getTheta()
     );
     public static final PolarCoordinate kBallR2ShootPosition = new PolarCoordinate(
@@ -258,6 +261,7 @@ public final class Constants {
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(190.05)
     );
+
   }
 
   // Robot-specific configuration for our swerve drive algorithm
