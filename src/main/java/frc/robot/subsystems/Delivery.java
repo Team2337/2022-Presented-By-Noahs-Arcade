@@ -179,6 +179,13 @@ public class Delivery extends SubsystemBase {
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
   }
 
+  public void resetArray() {
+    storedBalls[Slot.BOTTOM.value] = null;
+    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
+    storedBalls[Slot.TOP.value] = null;
+    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+  }
+
   /**
    * @return Which way to turn in BottomToSideCommand
    */
@@ -244,7 +251,7 @@ public class Delivery extends SubsystemBase {
   /**
    * @return If there are consistency issues with the balls in the robot (if one is missing)
    */
-  public boolean checkForIssues() {
+  public boolean hasIssues() {
     int count =
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
