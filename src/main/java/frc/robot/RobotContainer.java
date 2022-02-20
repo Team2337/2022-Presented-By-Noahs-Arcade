@@ -5,20 +5,16 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.delivery.IntakeBallCommandGroup;
-import frc.robot.commands.delivery.PrepareShooterCommandGroup;
+import frc.robot.commands.delivery.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
@@ -83,7 +79,7 @@ public class RobotContainer {
     operatorLeftBumper.whenReleased(intake::stopIntake, intake);
 
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
-    driverA.whenPressed(new IntakeBallCommandGroup(intake, delivery));
+    driverA.whenPressed(new AfterIntakeCommandGroup(intake, delivery));
 
     JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
@@ -91,6 +87,8 @@ public class RobotContainer {
     driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
+    new Trigger(intake::getIntakeSensorStatus).whenInactive(new AfterIntakeCommandGroup(intake, delivery));
   }
 
 

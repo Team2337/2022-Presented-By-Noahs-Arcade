@@ -164,9 +164,9 @@ public class Delivery extends SubsystemBase {
    */
   public void rotateArrayClockwise() {
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
+    storedBalls[Slot.RIGHT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
-    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue(); // 1 is right
-    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();   // 3 is left
+    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
   }
 
   /**
@@ -174,9 +174,9 @@ public class Delivery extends SubsystemBase {
    */
   public void rotateArrayCounterClockwise() {
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
+    storedBalls[Slot.LEFT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
-    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue(); // 1 is right
-    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();   // 3 is left
+    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
   }
 
   /**
