@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -30,10 +32,10 @@ public class Shooter extends SubsystemBase {
   public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
 
   // This is for 40.7 ft/s, RING OF FIRE!!!
-  private double kP = 0.10;
+  private double kP = 0.06;
   private double kI = 0;
   private double kD = 0.000;
-  private double kF = 0.055;
+  private double kF = 0.005;
 
   private double speedTarget = 35.0;
 
@@ -81,6 +83,7 @@ public class Shooter extends SubsystemBase {
 
     leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     leftMotor.configClosedloopRamp(0.1);
+    leftMotor.configVoltageCompSaturation(9);
     leftMotor.enableVoltageCompensation(true);
 
     configurePID(kP, kI, kD, kF);
@@ -122,6 +125,8 @@ public class Shooter extends SubsystemBase {
       kF = kef.getDouble(0);
       configurePID(kP, kI, kD, kF);
     }
+    Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
+    Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
   public void configurePID(double kp, double ki, double kd, double kf) {
