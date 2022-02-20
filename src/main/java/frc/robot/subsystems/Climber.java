@@ -40,7 +40,7 @@ public class Climber extends SubsystemBase {
     leftMotor.enableVoltageCompensation(true);
 
     leftMotor.setNeutralMode(NeutralMode.Brake);
-    //setUpShuffleboard();
+    setupShuffleboard();
   }
 
   @Override
@@ -74,7 +74,6 @@ public class Climber extends SubsystemBase {
   public double getStringPotVoltage() {
     return stringPot.getVoltage();
   }
-
   /**
    * Returns the temperature of the left climber motor (in Celsius)
    */

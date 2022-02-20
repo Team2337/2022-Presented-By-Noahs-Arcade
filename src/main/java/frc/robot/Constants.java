@@ -297,9 +297,9 @@ public final class Constants {
   public static final int CLIMBER_STRING_POT_ID = 3;
 
   public static final class Climber {
-    public static final double START = 1;
+    public static final double START = .5;
     public static final double LOW_RUNG = 1.0;
-    public static final double MID_RUNG = 2.0;
+    public static final double MID_RUNG = 2.95;
     public static final double RICKABOOT = 0.7;
   }
 
