@@ -32,19 +32,17 @@ public class StartShooter extends CommandBase {
   public void execute() {
     double targetSetpoint = shooter.shooterSpeedFeetPerSecondWidget.getDouble(0);
     newSetpoint = targetSetpoint;
-    shooter.setSpeed(shooter.shooterSpeedFeetPerSecondWidget.getDouble(0));
+    shooter.setSpeed(targetSetpoint);
     if (isShooterComingUpToSpeed || (previousSetpoint != newSetpoint)) {
       if (!shooter.isShooterToSpeed()) {
         reachSetpointCycleCounter ++;
-        //20 ms in a cycle, so we multiply our cycle time by 50 to get the amount of milliseconds, divide by 1000 to get seconds.
-        SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointCycleCounter * 50) / 1000));
-      }
-      else {
-      isShooterComingUpToSpeed = false;
-      SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointCycleCounter * 50) / 1000));
+      } else {
+        isShooterComingUpToSpeed = false;
       }
     }
     previousSetpoint = targetSetpoint;
+    //20 ms in a cycle, so we multiply our cycle time by 50 to get the amount of milliseconds, divide by 1000 to get seconds.
+    SmartDashboard.putNumber("Time to reach Setpoint in sec", ((reachSetpointCycleCounter * 50) / 1000));
   }
 
   @Override
