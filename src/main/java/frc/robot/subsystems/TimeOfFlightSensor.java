@@ -7,12 +7,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class TimeOfFlightSensor extends SubsystemBase {
   
   private final TimeOfFlight sensor = new TimeOfFlight(0);
+  private double previousDistance = 0.0;
 
-  public TimeOfFlightSensor() {}
+  public TimeOfFlightSensor() {
+
+  }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Distance (in)", getDistanceInches());
+    SmartDashboard.putString("Status", getStatus());
+  }
+
+  public String getStatus() {
+    return sensor.getStatus().toString();
   }
 
   public double getDistanceMM() {
@@ -20,7 +28,12 @@ public class TimeOfFlightSensor extends SubsystemBase {
   }
 
   public double getDistanceInches() {
-    return sensor.getRange() / 25.4; // mm to in
+    if (getStatus().equals("Valid")){
+      previousDistance = (sensor.getRange() / 25.4);
+      return sensor.getRange() / 25.4; // mm to in
+    }
+    else {
+      return previousDistance;
+    }
   }
-
 }
