@@ -37,6 +37,8 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
+  private final TimeOfFlightSensor timeOfFlight = new TimeOfFlightSensor();
+
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
