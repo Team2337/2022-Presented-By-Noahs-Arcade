@@ -123,8 +123,8 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
-        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5);
-        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(30.91193711);
         break;
       case COMPETITION:
       default:
@@ -174,7 +174,8 @@ public final class Constants {
     Units.feetToMeters(27),
     Units.feetToMeters(13.5)
   );
-  public final double HUB_HEIGHT = Units.inchesToMeters(103.8);
+  public static final double HUB_HEIGHT_METERS = Units.inchesToMeters(103.8);
+  public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
 
   public static final class Auto {
     /**
@@ -299,6 +300,11 @@ public final class Constants {
 
   public static final class Pixy {
     public static final double RATIO_TOLERANCE = 0.2;
+  }
+
+  public static final class Vision {
+    public static final double IMAGE_PROCESSING_LATENCY_MS = 11;
+    public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
   }
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;

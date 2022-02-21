@@ -48,6 +48,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
   @Override
   public void periodic() {
+    /*
     // Get color and what its closest color is
     Color detectedColor = sensor.getColor();
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
@@ -66,6 +67,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
+    */
   }
 
   public BallColor getColor() {
