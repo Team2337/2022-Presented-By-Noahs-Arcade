@@ -8,8 +8,6 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.littletonrobotics.junction.Logger;
-
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -103,12 +101,6 @@ public class PixyCam extends SubsystemBase {
     }
 
     filterTargets(updatePixy());
-    if (largestBlueTarget == null) {
-      Logger.getInstance().recordOutput("Pixycam/Target Blue Age", -1);
-    } else {
-      Logger.getInstance().recordOutput("Pixycam/Target Blue Age", largestBlueTarget.getAge());
-    }
-    Logger.getInstance().recordOutput("Pixycam/Targeting Blue", largestBlueTarget != null);
   }
 
   /**
