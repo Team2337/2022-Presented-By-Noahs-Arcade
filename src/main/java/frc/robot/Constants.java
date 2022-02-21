@@ -50,15 +50,15 @@ public final class Constants {
   private static Constants instance;
 
   public static final class DashboardLogging {
-    public static final boolean CLIMBERLOG = true;
-    public static final boolean DELIVERYLOG = true;
-    public static final boolean DRIVETRAINLOG = true;
-    public static final boolean HEADINGLOG = true;
-    public static final boolean INTAKELOG = true;
-    public static final boolean KICKERLOG = true;
-    public static final boolean PDHLOG = true;
-    public static final boolean PIXYLOG = true;
-    public static final boolean SHOOTERLOG = true;
+    public static final boolean CLIMBER = false;
+    public static final boolean DELIVERY = false;
+    public static final boolean DRIVETRAIN = false;
+    public static final boolean HEADING = false;
+    public static final boolean INTAKE = false;
+    public static final boolean KICKER = false;
+    public static final boolean PDH = false;
+    public static final boolean PIXY = false;
+    public static final boolean SHOOTER = false;
   }
 
   public static Constants getInstance() {
@@ -197,7 +197,7 @@ public final class Constants {
       Rotation2d.fromDegrees(62)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90), 
+      Units.inchesToMeters(90),
       Rotation2d.fromDegrees(76 + 180)
     );
 

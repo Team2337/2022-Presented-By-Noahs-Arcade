@@ -183,11 +183,10 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    setupShuffleboard(Constants.DashboardLogging.DRIVETRAINLOG);
+    setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);

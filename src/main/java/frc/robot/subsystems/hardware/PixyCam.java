@@ -17,7 +17,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
  */
 public class PixyCam extends SubsystemBase {
 
-  private final Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);;
+  private final Pixy2 pixycam = Pixy2.createInstance(Pixy2.LinkType.SPI);
   private final int chipselect;
   private int state;
 
@@ -44,7 +44,7 @@ public class PixyCam extends SubsystemBase {
 
     connect();
 
-    setupShuffleboard(Constants.DashboardLogging.PIXYLOG);
+    setupShuffleboard(Constants.DashboardLogging.PIXY);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
