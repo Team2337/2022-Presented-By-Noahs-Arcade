@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.hardware.ColorSensorREV;
 import frc.robot.subsystems.hardware.ColorSensorTCS;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
@@ -86,7 +87,7 @@ public class Delivery extends SubsystemBase {
         .withSize(6, 8)
         .withPosition(0, 0);
       infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
-      infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
+      infoWidget.addNumber("Temperature (F)", () -> Utilities.convertCelsiusToFahrenheit(motor.getTemperature()));
 
       ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
         .withSize(6, 8)
