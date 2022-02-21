@@ -96,7 +96,7 @@ public class RobotContainer {
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
 
-    driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
+    // driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
 
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
