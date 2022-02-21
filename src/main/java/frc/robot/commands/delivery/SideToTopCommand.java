@@ -38,7 +38,7 @@ public class SideToTopCommand extends CommandBase {
 
     // Check if we need to move ball before checking to stop and start the motor
     delivery.start(direction);
-    waitForBallFlag = delivery.getLineupSensorValue() < 2.0; //TODO: is there an actual value we can use here? I asked and nobody gave me a value
+    waitForBallFlag = delivery.isBallInTopSlot();
   }
 
   @Override
@@ -49,10 +49,10 @@ public class SideToTopCommand extends CommandBase {
 
     // If we're waiting for old ball to move, update flag to determine its position
     if (waitForBallFlag) {
-      waitForBallFlag = delivery.getLineupSensorValue() < 2.0;
+      waitForBallFlag = delivery.isBallInTopSlot();
     } else {
       // We're finished when either of the sensors returns true
-      isFinished = delivery.getLineupSensorValue() < 2.0;
+      isFinished = delivery.isBallInTopSlot();
     }
   }
 

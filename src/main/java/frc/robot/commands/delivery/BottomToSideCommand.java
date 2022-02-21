@@ -69,14 +69,13 @@ public class BottomToSideCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    // Update ball values
+    // Update ball values and stop delivery
     if (direction == Direction.COUNTER_CLOCKWISE) {
       delivery.rotateArrayCounterClockwise();
     } else if (direction == Direction.CLOCKWISE) {
       delivery.rotateArrayClockwise();
     }
 
-    // Stop delivery
     delivery.stop();
   }
 

@@ -122,7 +122,8 @@ public class RobotContainer {
 
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    new Trigger(intake::getBeamBreakSensorStatus).whenInactive(new AfterIntakeCommandGroup(intake, delivery));
+    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
+    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery));
 
     /** Driverstation Controls * */
 
