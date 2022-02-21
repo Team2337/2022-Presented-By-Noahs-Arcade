@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard(Constants.DashboardLogging.INTAKELOG);
+    setupShuffleboard(Constants.DashboardLogging.INTAKE);
   }
 
   private void setupShuffleboard(Boolean logEnable) {

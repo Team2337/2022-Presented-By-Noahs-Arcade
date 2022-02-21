@@ -37,7 +37,7 @@ public class Delivery extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard(Constants.DashboardLogging.DELIVERYLOG);
+    setupShuffleboard(Constants.DashboardLogging.DELIVERY);
   }
 
   private void setupShuffleboard(Boolean logEnable) {

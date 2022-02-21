@@ -69,7 +69,7 @@ public class Shooter extends SubsystemBase {
     .add("Set Wheel Speed (ft/s)", targetSpeed)
     .withWidget(BuiltInWidgets.kTextView)
     .getEntry();
-  
+
   private StatorCurrentLimitConfiguration currentLimitConfiguration = CTREUtils.defaultCurrentLimit();
 
   public Shooter() {
@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase {
 
     configurePID(kP, kI, kD, kF);
 
-    setupShuffleboard(Constants.DashboardLogging.SHOOTERLOG);
+    setupShuffleboard(Constants.DashboardLogging.SHOOTER);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
@@ -97,7 +97,6 @@ public class Shooter extends SubsystemBase {
     temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
     temps.addBoolean("Motors Overheating?", () -> isOverheated());
-
 
     if (logEnable) {
       speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
