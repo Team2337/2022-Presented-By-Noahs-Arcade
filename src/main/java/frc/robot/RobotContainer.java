@@ -10,40 +10,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.DoNothingCommand;
-import frc.robot.commands.climber.ClimberDefaultCommand;
-import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.swerve.SwerveDriveCommand;
-import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.commands.shooter.RunKicker;
-import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.climber.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
-  private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
+  //private final PixyCam pixyCam = new PixyCam();
 
+  //private final Climber climber = new Climber();
   private final Climber climber = new Climber();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final Kicker kicker = new Kicker();
-  private final Vision vision = new Vision();
-  private final AutoDrive autoDrive = new AutoDrive();
-  private final Delivery delivery = new Delivery();
-  private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Heading heading = new Heading(drivetrain::getGyroscopeRotation);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    climber.setDefaultCommand(new ClimberDefaultCommand(operatorController, climber));
-    heading.setDefaultCommand(new HeadingToTargetCommand(() -> drivetrain.getPose().getTranslation(), heading));
+    //drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -51,6 +35,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
 
     SmartDashboard.putData("AutonChooser", autonChooser);
+    SmartDashboard.putData(climber);
   }
 
   public void resetRobot() {
@@ -58,41 +43,32 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    operatorA.whenHeld(new StartShooter(shooter));
-    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    operatorB.whenHeld(new RunKicker(kicker));
-    JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
-    driverX.whenPressed(heading::enableMaintainHeading);
-
-    //True means that the stringpot will be used for movement, otherwise, it is false
-    //JoystickButton operatorStart --- this button being used as a safety to enable climber.  Do not use for otherthings right now!
+    
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
 
 
-    //operatorStart.whenHeld(new ClimberCommand(operatorController,0, false, climber));
-    //operatorBack.whenPressed(new ClimberCommand(operatorController, Constants.Climber.MID_RUNG, true, climber));
-    //operatorX.whenPressed(new ClimberCommand(operatorController, Constants.Climber.RICKABOOT, true, climber));
+    operatorStart.whenPressed(new ClimberJoystickCommand(operatorController, climber));
+    operatorStart.whenReleased(climber::stop);
+    //operatorBack.whenPressed(climber::goLowRung);
+    //operatorBack.whenReleased(climber::holdPositionUsingEncoder);
+    operatorX.whenPressed(new ClimberSetPointCommand(climber.RICKABOOT, climber));
+    operatorX.whenReleased(new ClimberSetPointCommand(climber.START, climber));
     //operatorY.whenPressed(new ClimberCommand(operatorController, Constants.Climber.LOW_RUNG, true, climber));
 
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorRightBumper.whenPressed(intake::start, intake);
-    operatorRightBumper.whenReleased(intake::stop, intake);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(intake::reverse, intake);
-    operatorLeftBumper.whenReleased(intake::stop, intake);
-    // JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    // JoystickButton leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    // leftBumper.whenPressed(new Top3Ball(drivetrain, heading, autoDrive));
-    // leftBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall1Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-    // rightBumper.whenPressed(new ProfiledPointToPointCommand(Constants.Auto.kBall2Pickup, drivetrain::getPose, drivetrain::getChassisSpeeds, heading, autoDrive));
-
-    //operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-    operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorRightBumper.whenPressed(intake::start, intake);
+    // operatorRightBumper.whenReleased(intake::stop, intake);
+    // operatorLeftBumper.whenPressed(intake::reverse, intake);
+    // operatorLeftBumper.whenReleased(intake::stop, intake);
+   
+    // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
