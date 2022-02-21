@@ -19,6 +19,7 @@ public class BottomToSideCommand extends CommandBase {
   
   public BottomToSideCommand(Delivery delivery) {
     this.delivery = delivery;
+    
     addRequirements(delivery);
   }
 
