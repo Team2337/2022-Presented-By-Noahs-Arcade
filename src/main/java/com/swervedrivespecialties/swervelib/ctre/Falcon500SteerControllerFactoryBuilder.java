@@ -151,7 +151,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
     }
 
     private static class ControllerImplementation implements SteerController {
-        private static final int ENCODER_RESET_ITERATIONS = 500;
+        private static final int ENCODER_RESET_ITERATIONS = 125;
         private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
         private final TalonFX motor;
@@ -162,7 +162,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
         private double referenceAngleRadians = 0.0;
 
-        private double resetIteration = 0;
+        private double resetIteration = ENCODER_RESET_ITERATIONS - 1;
 
         private ControllerImplementation(TalonFX motor,
                                          double motorEncoderPositionCoefficient,
@@ -190,10 +190,14 @@ public final class Falcon500SteerControllerFactoryBuilder {
             // end up getting a good reading. If we reset periodically this won't matter anymore.
             if (motor.getSelectedSensorVelocity() * motorEncoderVelocityCoefficient < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
                 if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
-                    resetIteration = 0;
                     double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
-                    motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
-                    currentAngleRadians = absoluteAngle;
+                    if (absoluteEncoder.getError().value != 0) {
+                        resetIteration = ENCODER_RESET_ITERATIONS - 1;
+                    } else {
+                        motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
+                        currentAngleRadians = absoluteAngle;
+                        resetIteration = 0;
+                    }
                 }
             } else {
                 resetIteration = 0;
