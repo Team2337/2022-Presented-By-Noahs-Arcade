@@ -1,15 +1,14 @@
 package frc.robot.commands.delivery;
 
 import frc.robot.subsystems.Delivery;
-import frc.robot.subsystems.Delivery.Direction;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * Stops the delivery motor
  * @author Madison J.
  *
  */
-public class AutoStopDelivery extends CommandBase {
+public class AutoStopDelivery extends InstantCommand {
 
   private final Delivery delivery;
 
@@ -20,18 +19,7 @@ public class AutoStopDelivery extends CommandBase {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     delivery.stopDelivery();
   }
-
-  @Override
-  public void end(boolean interrupted) {
-    delivery.stopDelivery();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
-
 }

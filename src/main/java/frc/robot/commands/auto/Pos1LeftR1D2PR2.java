@@ -1,12 +1,9 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.commands.auto.ProfiledPointToPointCommand;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.subsystems.AutoDrive;
@@ -29,7 +26,7 @@ public class Pos1LeftR1D2PR2 extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new FirstMove(Constants.Auto.kBallR1, autoDrive, delivery, drivetrain, heading, intake, kicker, shooter),
+      new FirstMove(Constants.Auto.kBallR1, autoDrive, drivetrain, heading, intake, shooter),
       new WaitCommand(1),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR1, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
@@ -39,10 +36,7 @@ public class Pos1LeftR1D2PR2 extends SequentialCommandGroup {
       new WaitCommand(1),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading),
       new WaitCommand(1),
-      new AutoStopAllCommands(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter)
+      new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
-  }
-  public void initialize() {
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), Rotation2d.fromDegrees(0)));
   }
 }
