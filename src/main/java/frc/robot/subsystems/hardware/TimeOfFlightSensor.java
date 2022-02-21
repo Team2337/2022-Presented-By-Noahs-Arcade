@@ -16,6 +16,7 @@ public class TimeOfFlightSensor extends SubsystemBase {
 
   public TimeOfFlightSensor() {
     sensor.setRangingMode(RangingMode.Short, 24);
+    sensor.setRangeOfInterest(8, 8, 12, 12);
   }
 
   @Override
