@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
 
   // Beam break sensor
-  private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_SENSOR_ID);
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_BEAM_ID);
 
   public Intake() {
     motor.configFactoryDefault();
@@ -40,8 +40,8 @@ public class Intake extends SubsystemBase {
       ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
 
       ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
-      intakeWidget.addNumber("Speed (%)", this::getSpeeds);
-      intakeWidget.addNumber("Temperatures (F)", this::getTemperatures);
+      intakeWidget.addNumber("Speed (%)", this::getSpeed);
+      intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
     }
   }
 
@@ -80,14 +80,14 @@ public class Intake extends SubsystemBase {
   /**
    * @return Gets the intake speed as a percent (between -1 and 1)
    */
-  private double getSpeeds() {
+  private double getSpeed() {
     return motor.getMotorOutputPercent();
   }
 
   /**
    * Returns the temperature of the intake motor (in Celsius)
    */
-  private double getTemperatures() {
+  private double getTemperature() {
     return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
   }
 

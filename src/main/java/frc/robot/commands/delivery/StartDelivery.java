@@ -21,12 +21,12 @@ public class StartDelivery extends CommandBase {
 
   @Override
   public void execute() {
-    delivery.startDelivery(Direction.CLOCKWISE, 0.3);
+    delivery.setSpeed(Direction.CLOCKWISE, 0.3);
   }
 
   @Override
   public void end(boolean interrupted) {
-    delivery.stopDelivery();
+    delivery.stop();
   }
 
   @Override
