@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.hardware;
 
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
@@ -6,10 +6,11 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
+import frc.robot.subsystems.hardware.interfaces.ColorSensor;
 
 /**
  * Subsystem for the TCS34275 color sensor. Plugs in to the I2C port. Based on {@link ColorSensorREV}
- * 
+ *
  * @author Michael Francis
  */
 public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
@@ -74,7 +75,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   public boolean seesBall() {
     /**
      * Luminance max threshold
-     * 
+     *
      * This is a terrible way to go about this. If we can find a better way to do this, such as
      * using a Time of Flight sensor instead (there is code in the 2020 repo), it would be much
      * better. The current solution works, but it's a very sketchy solution.

@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.lang.ref.WeakReference;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
@@ -74,18 +73,6 @@ public class AutoDrive extends SubsystemBase {
         this.forward = forward;
         this.strafe = strafe;
       }
-    }
-
-    public AutoDrive.State toFieldRelativeState(Rotation2d robotAngle) {
-      /**
-       * This calculation is VERY similar to the ChassisSpeeds.fromFieldRelativeSpeeds
-       * calculation, but it's different. We invert our sin multiplications in order
-       * to get the proper field-oriented speeds.
-       */
-      return new AutoDrive.State(
-        forward * robotAngle.getCos() + -strafe * robotAngle.getSin(),
-        forward * robotAngle.getSin() + strafe * robotAngle.getCos()
-      );
     }
   }
 
