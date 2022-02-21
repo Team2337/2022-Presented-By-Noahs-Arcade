@@ -17,6 +17,7 @@ public class AfterIntakeCommandGroup extends SequentialCommandGroup {
     // Schedule commands
     addCommands(
       new InstantCommand(delivery::addNewBall),
+      new InstantCommand(intake::reverse),
       new BottomToSideCommand(delivery)
     );
   }
