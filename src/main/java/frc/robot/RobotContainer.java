@@ -24,6 +24,9 @@ import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.vision.InstantRelocalizeCommand;
+import frc.robot.commands.vision.LimeLightHeadingCommand;
+import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
@@ -41,10 +44,10 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Kicker kicker = new Kicker();
-  private final Vision vision = new Vision();
   private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -52,6 +55,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
+    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -76,6 +80,12 @@ public class RobotContainer {
 
   public void resetRobot() {
     pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(
+      new Pose2d(
+        Constants.Auto.kPosition3RightStart.toFieldCoordinate(),
+        drivetrain.getGyroscopeRotation()
+      )
+    );
   }
 
   public void resetRobot2() {
@@ -93,8 +103,12 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
+    JoystickButton backButton = new JoystickButton(driverController, XboxController.Button.kBack.value);
+    JoystickButton startButton = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     // driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
 
@@ -102,10 +116,11 @@ public class RobotContainer {
     driverB.whileHeld(new StartShooter(shooter));
     driverTriggerRight.whileHeld(new RunKicker(kicker));
 
-    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+
+    backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
