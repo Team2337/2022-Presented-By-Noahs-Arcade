@@ -322,7 +322,8 @@ public class Delivery extends SubsystemBase {
   }
 
   public boolean isBallInTopSlot() {
-    return lineupSensor.getDistanceInches() < 2.0; //TODO: temporary value, what is the range we want when a ball is lined up?
+    // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
+    return lineupSensor.getDistanceInches() < 3.5;
   }
 
   /**
