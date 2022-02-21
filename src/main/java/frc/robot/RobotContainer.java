@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
+import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -94,6 +97,11 @@ public class RobotContainer {
     driverB.whileHeld(new StartShooter(shooter));
     driverTriggerRight.whileHeld(new RunKicker(kicker));
 
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
+    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
+
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
@@ -113,6 +121,8 @@ public class RobotContainer {
     operatorRightBumper.whenReleased(intake::stop, intake);
 
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
+    new Trigger(intake::getBeamBreakSensorStatus).whenInactive(new AfterIntakeCommandGroup(intake, delivery));
 
     /** Driverstation Controls * */
 
