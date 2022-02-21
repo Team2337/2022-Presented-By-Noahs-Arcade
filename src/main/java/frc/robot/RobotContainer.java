@@ -46,8 +46,8 @@ public class RobotContainer {
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   // Alliance/Opposing colors
-  public static BallColor allianceColor = BallColor.RED; //defaults
-  public static BallColor opposingColor = BallColor.BLUE;
+  public static BallColor allianceColor;
+  public static BallColor opposingColor;
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
