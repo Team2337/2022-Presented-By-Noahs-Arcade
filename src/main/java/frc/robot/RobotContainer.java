@@ -82,6 +82,15 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+
+    /* 
+     * Driver Controller
+     * - Left joystick (x + y axes), right x axis, and left bumper are used by SwerveDriveCommand
+     * - TODO: A button is hub-centric mode
+     * - TODO: delivery/shooter logic with ball colors
+     * - Left Trigger is shoot theirs (chamber theirs?)
+     * - Right Trigger is shoot ours (chamber ours?)
+     */
     /** Driver Controller */
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
@@ -91,10 +100,18 @@ public class RobotContainer {
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
 
     driverX.whenPressed(heading::enableMaintainHeading);
-    driverB.whileHeld(new StartShooter(shooter));
-    driverTriggerRight.whileHeld(new RunKicker(kicker));
+    driverB.whileHeld(new RunKicker(kicker));
 
-    /** Operator Controller * */
+    driverTriggerLeft.whenHeld(new StartShooter(shooter)); //TODO: shooter logic for their balls
+    driverTriggerRight.whenHeld(new StartShooter(shooter)); //TODO: shooter logic for our balls
+
+    /*
+     * Operator Controller
+     * - Left joystick x-axis is used by DeliveryOverrideCommand
+     * - 
+     * - 
+     * - 
+     */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
