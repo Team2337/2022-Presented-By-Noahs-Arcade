@@ -60,21 +60,21 @@ public class Intake extends SubsystemBase {
   /**
    * Starts the intake motor
    */
-  public void startIntake() {
+  public void start() {
     setSpeed(Constants.INTAKE_FORWARD_SPEED);
   }
 
   /**
    * Reverses the intakes
    */
-  public void reverseIntake() {
+  public void reverse() {
     setSpeed(Constants.INTAKE_REVERSE_SPEED);
   }
 
   /**
    * Stops the intake
    */
-  public void stopIntake() {
+  public void stop() {
     setSpeed(0.0);
   }
 

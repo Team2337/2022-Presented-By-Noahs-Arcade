@@ -106,11 +106,11 @@ public class RobotContainer {
     JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    operatorRightBumper.whenPressed(intake::startIntake, intake);
-    operatorRightBumper.whenReleased(intake::stopIntake, intake);
+    operatorRightBumper.whenPressed(intake::start, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    operatorLeftBumper.whenPressed(intake::reverseIntake, intake);
-    operatorLeftBumper.whenReleased(intake::stopIntake, intake);
+    operatorLeftBumper.whenPressed(intake::reverse, intake);
+    operatorLeftBumper.whenReleased(intake::stop, intake);
 
     JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
