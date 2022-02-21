@@ -102,8 +102,8 @@ public class TCSSensor {
      * |------|-------|
      * | Time | Value |
      * |------|-------|
-     * | 2.4  | 0xFF  |
-     * | 24   | 0xF6  | <--
+     * | 2.4  | 0xFF  | <--
+     * | 24   | 0xF6  |
      * | 101  | 0xD5  |
      * | 154  | 0xC0  |
      * | 700  | 0x00  |
@@ -111,7 +111,7 @@ public class TCSSensor {
      *
      * Time values are in ms. See table 6 in PDF.
      */
-    device.write(Register.ATIME.value, 0xF6);
+    device.write(Register.ATIME.value, 0xFF);
     // Select control register
     /**
      * According to the documentation, the values for the second parameter here are:

@@ -3,6 +3,7 @@ package frc.robot.subsystems.hardware;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
@@ -15,8 +16,7 @@ import frc.robot.subsystems.hardware.interfaces.ColorSensor;
  */
 public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
-  // private final int COLOR_SENSOR_PROXIMITY = 10; //TODO: find value of this
-  private final double LUMINANCE_MAX_THRESHOLD = 96.0;
+  private final double LUMINANCE_MAX_THRESHOLD = 12.0; //TODO: tune this
 
   // The sensor
   private final TCSSensor sensor;
@@ -24,8 +24,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
   private static final Color kMatchRed  = new Color(0.40, 0.30, 0.30);
-  private static final Color kMatchBlue = new Color(0.20, 0.40, 0.40);
-  private static final Color kMatchBlue2 = new Color(0.25, 0.35, 0.40);
+  private static final Color kMatchBlue = new Color(0.20, 0.35, 0.45);
   private static final Color kMatchBlack = new Color(0.3333, 0.3333, 0.3333);
 
   // Other variables
@@ -42,15 +41,18 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
     // Color match
     colorMatcher.addColorMatch(kMatchRed);
     colorMatcher.addColorMatch(kMatchBlue);
-    colorMatcher.addColorMatch(kMatchBlue2);
     colorMatcher.addColorMatch(kMatchBlack);
   }
 
   @Override
   public void periodic() {
     // Get color and what its closest color is
+    long start = System.nanoTime();
     Color detectedColor = sensor.getColor();
+    long end = System.nanoTime();
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
+
+    System.out.println("Delivery time: " + String.valueOf((double)(end - start) / 1000000.0));
 
     // Reset current color
     currentColor = null;
@@ -62,7 +64,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
     } else if (match.color == kMatchRed) {
       // Red ball
       currentColor = BallColor.RED;
-    } else if (match.color == kMatchBlue || match.color == kMatchBlue2) {
+    } else if (match.color == kMatchBlue) {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
