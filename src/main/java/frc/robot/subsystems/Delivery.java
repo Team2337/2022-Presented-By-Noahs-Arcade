@@ -321,6 +321,11 @@ public class Delivery extends SubsystemBase {
     return lineupSensor.getDistanceInches();
   }
 
+  public boolean isBallInTopSlot() {
+    // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
+    return lineupSensor.getDistanceInches() < 3.5;
+  }
+
   /**
    * TODO: does this need to be moved to shooter when we add that logic? Will this be in the robot?
    * @return Gets whether or not the shooter (output) golf ball sensor sees something
