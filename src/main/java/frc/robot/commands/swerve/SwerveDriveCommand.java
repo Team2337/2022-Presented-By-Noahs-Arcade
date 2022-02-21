@@ -60,6 +60,12 @@ public class SwerveDriveCommand extends CommandBase {
       rotation = rotationSlew.calculate(rotation);
     }
 
+    if (DriverStation.isTeleopEnabled()) {
+      forward = forwardSlew.calculate(forward);
+      strafe = strafeSlew.calculate(strafe);
+      rotation = rotationSlew.calculate(rotation);
+    }
+
     // If a driver-initiated rotation is provided, disable our rotation
     // controller to let the driver rotate freely.
     // Never allow this flow in autonomous (protect against floating joystick
