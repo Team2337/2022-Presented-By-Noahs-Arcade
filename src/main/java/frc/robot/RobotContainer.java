@@ -94,14 +94,16 @@ public class RobotContainer {
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
 
+    driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
+
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
     driverTriggerRight.whileHeld(new RunKicker(kicker));
 
     JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery));
-    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery));
+    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
+    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand

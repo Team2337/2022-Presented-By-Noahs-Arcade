@@ -51,7 +51,7 @@ public final class Constants {
 
   public static final class DashboardLogging {
     public static final boolean CLIMBER = false;
-    public static final boolean DELIVERY = false;
+    public static final boolean DELIVERY = true;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
     public static final boolean INTAKE = false;
@@ -311,7 +311,7 @@ public final class Constants {
   public static final int SHOOTER_RIGHT_MOTOR = 14;
 
   public static final int DELIVERY_MOTOR_ID = 21;
-  public static final double DELIVERY_SPEED = 0.5;
+  public static final double DELIVERY_SPEED = 0.2;
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;

@@ -3,6 +3,7 @@ package frc.robot.commands.delivery;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.BallColor;
 import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Delivery.Direction;
 
 /**
@@ -13,16 +14,18 @@ import frc.robot.subsystems.Delivery.Direction;
 public class SideToTopCommand extends CommandBase {
 
   private final Delivery delivery;
+  private final Kicker kicker;
   private Direction direction;
   private BallColor ballColor;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
   
-  public SideToTopCommand(Delivery delivery, BallColor ballColor){
+  public SideToTopCommand(Delivery delivery, Kicker kicker, BallColor ballColor){
     this.delivery = delivery;
+    this.kicker = kicker;
     this.ballColor = ballColor;
-    addRequirements(delivery);
+    addRequirements(delivery, kicker);
   }
 
   @Override
@@ -38,6 +41,7 @@ public class SideToTopCommand extends CommandBase {
 
     // Check if we need to move ball before checking to stop and start the motor
     delivery.start(direction);
+    kicker.setSpeed(-0.2);
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 
@@ -58,12 +62,14 @@ public class SideToTopCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    // Rotate internal state
+    // Rotate internal state and stop delivery
     if (direction == Direction.COUNTER_CLOCKWISE) {
       delivery.rotateArrayCounterClockwise();
     } else if (direction == Direction.CLOCKWISE) {
       delivery.rotateArrayClockwise();
     }
+    delivery.stop();
+    kicker.stop();
   }
 
   @Override
