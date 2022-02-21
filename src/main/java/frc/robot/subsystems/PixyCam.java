@@ -21,9 +21,9 @@ public class PixyCam extends SubsystemBase {
   private final int chipselect;
   private int state;
 
-  private int lastSeenCounterRed = 0;
-  private int lastSeenCounterBlue = 0;
-  private final int MAX_COUNT = 3;
+  private int lastSeenCycleRed = 0;
+  private int lastSeenCycleBlue = 0;
+  private static final int LAST_SEEN_MAX_CYCLES = 3;
 
   private Block largestRedTarget;
   private Block largestBlueTarget;
@@ -105,6 +105,8 @@ public class PixyCam extends SubsystemBase {
    */
   private ArrayList<Block> updatePixy() {
     // Either number of targets or an error code
+    // Be careful changing the number at the end
+    // We were having OutOfMemory errors at 20 and we belive a "safe" range is 4-8
     int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 8);
 
     if (error < 0) {
@@ -159,21 +161,21 @@ public class PixyCam extends SubsystemBase {
      */
     // Red
     if (newLargestRedTarget != null) {
-      lastSeenCounterRed = 0;
+      lastSeenCycleRed = 0;
       largestRedTarget = newLargestRedTarget;
-    } else if (lastSeenCounterRed >= MAX_COUNT) {
+    } else if (lastSeenCycleRed >= LAST_SEEN_MAX_CYCLES) {
       largestRedTarget = null;
     }
-    lastSeenCounterRed++;
+    lastSeenCycleRed++;
     // Blue
     if (newLargestBlueTarget != null) {
       // If it sees a target, reset counter and update variable
-      lastSeenCounterBlue = 0;
+      lastSeenCycleBlue = 0;
       largestBlueTarget = newLargestBlueTarget;
-    } else if (lastSeenCounterBlue >= MAX_COUNT) {
+    } else if (lastSeenCycleBlue >= LAST_SEEN_MAX_CYCLES) {
       largestBlueTarget = null;
     }
-    lastSeenCounterBlue++;
+    lastSeenCycleBlue++;
   }
 
   private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
