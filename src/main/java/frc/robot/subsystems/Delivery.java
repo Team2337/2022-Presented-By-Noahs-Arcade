@@ -2,9 +2,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.Status;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
@@ -29,18 +34,22 @@ public class Delivery extends SubsystemBase {
     LEFT(3);
 
     public final int value;
-
     private Slot(int value) {
       this.value = value;
     }
   }
+  private Direction direction = Direction.COUNTER_CLOCKWISE;
+  private double previousDistance;
+  private double tofBallCenteredDistance = 1; //Distance when we see the center of the ball
+  private double tofSeesBall = 2; //Distance that we first see the edge of the ball
 
   // Motor
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
   // Color sensors
-  private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final ColorSensorREV rightSensor = new ColorSensorREV(I2C.Port.kOnboard);
+  private final ColorSensorTCS leftSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final TimeOfFlight tOfFlight = new TimeOfFlight(0);
 
   // Golf ball sensors
   private final DigitalInput topLeftBeam = new DigitalInput(Constants.TOP_LEFT_BEAM_ID);
@@ -103,8 +112,9 @@ public class Delivery extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
-
+  public void periodic() {
+    SmartDashboard.putNumber("TOF Distance", getDistanceInches());
+  }
 
   ///////////////////////////
   // --------------------- //
@@ -193,8 +203,8 @@ public class Delivery extends SubsystemBase {
     if (storedBalls[Slot.BOTTOM.value] == null) {
       return null;
     }
-
-    return storedBalls[Slot.LEFT.value] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
+    direction = storedBalls[Slot.LEFT.value] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
+    return direction;
   }
 
   /**
@@ -204,10 +214,12 @@ public class Delivery extends SubsystemBase {
   public Direction getSideToTopDirection(BallColor ballColor) {
     if (storedBalls[Slot.LEFT.value] == ballColor) {
       // Ball is on the left, rotate clockwise
-      return Direction.CLOCKWISE;
+      direction = Direction.CLOCKWISE;
+      return direction;
     } else if (storedBalls[Slot.RIGHT.value] == ballColor) {
       // Ball is on the right, rotate counter-clockwise
-      return Direction.COUNTER_CLOCKWISE;
+      direction = Direction.COUNTER_CLOCKWISE;
+      return direction;
     } else {
       return null;
     }
@@ -246,6 +258,10 @@ public class Delivery extends SubsystemBase {
    */
   public int getNumberOfBalls() {
     return balls;
+  }
+
+  public Direction getDirection(){
+    return direction;
   }
 
   /**
@@ -336,4 +352,30 @@ public class Delivery extends SubsystemBase {
     return !shooterBeam.get();
   }
 
+  public Status getStatus() {
+    return tOfFlight.getStatus();
+  }
+
+  public double getDistanceMM() {
+    return tOfFlight.getRange();
+  }
+  
+  public double getDistanceInches() {
+    if (getStatus() == Status.Valid){
+      double distance = Units.metersToInches((getDistanceMM() / 1000));
+      previousDistance = distance;
+      return distance;
+    }
+    else {
+      return previousDistance;
+    }
+  }
+
+  public boolean tofSeesBall(){
+    return (getDistanceInches() < tofSeesBall);
+  }
+
+  public boolean tofBallCentered() {
+    return (getDistanceInches() < tofBallCenteredDistance);
+  }
 }

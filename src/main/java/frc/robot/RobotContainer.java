@@ -41,7 +41,6 @@ public class RobotContainer {
 
   public static BallColor allianceColor;
   public static BallColor opposingColor;
-  private final TimeOfFlightSensor timeOfFlight = new TimeOfFlightSensor();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 

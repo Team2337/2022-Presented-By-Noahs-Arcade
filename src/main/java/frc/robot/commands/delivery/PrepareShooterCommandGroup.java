@@ -8,11 +8,6 @@ import frc.robot.subsystems.Delivery;
 public class PrepareShooterCommandGroup extends SequentialCommandGroup {
   
   public PrepareShooterCommandGroup(BallColor ballColor, Delivery delivery) {
-    // If there are issues, schedule a different one first
-    if (delivery.hasIssues()) {
-      CommandScheduler.getInstance().schedule(false, new CorrectDeliveryCommandGroup(delivery));
-    }
-
     // Check which way we need to rotate
     if (delivery.getTopPositionColor() == ballColor) {
       // Ball is at top

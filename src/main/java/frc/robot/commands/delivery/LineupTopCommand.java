@@ -22,19 +22,8 @@ public class LineupTopCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    if (!delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus()) {
-      // Neither sensor is triggered
-      return;
-    }
-
-    // Determine which way to rotate
-    if (delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus()) {
-      // Rotate so that right sensor now shows true
-      delivery.startDelivery(Direction.CLOCKWISE, DELIVERY_SLOW_SPEED);
-    } else if (!delivery.getTopLeftSensorStatus() && delivery.getTopRightSensorStatus()) {
-      // Rotate so that left sensor now shows true
-      delivery.startDelivery(Direction.COUNTER_CLOCKWISE, DELIVERY_SLOW_SPEED);
-    }
+    // Determine which way to rotat
+      delivery.startDelivery(delivery.getDirection(), DELIVERY_SLOW_SPEED);
   }
 
   @Override
@@ -47,7 +36,8 @@ public class LineupTopCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return delivery.isBallLinedUpToShooter() || (!delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus());
+    return delivery.tofBallCentered();
+    //(!delivery.getTopLeftSensorStatus() && !delivery.getTopRightSensorStatus());
   }
 
 }

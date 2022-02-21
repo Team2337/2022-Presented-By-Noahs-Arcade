@@ -38,7 +38,7 @@ public class SideToTopCommand extends CommandBase {
 
     // Check if we need to move ball before checking to stop and start the motor
     delivery.startDelivery(direction);
-    waitForBallFlag = (delivery.getTopRightSensorStatus() || delivery.getTopLeftSensorStatus());
+    waitForBallFlag = (delivery.tofSeesBall());
   }
 
   @Override
@@ -49,12 +49,10 @@ public class SideToTopCommand extends CommandBase {
 
     // If we're waiting for old ball to move, update flag to determine its position
     if (waitForBallFlag) {
-      waitForBallFlag = (delivery.getTopRightSensorStatus() || delivery.getTopLeftSensorStatus());
-    } else {
-      // We're finished when either of the sensors returns true
-      isFinished = (delivery.getTopRightSensorStatus() || delivery.getTopLeftSensorStatus());
-    }
+      waitForBallFlag = (delivery.tofSeesBall());
+    } 
   }
+  
 
   @Override
   public void end(boolean interrupted) {
@@ -73,7 +71,7 @@ public class SideToTopCommand extends CommandBase {
       return false;
     } else {
       // Stop when the ball we want triggers the motors. See `end()`
-      return isFinished;
+      return delivery.tofSeesBall();
     }
   }
 
