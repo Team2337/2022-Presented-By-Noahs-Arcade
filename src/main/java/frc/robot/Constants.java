@@ -195,7 +195,7 @@ public final class Constants {
       Rotation2d.fromDegrees(62)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90), 
+      Units.inchesToMeters(90),
       Rotation2d.fromDegrees(76 + 180)
     );
 
@@ -296,7 +296,7 @@ public final class Constants {
   }
 
   public static final class Pixy {
-    public static final double RATIO_TOLERANCE = 1.0;
+    public static final double RATIO_TOLERANCE = 0.2;
   }
 
   public static final int KICKER_MOTOR = 20;
