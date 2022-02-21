@@ -43,7 +43,7 @@ public class Delivery extends SubsystemBase {
   
   // Color sensors
   private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   // TOF sensor
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
@@ -103,7 +103,7 @@ public class Delivery extends SubsystemBase {
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: "  + String.valueOf(leftSensor.getColor()),
-        // "Right: " + String.valueOf(rightSensor.getColor())
+        "Right: " + String.valueOf(rightSensor.getColor())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
@@ -307,7 +307,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return null; // rightSensor.getColor();
+    return rightSensor.getColor();
   }
 
 
