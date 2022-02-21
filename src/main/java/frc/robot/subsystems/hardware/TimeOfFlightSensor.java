@@ -1,6 +1,7 @@
 package frc.robot.subsystems.hardware;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.playingwithfusion.TimeOfFlight.Status;
 
 import edu.wpi.first.math.util.Units;
@@ -12,6 +13,11 @@ public class TimeOfFlightSensor extends SubsystemBase {
   private final TimeOfFlight sensor = new TimeOfFlight(0);
 
   private double distanceInches;
+
+  public TimeOfFlightSensor() {
+    sensor.setRangingMode(RangingMode.Short, 24);
+    sensor.setRangeOfInterest(6, 6, 10, 10); 
+  }
 
   @Override
   public void periodic() {
