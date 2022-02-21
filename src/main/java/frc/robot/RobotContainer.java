@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
@@ -34,7 +35,7 @@ public class RobotContainer {
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final PixyCam pixyCam = new PixyCam();
 
-  // private final Climber climber = new Climber();
+  private final Climber climber = new Climber();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Kicker kicker = new Kicker();
@@ -119,6 +120,8 @@ public class RobotContainer {
 
     operatorRightBumper.whenPressed(intake::reverse, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
+
+    operatorTriggerLeft.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 

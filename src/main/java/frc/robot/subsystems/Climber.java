@@ -38,6 +38,16 @@ public class Climber extends SubsystemBase {
 
     leftMotor.setNeutralMode(NeutralMode.Brake);
 
+    // PID for our positional hold
+    leftMotor.config_kP(0, 0.15);
+    leftMotor.config_kI(0, 0);
+    leftMotor.config_kD(0, 0);
+    // Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048
+    // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
+    leftMotor.configAllowableClosedloopError(0, 100);
+    leftMotor.configNominalOutputForward(0.1);
+    leftMotor.configNominalOutputReverse(0.1);
+
     setupShuffleboard(Constants.DashboardLogging.CLIMBER);
   }
 
@@ -55,6 +65,18 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {}
+
+  public void hold(double position) {
+    leftMotor.set(ControlMode.Position, position);
+  }
+
+  public double getPosition() {
+    return leftMotor.getSelectedSensorPosition();
+  }
+
+  public void stop() {
+    setSpeed(0.0);
+  }
 
   public void setSpeed(double speed) {
     leftMotor.set(ControlMode.PercentOutput, speed);
