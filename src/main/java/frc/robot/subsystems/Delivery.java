@@ -215,9 +215,8 @@ public class Delivery extends SubsystemBase {
     } else if (storedBalls[Slot.RIGHT.value] == ballColor) {
       // Ball is on the right, rotate counter-clockwise
       return Direction.COUNTER_CLOCKWISE;
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
