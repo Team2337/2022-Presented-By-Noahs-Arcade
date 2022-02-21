@@ -7,6 +7,8 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -79,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
     )
   );
 
-  private SwerveDriveOdometry odometry;
+  private SwerveDrivePoseEstimator odometry;
 
   /**
    * Subsystem where swerve modules are configured,
@@ -89,7 +91,14 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(PigeonIMU pigeon) {
     this.pigeon = pigeon;
 
-    odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
+    odometry = new SwerveDrivePoseEstimator(
+      getGyroscopeRotation(),
+      new Pose2d(),
+      kinematics,
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(Units.degreesToRadians(0.01)),
+      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
+    );
 
     if (RobotType.getRobotType() == Type.SKILLSBOT) {
       SmartDashboard.putString("Drivetrain Swerve Setup", "Mk3");
@@ -140,8 +149,8 @@ public class Drivetrain extends SubsystemBase {
       modules = new SwerveModule[] {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 0),
+            .withSize(4, 8)
+            .withPosition(4, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
@@ -150,8 +159,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 0),
+            .withSize(4, 8)
+            .withPosition(0, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
@@ -160,8 +169,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 8),
+            .withSize(4, 8)
+            .withPosition(0, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
@@ -170,8 +179,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 8),
+            .withSize(4, 8)
+            .withPosition(4, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
@@ -183,11 +192,10 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    setupShuffleboard(Constants.DashboardLogging.DRIVETRAINLOG);
+    setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
@@ -203,7 +211,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return odometry.getEstimatedPosition();
   }
 
   public Translation2d getTranslation() {
@@ -258,6 +266,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry() {
     odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
+  }
+
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
+    odometry.addVisionMeasurement(visionPose, timestampSeconds);
   }
 
   /**

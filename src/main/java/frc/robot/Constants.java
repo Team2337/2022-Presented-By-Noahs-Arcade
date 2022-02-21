@@ -50,15 +50,15 @@ public final class Constants {
   private static Constants instance;
 
   public static final class DashboardLogging {
-    public static final boolean CLIMBERLOG = true;
-    public static final boolean DELIVERYLOG = true;
-    public static final boolean DRIVETRAINLOG = true;
-    public static final boolean HEADINGLOG = true;
-    public static final boolean INTAKELOG = true;
-    public static final boolean KICKERLOG = true;
-    public static final boolean PDHLOG = true;
-    public static final boolean PIXYLOG = true;
-    public static final boolean SHOOTERLOG = true;
+    public static final boolean CLIMBER = false;
+    public static final boolean DELIVERY = false;
+    public static final boolean DRIVETRAIN = false;
+    public static final boolean HEADING = false;
+    public static final boolean INTAKE = false;
+    public static final boolean KICKER = false;
+    public static final boolean PDH = false;
+    public static final boolean PIXY = false;
+    public static final boolean SHOOTER = false;
   }
 
   public static Constants getInstance() {
@@ -123,8 +123,8 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
-        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(36.5);
-        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(30.91193711);
         break;
       case COMPETITION:
       default:
@@ -174,7 +174,8 @@ public final class Constants {
     Units.feetToMeters(27),
     Units.feetToMeters(13.5)
   );
-  public final double HUB_HEIGHT = Units.inchesToMeters(103.8);
+  public static final double HUB_HEIGHT_METERS = Units.inchesToMeters(103.8);
+  public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
 
   public static final class Auto {
     /**
@@ -301,19 +302,29 @@ public final class Constants {
     public static final double RATIO_TOLERANCE = 0.2;
   }
 
+  public static final class Vision {
+    public static final double IMAGE_PROCESSING_LATENCY_MS = 11;
+    public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
+  }
+
+  public static final int CLIMBER_LEFT_MOTOR_ID = 16;
+  public static final int CLIMBER_RIGHT_MOTOR_ID = 3;
+  public static final int CLIMBER_STRING_POT_ID = 3; // DIO
+
   public static final int KICKER_MOTOR = 20;
 
   public static final int SHOOTER_LEFT_MOTOR = 7;
   public static final int SHOOTER_RIGHT_MOTOR = 14;
 
   public static final int DELIVERY_MOTOR_ID = 21;
-  public static final double DELIVERY_SPEED = 0.5;
+  public static final double DELIVERY_SPEED = 0.2;
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;
   public static final double INTAKE_REVERSE_SPEED = -0.5;
 
-  public static final int INTAKE_SENSOR_ID = 0;
+  public static final int INTAKE_BEAM_ID = 0;
+  public static final int SHOOTER_BEAM_ID = 2;
 
   public static enum BallColor {
     RED,

@@ -4,6 +4,7 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
@@ -25,8 +26,8 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
-  private static final Color kMatchRed  = new Color(0.4529, 0.2117, 0.0980);
-  private static final Color kMatchBlue = new Color(0.1078, 0.2608, 0.3921);
+  private static final Color kMatchRed  = new Color(0.275, 0.45, 0.275);
+  private static final Color kMatchBlue = new Color(0.25, 0.45, 0.3);
 
   // Other variables
   private BallColor currentColor = null;
@@ -54,7 +55,7 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
     currentColor = null;
 
     // Check match
-    if (seesBall()) {
+    if (!seesBall()) {
       // If not close enough, there is no ball
       return;
     } else if (match.color == kMatchRed) {
@@ -64,6 +65,8 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
       // Blue ball
       currentColor = BallColor.BLUE;
     }
+
+    SmartDashboard.putNumberArray("Color REV", new double[]{detectedColor.red, detectedColor.green, detectedColor.blue});
   }
 
   public BallColor getColor() {

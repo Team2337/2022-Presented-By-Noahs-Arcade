@@ -15,7 +15,7 @@ public class PowerDistributionHub extends SubsystemBase {
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public PowerDistributionHub() {
-    setupShuffleboard(Constants.DashboardLogging.PDHLOG);
+    setupShuffleboard(Constants.DashboardLogging.PDH);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
