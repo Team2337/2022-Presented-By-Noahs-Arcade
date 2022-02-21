@@ -8,16 +8,13 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.Controller.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -44,10 +41,6 @@ public class RobotContainer {
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
-
-  // Alliance/Opposing colors
-  public static BallColor allianceColor;
-  public static BallColor opposingColor;
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -111,13 +104,13 @@ public class RobotContainer {
 
     operatorA.whenHeld(new StartShooter(shooter));
     operatorB.whenHeld(new RunKicker(kicker));
-    
+
     operatorTriggerRight.whenPressed(intake::start, intake);
     operatorTriggerRight.whenReleased(intake::stop, intake);
-    
+
     operatorRightBumper.whenPressed(intake::reverse, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
-    
+
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     /** Driverstation Controls * */
