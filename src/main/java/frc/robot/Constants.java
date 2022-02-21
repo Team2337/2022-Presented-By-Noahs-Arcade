@@ -50,7 +50,7 @@ public final class Constants {
   private static Constants instance;
 
   public static final class DashboardLogging {
-    public static final boolean CLIMBER = false;
+    public static final boolean CLIMBER = true;
     public static final boolean DELIVERY = false;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
@@ -299,6 +299,13 @@ public final class Constants {
 
   public static final class Pixy {
     public static final double RATIO_TOLERANCE = 0.2;
+  }
+
+  public static enum ClimberPosition {
+    START,
+    RICKABOOT,
+    LOW_RUNG,
+    MID_RUNG
   }
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;
