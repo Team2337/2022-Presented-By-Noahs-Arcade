@@ -21,9 +21,9 @@ public class PixyCam extends SubsystemBase {
   private final int chipselect;
   private int state;
 
-  private int lastSeenCycleRed = 0;
-  private int lastSeenCycleBlue = 0;
-  private static final int LAST_SEEN_MAX_CYCLES = 3;
+  private static final int LAST_SEEN_CYCLE_COUNT_MAX = 3;
+  private int lastSeenCycleCountRed = 0;
+  private int lastSeenCycleCountBlue = 0;
 
   private Block largestRedTarget;
   private Block largestBlueTarget;
@@ -122,7 +122,6 @@ public class PixyCam extends SubsystemBase {
    * Filters the targets based on conditions that make them seem "cargo-like"
    */
   private void filterTargets(ArrayList<Block> blocks) {
-    // Set up temporary variables
     Block newLargestRedTarget = null;
     Block newLargestBlueTarget = null;
 
@@ -153,31 +152,31 @@ public class PixyCam extends SubsystemBase {
 
     /**
      * Update largest target variables
-     * 
+     *
      * This works in three cases
      * 1. If we see a target, reset counter and update largest target variables
      * 2. If we don't see a target and the counter is greater than a threshold, set largest target to null.
      * 3. If we don't see a target and the counter is less than the threshold, keep the old value (no code needed).
-     * 
+     *
      * In all cases, we increment the counter.
      */
     // Red
     if (newLargestRedTarget != null) {
-      lastSeenCycleRed = 0;
+      lastSeenCycleCountRed = 0;
       largestRedTarget = newLargestRedTarget;
-    } else if (lastSeenCycleRed >= LAST_SEEN_MAX_CYCLES) {
+    } else if (lastSeenCycleCountRed >= LAST_SEEN_CYCLE_COUNT_MAX) {
       largestRedTarget = null;
     }
-    lastSeenCycleRed++;
+    lastSeenCycleCountRed++;
     // Blue
     if (newLargestBlueTarget != null) {
       // If it sees a target, reset counter and update variable
-      lastSeenCycleBlue = 0;
+      lastSeenCycleCountBlue = 0;
       largestBlueTarget = newLargestBlueTarget;
-    } else if (lastSeenCycleBlue >= LAST_SEEN_MAX_CYCLES) {
+    } else if (lastSeenCycleCountBlue >= LAST_SEEN_CYCLE_COUNT_MAX) {
       largestBlueTarget = null;
     }
-    lastSeenCycleBlue++;
+    lastSeenCycleCountBlue++;
   }
 
   private static boolean shouldUpdateLargestTarget(Block largestBlock, Block newBlock) {
