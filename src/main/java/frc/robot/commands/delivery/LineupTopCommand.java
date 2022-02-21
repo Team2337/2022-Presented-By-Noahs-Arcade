@@ -13,7 +13,7 @@ public class LineupTopCommand extends CommandBase {
 
   private final Delivery delivery;
 
-  private final double DELIVERY_SLOW_SPEED = 0.1;
+  private final double DELIVERY_SLOW_SPEED = 0.25;
   
   public LineupTopCommand(Delivery delivery) {
     this.delivery = delivery;

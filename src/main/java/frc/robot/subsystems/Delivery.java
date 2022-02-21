@@ -40,8 +40,8 @@ public class Delivery extends SubsystemBase {
   }
   private Direction direction = Direction.COUNTER_CLOCKWISE;
   private double previousDistance;
-  private double tofBallCenteredDistance = 3; //Distance when we see the center of the ball
-  private double tofSeesBall = 6; //Distance that we first see the edge of the ball
+  private double tofBallCenteredDistance = 4; //Distance when we see the center of the ball
+  private double tofSeesBall = 8; //Distance that we first see the edge of the ball
 
   // Motor
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
@@ -128,12 +128,12 @@ public class Delivery extends SubsystemBase {
 
   public void startDelivery(Direction direction, double speed) {
     switch (direction) {
-      case CLOCKWISE:
-        // Rotate motor forward
-        motor.set(ControlMode.PercentOutput, speed);
-        break;
       case COUNTER_CLOCKWISE:
         // Rotate motor CCW
+        motor.set(ControlMode.PercentOutput, speed);
+        break;
+      case CLOCKWISE:
+        // Rotate motor CW
         motor.set(ControlMode.PercentOutput, -speed);
         break;
     }

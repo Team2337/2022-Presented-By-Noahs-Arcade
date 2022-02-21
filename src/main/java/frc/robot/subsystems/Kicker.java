@@ -39,4 +39,8 @@ public class Kicker extends SubsystemBase {
     motor.set(ControlMode.PercentOutput, 0);
   }
 
+  public void slowReverse() {
+    motor.set(ControlMode.PercentOutput, 0);
+  }
+
 }
