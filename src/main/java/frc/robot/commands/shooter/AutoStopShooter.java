@@ -4,24 +4,22 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
- *Runs the shooter when a button is held and make sure it stops correctly
+ *Stops the shooter when a button is held and make sure it stops correctly
  *
  * @author Madison J.
  */
-public class AutoStartShooter extends InstantCommand {
+public class AutoStopShooter extends InstantCommand {
 
   private final Shooter shooter;
-  private double shootSpeed;
 
-  public AutoStartShooter(Shooter shooter, double shootSpeed) {
+  public AutoStopShooter(Shooter shooter) {
     this.shooter = shooter;
-    this.shootSpeed = shootSpeed;
 
     addRequirements(shooter);
   }
 
   @Override
   public void initialize() {
-    shooter.setSpeed(shootSpeed);
+    shooter.stop();
   }
 }

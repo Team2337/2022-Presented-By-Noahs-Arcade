@@ -53,19 +53,21 @@ public class RobotContainer {
     configureButtonBindings();
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
-    autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
-    autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, drivetrain, heading));
-    autonChooser.addOption("Pos2 Middle Four Ball", new Pos2MidFourBall(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos2 Middle Four Ball", new Pos2MidFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
-    autonChooser.addOption("Pos3 Right Three Ball", new Pos3RightThreeBall(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Pos3 Right Three Ball", new Pos3RightThreeBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
+    autonChooser.addOption("Showcase Testing", new ShowcaseTesting(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }

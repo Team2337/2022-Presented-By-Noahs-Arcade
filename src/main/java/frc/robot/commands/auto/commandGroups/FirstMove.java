@@ -1,4 +1,4 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.commandGroups;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
-import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
-import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.shooter.AutoKickerCommand;
 import frc.robot.commands.shooter.AutoStartShooter;
+import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Drivetrain;
@@ -22,26 +21,29 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Shooter;
 
-public class Pos3RightTwoBall extends SequentialCommandGroup {
+public class FirstMove extends SequentialCommandGroup {
 
   private Drivetrain drivetrain;
-  private Delivery delivery;
-  private Intake intake;
   private Kicker kicker;
   private Shooter shooter;
+  private Intake intake;
+  private Delivery delivery;
+  private double forwardP = 2.5;
+  private double strafeP = 0.05;
+  private double forwardAcceleration = Units.inchesToMeters(120);
+  private double strafeAcceleration = 12;
 
-  public Pos3RightTwoBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
+  
+
+  public FirstMove(PolarCoordinate pickupLocation, AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     this.drivetrain = drivetrain;
 
     addCommands(
-      new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, delivery, drivetrain, heading, intake, kicker, shooter),
+      new AutoStartShooter(shooter, 38.5),
       new ParallelCommandGroup(
-        new AutoStartDelivery(delivery).withTimeout(1),
-        new AutoKickerCommand(kicker, 0).withTimeout(1)
-      ),
-      new WaitCommand(3),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),  
-      new AutoStopAllCommands(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter)
+        new AutoStartIntake(intake),
+        new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)
+        ) 
     );
   }
 }
