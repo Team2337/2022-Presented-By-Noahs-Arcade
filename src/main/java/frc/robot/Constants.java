@@ -5,8 +5,6 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.coordinates.PolarCoordinate;
 
@@ -307,16 +305,7 @@ public final class Constants {
   public static enum BallColor {
     RED,
     BLUE,
-    UNKNOWN;
-
-    public static BallColor getAllianceColor() {
-      // If we're blue, return blue. Otherwise default to red (if red or invalid).
-      return DriverStation.getAlliance() == Alliance.Blue ? BLUE : RED;
-    }
-    public static BallColor getOpposingColor() {
-      // The inverse of getAllianceColor
-      return DriverStation.getAlliance() == Alliance.Blue ? RED : BLUE;
-    }
+    UNKNOWN
   }
 
 }

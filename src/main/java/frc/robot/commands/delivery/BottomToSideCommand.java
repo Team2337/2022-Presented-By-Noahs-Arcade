@@ -1,7 +1,6 @@
 package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Delivery.Direction;
 
@@ -21,11 +20,6 @@ public class BottomToSideCommand extends CommandBase {
   public BottomToSideCommand(Delivery delivery) {
     this.delivery = delivery;
     addRequirements(delivery);
-
-    // If there are issues, schedule a different one first
-    if (delivery.hasIssues()) {
-      CommandScheduler.getInstance().schedule(false, new CorrectDeliveryCommandGroup(delivery));
-    }
   }
 
   @Override

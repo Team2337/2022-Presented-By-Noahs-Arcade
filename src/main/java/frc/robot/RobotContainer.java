@@ -39,8 +39,6 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
-  public static BallColor allianceColor;
-  public static BallColor opposingColor;
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {

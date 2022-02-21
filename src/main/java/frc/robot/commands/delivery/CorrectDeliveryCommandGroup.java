@@ -18,7 +18,6 @@ import frc.robot.subsystems.Delivery;
 public class CorrectDeliveryCommandGroup extends SequentialCommandGroup {
 
   public CorrectDeliveryCommandGroup(Delivery delivery) {
-    // TODO: do command groups need addRequirements?
     addCommands(
       race(
         new SpinUntilSideSeesBall(delivery),

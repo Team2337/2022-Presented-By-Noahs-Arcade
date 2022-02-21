@@ -8,10 +8,8 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
 import org.littletonrobotics.junction.io.LogSocketServer;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.BallColor;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -86,9 +84,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    RobotContainer.allianceColor = BallColor.getAllianceColor();
-    RobotContainer.opposingColor = BallColor.getOpposingColor();
   }
 
   /** This function is called periodically during autonomous. */
@@ -104,9 +99,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    RobotContainer.allianceColor = BallColor.getAllianceColor();
-    RobotContainer.opposingColor = BallColor.getOpposingColor();
   }
 
   /** This function is called periodically during operator control. */
