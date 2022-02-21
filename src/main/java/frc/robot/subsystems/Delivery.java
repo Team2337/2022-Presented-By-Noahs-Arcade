@@ -43,7 +43,7 @@ public class Delivery extends SubsystemBase {
   
   // Color sensors
   private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   // TOF sensor
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
@@ -63,6 +63,7 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
+  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.8;
 
 
   /**
@@ -88,6 +89,8 @@ public class Delivery extends SubsystemBase {
         .withPosition(0, 0);
       infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
       infoWidget.addNumber("Temperature (F)", () -> Utilities.convertCelsiusToFahrenheit(motor.getTemperature()));
+      infoWidget.addNumber("Balls", () -> balls);
+      infoWidget.addBoolean("Sees Ball", this::getLeftColorSensorStatus);
 
       ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
         .withSize(6, 8)
@@ -100,7 +103,7 @@ public class Delivery extends SubsystemBase {
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: "  + String.valueOf(leftSensor.getColor()),
-        "Right: " + String.valueOf(rightSensor.getColor())
+        // "Right: " + String.valueOf(rightSensor.getColor())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
@@ -201,7 +204,7 @@ public class Delivery extends SubsystemBase {
       return null;
     }
 
-    return storedBalls[Slot.LEFT.value] == null ? Direction.COUNTER_CLOCKWISE : Direction.CLOCKWISE;
+    return storedBalls[Slot.RIGHT.value] == null ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
   }
 
   /**
@@ -288,7 +291,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return rightSensor.seesBall();
+    return false; //rightSensor.seesBall();
   }
 
   /**
@@ -304,7 +307,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return rightSensor.getColor();
+    return null; // rightSensor.getColor();
   }
 
 
@@ -323,7 +326,7 @@ public class Delivery extends SubsystemBase {
 
   public boolean isBallInTopSlot() {
     // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return lineupSensor.getDistanceInches() < 3.5;
+    return lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
   }
 
   /**
