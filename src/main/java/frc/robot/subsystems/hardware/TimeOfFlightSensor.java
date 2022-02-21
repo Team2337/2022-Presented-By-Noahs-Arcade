@@ -15,10 +15,16 @@ public class TimeOfFlightSensor extends SubsystemBase {
 
   @Override
   public void periodic() {
+  if (getStatus() == Status.Valid || getStatus() == Status.Invalid){
     if (getStatus() == Status.Valid) {
       // mm -> m, then m -> inches
       distanceInches = Units.metersToInches((getDistanceMM() / 1000));
     }
+  }
+  else {
+    distanceInches = -1; //-1 can be our error code for if our sensor gets messed up
+  }
+
 
     SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
     SmartDashboard.putString("TimeOfFlight/Status", getStatus().toString());
