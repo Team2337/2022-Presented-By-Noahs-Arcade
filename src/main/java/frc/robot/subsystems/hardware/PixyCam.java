@@ -151,12 +151,17 @@ public class PixyCam extends SubsystemBase {
     }
 
     /**
-     * Update largest target variables
+     * We want to "remember" the last seen block for LAST_SEEN_CYCLE_COUNT_MAX
+     * cycles to prevent getting jumpy targets from the Pixy. After
+     * LAST_SEEN_CYCLE_COUNT_MAX have gone by and we still don't see a block,
+     * we forget the previous block.
      *
      * This works in three cases
      * 1. If we see a target, reset counter and update largest target variables
-     * 2. If we don't see a target and the counter is greater than a threshold, set largest target to null.
-     * 3. If we don't see a target and the counter is less than the threshold, keep the old value (no code needed).
+     * 2. If we don't see a target and the counter is greater than a threshold, set
+     * largest target to null.
+     * 3. If we don't see a target and the counter is less than the threshold, keep
+     * the old value (no code needed).
      *
      * In all cases, we increment the counter.
      */
