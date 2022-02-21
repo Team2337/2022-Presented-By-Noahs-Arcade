@@ -48,7 +48,7 @@ public class Delivery extends SubsystemBase {
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
   // Beam break sensor
-  private final DigitalInput shooterBeam = new DigitalInput(0);//TODO: put this in constants
+  private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
 
 
   /**
@@ -308,11 +308,11 @@ public class Delivery extends SubsystemBase {
   }
 
 
-  //////////////////////////////////////
-  // -------------------------------- //
-  // --- GOLF BALL SENSOR GETTERS --- //
-  // -------------------------------- //
-  //////////////////////////////////////
+  //////////////////////////////////
+  // ---------------------------- //
+  // --- OTHER SENSOR GETTERS --- //
+  // ---------------------------- //
+  //////////////////////////////////
 
   /**
    * @return The reading of the lineup time of flight sensor in inches
@@ -322,6 +322,7 @@ public class Delivery extends SubsystemBase {
   }
 
   /**
+   * TODO: does this need to be moved to shooter when we add that logic? Will this be in the robot?
    * @return Gets whether or not the shooter (output) golf ball sensor sees something
    */
   public boolean getShooterSensorStatus() {
