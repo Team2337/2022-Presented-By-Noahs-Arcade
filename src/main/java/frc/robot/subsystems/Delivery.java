@@ -63,7 +63,7 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
-  private double maxDistanceValue = 3.8;
+  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.8;
 
 
   /**
@@ -326,7 +326,7 @@ public class Delivery extends SubsystemBase {
 
   public boolean isBallInTopSlot() {
     // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return lineupSensor.getDistanceInches() < maxDistanceValue;
+    return lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
   }
 
   /**
