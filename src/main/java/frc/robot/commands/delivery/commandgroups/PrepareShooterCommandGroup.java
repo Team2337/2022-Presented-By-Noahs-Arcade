@@ -11,21 +11,17 @@ public class PrepareShooterCommandGroup extends SequentialCommandGroup {
     // Check which way we need to rotate
     if (delivery.getTopPositionColor() == ballColor) {
       // Ball is at top
-      addCommands(
-        new LineupTopCommand(delivery)
-      );
+      return; // remove this if we want to call a shooter command after
     } else if (delivery.getBottomPositionColor() == ballColor){
       // Ball is at bottom
       addCommands(
         new BottomToSideCommand(delivery),
-        new SideToTopCommand(delivery, ballColor),
-        new LineupTopCommand(delivery)
+        new SideToTopCommand(delivery, ballColor)
       );
     } else {
       // Ball is at side
       addCommands(
-        new SideToTopCommand(delivery, ballColor),
-        new LineupTopCommand(delivery)
+        new SideToTopCommand(delivery, ballColor)
       );
     }
   }
