@@ -26,6 +26,7 @@ import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -34,6 +35,7 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final PixyCam pixyCam = new PixyCam();
+  private final TimeOfFlightSensor TimeOfFlight = new TimeOfFlightSensor();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
