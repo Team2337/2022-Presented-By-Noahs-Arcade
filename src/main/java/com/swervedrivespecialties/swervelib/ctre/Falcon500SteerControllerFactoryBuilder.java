@@ -5,13 +5,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.swervedrivespecialties.swervelib.*;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotType;
 import frc.robot.RobotType.Type;
 
 import static com.swervedrivespecialties.swervelib.ctre.CtreUtils.checkCtreError;
-
-import javax.swing.text.StyleContext.SmallAttributeSet;
 
 public final class Falcon500SteerControllerFactoryBuilder {
     private static final int CAN_TIMEOUT_MS = 250;
@@ -165,7 +162,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
         private double referenceAngleRadians = 0.0;
 
-        private double resetIteration = 0;
+        private double resetIteration = ENCODER_RESET_ITERATIONS - 1;
 
         private ControllerImplementation(TalonFX motor,
                                          double motorEncoderPositionCoefficient,
@@ -187,8 +184,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
         @Override
         public void setReferenceAngle(double referenceAngleRadians) {
             double currentAngleRadians = motor.getSelectedSensorPosition() * motorEncoderPositionCoefficient;
-            
-            
+
             // Reset the NEO's encoder periodically when the module is not rotating.
             // Sometimes (~5% of the time) when we initialize, the absolute encoder isn't fully set up, and we don't
             // end up getting a good reading. If we reset periodically this won't matter anymore.
