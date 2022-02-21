@@ -40,8 +40,8 @@ public class Delivery extends SubsystemBase {
   }
   private Direction direction = Direction.COUNTER_CLOCKWISE;
   private double previousDistance;
-  private double tofBallCenteredDistance = 1; //Distance when we see the center of the ball
-  private double tofSeesBall = 2; //Distance that we first see the edge of the ball
+  private double tofBallCenteredDistance = 3; //Distance when we see the center of the ball
+  private double tofSeesBall = 6; //Distance that we first see the edge of the ball
 
   // Motor
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
