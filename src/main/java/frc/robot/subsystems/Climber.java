@@ -8,6 +8,19 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the climber mechanism
@@ -186,4 +199,35 @@ public class Climber extends SubsystemBase {
   private double getRightClimberTemperature(){
     return rightMotor.getTemperature();
   }
+}
+  public void setSpeed(double speed) {
+    leftMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  private double getSpeed() {
+    return leftMotor.getMotorOutputPercent();
+  }
+
+  public double getStringPotVoltage() {
+    return stringPot.getVoltage();
+  }
+
+  public boolean isStringPotConnected() {
+    return getStringPotVoltage() > 0;
+  }
+
+  /**
+   * Temp in Celcius
+   */
+  private double getLeftMotorTemperature() {
+    return leftMotor.getTemperature();
+  }
+
+  /**
+   * Temp in Celcius
+   */
+  private double getRightMotorTemperature() {
+    return rightMotor.getTemperature();
+  }
+
 }
