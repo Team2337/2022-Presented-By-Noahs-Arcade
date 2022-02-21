@@ -47,6 +47,7 @@ public class Delivery extends SubsystemBase {
   private final DigitalInput topRightBeam = new DigitalInput(Constants.TOP_RIGHT_BEAM_ID);
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
 
+
   /**
    * Stores the currently held colors by rotating in a counter-clockwise direction:
    * <ul>
@@ -70,36 +71,38 @@ public class Delivery extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.DELIVERYLOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
+  private void setupShuffleboard(boolean logEnable) {
+    if (logEnable) {
+      ShuffleboardTab deliveryTab = Shuffleboard.getTab("Delivery");
 
-    ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)
-      .withSize(6, 8)
-      .withPosition(0, 0);
-    infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
-    infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
+      ShuffleboardLayout infoWidget = deliveryTab.getLayout("Info", BuiltInLayouts.kList)
+        .withSize(6, 8)
+        .withPosition(0, 0);
+      infoWidget.addNumber("Speed (%)", () -> motor.getMotorOutputPercent());
+      infoWidget.addNumber("Temperature (C)", () -> motor.getTemperature());
 
-    ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
-      .withSize(6, 8)
-      .withPosition(6, 0);
-    sensorsWidget.addStringArray("Ball positions", () -> new String[]{
-      "Bottom: " + String.valueOf(storedBalls[Slot.BOTTOM.value]),
-      "Right: "  + String.valueOf(storedBalls[Slot.RIGHT.value]),
-      "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
-      "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
-    });
-    sensorsWidget.addStringArray("Color sensors", () -> new String[]{
-      "Left: "  + String.valueOf(leftSensor.getColor()),
-      "Right: " + String.valueOf(rightSensor.getColor())
-    });
-    sensorsWidget.addStringArray("Lineup sensors", () -> new String[]{
-      "Top Left: "  + topLeftBeam.get(),
-      "Top Right: " + topRightBeam.get(),
-      "Shooter: "   + shooterBeam.get()
-    });
+      ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
+        .withSize(6, 8)
+        .withPosition(6, 0);
+      sensorsWidget.addStringArray("Ball positions", () -> new String[]{
+        "Bottom: " + String.valueOf(storedBalls[Slot.BOTTOM.value]),
+        "Right: "  + String.valueOf(storedBalls[Slot.RIGHT.value]),
+        "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
+        "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
+      });
+      sensorsWidget.addStringArray("Color sensors", () -> new String[]{
+        "Left: "  + String.valueOf(leftSensor.getColor()),
+        "Right: " + String.valueOf(rightSensor.getColor())
+      });
+      sensorsWidget.addStringArray("Lineup sensors", () -> new String[]{
+        "Top Left: "  + topLeftBeam.get(),
+        "Top Right: " + topRightBeam.get(),
+        "Shooter: "   + shooterBeam.get()
+      });
+    }
   }
 
   @Override

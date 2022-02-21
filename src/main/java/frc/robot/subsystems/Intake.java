@@ -33,17 +33,17 @@ public class Intake extends SubsystemBase {
 
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
-    setupShuffleboard();
+    setupShuffleboard(Constants.DashboardLogging.INTAKELOG);
   }
 
-  private void setupShuffleboard() {
-    ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
-    
-    ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList)
-      .withSize(3,2)
-      .withPosition(4, 0);
-    intakeWidget.addNumber("Speed (%)", this::getSpeed);
-    intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
+  private void setupShuffleboard(Boolean logEnable) {
+    if (logEnable) {
+      ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
+
+      ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
+      intakeWidget.addNumber("Speed (%)", this::getSpeed);
+      intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
+    }
   }
 
   @Override
