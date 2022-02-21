@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.subsystems.AutoDrive.State;
+import frc.robot.subsystems.hardware.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
-import frc.robot.subsystems.PixyCam;
 
 public class PixyPickupCommand extends CommandBase implements AutoDrivableCommand {
 

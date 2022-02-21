@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
+import frc.robot.subsystems.hardware.ColorSensorTCS;
 
 /**
  * Subsystem for the delivery mechanism
@@ -21,7 +22,7 @@ public class Delivery extends SubsystemBase {
   }
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-  
+
   private final ColorSensorTCS sensor = new ColorSensorTCS(I2C.Port.kMXP);
 
 

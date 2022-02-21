@@ -1,22 +1,22 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.hardware;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * Code for the TCS34725 color sensor.
- * 
+ *
  * <p>
  * To find information about the hardware of the sensor, visit the following link and see pages 13-19:
  * https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf
- * 
+ *
  * <p>
  * Code was based on http://www.getmicros.net/raspberry-pi-and-tcs34725-color-sensor-java-example.php
- * 
+ *
  * @author Michael F
  */
 public class TCSSensor {
-  
+
   private static final byte DEVICE_ADDRESS = 0x29;
 
   private I2C device;
@@ -98,7 +98,7 @@ public class TCSSensor {
     // Select ALS time register
     /**
      * According to the documentation, the values for the second parameter here are:
-     * 
+     *
      * |------|-------|
      * | Time | Value |
      * |------|-------|
@@ -108,14 +108,14 @@ public class TCSSensor {
      * | 154  | 0xC0  |
      * | 700  | 0x00  |
      * |------|-------|
-     * 
+     *
      * Time values are in ms. See table 6 in PDF.
      */
     device.write(Register.ATIME.value, 0xF6);
     // Select control register
     /**
      * According to the documentation, the values for the second parameter here are:
-     * 
+     *
      * |------|-------|
      * | Gain | Value |
      * |------|-------|
@@ -124,7 +124,7 @@ public class TCSSensor {
      * | 16x  | 0b10  | <--
      * | 60x  | 0b11  |
      * |------|-------|
-     * 
+     *
      * See table 11 in PDF.
      */
     device.write(Register.CONTROL.value, 0b10);
@@ -142,21 +142,21 @@ public class TCSSensor {
     int red =   ((data[3] & 0xFF) << 8) + (data[2] & 0xFF);
     //           Register.GDATAH           Register.GDATAL
     int green = ((data[5] & 0xFF) << 8) + (data[4] & 0xFF);
-    //           Register.BDATAH           Register.BDATAL 
+    //           Register.BDATAH           Register.BDATAL
     int blue =  ((data[7] & 0xFF) << 8) + (data[6] & 0xFF);
- 
+
     /**
      * Calculate final lux (luminescense).
-     * 
+     *
      * Color math is weird, these values come from the C++ version of this code (the Y value, or luminescense)
      * https://github.com/adafruit/Adafruit_TCS34725/blob/0a13cbfd9ac1a79681241767f469daf95517b343/Adafruit_TCS34725.cpp#L286-L292
-     * 
+     *
      * Further reading material if you wish to go down a rabbit hole:
      *   - https://ams.com/documents/20143/80162/ColorSensors_AN000166_1-00.pdf/c0b4a4b4-9948-f2a7-f8a1-36a8208bd0a9
      *   - https://ams.com/documents/20143/80162/TCS34xx_AN000517_1-00.pdf/1efe49f7-4f92-ba88-ca7c-5121691daff7 (page 5 also has these values)
      *   - https://en.wikipedia.org/wiki/CIE_1931_color_space
      *   - https://en.wikipedia.org/wiki/LMS_color_space
-     * 
+     *
      * Don't change the numbers unless you have better numbers.
      */
     double luminance = (-0.32466 * red) + (1.57837 * green) + (-0.73191 * blue);
@@ -175,7 +175,7 @@ public class TCSSensor {
 
     /*
      * Convert raw data to number between [0:1].
-     * 
+     *
      * To mimic the REV sensor, they need to add up to 1. To do this, we divide each number
      * by the sum. This preserves the ratios. This doesn't work with negative numbers, but
      * we don't use those so it doesn't matter.
