@@ -1,4 +1,4 @@
-package frc.robot.hardware;
+package frc.robot.subsystems.hardware;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;

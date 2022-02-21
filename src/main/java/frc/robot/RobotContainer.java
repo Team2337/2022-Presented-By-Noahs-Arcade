@@ -21,6 +21,7 @@ import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.hardware.PixyCam;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -39,8 +40,6 @@ public class RobotContainer {
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
-
-  private final TimeOfFlightSensor timeOfFlight = new TimeOfFlightSensor();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 

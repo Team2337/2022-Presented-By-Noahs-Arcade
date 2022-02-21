@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.hardware;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
@@ -7,12 +7,13 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
+import frc.robot.subsystems.hardware.interfaces.ColorSensor;
 
 /**
  * Subsystem for the REV Robotics Color Sensor V3. Plugs in to the I2C port.
- * 
+ *
  * @author Michael Francis
- * 
+ *
  * @apiNote https://github.com/REVrobotics/Color-Sensor-v3-Examples/tree/master/Java
  */
 public class ColorSensorREV extends SubsystemBase implements ColorSensor {
