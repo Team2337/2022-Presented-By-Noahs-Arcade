@@ -1,15 +1,15 @@
-package frc.robot.nerdyfiles.Controller;
+package frc.robot.nerdyfiles.oi;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 /**
- * Trigger commands from an analog input on a joystick (such as the triggers - Axis 2 and/or 3). 
- * 
+ * Trigger commands from an analog input on a joystick (such as the triggers - Axis 2 and/or 3).
+ *
  * <p>Note that if both buttons are on the same Axis (i.e. LT = -1 to 0, RT = 0 to 1),
  * they cannot be pressed simultaneously. One trigger will negate the other and
  * neither will be pressed. So plan your controls accordingly.
- * 
+ *
  * @author James@team2168.org
  *
  */
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
  * int joystickChannel = 1;
  * public JoystickAnalogButton TriggerL = new JoystickAnalogButton(joystickChannel, 2, 0.5),
  * 							   TriggerR = new JoystickAnalogButton(joystickChannel, 3, 0.5);
- * 
+ *
  * //Link the buttons to commands
  * TriggerR.whenPressed(new ExampleCommand1());
  * TriggerL.whenPressed(new ExampleCommand2());
@@ -35,7 +35,7 @@ public class JoystickAnalogButton extends Button {
 
 	/**
 	 * Create a button for triggering commands off a joystick's analog axis
-	 * 
+	 *
 	 * @param joystick The GenericHID object that has the button (e.g. Joystick, KinectStick, etc)
 	 * @param axisNumber The axis number
 	 */
@@ -43,10 +43,10 @@ public class JoystickAnalogButton extends Button {
 		m_joystick = joystick;
 		m_axisNumber = axisNumber;
 	}
-	
+
 	/**
 	 * Create a button for triggering commands off a joystick's analog axis
-	 * 
+	 *
 	 * @param joystick The GenericHID object that has the button (e.g. Joystick, KinectStick, etc)
 	 * @param axisNumber The axis number
 	 * @param threshold The threshold to trigger above (positive) or below (negative)
@@ -61,13 +61,13 @@ public class JoystickAnalogButton extends Button {
 	 * Set the value above which triggers should occur (for positive thresholds)
 	 *	or below which triggers should occur (for negative thresholds)
 	 * The default threshold value is 0.5
-	 *	
+	 *
 	 * @param threshold the threshold value (1 to -1)
 	 */
 	public void setThreshold(double threshold){
 		THRESHOLD = threshold;
 	}
- 
+
 	/**
 	 * Get the defined threshold value.
 	 * @return the threshold value
@@ -75,7 +75,7 @@ public class JoystickAnalogButton extends Button {
 	public double getThreshold(){
 		return THRESHOLD;
 	}
-	
+
 
 	public boolean get() {
 		if(THRESHOLD < 0){
