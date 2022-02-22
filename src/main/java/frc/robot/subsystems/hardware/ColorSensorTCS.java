@@ -52,8 +52,8 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   public void periodic() {
     // Get color and what its closest color is
     long start = System.nanoTime();
-    detectedColor = sensor.getColor();
     rawColor = sensor.getRawColor();
+    detectedColor = sensor.rawColorToColor(rawColor);
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
     long end = System.nanoTime();
 

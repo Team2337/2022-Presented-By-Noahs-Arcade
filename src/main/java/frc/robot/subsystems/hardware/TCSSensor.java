@@ -172,7 +172,10 @@ public class TCSSensor {
   public Color getColor() {
     // Get raw data
     TCSColor data = getRawColor();
+    return rawColorToColor(data);
+  }
 
+  public Color rawColorToColor(TCSColor color) {
     /*
      * Convert raw data to number between [0:1].
      *
@@ -180,10 +183,10 @@ public class TCSSensor {
      * by the sum. This preserves the ratios. This doesn't work with negative numbers, but
      * we don't use those so it doesn't matter.
      */
-    double sum = (double)(data.red + data.green + data.blue);
-    double red = (double)data.red / sum;
-    double green = (double)data.green / sum;
-    double blue = (double)data.blue / sum;
+    double sum = (double)(color.red + color.green + color.blue);
+    double red = (double)color.red / sum;
+    double green = (double)color.green / sum;
+    double blue = (double)color.blue / sum;
     return new Color(red, green, blue);
   }
 }
