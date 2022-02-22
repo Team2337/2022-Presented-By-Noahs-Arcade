@@ -70,7 +70,8 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
     }
 
     SmartDashboard.putNumberArray("Color REV", new double[]{detectedColor.red, detectedColor.green, detectedColor.blue});
-    Logger.getInstance().recordOutput("ColorSensor/Proximity", sensor.getProximity());
+    SmartDashboard.putNumber("REV Color Sensor Proximity", sensor.getProximity());
+    Logger.getInstance().recordOutput("ColorSensorREV/Proximity", sensor.getProximity());
   }
 
   public BallColor getColor() {
