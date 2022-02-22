@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -52,7 +51,6 @@ public class Drivetrain extends SubsystemBase {
    * Logging
    */
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-  private Field2d field = new Field2d();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -181,8 +179,6 @@ public class Drivetrain extends SubsystemBase {
       };
     }
 
-    SmartDashboard.putData("Field", field);
-
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAINLOG);
   }
 
@@ -278,31 +274,36 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
+    SwerveModuleState moduleOne = getModuleState(modules[0]);
+    SwerveModuleState moduleTwo = getModuleState(modules[1]);
+    SwerveModuleState moduleThree = getModuleState(modules[2]);
+    SwerveModuleState moduleFour = getModuleState(modules[3]);
+
+
     Pose2d pose = odometry.update(
       getGyroscopeRotation(),
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
+      moduleOne,
+      moduleTwo,
+      moduleThree,
+      moduleFour
     );
 
     chassisSpeeds = kinematics.toChassisSpeeds(
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
+      moduleOne,
+      moduleTwo,
+      moduleThree,
+      moduleFour
     );
 
-    field.setRobotPose(getPose());
 
-    Logger.getInstance().recordOutput("Odometry/Robot",
-      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+    // Logger.getInstance().recordOutput("Odometry/Robot",
+      // new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-      SmartDashboard.putNumber("Pose X", pose.getX());
-      SmartDashboard.putNumber("Pose Y", pose.getY());
-      SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
+      // SmartDashboard.putNumber("Pose X", pose.getX());
+      // SmartDashboard.putNumber("Pose Y", pose.getY());
+      // SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
 
-     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+     // Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {

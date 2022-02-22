@@ -15,12 +15,14 @@ import frc.robot.Constants;
 public class Kicker extends SubsystemBase {
   private TalonFX motor = new TalonFX(Constants.KICKER_MOTOR);;
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("Kicker");
+  private ShuffleboardTab tab = Shuffleboard.getTab("Kicker"); 
+  /*
   public NetworkTableEntry kickerSpeedPercentageWidget = tab
     .add("Kicker Speed (Percentage)", 0.5)
     .withWidget(BuiltInWidgets.kNumberSlider)
     .withProperties(Map.of("min", 0, "max", 1))
     .getEntry();
+    */
 
   public Kicker() {
     motor.configFactoryDefault();

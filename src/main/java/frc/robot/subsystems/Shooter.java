@@ -93,10 +93,12 @@ public class Shooter extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
+    /*
     temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
     temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
     temps.addBoolean("Motors Overheating?", () -> isOverheated());
+    */
 
 
     if (logEnable) {
@@ -128,8 +130,8 @@ public class Shooter extends SubsystemBase {
       kF = kef.getDouble(0);
       configurePID(kP, kI, kD, kF);
     }
-    Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
-    Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
+    // Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
+    // Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
   public void configurePID(double kp, double ki, double kd, double kf) {
@@ -152,7 +154,7 @@ public class Shooter extends SubsystemBase {
       targetSpeed = speedFeetPerSecond;
     }
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
-    SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
+    // SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
 
     enableMotorCurrentLimiting();
     leftMotor.set(ControlMode.Velocity, ticksPerHundredMiliseconds);

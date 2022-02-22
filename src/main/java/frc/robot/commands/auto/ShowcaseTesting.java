@@ -30,6 +30,7 @@ public class ShowcaseTesting extends SequentialCommandGroup {
     this.drivetrain = drivetrain;
 
     addCommands(
+      new WaitCommand(2.5),
       new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
       new AutoKickerCommand(kicker, 0).withTimeout(0.5),    
       new ParallelCommandGroup(
