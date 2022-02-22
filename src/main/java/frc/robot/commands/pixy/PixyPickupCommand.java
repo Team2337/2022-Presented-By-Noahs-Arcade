@@ -29,8 +29,8 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   // Ex: 2 == until the ball is halfway through the half frame (so 1/4
   // through the full frame) we will go full speed towards it, then
   // start scaling our speed.
-  private static final double MAX_SPEED_HALF_FRAME_SCALE = 1.0;
-  private static final double MAX_STRAFE_OUTPUT = 0.4;
+  private static final double MAX_SPEED_HALF_FRAME_SCALE = 1.1;
+  private static final double MAX_STRAFE_OUTPUT = 0.5;
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 100; // 2 seconds
 
   private final PickupStrategy strategy;
@@ -117,7 +117,8 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     // Determine our maximum output based on the half-frame size + our P value
     // and scale our output so we'll move full speed until we hit our
     // kMaxSpeedHalfFrameScale position in the half frame.
-    strafeOutput = (output / ((frameCenter / MAX_SPEED_HALF_FRAME_SCALE * strafeController.getP())) * MAX_STRAFE_OUTPUT);
+    double scaledOutput = output / (((frameCenter / MAX_SPEED_HALF_FRAME_SCALE) * strafeController.getP()));
+    strafeOutput = Math.copySign(Math.pow(scaledOutput, 2), scaledOutput) * MAX_STRAFE_OUTPUT;
 
     // Negative since our Pixy cam is on the back of our robot. Our
     // side-to-side values need to be inverted, since our side-to-side
