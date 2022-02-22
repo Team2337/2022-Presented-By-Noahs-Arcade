@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallColor;
+import frc.robot.subsystems.hardware.TCSSensor.TCSColor;
 import frc.robot.subsystems.hardware.interfaces.ColorSensor;
 
 /**
@@ -20,6 +21,9 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
 
   // The sensor
   private final TCSSensor sensor;
+
+  private TCSColor rawColor;
+  private Color detectedColor;
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
@@ -48,11 +52,12 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   public void periodic() {
     // Get color and what its closest color is
     long start = System.nanoTime();
-    Color detectedColor = sensor.getColor();
-    long end = System.nanoTime();
+    detectedColor = sensor.getColor();
+    rawColor = sensor.getRawColor();
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
+    long end = System.nanoTime();
 
-    System.out.println("Delivery time: " + String.valueOf((double)(end - start) / 1000000.0));
+    SmartDashboard.putNumber("Delivery time", (double)(end - start) / 1000000.0);
 
     // Reset current color
     currentColor = null;
@@ -75,6 +80,9 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
   }
 
   public boolean seesBall() {
+    if (rawColor == null) {
+      return false;
+    }
     /**
      * Luminance max threshold
      *
@@ -82,7 +90,7 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
      * using a Time of Flight sensor instead (there is code in the 2020 repo), it would be much
      * better. The current solution works, but it's a very sketchy solution.
      */
-    return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
+    return rawColor.luminance < LUMINANCE_MAX_THRESHOLD;
   }
 
 }

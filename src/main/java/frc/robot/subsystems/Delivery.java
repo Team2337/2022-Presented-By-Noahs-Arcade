@@ -291,7 +291,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return false; //rightSensor.seesBall();
+    return rightSensor.seesBall();
   }
 
   /**
