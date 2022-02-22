@@ -74,6 +74,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
+    autonChooser.addOption("Showcase Testing", new ShowcaseTesting(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
@@ -82,14 +83,14 @@ public class RobotContainer {
     pigeon.setYaw(0, 250);
     drivetrain.resetPosition(
       new Pose2d(
-        Constants.Auto.kPosition3RightStart.toFieldCoordinate(),
+        Constants.Auto.kStartAtZero.toFieldCoordinate(),
         drivetrain.getGyroscopeRotation()
       )
     );
   }
 
   public void resetRobot2() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
+    pigeon.setYaw(60, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 

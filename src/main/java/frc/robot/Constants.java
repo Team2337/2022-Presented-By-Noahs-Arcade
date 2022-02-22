@@ -202,6 +202,13 @@ public final class Constants {
       Rotation2d.fromDegrees(76 + 180)
     );
 
+
+    //Start facing the hub with a zero heading.
+    public static final PolarCoordinate kStartAtZero = new PolarCoordinate(
+      Units.inchesToMeters(90),
+      Rotation2d.fromDegrees(180)
+    );
+
     /**
      * Alliance Balls + Shooting Positions
      */
@@ -215,6 +222,10 @@ public final class Constants {
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR1.getTheta()
     );
+    public static final PolarCoordinate kBallR1RunOver = new PolarCoordinate(
+      Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
+      Constants.Auto.kBallR1.getTheta()
+    ); 
     //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
@@ -234,12 +245,20 @@ public final class Constants {
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR2.getTheta()
     );
+    public static final PolarCoordinate kBallR2RunOver = new PolarCoordinate(
+      Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
+      Constants.Auto.kBallR2.getTheta()
+    );
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(260.25)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
+      Constants.Auto.kBallR3.getTheta()
+    );
+    public static final PolarCoordinate kBallR3RunOver = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR3.getTheta()
     );
@@ -254,6 +273,10 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Rotation2d.fromDegrees(201.65)
+    );
+    public static final PolarCoordinate kBallR4RunOver = new PolarCoordinate(
+      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Rotation2d.fromDegrees(201.65)
     );
 
