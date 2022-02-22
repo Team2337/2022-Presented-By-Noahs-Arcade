@@ -16,7 +16,7 @@ public class PrepareShooterCommandGroup extends SequentialCommandGroup {
     } else if (delivery.getBottomPositionColor() == ballColor){
       // Ball is at bottom
       addCommands(
-        new BottomToSideCommand(delivery),
+        new BottomToSideCommand(delivery, kicker),
         new SideToTopCommand(delivery, kicker, ballColor)
       );
     } else {

@@ -54,7 +54,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
+    // heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
@@ -143,7 +143,7 @@ public class RobotContainer {
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery));
+    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
 
     /** Driverstation Controls * */
 

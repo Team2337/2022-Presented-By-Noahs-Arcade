@@ -2,6 +2,7 @@ package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Delivery.Direction;
 
 /**
@@ -12,13 +13,15 @@ import frc.robot.subsystems.Delivery.Direction;
 public class BottomToSideCommand extends CommandBase {
 
   private final Delivery delivery;
+  private final Kicker kicker;
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
   
-  public BottomToSideCommand(Delivery delivery) {
+  public BottomToSideCommand(Delivery delivery, Kicker kicker) {
     this.delivery = delivery;
+    this.kicker = kicker;
     
     addRequirements(delivery);
   }
@@ -41,6 +44,7 @@ public class BottomToSideCommand extends CommandBase {
       waitForBallFlag = delivery.getLeftColorSensorStatus();
     }
     delivery.start(direction);
+    kicker.setSpeed(-0.2);
   }
 
   @Override
@@ -78,6 +82,7 @@ public class BottomToSideCommand extends CommandBase {
     }
 
     delivery.stop();
+    kicker.stop();
   }
 
   @Override

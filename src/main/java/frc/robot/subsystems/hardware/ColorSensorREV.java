@@ -1,6 +1,9 @@
 package frc.robot.subsystems.hardware;
 
 import com.revrobotics.ColorSensorV3;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.I2C;
@@ -67,6 +70,7 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
     }
 
     SmartDashboard.putNumberArray("Color REV", new double[]{detectedColor.red, detectedColor.green, detectedColor.blue});
+    Logger.getInstance().recordOutput("ColorSensor/Proximity", sensor.getProximity());
   }
 
   public BallColor getColor() {
