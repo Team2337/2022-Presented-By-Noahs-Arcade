@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotType;
+import frc.robot.RobotType.Type;
 
 public class Kicker extends SubsystemBase {
 
@@ -13,8 +15,8 @@ public class Kicker extends SubsystemBase {
 
   public Kicker() {
     motor.configFactoryDefault();
-
-    motor.setInverted(TalonFXInvertType.Clockwise);
+    //Invert the kicker motors on comp and practice bots because they are on different sides.
+    motor.setInverted((RobotType.getRobotType() == Type.PRACTICE) ? TalonFXInvertType.Clockwise : TalonFXInvertType.CounterClockwise);
     motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);

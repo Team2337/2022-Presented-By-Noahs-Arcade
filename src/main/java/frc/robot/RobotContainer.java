@@ -105,27 +105,25 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
-    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
-    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
-    JoystickButton backButton = new JoystickButton(driverController, XboxController.Button.kBack.value);
-    JoystickButton startButton = new JoystickButton(driverController, XboxController.Button.kStart.value);
+    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+    JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
+    JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, pixyCam);
 
-    // driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
-
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
+
+    // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
+    // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+    driverRightBumper.whileHeld(pixyPickupCommand);
+
     driverTriggerRight.whileHeld(new RunKicker(kicker));
-    driverLeftBumper.whileHeld(pixyPickupCommand);
 
-    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
-    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
-
-    backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
+    driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    driverStart.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
@@ -141,6 +139,12 @@ public class RobotContainer {
     operatorA.whileHeld(new StartShooter(shooter));
     operatorB.whileHeld(new RunKicker(kicker));
 
+    operatorRightBumper.whenPressed(intake::start, intake);
+    operatorRightBumper.whenReleased(intake::stop, intake);
+
+    operatorLeftBumper.whenPressed(intake::reverse, intake);
+    operatorLeftBumper.whenReleased(intake::stop, intake);
+
     operatorRightTrigger.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.RED));
     operatorRightTrigger.whenReleased(pixyPickupCommand::clearStrategy);
 
@@ -149,12 +153,6 @@ public class RobotContainer {
 
     operatorRightLeftTrigger.whenActive(() -> pixyPickupCommand.setStrategy(PickupStrategy.ANY));
     operatorRightLeftTrigger.whenInactive(pixyPickupCommand::clearStrategy);
-
-    operatorRightBumper.whenPressed(intake::start, intake);
-    operatorRightBumper.whenReleased(intake::stop, intake);
-
-    operatorLeftBumper.whenPressed(intake::reverse, intake);
-    operatorLeftBumper.whenReleased(intake::stop, intake);
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 

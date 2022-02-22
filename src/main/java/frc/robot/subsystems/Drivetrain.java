@@ -14,14 +14,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,16 +28,10 @@ import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
 
-  // The chassis speeds is the actual chassis speeds object of the robot
-  // calculated using the kinematics model + the module states
-  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  // The drive chassis speeds are the requested chassis speeds to be moving
-  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
   /**
    * Hardware (private)
    */
-  private PigeonIMU pigeon;
+  private final PigeonIMU pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -48,13 +40,12 @@ public class Drivetrain extends SubsystemBase {
    * 2 is Back Left,
    * 3 is Back Right
    */
-  private SwerveModule[] modules;
+  private final SwerveModule[] modules;
 
   /**
    * Logging
    */
-  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-  private Field2d field = new Field2d();
+  private final ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -62,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
    * positive y values represent moving toward the left of the robot
    * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
    */
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
       Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
       Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
@@ -81,7 +72,18 @@ public class Drivetrain extends SubsystemBase {
     )
   );
 
-  private SwerveDrivePoseEstimator odometry;
+  private final SwerveDrivePoseEstimator odometry;
+
+  // The chassis speeds is the actual chassis speeds object of the robot
+  // calculated using the kinematics model + the module states
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  // The drive chassis speeds are the requested chassis speeds to be moving
+  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+  // Update Drivetrain state only once per cycle
+  private Pose2d pose;
+  // Array for Yaw Pitch and Roll values in degrees
+  public double[] ypr_deg = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -190,8 +192,6 @@ public class Drivetrain extends SubsystemBase {
       };
     }
 
-    SmartDashboard.putData("Field", field);
-
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }
 
@@ -211,11 +211,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getEstimatedPosition();
+    return pose;
   }
 
   public Translation2d getTranslation() {
-    return getPose().getTranslation();
+    return pose.getTranslation();
   }
 
   public SwerveDriveKinematics getKinematics() {
@@ -231,15 +231,15 @@ public class Drivetrain extends SubsystemBase {
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getYaw());
+    return Rotation2d.fromDegrees(ypr_deg[0]);
   }
 
-  public double getGyroscopeRoll(){
-    return pigeon.getRoll();
+  public Rotation2d getGyroscopePitch(){
+    return Rotation2d.fromDegrees(ypr_deg[1]);
   }
 
-  public double getGyroscopePitch(){
-    return pigeon.getPitch();
+  public Rotation2d getGyroscopeRoll() {
+    return Rotation2d.fromDegrees(ypr_deg[2]);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -281,6 +281,8 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    pigeon.getYawPitchRoll(ypr_deg);
+
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(driveChassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -290,31 +292,23 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    Pose2d pose = odometry.update(
+    SwerveModuleState[] realStates = {
+      getModuleState(modules[0]),
+      getModuleState(modules[1]),
+      getModuleState(modules[2]),
+      getModuleState(modules[3])
+    };
+
+    pose = odometry.update(
       getGyroscopeRotation(),
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
+      realStates
     );
 
-    chassisSpeeds = kinematics.toChassisSpeeds(
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
-    );
-
-    field.setRobotPose(getPose());
+    chassisSpeeds = kinematics.toChassisSpeeds(realStates);
 
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
-
-      SmartDashboard.putNumber("Pose X", pose.getX());
-      SmartDashboard.putNumber("Pose Y", pose.getY());
-      SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
-
-     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {
