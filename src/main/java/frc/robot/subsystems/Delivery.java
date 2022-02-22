@@ -53,12 +53,8 @@ public class Delivery extends SubsystemBase {
 
 
   /**
-   * Stores the currently held colors by rotating in a counter-clockwise direction:
-   * <ul>
-   * <li><code>[0]</code>: Bottom
-   * <li><code>[1]</code>: Right
-   * <li><code>[2]</code>: Top
-   * <li><code>[3]</code>: Left
+   * Stores the currently held colors by rotating in a counter-clockwise direction.
+   * Refer to {@link Slot} for indexes.
    */
   private final BallColor[] storedBalls = new BallColor[4];
 
@@ -263,9 +259,9 @@ public class Delivery extends SubsystemBase {
   public boolean hasIssues() {
     int count =
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0);
+      (storedBalls[Slot.RIGHT.value] != null ? 1 : 0) +
+      (storedBalls[Slot.TOP.value] != null ? 1 : 0) +
+      (storedBalls[Slot.LEFT.value] != null ? 1 : 0);
     
     // If count == balls, return false because there are no issues. Otherwise return true.
     return count != balls;
