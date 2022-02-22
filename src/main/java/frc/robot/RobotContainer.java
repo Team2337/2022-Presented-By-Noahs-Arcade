@@ -29,6 +29,7 @@ import frc.robot.commands.vision.LimeLightHeadingCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.hardware.PowerDistributionHub;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
@@ -40,13 +41,14 @@ public class RobotContainer {
   private final PixyCam pixyCam = new PixyCam();
   private final TimeOfFlightSensor TimeOfFlight = new TimeOfFlightSensor();
 
-  private final Climber climber = new Climber();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final Kicker kicker = new Kicker();
   private final AutoDrive autoDrive = new AutoDrive();
+  private final Climber climber = new Climber();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Intake intake = new Intake();
+  private final Kicker kicker = new Kicker();
+  private final PowerDistributionHub pdh = new PowerDistributionHub();
+  private final Shooter shooter = new Shooter();
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
@@ -134,36 +136,50 @@ public class RobotContainer {
      * Operator Controller
      * - Left joystick x-axis is used by DeliveryOverrideCommand
      * - TODO: Right joystick y-axis is climber up/down
-     * - 
+     * - Right bumper is reverse intake
+     * - Left/right trigger is PixyPickupCommand for their/our balls respectively
      * - 
      */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(operatorController, 2);
-    JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, 2);
+    JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, 3);
 
     operatorA.whenHeld(new StartShooter(shooter));
     operatorB.whenHeld(new RunKicker(kicker));
 
-    operatorTriggerRight.whenPressed(intake::start, intake);
-    operatorTriggerRight.whenReleased(intake::stop, intake);
+    operatorRightTrigger.whenPressed(intake::start, intake);
+    operatorRightTrigger.whenReleased(intake::stop, intake);
 
     operatorRightBumper.whenPressed(intake::reverse, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
 
-    operatorTriggerLeft.whileHeld(new ClimberJoystickCommand(operatorController, climber));
+    //TODO: this should be moved to black switch on operator station
+    operatorLeftBumper.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery));
 
-    /** Driverstation Controls * */
+    /* 
+     * Driverstation Controls
+     * - Green/red buttons: DO NOT USE!! They are macro'ed to enable/disable robot
+     * - Clear switch: limelight override (limelight should be plugged into toggleable power port on PDH)
+     * - Blue switch: delivery override
+     * - TODO: Black switch: climber enable
+     * - Yellow button: reset balls - TODO: delivery correction for inaccuracies
+     */
+
+    operatorStation.clearSwitch.whenPressed(() -> pdh.setSwitchableChannel(false));
+    operatorStation.clearSwitch.whenReleased(() -> pdh.setSwitchableChannel(true));
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
+    operatorStation.yellowButton.whenPressed(delivery::resetArray);//TODO: replace with correct command group when #146 is merged
   }
 
 
