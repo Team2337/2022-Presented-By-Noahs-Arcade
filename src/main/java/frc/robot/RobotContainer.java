@@ -12,16 +12,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
+import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.vision.InstantRelocalizeCommand;
+import frc.robot.commands.vision.LimeLightHeadingCommand;
+import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -30,15 +38,16 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final PixyCam pixyCam = new PixyCam();
+  private final TimeOfFlightSensor TimeOfFlight = new TimeOfFlightSensor();
 
-  // private final Climber climber = new Climber();
+  private final Climber climber = new Climber();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Kicker kicker = new Kicker();
-  private final Vision vision = new Vision();
   private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
+  private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -46,6 +55,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
+    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -70,6 +80,12 @@ public class RobotContainer {
 
   public void resetRobot() {
     pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(
+      new Pose2d(
+        Constants.Auto.kPosition3RightStart.toFieldCoordinate(),
+        drivetrain.getGyroscopeRotation()
+      )
+    );
   }
 
   public void resetRobot2() {
@@ -90,25 +106,34 @@ public class RobotContainer {
      * - TODO: delivery/shooter logic with ball colors
      * - Left Trigger is shoot theirs (chamber theirs?)
      * - Right Trigger is shoot ours (chamber ours?)
+     * - Back button is relocalize command
+     * - Start button is limelight heading command
      */
     /** Driver Controller */
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
-    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
-    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+    JoystickAnalogButton driverRightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+    JoystickButton backButton = new JoystickButton(driverController, XboxController.Button.kBack.value);
+    JoystickButton startButton = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new RunKicker(kicker));
 
-    driverTriggerLeft.whenHeld(new StartShooter(shooter)); //TODO: shooter logic for their balls
-    driverTriggerRight.whenHeld(new StartShooter(shooter)); //TODO: shooter logic for our balls
+    driverLeftTrigger.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
+    driverRightTrigger.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+
+    backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
 
     /*
      * Operator Controller
      * - Left joystick x-axis is used by DeliveryOverrideCommand
-     * - 
+     * - TODO: Right joystick y-axis is climber up/down
      * - 
      * - 
      */
@@ -129,7 +154,12 @@ public class RobotContainer {
     operatorRightBumper.whenPressed(intake::reverse, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
 
+    operatorTriggerLeft.whileHeld(new ClimberJoystickCommand(operatorController, climber));
+
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
+    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
+    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery));
 
     /** Driverstation Controls * */
 
