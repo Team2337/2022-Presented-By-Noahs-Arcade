@@ -103,24 +103,21 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
-    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, 2);
-    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, 3);
-    JoystickButton backButton = new JoystickButton(driverController, XboxController.Button.kBack.value);
-    JoystickButton startButton = new JoystickButton(driverController, XboxController.Button.kStart.value);
-
-    // driverA.whenPressed(delivery::resetArray);//TODO: debug; remove this before committing
+    JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+    JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+    JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
+    JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
     driverTriggerRight.whileHeld(new RunKicker(kicker));
 
-    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
-    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+    // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
+    // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
-    backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
+    driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    driverStart.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
@@ -128,19 +125,20 @@ public class RobotContainer {
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(operatorController, 2);
-    JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
+    JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+    JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
+    JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
 
-    operatorA.whenHeld(new StartShooter(shooter));
-    operatorB.whenHeld(new RunKicker(kicker));
+    operatorA.whileHeld(new StartShooter(shooter));
+    operatorB.whileHeld(new RunKicker(kicker));
 
-    operatorTriggerRight.whenPressed(intake::start, intake);
-    operatorTriggerRight.whenReleased(intake::stop, intake);
-
-    operatorRightBumper.whenPressed(intake::reverse, intake);
+    operatorRightBumper.whenPressed(intake::start, intake);
     operatorRightBumper.whenReleased(intake::stop, intake);
 
-    operatorTriggerLeft.whileHeld(new ClimberJoystickCommand(operatorController, climber));
+    operatorLeftBumper.whenPressed(intake::reverse, intake);
+    operatorLeftBumper.whenReleased(intake::stop, intake);
+
+    operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
