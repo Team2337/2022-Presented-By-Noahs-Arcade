@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -52,7 +51,6 @@ public class Drivetrain extends SubsystemBase {
    * Logging
    */
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-  private Field2d field = new Field2d();
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -181,8 +179,6 @@ public class Drivetrain extends SubsystemBase {
       };
     }
 
-    SmartDashboard.putData("Field", field);
-
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }
 
@@ -296,8 +292,6 @@ public class Drivetrain extends SubsystemBase {
       getModuleState(modules[2]),
       getModuleState(modules[3])
     );
-
-    field.setRobotPose(getPose());
 
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
