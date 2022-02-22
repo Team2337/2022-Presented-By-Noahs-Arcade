@@ -1,8 +1,11 @@
 package frc.robot.commands.delivery.commandgroups;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.delivery.BottomToSideCommand;
 import frc.robot.commands.delivery.SpinUntilSideSeesBallCommand;
 import frc.robot.subsystems.Delivery;
 
@@ -12,8 +15,6 @@ import frc.robot.subsystems.Delivery;
  * Only called when {@code delivery.hasIssues()} returns true in either the
  * {@link AfterIntakeCommandGroup} or {@link PrepareShooterCommandGroup}
  * 
- * TODO: this really only works with 1 ball, what happens if there's 2?
- * 
  * @author Michael F
  */
 public class CorrectDeliveryCommandGroup extends SequentialCommandGroup {
@@ -22,10 +23,15 @@ public class CorrectDeliveryCommandGroup extends SequentialCommandGroup {
     addCommands(
       race(
         new SpinUntilSideSeesBallCommand(delivery),
-        new WaitCommand(5) //FIXME: is this value too high?
+        new WaitCommand(3) //FIXME: is this value too high?
       ),
       new InstantCommand(delivery::stop), // this might be redundant
-      new InstantCommand(delivery::resetArray)
+      new InstantCommand(delivery::resetArray),
+      new ConditionalCommand(
+        new BottomToSideCommand(delivery),
+        new InstantCommand(),
+        () -> delivery.getNumberOfBalls() == 2
+      )
     );
   }
 }

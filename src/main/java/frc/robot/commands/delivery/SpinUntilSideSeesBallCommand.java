@@ -22,7 +22,7 @@ public class SpinUntilSideSeesBallCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    delivery.start(Direction.COUNTER_CLOCKWISE);
+    delivery.start(Direction.CLOCKWISE);
   }
 
   @Override
@@ -32,6 +32,6 @@ public class SpinUntilSideSeesBallCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return delivery.getRightColorSensorStatus();
+    return delivery.getLeftColorSensorStatus();
   }
 }
