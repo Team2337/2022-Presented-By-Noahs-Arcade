@@ -22,6 +22,7 @@ public class TimeOfFlightSensor extends SubsystemBase {
       distanceInches = Units.metersToInches((getDistanceMM() / 1000));
     } else if (validCounter >= MAX_VALID_COUNTER) {
       distanceInches = -1;
+      vaildCounter = 0;
     } else {
       validCounter++;
     }
