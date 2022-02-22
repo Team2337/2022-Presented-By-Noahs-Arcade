@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
@@ -29,22 +30,25 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   // Ex: 2 == until the ball is halfway through the half frame (so 1/4
   // through the full frame) we will go full speed towards it, then
   // start scaling our speed.
+  // This is useful for the buffer zones on the side of the frame where
+  // we don't detect a ball right away but don't want to go slower until
+  // we absolutely have to.
   private static final double MAX_SPEED_HALF_FRAME_SCALE = 1.1;
   private static final double MAX_STRAFE_OUTPUT = 0.5;
-  private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 100; // 2 seconds
+  private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
-  private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
   private final PixyCam pixyCam;
 
-  private PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
+  private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
+
+  private PickupStrategy strategy;
 
   private Block targetBall;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
 
-  public PixyPickupCommand(PickupStrategy strategy, AutoDrive autoDrive, PixyCam pixyCam) {
-    this.strategy = strategy;
+  public PixyPickupCommand(AutoDrive autoDrive, PixyCam pixyCam) {
     this.pixyCam = pixyCam;
     this.autoDrive = autoDrive;
 
@@ -53,20 +57,47 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   @Override
   public void initialize() {
-    targetBall = null;
-    lastSeenCycleCounter = 0;
     autoDrive.setDelegate(this);
+
+    resetInternalState();
   }
 
   private void log() {
+    String strategyString = "N/A";
+    if (strategy != null) {
+      strategyString = strategy.toString();
+    }
+    Logger.getInstance().recordOutput("PixyPickup/Strategy", strategyString);
     Logger.getInstance().recordOutput("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
     Logger.getInstance().recordOutput("PixyPickup/Strafe Output", strafeOutput);
     Logger.getInstance().recordOutput("PixyPickup/Controller Error", strafeController.getPositionError());
   }
 
+  public void setStrategy(PickupStrategy strategy) {
+    this.strategy = strategy;
+
+    resetInternalState();
+  }
+
+  public void clearStrategy() {
+    setStrategy(null);
+  }
+
+  private void resetInternalState() {
+    targetBall = null;
+    lastSeenCycleCounter = 0;
+    strafeOutput = 0.0;
+
+    strafeController.reset();
+  }
+
   @Override
   public void execute() {
     log();
+
+    if (strategy == null) {
+      return;
+    }
 
     Block latestTargetBall = null;
     if (strategy == PickupStrategy.ANY) {
@@ -116,9 +147,10 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
     // Determine our maximum output based on the half-frame size + our P value
     // and scale our output so we'll move full speed until we hit our
-    // kMaxSpeedHalfFrameScale position in the half frame.
+    // MAX_SPEED_HALF_FRAME_SCALE position in the half frame.
     double scaledOutput = output / (((frameCenter / MAX_SPEED_HALF_FRAME_SCALE) * strafeController.getP()));
-    strafeOutput = Math.copySign(Math.pow(scaledOutput, 2), scaledOutput) * MAX_STRAFE_OUTPUT;
+    // Square our output so we more quickly ramp to zero as we approach the center of our frame.
+    strafeOutput = Utilities.squareValues(scaledOutput) * MAX_STRAFE_OUTPUT;
 
     // Negative since our Pixy cam is on the back of our robot. Our
     // side-to-side values need to be inverted, since our side-to-side

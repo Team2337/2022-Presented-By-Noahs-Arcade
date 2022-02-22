@@ -54,7 +54,7 @@ public final class Constants {
     public static final boolean DELIVERY = false;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
-    public static final boolean INTAKE = true;
+    public static final boolean INTAKE = false;
     public static final boolean KICKER = false;
     public static final boolean PDH = false;
     public static final boolean PIXY = false;
@@ -317,7 +317,7 @@ public final class Constants {
   public static final int SHOOTER_RIGHT_MOTOR = 14;
 
   public static final int DELIVERY_MOTOR_ID = 21;
-  public static final double DELIVERY_SPEED = 0.3;
+  public static final double DELIVERY_SPEED = 0.2;
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;
