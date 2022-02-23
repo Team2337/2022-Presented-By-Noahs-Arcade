@@ -33,7 +33,7 @@ public class ShowcaseTesting extends SequentialCommandGroup {
       new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
       new AutoKickerCommand(kicker, 0).withTimeout(0.5),    
       new ParallelCommandGroup(
-        new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(3.5),
+        new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(60), 12, autoDrive, heading).withTimeout(3.5),
         new AutoStartDelivery(delivery).withTimeout(0.75),
         new AutoStartShooter(shooter, 39)
       ),  
