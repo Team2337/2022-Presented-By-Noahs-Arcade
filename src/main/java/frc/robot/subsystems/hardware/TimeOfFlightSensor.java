@@ -26,7 +26,7 @@ public class TimeOfFlightSensor extends SubsystemBase {
       distanceInches = Units.metersToInches((getDistanceMM() / 1000));
     }
 
-    // SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
+    SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
     // SmartDashboard.putString("TimeOfFlight/Status", getStatus().toString());
   }
 

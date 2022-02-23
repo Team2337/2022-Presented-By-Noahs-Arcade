@@ -205,7 +205,7 @@ public final class Constants {
 
     //Start facing the hub with a zero heading.
     public static final PolarCoordinate kStartAtZero = new PolarCoordinate(
-      Units.inchesToMeters(90),
+      Units.inchesToMeters(125),
       Rotation2d.fromDegrees(180)
     );
 
@@ -340,7 +340,7 @@ public final class Constants {
   public static final int SHOOTER_RIGHT_MOTOR = 14;
 
   public static final int DELIVERY_MOTOR_ID = 21;
-  public static final double DELIVERY_SPEED = 0.2;
+  public static final double DELIVERY_SPEED = 0.275;
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;

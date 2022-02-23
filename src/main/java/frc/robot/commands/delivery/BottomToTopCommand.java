@@ -39,7 +39,7 @@ public class BottomToTopCommand extends CommandBase {
 
     // Check if we need to move ball before checking to stop and start the motor
     delivery.start(direction);
-    kicker.setSpeed(-0.2);
+    kicker.setSpeed(-0.0);
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 

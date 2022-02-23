@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.lang.management.OperatingSystemMXBean;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +25,7 @@ import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.ReverseKicker;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
@@ -129,15 +132,18 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorTriggerLeft = new JoystickAnalogButton(operatorController, 2);
     JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
-    operatorA.whenHeld(new StartShooter(shooter));
+    operatorStart.whenHeld(new StartShooter(shooter));
     operatorB.whenHeld(new RunKicker(kicker));
     operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-
+    operatorLeftBumper.whenPressed(new BottomToTopCommand(delivery, kicker));
+    operatorY.whileHeld(new ReverseKicker(kicker));
     operatorTriggerRight.whenPressed(intake::start, intake);
     operatorTriggerRight.whenReleased(intake::stop, intake);
     

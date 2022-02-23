@@ -21,7 +21,7 @@ public class StartShooter extends CommandBase {
 
   @Override
   public void execute() {
-    shooter.setSpeed(40.7);
+    shooter.setSpeed(40);
   }
 
   @Override
