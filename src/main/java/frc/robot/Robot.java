@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
     logger.addDataReceiver(new LogSocketServer(5800));
 
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    logger.start();
+    // logger.start();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

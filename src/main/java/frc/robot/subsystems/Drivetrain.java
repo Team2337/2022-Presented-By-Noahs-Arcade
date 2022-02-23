@@ -278,21 +278,27 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
+    SwerveModuleState moduleOne = getModuleState(modules[0]);
+    SwerveModuleState moduleTwo = getModuleState(modules[1]);
+    SwerveModuleState moduleThree = getModuleState(modules[2]);
+    SwerveModuleState moduleFour = getModuleState(modules[3]);
+
+
     Pose2d pose = odometry.update(
       getGyroscopeRotation(),
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
+      moduleOne,
+      moduleTwo,
+      moduleThree,
+      moduleFour
     );
 
     chassisSpeeds = kinematics.toChassisSpeeds(
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
+      moduleOne,
+      moduleTwo,
+      moduleThree,
+      moduleFour
     );
-
+/*
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
@@ -301,6 +307,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
 
      Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+     */
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {
