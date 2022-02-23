@@ -206,8 +206,13 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }
 
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
+    odometry.addVisionMeasurement(visionPose, timestampSeconds);
+  }
+
   public void resetPosition(Pose2d pose) {
     odometry.resetPosition(pose, getGyroscopeRotation());
+    pose = odometry.getEstimatedPosition();
   }
 
   public Pose2d getPose() {
@@ -262,14 +267,6 @@ public class Drivetrain extends SubsystemBase {
 
   public boolean isMoving() {
     return velocity() > 0;
-  }
-
-  public void resetOdometry() {
-    odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
-  }
-
-  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
-    odometry.addVisionMeasurement(visionPose, timestampSeconds);
   }
 
   /**
