@@ -22,6 +22,8 @@ import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.commandgroups.*;
+import frc.robot.commands.pixy.PixyPickupCommand;
+import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -120,12 +122,15 @@ public class RobotContainer {
     driverB.whileHeld(new StartShooter(shooter));
     driverX.whenPressed(heading::enableMaintainHeading);
     
-    driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
-    driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+    // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
+    // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
     driverTriggerRight.whileHeld(new RunKicker(kicker));
     
     backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
+    driverLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
+    driverRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, pixyCam));
+
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
