@@ -20,7 +20,7 @@ public class FirstMove extends SequentialCommandGroup {
   private Intake intake;
   private double forwardP = 2.5;
   private double strafeP = 0.05;
-  private double forwardAcceleration = Units.inchesToMeters(120);
+  private double forwardAcceleration = Units.inchesToMeters(90);
   private double strafeAcceleration = 12;
 
   
