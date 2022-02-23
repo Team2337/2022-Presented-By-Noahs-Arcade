@@ -44,8 +44,8 @@ public final class Constants {
   public final double DRIVETRAIN_TRACK_WIDTH_INCHES;
   public final double DRIVETRAIN_WHEEL_BASE_INCHES;
 
-  public final double LIMELIGHT_CAMERA_HEIGHT;
-  public final double LIMEILGHT_CAMERA_ANGLE;
+  public final double LIMELIGHT_CAMERA_HEIGHT_METERS;
+  public final Rotation2d LIMEILGHT_CAMERA_ANGLE;
 
   public final int INTAKE_BEAM_ID;
 
@@ -98,10 +98,10 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
         DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
 
-        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
-        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
-
         INTAKE_BEAM_ID = 0;
+
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
         break;
       case PRACTICE:
         MODULE0_DRIVE_MOTOR_ID = 18;
@@ -127,10 +127,10 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
-        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(38);
-        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(30.91193711);
-
         INTAKE_BEAM_ID = 0;
+
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(30.91193711));
         break;
       case COMPETITION:
       default:
@@ -157,10 +157,10 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
-        LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(28.5);
-        LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
-
         INTAKE_BEAM_ID = 9;
+
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(38.1));
         break;
     }
   }
