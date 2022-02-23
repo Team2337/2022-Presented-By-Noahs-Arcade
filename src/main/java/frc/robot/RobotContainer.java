@@ -27,6 +27,7 @@ import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.RecenterWithKicker;
 import frc.robot.commands.shooter.ReverseKicker;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
@@ -148,7 +149,7 @@ public class RobotContainer {
     operatorB.whenHeld(new RunKicker(kicker));
     operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     operatorLeftBumper.whenPressed(new BottomToTopCommand(delivery, kicker));
-    operatorY.whileHeld(new ReverseKicker(kicker));
+    operatorY.whenPressed(new RecenterWithKicker(kicker, delivery));
     operatorTriggerRight.whenPressed(intake::start, intake);
     operatorTriggerRight.whenReleased(intake::stop, intake);
     
@@ -160,7 +161,8 @@ public class RobotContainer {
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     //intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery, kicker));
+    //intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery, kicker));
+    intakeBeamBreakTrigger.whenInactive(new RecenterWithKicker(kicker, delivery));
     /** Driverstation Controls * */
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));

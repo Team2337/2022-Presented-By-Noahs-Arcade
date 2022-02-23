@@ -42,7 +42,7 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
   
   // Color sensors
-  private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
+  //private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
   // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   // TOF sensor
@@ -63,7 +63,7 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
-  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.2;
+  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.8;
 
 
   /**
@@ -102,7 +102,7 @@ public class Delivery extends SubsystemBase {
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
-        "Left: "  + String.valueOf(leftSensor.getColor()),
+        //"Left: "  + String.valueOf(leftSensor.getColor()),
         // "Right: " + String.valueOf(rightSensor.getColor())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
@@ -283,7 +283,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return leftSensor.seesBall();
+    return false; //leftSensor.seesBall();
   }
   
   /**
@@ -299,7 +299,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return leftSensor.getColor();
+    return null; //leftSensor.getColor();
   }
 
   /**

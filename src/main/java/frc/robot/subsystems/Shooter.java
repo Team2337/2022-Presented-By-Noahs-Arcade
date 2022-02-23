@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
     rightMotor.setInverted(TalonFXInvertType.Clockwise);
 
     leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
-    leftMotor.configClosedloopRamp(0.1);
+    leftMotor.configClosedloopRamp(0.2);
     leftMotor.configVoltageCompSaturation(9);
     leftMotor.enableVoltageCompensation(true);
 
