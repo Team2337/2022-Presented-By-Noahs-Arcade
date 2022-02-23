@@ -13,18 +13,19 @@ public class TimeOfFlightSensor extends SubsystemBase {
   private double distanceInches;
   private int validCounter = 0;
   private final int MAX_VALID_COUNTER = 3;
-  
+
   @Override
   public void periodic() {
     if (getStatus() == Status.Valid) {
       validCounter = 0;
       // mm -> m, then m -> inches
       distanceInches = Units.metersToInches((getDistanceMM() / 1000));
-    } else if (validCounter >= MAX_VALID_COUNTER) {
-      distanceInches = -1;
-      vaildCounter = 0;
     } else {
       validCounter++;
+      if (validCounter >= MAX_VALID_COUNTER) {
+        distanceInches = -1;
+        validCounter = 0;
+      }
     }
 
     SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
