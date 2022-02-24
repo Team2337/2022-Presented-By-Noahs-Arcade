@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants;
 
 public class Kicker extends SubsystemBase {
@@ -27,7 +28,7 @@ public class Kicker extends SubsystemBase {
   public Kicker() {
     motor.configFactoryDefault();
 
-    motor.setInverted(TalonFXInvertType.Clockwise);
+    motor.setInverted(TalonFXInvertType.CounterClockwise);
     motor.setNeutralMode(NeutralMode.Brake);
 
     motor.configOpenloopRamp(0.5);
