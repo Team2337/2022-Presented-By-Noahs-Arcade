@@ -198,6 +198,7 @@ public final class Constants {
      */
     public static final double kPickupDistanceInches = 22.0;
     public static final double kRunOverDistanceInches = 4.0;
+    public static final double kEscapeTheTarmacDistance = 17.0;
 
     // Starting Locations
 
@@ -238,6 +239,10 @@ public final class Constants {
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR1.getTheta()
     ); 
+    public static final PolarCoordinate kBallR1Escape = new PolarCoordinate(
+      Constants.Auto.kBallR1.getRadiusMeters() + Units.inchesToMeters(kEscapeTheTarmacDistance),
+      Constants.Auto.kBallR1.getTheta()
+    ); 
     //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
@@ -261,6 +266,10 @@ public final class Constants {
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR2.getTheta()
     );
+    public static final PolarCoordinate kBallR2Escape = new PolarCoordinate(
+      Constants.Auto.kBallR2.getRadiusMeters() + Units.inchesToMeters(kEscapeTheTarmacDistance),
+      Constants.Auto.kBallR2.getTheta()
+    );
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
@@ -273,6 +282,10 @@ public final class Constants {
     public static final PolarCoordinate kBallR3RunOver = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR3.getTheta()
+    );
+    public static final PolarCoordinate kBallR3Escape = new PolarCoordinate(
+      Constants.Auto.kBallR3.getRadiusMeters() + Units.inchesToMeters(kEscapeTheTarmacDistance),
+      Rotation2d.fromDegrees(230)
     );
     public static final PolarCoordinate kBallR2ShootPosition = new PolarCoordinate(
       Constants.Auto.kBallR2.getRadiusMeters(),
