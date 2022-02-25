@@ -84,7 +84,7 @@ public class PixyCam extends SubsystemBase {
    }
   }
 
-  private void connect() {
+  public void connect() {
     state = pixycam.init(this.chipselect);
   }
 
@@ -109,7 +109,7 @@ public class PixyCam extends SubsystemBase {
     // Either number of targets or an error code
     // Be careful changing the number at the end
     // We were having OutOfMemory errors at 20 and we belive a "safe" range is 4-8
-    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 2);
+    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 100);
 
     if (error < 0) {
       return new ArrayList<Block>();
@@ -135,7 +135,7 @@ public class PixyCam extends SubsystemBase {
       }
 
       // +/- 0.2 tolerance on "perfect square" to detect balls
-      if (Utilities.withinTolerance(1.0, ratio, Constants.Pixy.RATIO_TOLERANCE)) {
+      if (true || Utilities.withinTolerance(1.0, ratio, Constants.Pixy.RATIO_TOLERANCE)) {
         // Red == Block Signature 1, Blue == Block Signature 2
         int signature = block.getSignature();
         if (signature == 1) {

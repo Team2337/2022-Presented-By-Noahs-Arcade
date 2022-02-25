@@ -83,6 +83,8 @@ public class RobotContainer {
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
     autonChooser.addOption("Showcase Testing", new ShowcaseTesting(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
+    autonChooser.addOption("Pixy Test", new PixyPickupCommand(PickupStrategy.ANY, autoDrive, pixyCam));
+
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
@@ -122,6 +124,7 @@ public class RobotContainer {
 
     driverB.whileHeld(new StartShooter(shooter));
     driverX.whenPressed(heading::enableMaintainHeading);
+    driverA.whenPressed(pixyCam::connect);
     
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
