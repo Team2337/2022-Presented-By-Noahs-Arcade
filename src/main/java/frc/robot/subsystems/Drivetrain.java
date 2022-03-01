@@ -42,6 +42,13 @@ public class Drivetrain extends SubsystemBase {
    */
   private final SwerveModule[] modules;
 
+  SwerveModuleState module1;
+  SwerveModuleState module2;
+  SwerveModuleState module3;
+  SwerveModuleState module4;
+
+  SwerveModuleState[] realStates;
+
   /**
    * Logging
    */
@@ -190,6 +197,18 @@ public class Drivetrain extends SubsystemBase {
           Constants.getInstance().MODULE3_ANGLE_OFFSET
         )
       };
+      module1 =  getModuleState(modules[0]);
+      module2 =  getModuleState(modules[1]);
+      module3 =  getModuleState(modules[2]);
+      module4 =  getModuleState(modules[3]);
+      
+      pose = odometry.update(
+        getGyroscopeRotation(),
+        module1,
+        module2,
+        module3,
+        module4
+      );
     }
 
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
@@ -289,19 +308,22 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    SwerveModuleState[] realStates = {
-      getModuleState(modules[0]),
-      getModuleState(modules[1]),
-      getModuleState(modules[2]),
-      getModuleState(modules[3])
-    };
+
 
     pose = odometry.update(
       getGyroscopeRotation(),
-      realStates
+      module1,
+      module2,
+      module3,
+      module4
     );
 
-    chassisSpeeds = kinematics.toChassisSpeeds(realStates);
+    chassisSpeeds = kinematics.toChassisSpeeds(      
+     module1,
+     module2,
+     module3,
+     module4
+    );
 
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
