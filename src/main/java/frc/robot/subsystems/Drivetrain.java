@@ -42,11 +42,6 @@ public class Drivetrain extends SubsystemBase {
    */
   private final SwerveModule[] modules;
 
-  SwerveModuleState module1;
-  SwerveModuleState module2;
-  SwerveModuleState module3;
-  SwerveModuleState module4;
-
   /**
    * Logging
    */
@@ -86,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
   private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   // Update Drivetrain state only once per cycle
-  private Pose2d pose;
+  private Pose2d pose = new Pose2d();
   // Array for Yaw Pitch and Roll values in degrees
   public double[] ypr_deg = { 0, 0, 0 };
 
@@ -195,18 +190,6 @@ public class Drivetrain extends SubsystemBase {
           Constants.getInstance().MODULE3_ANGLE_OFFSET
         )
       };
-      module1 =  getModuleState(modules[0]);
-      module2 =  getModuleState(modules[1]);
-      module3 =  getModuleState(modules[2]);
-      module4 =  getModuleState(modules[3]);
-      
-      pose = odometry.update(
-        getGyroscopeRotation(),
-        module1,
-        module2,
-        module3,
-        module4
-      );
     }
 
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
@@ -307,20 +290,20 @@ public class Drivetrain extends SubsystemBase {
     }
 
 
+    SwerveModuleState[] realModuleStates = {
+      getModuleState(modules[0]),
+      getModuleState(modules[1]),
+      getModuleState(modules[2]),
+      getModuleState(modules[3]),
+    };
 
     pose = odometry.update(
       getGyroscopeRotation(),
-      module1,
-      module2,
-      module3,
-      module4
+      realModuleStates
     );
 
-    chassisSpeeds = kinematics.toChassisSpeeds(      
-     module1,
-     module2,
-     module3,
-     module4
+    chassisSpeeds = kinematics.toChassisSpeeds(
+      realModuleStates
     );
 
     Logger.getInstance().recordOutput("Odometry/Robot",
