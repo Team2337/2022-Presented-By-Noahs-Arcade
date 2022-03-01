@@ -47,8 +47,6 @@ public class Drivetrain extends SubsystemBase {
   SwerveModuleState module3;
   SwerveModuleState module4;
 
-  SwerveModuleState[] realStates;
-
   /**
    * Logging
    */
