@@ -204,11 +204,11 @@ public final class Constants {
 
     public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(122.25)
-    );
+      Rotation2d.fromDegrees(149) //122.25    
+      );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(62)
+      Rotation2d.fromDegrees(221) //62
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
       Units.inchesToMeters(90),
@@ -216,7 +216,7 @@ public final class Constants {
     );
 
 
-    //Start facing the hub with a zero heading.
+   //Start facing the hub with a zero heading.
     public static final PolarCoordinate kStartAtZero = new PolarCoordinate(
       Units.inchesToMeters(125),
       Rotation2d.fromDegrees(180)
@@ -256,7 +256,7 @@ public final class Constants {
     // Ball R2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBallR2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(212) //215.25
+      Rotation2d.fromDegrees(215.25) //212
     );
     public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -276,7 +276,7 @@ public final class Constants {
       Rotation2d.fromDegrees(260.25)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
-      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR3.getTheta()
     );
     public static final PolarCoordinate kBallR3RunOver = new PolarCoordinate(
@@ -293,7 +293,7 @@ public final class Constants {
     );
     // Ball R4 = Ball just in front of the Terminal
     public static final PolarCoordinate kBallR4 = new PolarCoordinate(
-      Units.inchesToMeters(305.66),
+      Units.inchesToMeters(290), //305.66
       Rotation2d.fromDegrees(202.65)
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(

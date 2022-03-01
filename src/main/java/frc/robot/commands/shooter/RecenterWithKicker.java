@@ -13,7 +13,7 @@ public class RecenterWithKicker extends SequentialCommandGroup {
     // Schedule commands
     addCommands(
       new BottomToTopCommand(delivery, kicker).withTimeout(5),
-      new AutoKickerCommand(kicker, 0).withTimeout(0.1),
+      new AutoKickerCommand(kicker, 0).withTimeout(0.075),
       new WaitCommand(.1),
       new AutoKickerReverse(kicker, 0).withTimeout(0.15)
 

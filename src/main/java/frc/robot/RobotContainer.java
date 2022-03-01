@@ -45,7 +45,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
+  // private final PixyCam pixyCam = new PixyCam();
   private final TimeOfFlightSensor TimeOfFlight = new TimeOfFlightSensor();
 
   private final Climber climber = new Climber();
@@ -78,7 +78,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos2 Middle Four Ball", new Pos2MidFourBall(autoDrive, drivetrain, heading));
 
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
-    autonChooser.addOption("Pos3 Right three Ball", new Pos3RightThreeBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos3 Right Three Ball", new Pos3RightThreeBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
@@ -98,8 +98,11 @@ public class RobotContainer {
   }
 
   public void resetRobot2() {
-    pigeon.setYaw(60, 250);
+    // 75 for right, -31 for left, 41 for middle
+    pigeon.setYaw(76, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    // drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition2MiddleStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    // drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {
@@ -134,8 +137,8 @@ public class RobotContainer {
     
     backButton.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     startButton.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
-    driverLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
-    driverRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, pixyCam));
+    // driverLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, pixyCam));
+    // driverRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, pixyCam));
 
 
     /** Operator Controller * */
@@ -151,7 +154,7 @@ public class RobotContainer {
     JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
     operatorStart.whenHeld(new StartShooter(shooter));
-    operatorB.whenHeld(new RunKicker(kicker));
+    operatorB.whenHeld(new ReverseKicker(kicker));
     operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     operatorLeftBumper.whenPressed(new BottomToTopCommand(delivery, kicker));
     operatorY.whenPressed(new RecenterWithKicker(kicker, delivery));

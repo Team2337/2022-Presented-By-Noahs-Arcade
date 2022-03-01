@@ -3,6 +3,7 @@ package frc.robot.commands.auto.commandGroups;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
 import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.shooter.AutoStartShooter;
@@ -32,7 +33,7 @@ public class FirstMove extends SequentialCommandGroup {
       new AutoStartShooter(shooter, 40.7),
       new ParallelCommandGroup(
         new AutoStartIntake(intake),
-        new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(5)
+        new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(3)
         ) 
     );
   }
