@@ -7,12 +7,13 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -26,12 +27,6 @@ import frc.robot.RobotType;
 import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
-
-  // The chassis speeds is the actual chassis speeds object of the robot
-  // calculated using the kinematics model + the module states
-  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  // The drive chassis speeds are the requested chassis speeds to be moving
-  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   /**
    * Hardware (private)
@@ -77,7 +72,18 @@ public class Drivetrain extends SubsystemBase {
     )
   );
 
-  private SwerveDriveOdometry odometry;
+  private final SwerveDrivePoseEstimator odometry;
+
+  // The chassis speeds is the actual chassis speeds object of the robot
+  // calculated using the kinematics model + the module states
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  // The drive chassis speeds are the requested chassis speeds to be moving
+  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+  // Update Drivetrain state only once per cycle
+  private Pose2d pose = new Pose2d();
+  // Array for Yaw Pitch and Roll values in degrees
+  public double[] ypr_deg = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -87,7 +93,14 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(PigeonIMU pigeon) {
     this.pigeon = pigeon;
 
-    odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
+    odometry = new SwerveDrivePoseEstimator(
+      getGyroscopeRotation(),
+      pose,
+      kinematics,
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(Units.degreesToRadians(0.01)),
+      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
+    );
 
     if (RobotType.getRobotType() == Type.SKILLSBOT) {
       SmartDashboard.putString("Drivetrain Swerve Setup", "Mk3");
@@ -183,7 +196,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
@@ -194,16 +206,17 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }
 
-  public void resetPosition(Pose2d pose) {
-    odometry.resetPosition(pose, getGyroscopeRotation());
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
+    odometry.addVisionMeasurement(visionPose, timestampSeconds);
   }
 
-  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
-    // odometry.addVisionMeasurement(visionPose, timestampSeconds);
+  public void resetPosition(Pose2d pose) {
+    odometry.resetPosition(pose, getGyroscopeRotation());
+    pose = odometry.getEstimatedPosition();
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return pose;
   }
 
   public Translation2d getTranslation() {
@@ -256,10 +269,6 @@ public class Drivetrain extends SubsystemBase {
     return velocity() > 0;
   }
 
-  public void resetOdometry() {
-    odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
-  }
-
   /**
    * Stops all of the motors on each module
    */
@@ -278,36 +287,26 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    SwerveModuleState moduleOne = getModuleState(modules[0]);
-    SwerveModuleState moduleTwo = getModuleState(modules[1]);
-    SwerveModuleState moduleThree = getModuleState(modules[2]);
-    SwerveModuleState moduleFour = getModuleState(modules[3]);
-
+    SwerveModuleState[] realModuleStates = {
+      getModuleState(modules[0]),
+      getModuleState(modules[1]),
+      getModuleState(modules[2]),
+      getModuleState(modules[3]),
+    };
 
     Pose2d pose = odometry.update(
       getGyroscopeRotation(),
-      moduleOne,
-      moduleTwo,
-      moduleThree,
-      moduleFour
+      realModuleStates
     );
 
     chassisSpeeds = kinematics.toChassisSpeeds(
-      moduleOne,
-      moduleTwo,
-      moduleThree,
-      moduleFour
+      realModuleStates
     );
-/*
+
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-      SmartDashboard.putNumber("Pose X", pose.getX());
-      SmartDashboard.putNumber("Pose Y", pose.getY());
-      SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
-
-     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
-     */
+    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
   private static final SwerveModuleState getModuleState(SwerveModule module) {
