@@ -74,9 +74,10 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   }
 
   public void setStrategy(PickupStrategy strategy) {
+    if (this.strategy != strategy) {
+      resetInternalState();
+    }
     this.strategy = strategy;
-
-    resetInternalState();
   }
 
   public void clearStrategy() {
