@@ -27,6 +27,7 @@ import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimeLightHeadingCommand;
+import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
@@ -82,7 +83,7 @@ public class RobotContainer {
     pigeon.setYaw(0, 250);
     drivetrain.resetPosition(
       new Pose2d(
-        Constants.Auto.kPosition3RightStart.toFieldCoordinate(),
+        Constants.Auto.kStartAtZero.toFieldCoordinate(),
         drivetrain.getGyroscopeRotation()
       )
     );
@@ -116,7 +117,7 @@ public class RobotContainer {
     driverTriggerRight.whileHeld(new RunKicker(kicker));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    driverStart.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
+    driverStart.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
