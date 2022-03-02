@@ -31,7 +31,7 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Hardware (private)
    */
-  private final PigeonIMU pigeon;
+  private PigeonIMU pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -40,12 +40,12 @@ public class Drivetrain extends SubsystemBase {
    * 2 is Back Left,
    * 3 is Back Right
    */
-  private final SwerveModule[] modules;
+  private SwerveModule[] modules;
 
   /**
    * Logging
    */
-  private final ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
    * positive y values represent moving toward the left of the robot
    * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
    */
-  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
       Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
       Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
@@ -81,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
   private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   // Update Drivetrain state only once per cycle
-  private Pose2d pose;
+  private Pose2d pose = new Pose2d();
   // Array for Yaw Pitch and Roll values in degrees
   public double[] ypr_deg = { 0, 0, 0 };
 
@@ -95,7 +95,7 @@ public class Drivetrain extends SubsystemBase {
 
     odometry = new SwerveDrivePoseEstimator(
       getGyroscopeRotation(),
-      new Pose2d(),
+      pose,
       kinematics,
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
       VecBuilder.fill(Units.degreesToRadians(0.01)),
@@ -151,8 +151,8 @@ public class Drivetrain extends SubsystemBase {
       modules = new SwerveModule[] {
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 0),
+              .withSize(4, 8)
+              .withPosition(8, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
@@ -161,8 +161,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(0, 0),
+              .withSize(4, 8)
+              .withPosition(4, 0),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
@@ -171,8 +171,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(0, 8),
+              .withSize(4, 8)
+              .withPosition(4, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
@@ -181,8 +181,8 @@ public class Drivetrain extends SubsystemBase {
         ),
         Mk4SwerveModuleHelper.createFalcon500(
           tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 8),
+              .withSize(4, 8)
+              .withPosition(8, 8),
           Mk4SwerveModuleHelper.GearRatio.L1I,
           Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
           Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
@@ -206,8 +206,13 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }
 
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
+    odometry.addVisionMeasurement(visionPose, timestampSeconds);
+  }
+
   public void resetPosition(Pose2d pose) {
     odometry.resetPosition(pose, getGyroscopeRotation());
+    pose = odometry.getEstimatedPosition();
   }
 
   public Pose2d getPose() {
@@ -215,7 +220,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Translation2d getTranslation() {
-    return pose.getTranslation();
+    return getPose().getTranslation();
   }
 
   public SwerveDriveKinematics getKinematics() {
@@ -231,15 +236,15 @@ public class Drivetrain extends SubsystemBase {
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(ypr_deg[0]);
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
-  public Rotation2d getGyroscopePitch(){
-    return Rotation2d.fromDegrees(ypr_deg[1]);
+  public double getGyroscopeRoll(){
+    return pigeon.getRoll();
   }
 
-  public Rotation2d getGyroscopeRoll() {
-    return Rotation2d.fromDegrees(ypr_deg[2]);
+  public double getGyroscopePitch(){
+    return pigeon.getPitch();
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -264,14 +269,6 @@ public class Drivetrain extends SubsystemBase {
     return velocity() > 0;
   }
 
-  public void resetOdometry() {
-    odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
-  }
-
-  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
-    odometry.addVisionMeasurement(visionPose, timestampSeconds);
-  }
-
   /**
    * Stops all of the motors on each module
    */
@@ -281,8 +278,6 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pigeon.getYawPitchRoll(ypr_deg);
-
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(driveChassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -292,22 +287,25 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    SwerveModuleState[] realStates = {
+    SwerveModuleState[] realModuleStates = {
       getModuleState(modules[0]),
       getModuleState(modules[1]),
       getModuleState(modules[2]),
-      getModuleState(modules[3])
+      getModuleState(modules[3]),
     };
 
-    pose = odometry.update(
+    Pose2d pose = odometry.update(
       getGyroscopeRotation(),
-      realStates
+      realModuleStates
     );
 
-    chassisSpeeds = kinematics.toChassisSpeeds(realStates);
+    chassisSpeeds = kinematics.toChassisSpeeds(
+      realModuleStates
+    );
 
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 

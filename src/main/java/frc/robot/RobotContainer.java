@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
@@ -31,7 +30,6 @@ import frc.robot.commands.vision.LimeLightHeadingCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
-import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -40,7 +38,6 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   private final PixyCam pixyCam = new PixyCam();
-  private final TimeOfFlightSensor TimeOfFlight = new TimeOfFlightSensor();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -159,7 +156,7 @@ public class RobotContainer {
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery));
+    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
 
     /** Driverstation Controls * */
 

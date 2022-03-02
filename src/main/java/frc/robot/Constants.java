@@ -47,6 +47,8 @@ public final class Constants {
   public final double LIMELIGHT_CAMERA_HEIGHT;
   public final double LIMEILGHT_CAMERA_ANGLE;
 
+  public final int INTAKE_BEAM_ID;
+
   private static Constants instance;
 
   public static final class DashboardLogging {
@@ -98,6 +100,8 @@ public final class Constants {
 
         LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(40.5);
         LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(34);
+
+        INTAKE_BEAM_ID = 0;
         break;
       case PRACTICE:
         MODULE0_DRIVE_MOTOR_ID = 18;
@@ -125,6 +129,8 @@ public final class Constants {
 
         LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(30.91193711);
+
+        INTAKE_BEAM_ID = 0;
         break;
       case COMPETITION:
       default:
@@ -153,6 +159,8 @@ public final class Constants {
 
         LIMELIGHT_CAMERA_HEIGHT = Units.inchesToMeters(28.5);
         LIMEILGHT_CAMERA_ANGLE = Units.degreesToRadians(38.1);
+
+        INTAKE_BEAM_ID = 9;
         break;
     }
   }
@@ -317,13 +325,12 @@ public final class Constants {
   public static final int SHOOTER_RIGHT_MOTOR = 14;
 
   public static final int DELIVERY_MOTOR_ID = 21;
-  public static final double DELIVERY_SPEED = 0.2;
+  public static final double DELIVERY_SPEED = 0.275;
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;
   public static final double INTAKE_REVERSE_SPEED = -0.5;
 
-  public static final int INTAKE_BEAM_ID = 0;
   public static final int SHOOTER_BEAM_ID = 2;
 
   public static enum BallColor {

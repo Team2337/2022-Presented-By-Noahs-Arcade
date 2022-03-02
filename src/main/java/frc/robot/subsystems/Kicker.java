@@ -30,6 +30,10 @@ public class Kicker extends SubsystemBase {
     setSpeed(0.5);
   }
 
+  public void reverse() {
+    setSpeed(-0.5);
+  }
+
   public void stop() {
     setSpeed(0.0);
   }
