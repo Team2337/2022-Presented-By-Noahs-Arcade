@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
 
   // Beam break sensor
-  private final DigitalInput intakeBeam = new DigitalInput(Constants.INTAKE_BEAM_ID);
+  private final DigitalInput intakeBeam = new DigitalInput(Constants.getInstance().INTAKE_BEAM_ID);
 
   public Intake() {
     motor.configFactoryDefault();
