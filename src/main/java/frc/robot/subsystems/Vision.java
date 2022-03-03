@@ -213,10 +213,11 @@ public class Vision extends SubsystemBase {
 
   private double calculateDistanceToTargetMeters() {
     return LimelightUtilities.calculateDistanceToTargetMeters(
-      Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT,
+      Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT_METERS,
       Constants.HUB_HEIGHT_METERS,
       Constants.getInstance().LIMEILGHT_CAMERA_ANGLE,
-      Units.degreesToRadians(getTy())
+      Rotation2d.fromDegrees(getTy()),
+      Rotation2d.fromDegrees(getTx())
     );
   }
 
