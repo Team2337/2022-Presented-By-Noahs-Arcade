@@ -78,6 +78,7 @@ public class RobotContainer {
   }
 
   public void resetRobot() {
+    // Other option here is Constants.STARTING_ANGLE for booting against Hub
     pigeon.setYaw(0, 250);
     drivetrain.resetPosition(
       new Pose2d(
@@ -85,11 +86,6 @@ public class RobotContainer {
         drivetrain.getGyroscopeRotation()
       )
     );
-  }
-
-  public void resetRobot2() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void enableMaintainHeading() {
