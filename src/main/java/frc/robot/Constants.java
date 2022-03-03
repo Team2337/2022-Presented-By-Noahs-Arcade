@@ -273,6 +273,11 @@ public final class Constants {
       Rotation2d.fromDegrees(190.05)
     );
 
+    public static final PolarCoordinate kStartAtZero = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(180)
+    );
+
   }
 
   // Robot-specific configuration for our swerve drive algorithm
