@@ -307,7 +307,7 @@ public final class Constants {
   }
 
   public static final class Pixy {
-    public static final double RATIO_TOLERANCE = 0.2;
+    public static final double RATIO_TOLERANCE = 0.4;
   }
 
   public static final class Vision {

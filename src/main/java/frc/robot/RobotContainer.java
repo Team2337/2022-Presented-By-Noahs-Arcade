@@ -18,6 +18,8 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.commandgroups.*;
+import frc.robot.commands.pixy.PixyPickupCommand;
+import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -106,12 +108,16 @@ public class RobotContainer {
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
+    PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, pixyCam);
+
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
-    driverTriggerRight.whileHeld(new RunKicker(kicker));
 
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
+    driverRightBumper.whileHeld(pixyPickupCommand);
+
+    driverTriggerRight.whileHeld(new RunKicker(kicker));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverStart.whileHeld(new LimeLightHeadingCommand(drivetrain, heading, vision));
@@ -124,6 +130,7 @@ public class RobotContainer {
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
+    Trigger operatorRightLeftTrigger = operatorRightTrigger.and(operatorLeftTrigger);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
 
     operatorA.whileHeld(new StartShooter(shooter));
@@ -134,6 +141,15 @@ public class RobotContainer {
 
     operatorLeftBumper.whenPressed(intake::reverse, intake);
     operatorLeftBumper.whenReleased(intake::stop, intake);
+
+    operatorRightTrigger.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.RED));
+    operatorRightTrigger.whenReleased(pixyPickupCommand::clearStrategy);
+
+    operatorLeftTrigger.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.BLUE));
+    operatorLeftTrigger.whenReleased(pixyPickupCommand::clearStrategy);
+
+    operatorRightLeftTrigger.whenActive(() -> pixyPickupCommand.setStrategy(PickupStrategy.ANY));
+    operatorRightLeftTrigger.whenInactive(pixyPickupCommand::clearStrategy);
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
