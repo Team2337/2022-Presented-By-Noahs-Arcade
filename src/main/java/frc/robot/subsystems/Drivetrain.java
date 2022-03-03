@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
@@ -23,8 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotType;
-import frc.robot.RobotType.Type;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -32,6 +28,8 @@ public class Drivetrain extends SubsystemBase {
    * Hardware (private)
    */
   private PigeonIMU pigeon;
+
+  private SwerveDriveKinematics kinematics;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -46,31 +44,6 @@ public class Drivetrain extends SubsystemBase {
    * Logging
    */
   private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
-  /**
-   * Should be in the same order as the swerve modules (see above)
-   * Positive x values represent moving toward the front of the robot
-   * positive y values represent moving toward the left of the robot
-   * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
-   */
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    new Translation2d(
-      Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
-      Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
-      Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES),
-      Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES),
-      Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
-    )
-  );
 
   private final SwerveDrivePoseEstimator odometry;
 
@@ -93,6 +66,8 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(PigeonIMU pigeon) {
     this.pigeon = pigeon;
 
+    kinematics = Constants.Drivetrain.kinematicsForCurrentRobot();
+
     odometry = new SwerveDrivePoseEstimator(
       getGyroscopeRotation(),
       pose,
@@ -102,95 +77,7 @@ public class Drivetrain extends SubsystemBase {
       VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
     );
 
-    if (RobotType.getRobotType() == Type.SKILLSBOT) {
-      SmartDashboard.putString("Drivetrain Swerve Setup", "Mk3");
-      modules = new SwerveModule[] {
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(8, 0),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE0_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 0),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE1_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 8),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE2_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(8, 8),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE3_ANGLE_OFFSET
-        )
-      };
-    } else {
-      SmartDashboard.putString("Drivetrain Swerve Setup", "Mk4i");
-      modules = new SwerveModule[] {
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 0),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE0_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 0),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE1_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 8),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE2_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 8),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE3_ANGLE_OFFSET
-        )
-      };
-    }
+    modules = Constants.Swerve.modulesForCurrentRobot();
 
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }

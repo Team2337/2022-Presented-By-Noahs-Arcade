@@ -1,9 +1,13 @@
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -20,29 +24,6 @@ import frc.robot.coordinates.PolarCoordinate;
  */
 public final class Constants {
   public static double STARTING_ANGLE = 25;
-
-  public int MODULE0_DRIVE_MOTOR_ID;
-  public int MODULE0_ANGLE_MOTOR_ID;
-  public int MODULE0_ANGLE_CANCODER_ID;
-  public double MODULE0_ANGLE_OFFSET;
-
-  public final int MODULE1_DRIVE_MOTOR_ID;
-  public final int MODULE1_ANGLE_MOTOR_ID;
-  public final int MODULE1_ANGLE_CANCODER_ID;
-  public final double MODULE1_ANGLE_OFFSET;
-
-  public final int MODULE2_DRIVE_MOTOR_ID;
-  public final int MODULE2_ANGLE_MOTOR_ID;
-  public final int MODULE2_ANGLE_CANCODER_ID;
-  public final double MODULE2_ANGLE_OFFSET;
-
-  public final int MODULE3_DRIVE_MOTOR_ID;
-  public final int MODULE3_ANGLE_MOTOR_ID;
-  public final int MODULE3_ANGLE_CANCODER_ID;
-  public final double MODULE3_ANGLE_OFFSET;
-
-  public final double DRIVETRAIN_TRACK_WIDTH_INCHES;
-  public final double DRIVETRAIN_WHEEL_BASE_INCHES;
 
   public final double LIMELIGHT_CAMERA_HEIGHT_METERS;
   public final Rotation2d LIMEILGHT_CAMERA_ANGLE;
@@ -75,58 +56,12 @@ public final class Constants {
     SmartDashboard.putString("Constants Robot Type", robotType.description);
     switch (robotType) {
       case SKILLSBOT:
-        MODULE0_DRIVE_MOTOR_ID = 0;
-        MODULE0_ANGLE_MOTOR_ID = 4;
-        MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
-
-        MODULE1_DRIVE_MOTOR_ID = 1;
-        MODULE1_ANGLE_MOTOR_ID = 5;
-        MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
-
-        MODULE2_DRIVE_MOTOR_ID = 14;
-        MODULE2_ANGLE_MOTOR_ID = 10;
-        MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
-
-        MODULE3_DRIVE_MOTOR_ID = 15;
-        MODULE3_ANGLE_MOTOR_ID = 11;
-        MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
-
-        DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
-        DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
-
         INTAKE_BEAM_ID = 0;
 
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
         break;
       case PRACTICE:
-        MODULE0_DRIVE_MOTOR_ID = 18;
-        MODULE0_ANGLE_MOTOR_ID = 19;
-        MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
-
-        MODULE1_DRIVE_MOTOR_ID = 1;
-        MODULE1_ANGLE_MOTOR_ID = 2;
-        MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
-
-        MODULE2_DRIVE_MOTOR_ID = 8;
-        MODULE2_ANGLE_MOTOR_ID = 9;
-        MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
-
-        MODULE3_DRIVE_MOTOR_ID = 10;
-        MODULE3_ANGLE_MOTOR_ID = 11;
-        MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
-
-        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
-        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
-
         INTAKE_BEAM_ID = 0;
 
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
@@ -134,29 +69,6 @@ public final class Constants {
         break;
       case COMPETITION:
       default:
-        MODULE0_DRIVE_MOTOR_ID = 18;
-        MODULE0_ANGLE_MOTOR_ID = 19;
-        MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(76.37109375);
-
-        MODULE1_DRIVE_MOTOR_ID = 1;
-        MODULE1_ANGLE_MOTOR_ID = 2;
-        MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(204.430078125);
-
-        MODULE2_DRIVE_MOTOR_ID = 8;
-        MODULE2_ANGLE_MOTOR_ID = 9;
-        MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(195.37382812500002);
-
-        MODULE3_DRIVE_MOTOR_ID = 10;
-        MODULE3_ANGLE_MOTOR_ID = 11;
-        MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(255.3140625);
-
-        DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
-        DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
-
         INTAKE_BEAM_ID = 9;
 
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
@@ -164,18 +76,6 @@ public final class Constants {
         break;
     }
   }
-
-  /**
-   * Sets the Track width and wheel base of the robot based on the centerpoint of the swerve modules.
-   * Track width is side to side
-   * Wheel base is front to back.
-   */
-  // /2 since we're measuring from the center - halfway
-  private static final double MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES = Constants.getInstance().DRIVETRAIN_TRACK_WIDTH_INCHES / 2;
-  private static final double MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES = Constants.getInstance().DRIVETRAIN_WHEEL_BASE_INCHES / 2;
-
-  // Radius to the wheel modules can be thought of as a triangle - width and length are the two sides
-  public static final double DRIVETRAIN_RADIUS_INCHES = Math.hypot(MODULE_DISTANCE_WIDTH_FROM_CENTER_INCHES, MODULE_DISTANCE_LENGTH_FROM_CENTER_INCHES);
 
   // Location of the Hub on the field - the center of the field
   public static final Translation2d kHub = new Translation2d(
@@ -280,26 +180,230 @@ public final class Constants {
 
   }
 
-  // Robot-specific configuration for our swerve drive algorithm
-  public static final class Swerve {
-    /**
-     * The maximum voltage that will be delivered to the drive motors.
-     * <p>
-     * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
-     */
-    public static final double MAX_VOLTAGE = 12.0;
+  public static final class Drivetrain {
 
-    //  The formula for calculating the theoretical maximum velocity is:
-    //   <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
-    //  By default this value is setup for a Mk4 L1 module using Falcon500s to drive.
+    public static SwerveDriveKinematics kinematicsForCurrentRobot() {
+      return kinematicsForRobotType(RobotType.getRobotType());
+    }
+
+    private static SwerveDriveKinematics kinematicsForRobotType(RobotType.Type robotType) {
+      Configuration configuration = configurationForRobotType(robotType);
+      double drivetrainRadiusMeters = configuration.getDrivetrainRadiusMeters();
+      /**
+       * Should be in the same order as the swerve modules (see above)
+       * Positive x values represent moving toward the front of the robot
+       * positive y values represent moving toward the left of the robot
+       * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
+       */
+      return new SwerveDriveKinematics(
+        new Translation2d(
+          drivetrainRadiusMeters,
+          -drivetrainRadiusMeters
+        ),
+        new Translation2d(
+          drivetrainRadiusMeters,
+          drivetrainRadiusMeters
+        ),
+        new Translation2d(
+          -drivetrainRadiusMeters,
+          drivetrainRadiusMeters
+        ),
+        new Translation2d(
+          -drivetrainRadiusMeters,
+          -drivetrainRadiusMeters
+        )
+      );
+    }
+
     /**
-     * The maximum velocity of the robot in meters per second.
-     * <p>
-     * This is a measure of how fast the robot should be able to drive in a straight line.
+     * Sets the Track width and wheel base of the robot based on the centerpoint of
+     * the swerve modules.
+     * Track width is side to side
+     * Wheel base is front to back.
      */
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-      SdsModuleConfigurations.MK4_L1.getDriveReduction() *
-      SdsModuleConfigurations.MK4_L1.getWheelDiameter() * Math.PI;
+    private static class Configuration {
+      private final double trackWidthMeters;
+      private final double wheelBaseMeters;
+
+      private Configuration(double trackWidthInches, double wheelBaseInches) {
+        this.trackWidthMeters = Units.inchesToMeters(trackWidthInches);
+        this.wheelBaseMeters = Units.inchesToMeters(wheelBaseInches);
+      }
+
+      private double getDrivetrainRadiusMeters() {
+        // / 2 since we're measuring from the center - halfway
+        double moduleDistanceWidthFromCenterMeters = trackWidthMeters / 2;
+        double moduleDistanceLengthFromCenterMeters = wheelBaseMeters / 2;
+
+        // Radius to the wheel modules can be thought of as a triangle - width and
+        // length are the two sides
+        return Math.hypot(
+          moduleDistanceWidthFromCenterMeters,
+          moduleDistanceLengthFromCenterMeters
+        );
+      }
+    }
+
+    private static Configuration configurationForRobotType(RobotType.Type robotType) {
+      switch (robotType) {
+        case SKILLSBOT:
+          return new Configuration(10.5, 10.5);
+        case PRACTICE:
+        case COMPETITION:
+        default:
+          return new Configuration(18.75, 18.75);
+      }
+    }
+  }
+
+  public static final class Swerve {
+
+    public static SwerveModule[] modulesForCurrentRobot() {
+      return modulesForRobotType(RobotType.getRobotType());
+    }
+
+    private static SwerveModule[] modulesForRobotType(RobotType.Type robotType) {
+      Swerve.ModuleConfiguration[] moduleConfigurations = Constants.Swerve.moduleConfigurationsForRobotType(robotType);
+
+      // Skillsbot uses Mk3 modules, Practice/Comp use Mk4i modules
+      // All robots use Falcon 500 motors + CANcoders
+      switch (robotType) {
+        case SKILLSBOT:
+          return new SwerveModule[] {
+            Mk3SwerveModuleHelper.createFalcon500(
+              Mk3SwerveModuleHelper.GearRatio.STANDARD,
+              moduleConfigurations[0].driveMotorID,
+              moduleConfigurations[0].angleMotorID,
+              moduleConfigurations[0].angleEncoderID,
+              moduleConfigurations[0].angleOffset.getRadians()
+            ),
+            Mk3SwerveModuleHelper.createFalcon500(
+              Mk3SwerveModuleHelper.GearRatio.STANDARD,
+              moduleConfigurations[1].driveMotorID,
+              moduleConfigurations[1].angleMotorID,
+              moduleConfigurations[1].angleEncoderID,
+              moduleConfigurations[1].angleOffset.getRadians()
+            ),
+            Mk3SwerveModuleHelper.createFalcon500(
+              Mk3SwerveModuleHelper.GearRatio.STANDARD,
+              moduleConfigurations[2].driveMotorID,
+              moduleConfigurations[2].angleMotorID,
+              moduleConfigurations[2].angleEncoderID,
+              moduleConfigurations[2].angleOffset.getRadians()
+            ),
+            Mk3SwerveModuleHelper.createFalcon500(
+              Mk3SwerveModuleHelper.GearRatio.STANDARD,
+              moduleConfigurations[3].driveMotorID,
+              moduleConfigurations[3].angleMotorID,
+              moduleConfigurations[3].angleEncoderID,
+              moduleConfigurations[3].angleOffset.getRadians()
+            )
+          };
+        case PRACTICE:
+        case COMPETITION:
+        default:
+          return new SwerveModule[] {
+            Mk4SwerveModuleHelper.createFalcon500(
+              Mk4SwerveModuleHelper.GearRatio.L1I,
+              moduleConfigurations[0].driveMotorID,
+              moduleConfigurations[0].angleMotorID,
+              moduleConfigurations[0].angleEncoderID,
+              moduleConfigurations[0].angleOffset.getRadians()
+            ),
+            Mk4SwerveModuleHelper.createFalcon500(
+              Mk4SwerveModuleHelper.GearRatio.L1I,
+              moduleConfigurations[1].driveMotorID,
+              moduleConfigurations[1].angleMotorID,
+              moduleConfigurations[1].angleEncoderID,
+              moduleConfigurations[1].angleOffset.getRadians()
+            ),
+            Mk4SwerveModuleHelper.createFalcon500(
+              Mk4SwerveModuleHelper.GearRatio.L1I,
+              moduleConfigurations[2].driveMotorID,
+              moduleConfigurations[2].angleMotorID,
+              moduleConfigurations[2].angleEncoderID,
+              moduleConfigurations[2].angleOffset.getRadians()
+            ),
+            Mk4SwerveModuleHelper.createFalcon500(
+              Mk4SwerveModuleHelper.GearRatio.L1I,
+              moduleConfigurations[3].driveMotorID,
+              moduleConfigurations[3].angleMotorID,
+              moduleConfigurations[3].angleEncoderID,
+              moduleConfigurations[3].angleOffset.getRadians()
+            )
+          };
+      }
+    }
+
+    private static class ModuleConfiguration {
+      private final int driveMotorID;
+      private final int angleMotorID;
+      private final int angleEncoderID;
+      private final Rotation2d angleOffset;
+
+      private ModuleConfiguration(int driveMotorID, int angleMotorID, int angleEncoderID, Rotation2d angleOffset) {
+        this.driveMotorID = driveMotorID;
+        this.angleMotorID = angleMotorID;
+        this.angleEncoderID = angleEncoderID;
+        this.angleOffset = angleOffset;
+      }
+    }
+
+    private static ModuleConfiguration[] moduleConfigurationsForRobotType(RobotType.Type robotType) {
+      switch (robotType) {
+        case SKILLSBOT:
+          return new ModuleConfiguration[] {
+            new ModuleConfiguration(0, 4, 1, Rotation2d.fromDegrees(-50.701904296875)), // 0
+            new ModuleConfiguration(1, 5, 2, Rotation2d.fromDegrees(-128.58123779296875)), // 1
+            new ModuleConfiguration(14, 10, 3, Rotation2d.fromDegrees(-346.63238525390625)), // 2
+            new ModuleConfiguration(15, 11, 4, Rotation2d.fromDegrees(-286.42730712890625)) // 3
+          };
+        case PRACTICE:
+          return new ModuleConfiguration[] {
+            new ModuleConfiguration(18, 19, 1, Rotation2d.fromDegrees(-130.599976)), // 0
+            new ModuleConfiguration(1, 2, 2, Rotation2d.fromDegrees(-175.163269)), // 1
+            new ModuleConfiguration(8, 9, 3, Rotation2d.fromDegrees(-278.338623)), // 2
+            new ModuleConfiguration(10, 11, 4, Rotation2d.fromDegrees(-355.860901)) // 3
+          };
+        case COMPETITION:
+        default:
+          return new ModuleConfiguration[] {
+            new ModuleConfiguration(18, 19, 1, Rotation2d.fromDegrees(-76.37109375)), // 0
+            new ModuleConfiguration(1, 2, 2, Rotation2d.fromDegrees(-204.430078125)), // 1
+            new ModuleConfiguration(8, 9, 3, Rotation2d.fromDegrees(-195.37382812500002)), // 2
+            new ModuleConfiguration(10, 11, 4, Rotation2d.fromDegrees(-255.3140625)) // 3
+          };
+      }
+    }
+
+    public static class Speeds {
+
+      public static final double MAX_VOLTAGE = 12.0;
+
+      private ModuleConfiguration swerveModuleConfiguration;
+      private Drivetrain.Configuration drivetrainConfiguration;
+
+      private Speeds(swervelib.ModuleConfiguration swerveModuleConfiguration, Drivetrain.Configuration drivetrainConfiguration) {
+        this.swerveModuleConfiguration = swerveModuleConfiguration;
+        this.drivetrainConfiguration = drivetrainConfiguration;
+      }
+
+      /**
+       * The maximum velocity of the robot in meters per second.
+       * <p>
+       * This is a measure of how fast the robot should be able to drive in a straight line.
+       *
+       * The formula for calculating the theoretical maximum velocity is:
+       *   <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
+       * By default this value is setup for a Mk4 L1 module using Falcon500s to drive.
+       */
+      public double getMaxVelocityMetersPerSecond() {
+        // 6380.0 == Falcon 500 free speed RPM
+        return 6380.0 / 60.0 *
+          swerveModuleConfiguration.getDriveReduction() *
+          swerveModuleConfiguration.getWheelDiameter() * Math.PI;
+      }
+    }
 
       /**
      * The maximum angular velocity of the robot in radians per second.
