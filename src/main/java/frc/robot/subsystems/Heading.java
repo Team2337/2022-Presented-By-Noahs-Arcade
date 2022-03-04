@@ -63,7 +63,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.007, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(0.006, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -86,6 +86,7 @@ public class Heading extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     if (maintainHeading != null) {
       Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", maintainHeading.getDegrees());
     } else {
@@ -99,6 +100,7 @@ public class Heading extends SubsystemBase {
     Logger.getInstance().recordOutput("Heading/Rotation Controller Error", rotationController.getPositionError());
     Logger.getInstance().recordOutput("Heading/Enabled", enabled);
     Logger.getInstance().recordOutput("Heading/At Maintain Heading", atMaintainHeading());
+    */
   }
 
   public void enableMaintainHeading() {
@@ -198,13 +200,13 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
-      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
+      // Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
-      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
+      // Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
       return 0.0;
     }
 
@@ -217,7 +219,7 @@ public class Heading extends SubsystemBase {
     if (rotationController.atSetpoint()) {
       return 0.0;
     }
-    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", output);
+    // Logger.getInstance().recordOutput("Heading/Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clampedOutput = MathUtil.clamp(
@@ -232,7 +234,7 @@ public class Heading extends SubsystemBase {
       ),
       clampedOutput
     );
-    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", nominalClampedOutput);
+    // Logger.getInstance().recordOutput("Heading/Rotation Controller Output", nominalClampedOutput);
     return nominalClampedOutput;
   }
 
