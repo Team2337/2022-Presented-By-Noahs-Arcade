@@ -22,6 +22,8 @@ public class TestSubsystem extends SubsystemBase {
       color.red,
       color.green
     });
+    SmartDashboard.putNumber("TMD proximity", sensor.getProximity());
+    SmartDashboard.putString("TMD given color", String.valueOf(sensor.getColor()));
   }
   
 }
