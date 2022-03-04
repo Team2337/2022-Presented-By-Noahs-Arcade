@@ -36,10 +36,10 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
         );
         // + 2 because like - a little bonus latency for network stuff
         // / 1000 to go ms -> seconds
-        drivetrain.addVisionMeasurement(
-          pose,
-          Timer.getFPGATimestamp() - ((Constants.Vision.IMAGE_PROCESSING_LATENCY_MS + vision.getLatency() + 2) / 1000)
-        );
+        //drivetrain.addVisionMeasurement(
+          //pose,
+          //Timer.getFPGATimestamp() - ((Constants.Vision.IMAGE_PROCESSING_LATENCY_MS + vision.getLatency() + 2) / 1000)
+       // );
         vision.incrementRelocalizeCounter();
 
         relocalizeDebounceCounter = 0;

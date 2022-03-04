@@ -35,7 +35,7 @@ public class ClimberJoystickCommand extends CommandBase {
     if (joystick == 0) {
       // If our joystick is not being moved, hold our climber in it's current position
       if (shouldHoldPositionWhenStopped) {
-        climber.hold(climber.getPosition());
+        climber.hold();
         shouldHoldPositionWhenStopped = false;
       }
     } else {

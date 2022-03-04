@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
+import frc.robot.commands.climber.ClimberSetpointCommand;
+import frc.robot.commands.climber.JoystickClimberCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.swerve.SwerveDriveCommand;
@@ -125,7 +127,8 @@ public class RobotContainer {
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
-
+    JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     operatorA.whileHeld(new StartShooter(shooter));
     operatorB.whileHeld(new RunKicker(kicker));
 
@@ -136,7 +139,12 @@ public class RobotContainer {
     operatorLeftBumper.whenReleased(intake::stop, intake);
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
-
+    operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
+    operatorStart.whenReleased(climber::stop);
+    //operatorBack.whenPressed(climber::goLowRung);
+    //operatorBack.whenReleased(climber::holdPositionUsingEncoder);
+    operatorX.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
+    operatorX.whenReleased(new ClimberSetpointCommand(climber.START, climber));
     // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);

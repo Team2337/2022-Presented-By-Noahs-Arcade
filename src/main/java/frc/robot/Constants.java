@@ -50,7 +50,7 @@ public final class Constants {
   private static Constants instance;
 
   public static final class DashboardLogging {
-    public static final boolean CLIMBER = false;
+    public static final boolean CLIMBER = true;
     public static final boolean DELIVERY = false;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
