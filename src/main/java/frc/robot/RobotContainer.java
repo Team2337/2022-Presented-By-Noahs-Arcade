@@ -49,6 +49,9 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
+  // TODO: testing only, remove
+  private final TestSubsystem testSubsystem = new TestSubsystem();
+
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   public RobotContainer() {
