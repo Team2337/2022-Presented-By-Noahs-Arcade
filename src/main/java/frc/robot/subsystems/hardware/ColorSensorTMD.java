@@ -13,7 +13,7 @@ import frc.robot.Constants.BallColor;
  */
 public class ColorSensorTMD {
 
-  private final double COLOR_SENSOR_PROXIMITY = 0.1; //TODO: tune me
+  private final double COLOR_SENSOR_PROXIMITY = 0.05; //TODO: tune me
   
   // Sensor
   private final TMD37003 sensor;
@@ -25,6 +25,7 @@ public class ColorSensorTMD {
 
   public ColorSensorTMD(Port i2cPort) {
     sensor = new TMD37003(i2cPort);
+    // sensor.configureProximitySense(4.0, 0.016, 4, 4, 128); //TODO: What are good values for this? Re-add when can test
     
     // Color match
     colorMatcher.addColorMatch(kMatchRed);
@@ -60,7 +61,7 @@ public class ColorSensorTMD {
   }
 
   public boolean seesBall() {
-    return sensor.getProximity() < COLOR_SENSOR_PROXIMITY;
+    return sensor.getProximity() > COLOR_SENSOR_PROXIMITY;
   }
 
 }
