@@ -19,11 +19,11 @@ public class AutoKickerCommand extends CommandBase {
     this.kicker = kicker;
     this.wait = wait;
     //Puts wait into iterations from seconds
-    wait = wait / 50;
+    wait = wait / 50; 
     addRequirements(kicker);
   }
 
-  @Override
+  @Override 
   public void initialize() {
     waitCounter = 0;
   }
@@ -32,7 +32,7 @@ public class AutoKickerCommand extends CommandBase {
   public void execute() {
     SmartDashboard.putNumber("Wait Counter", waitCounter);
     if (waitCounter >= wait) {
-      kicker.start();
+      kicker.start(0.5);
     } else {
       waitCounter++;
     }
