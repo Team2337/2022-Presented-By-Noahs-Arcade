@@ -91,4 +91,14 @@ public class Utilities {
   public static double convertCelsiusToFahrenheit(double celsius) {
     return (celsius * (9.0/5.0)) + 32.0;
   }
+
+  /**
+   * Convert Q2.14 -> double
+   *
+   * http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1sensors_1_1_pigeon_i_m_u.html#a2a964e72cdd29bd9ca52b24d7d02e326
+   * https://en.wikipedia.org/wiki/Q_(number_format)#Q_to_float
+   */
+  public static double q(short val) {
+    return val * Math.pow(2, -14);
+  }
 }

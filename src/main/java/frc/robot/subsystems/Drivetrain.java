@@ -25,13 +25,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotType;
 import frc.robot.RobotType.Type;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 public class Drivetrain extends SubsystemBase {
 
   /**
    * Hardware (private)
    */
-  private PigeonIMU pigeon;
+  private final PigeonIMU pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -40,12 +41,12 @@ public class Drivetrain extends SubsystemBase {
    * 2 is Back Left,
    * 3 is Back Right
    */
-  private SwerveModule[] modules;
+  private final SwerveModule[] modules;
 
   /**
    * Logging
    */
-  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+  private final ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -53,7 +54,7 @@ public class Drivetrain extends SubsystemBase {
    * positive y values represent moving toward the left of the robot
    * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
    */
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
       Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
       Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
@@ -74,16 +75,13 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveDrivePoseEstimator odometry;
 
-  // The chassis speeds is the actual chassis speeds object of the robot
-  // calculated using the kinematics model + the module states
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  // The drive chassis speeds are the requested chassis speeds to be moving
-  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   // Update Drivetrain state only once per cycle
   private Pose2d pose = new Pose2d();
   // Array for Yaw Pitch and Roll values in degrees
   public double[] ypr_deg = { 0, 0, 0 };
+  public short[] xyz_accl = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -236,49 +234,48 @@ public class Drivetrain extends SubsystemBase {
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getYaw());
+    return Rotation2d.fromDegrees(ypr_deg[0]);
   }
 
-  public double getGyroscopeRoll(){
-    return pigeon.getRoll();
+  public Rotation2d getGyroscopePitch() {
+    return Rotation2d.fromDegrees(ypr_deg[1]);
   }
 
-  public double getGyroscopePitch(){
-    return pigeon.getPitch();
+  public Rotation2d getGyroscopeRoll() {
+    return Rotation2d.fromDegrees(ypr_deg[2]);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    this.driveChassisSpeeds = chassisSpeeds;
+    this.chassisSpeeds = chassisSpeeds;
   }
 
   /**
-   * Get the current chassis speeds object for the drivetrain.
-   */
-  public ChassisSpeeds getChassisSpeeds() {
-    return chassisSpeeds;
-  }
-
-  /**
-   * Get the combined vx + vy velocity vector for the robot.
+   * Get the combined x + y velocity vector for the robot.
    */
   public double velocity() {
-    return Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+    return Math.hypot(
+      Utilities.q(xyz_accl[0]),
+      Utilities.q(xyz_accl[1])
+    );
   }
 
   public boolean isMoving() {
-    return velocity() > 0;
+    return velocity() != 0;
   }
 
   /**
    * Stops all of the motors on each module
    */
   public void stopMotors() {
-    this.driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   }
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(driveChassisSpeeds);
+    pigeon.getYawPitchRoll(ypr_deg);
+    pigeon.getBiasedAccelerometer(xyz_accl);
+
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (int i = 0; i < states.length; i++) {
@@ -287,20 +284,16 @@ public class Drivetrain extends SubsystemBase {
       module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
     }
 
-    SwerveModuleState[] realModuleStates = {
+    SwerveModuleState[] realStates = {
       getModuleState(modules[0]),
       getModuleState(modules[1]),
       getModuleState(modules[2]),
       getModuleState(modules[3]),
     };
 
-    Pose2d pose = odometry.update(
+    pose = odometry.update(
       getGyroscopeRotation(),
-      realModuleStates
-    );
-
-    chassisSpeeds = kinematics.toChassisSpeeds(
-      realModuleStates
+      realStates
     );
 
     Logger.getInstance().recordOutput("Odometry/Robot",
