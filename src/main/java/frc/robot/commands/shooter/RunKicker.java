@@ -20,7 +20,7 @@ public class RunKicker extends CommandBase {
 
   @Override
   public void execute() {
-    kicker.start();
+    kicker.start(0.5);
   }
 
   @Override
