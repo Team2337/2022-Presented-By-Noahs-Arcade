@@ -63,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDrivePoseEstimator odometry;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  private ChassisSpeeds realChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   // Update Drivetrain state only once per cycle
   private Pose2d pose = new Pose2d();
@@ -82,9 +83,9 @@ public class Drivetrain extends SubsystemBase {
       getGyroscopeRotation(),
       pose,
       kinematics,
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(1)),
       VecBuilder.fill(Units.degreesToRadians(0.01)),
-      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
+      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(1))
     );
 
     modules = new FXSwerveModule[] {
@@ -187,13 +188,13 @@ public class Drivetrain extends SubsystemBase {
    */
   public double velocity() {
     return Math.hypot(
-      Utilities.q(xyz_accl[0]),
-      Utilities.q(xyz_accl[1])
+      realChassisSpeeds.vxMetersPerSecond,
+      realChassisSpeeds.vyMetersPerSecond
     );
   }
 
   public boolean isMoving() {
-    return velocity() != 0;
+    return !Utilities.withinTolerance(0, velocity(), 0.001);
   }
 
   /**
@@ -231,10 +232,14 @@ public class Drivetrain extends SubsystemBase {
       realStates
     );
 
+    realChassisSpeeds = kinematics.toChassisSpeeds(realStates);
+
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+
+    Logger.getInstance().recordOutput("Velocity", velocity());
   }
 
 }
