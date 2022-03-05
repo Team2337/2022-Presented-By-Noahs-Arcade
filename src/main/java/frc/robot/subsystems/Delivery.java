@@ -123,6 +123,19 @@ public class Delivery extends SubsystemBase {
     setSpeed(direction, Constants.DELIVERY_SPEED);
   }
 
+  public void startDelivery(Direction direction, double speed) {
+    switch (direction) {
+      case CLOCKWISE:
+        // Rotate motor forward
+        motor.set(ControlMode.PercentOutput, speed);
+        break;
+      case COUNTER_CLOCKWISE:
+        // Rotate motor CCW
+        motor.set(ControlMode.PercentOutput, -speed);
+        break;
+    }
+  }
+
   public void setSpeed(Direction direction, double speed) {
     switch (direction) {
       case CLOCKWISE:
@@ -332,6 +345,13 @@ public class Delivery extends SubsystemBase {
    */
   public boolean getShooterSensorStatus() {
     return !shooterBeam.get();
+  }
+
+    /**
+   * Stops the delivery mechanism
+   */
+  public void stopDelivery() {
+    motor.set(ControlMode.PercentOutput, 0.0);
   }
 
 }
