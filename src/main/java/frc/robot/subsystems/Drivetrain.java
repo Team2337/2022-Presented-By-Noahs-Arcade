@@ -216,6 +216,7 @@ public class Drivetrain extends SubsystemBase {
       SwerveModuleState moduleState = states[i];
 
       module.set(moduleState, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
+      module.logDebug();
     }
 
     SwerveModuleState[] realStates = {

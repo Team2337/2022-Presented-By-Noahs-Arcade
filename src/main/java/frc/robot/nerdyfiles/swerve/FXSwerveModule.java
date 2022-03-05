@@ -26,14 +26,16 @@ public class FXSwerveModule {
   private final TalonFX angleMotor;
   private final CANCoder canCoder;
 
-  private final double driveSensorPositionCoefficient;
-  private final double driveSensorVelocityCoefficient;
+  private final double kAngleSensorPositionCoefficient;
+  private final double kDriveSensorPositionCoefficient;
+  private final double kDriveSensorVelocityCoefficient;
 
   public FXSwerveModule(int moduleNumber, int driveMotorPort, int angleMotorPort, int angleMotorEncoderPort, Rotation2d angleMotorOffset, ModuleConfiguration moduleConfiguration) {
     this.moduleNumber = moduleNumber;
 
-    driveSensorPositionCoefficient = Math.PI * moduleConfiguration.getWheelDiameter() * moduleConfiguration.getDriveReduction() / kDriveEncoderTicksPerRotation;
-    driveSensorVelocityCoefficient = driveSensorPositionCoefficient * 10.0;
+    kDriveSensorPositionCoefficient = Math.PI * moduleConfiguration.getWheelDiameter() * moduleConfiguration.getDriveReduction() / kDriveEncoderTicksPerRotation;
+    kDriveSensorVelocityCoefficient = kDriveSensorPositionCoefficient * 10.0;
+    kAngleSensorPositionCoefficient = 360 / kAngleEncoderTicksPerRotation;
 
     // Angle Motor Encoder
     canCoder = new CANCoder(angleMotorEncoderPort);
@@ -56,7 +58,6 @@ public class FXSwerveModule {
     driveMotor.setNeutralMode(NeutralMode.Brake);
 
     // Reduce CAN status frame rates
-    canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
     driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 250, 250);
     angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 250, 250);
   }
@@ -65,10 +66,8 @@ public class FXSwerveModule {
     canCoder.configFactoryDefault();
 
     CANCoderConfiguration config = new CANCoderConfiguration();
-    config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+    config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
     config.magnetOffsetDegrees = angleMotorOffset.getDegrees();
-    config.sensorDirection = sensorDirection; // TODO: Confirm - is false in SDS, I think it needs to be inverted for steer though w/ Mk4i
-    // OR, do we only have to invert the angle motor direction? Unsure.
 
     return canCoder.configAllSettings(config, 250);
   }
@@ -88,8 +87,9 @@ public class FXSwerveModule {
 
     TalonFXConfiguration configuration = new TalonFXConfiguration();
 
-    // PID values pulled from SDS
-    configuration.slot0.kP = 0.2;
+    configuration.statorCurrLimit = CTREUtils.defaultCurrentLimit();
+
+    configuration.slot0.kP = 0.3;
     configuration.slot0.kI = 0.0;
     configuration.slot0.kD = 0.1;
 
@@ -102,7 +102,8 @@ public class FXSwerveModule {
   }
 
   /**
-   * Gets the rotational position of the module
+   * Gets the rotational position of the module. Should be between
+   * 0 and 360 degrees.
    * @return The rotational position of the angle motor in degrees
    */
   public Rotation2d getAngle() {
@@ -114,7 +115,7 @@ public class FXSwerveModule {
    * @return The velocity for the drive motor of the module in meters per second.
    */
   private double getVelocity() {
-    return driveMotor.getSelectedSensorVelocity() * driveSensorVelocityCoefficient;
+    return driveMotor.getSelectedSensorVelocity() * kDriveSensorVelocityCoefficient;
   }
 
   public void set(SwerveModuleState desiredState, double maxSpeedMetersPerSecond) {
@@ -126,7 +127,7 @@ public class FXSwerveModule {
     Rotation2d rotationDelta = state.angle.minus(currentAngle);
 
     double deltaTicks = (rotationDelta.getDegrees() / 360) * kAngleEncoderTicksPerRotation;
-    double currentTicks = currentAngle.getDegrees() / canCoder.configGetFeedbackCoefficient();
+    double currentTicks = canCoder.getPosition() / kAngleSensorPositionCoefficient;
     double desiredTicks = currentTicks + deltaTicks;
 
     // Set the position for the motor by converting our degrees to # of ticks for the rotational value
