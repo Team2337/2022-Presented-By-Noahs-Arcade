@@ -91,6 +91,21 @@ public class RobotContainer {
     );
   }
 
+  public void resetRobotTeleop() {
+    pigeon.setYaw(0, 250);
+    drivetrain.resetPosition(
+      new Pose2d(
+        Constants.Auto.kResetToZero.toFieldCoordinate(),
+        drivetrain.getGyroscopeRotation()
+      )
+    );
+  }
+
+  public void resetRobotAuto() {
+    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  }
+
   public void enableMaintainHeading() {
     heading.enableMaintainHeading();
   }

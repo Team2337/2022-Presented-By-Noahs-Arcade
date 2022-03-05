@@ -217,6 +217,11 @@ public final class Constants {
       Rotation2d.fromDegrees(76 + 180)
     );
 
+    public static final PolarCoordinate kResetToZero = new PolarCoordinate(
+      Units.inchesToMeters(133),
+      Rotation2d.fromDegrees(180)
+    );
+
     /**
      * Alliance Balls + Shooting Positions
      */
