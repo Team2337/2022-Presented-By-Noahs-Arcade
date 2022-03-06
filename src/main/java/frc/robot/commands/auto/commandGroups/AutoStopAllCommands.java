@@ -12,18 +12,13 @@ import frc.robot.subsystems.Shooter;
 
 public class AutoStopAllCommands extends ParallelCommandGroup {
 
-  private Delivery delivery;
-  private Intake intake;
-  private Kicker kicker;
-  private Shooter shooter;
-
   public AutoStopAllCommands(Delivery delivery, Intake intake, Kicker kicker, Shooter shooter) {
-
     addCommands(
       new AutoStopDelivery(delivery),
       new AutoStopIntake(intake),
       new AutoStopShooter(shooter),
-      new AutoStopKicker(kicker) 
+      new AutoStopKicker(kicker)
     );
+
   }
 }

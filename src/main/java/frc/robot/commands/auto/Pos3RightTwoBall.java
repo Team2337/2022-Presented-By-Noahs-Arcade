@@ -19,23 +19,15 @@ import frc.robot.subsystems.Shooter;
 
 public class Pos3RightTwoBall extends SequentialCommandGroup {
 
-  private Drivetrain drivetrain;
-  private Delivery delivery;
-  private Intake intake;
-  private Kicker kicker;
-  private Shooter shooter;
-
   public Pos3RightTwoBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
-    this.drivetrain = drivetrain;
-
     addCommands(
       new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
       new ParallelCommandGroup(
         new AutoStartDelivery(delivery).withTimeout(1),
-        new AutoKickerCommand(kicker, 0).withTimeout(1)
+        new AutoKickerCommand(0, kicker).withTimeout(1)
       ),
       new WaitCommand(3),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),  
+      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }

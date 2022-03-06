@@ -22,4 +22,5 @@ public class AutoStopDelivery extends InstantCommand {
   public void initialize() {
     delivery.stopDelivery();
   }
+
 }

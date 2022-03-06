@@ -9,15 +9,10 @@ import frc.robot.subsystems.Heading;
 
 public class Test extends SequentialCommandGroup {
 
-  private Drivetrain drivetrain;
-  private Delivery delivery;
-
   public Test(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading) {
-    this.drivetrain = drivetrain;
-    this.delivery = delivery;
-
     addCommands(
       new AutoStartDelivery(delivery).withTimeout(0.6)
     );
   }
+
 }
