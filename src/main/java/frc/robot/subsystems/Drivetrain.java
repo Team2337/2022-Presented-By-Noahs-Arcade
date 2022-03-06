@@ -69,7 +69,6 @@ public class Drivetrain extends SubsystemBase {
   private Pose2d pose = new Pose2d();
   // Array for Yaw Pitch and Roll values in degrees
   public double[] ypr_deg = { 0, 0, 0 };
-  public short[] xyz_accl = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -207,7 +206,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     pigeon.getYawPitchRoll(ypr_deg);
-    pigeon.getBiasedAccelerometer(xyz_accl);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
@@ -226,6 +224,8 @@ public class Drivetrain extends SubsystemBase {
       modules[2].getState(),
       modules[3].getState()
     };
+
+    realChassisSpeeds = kinematics.toChassisSpeeds(realStates);
 
     pose = odometry.update(
       getGyroscopeRotation(),

@@ -26,8 +26,8 @@ public class Kicker extends SubsystemBase {
     motor.set(ControlMode.PercentOutput, speed);
   }
 
-  public void start() {
-    setSpeed(0.5);
+  public void start(double speed) {
+    setSpeed(speed);
   }
 
   public void reverse() {
