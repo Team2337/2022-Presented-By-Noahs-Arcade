@@ -82,4 +82,8 @@ public class ColorSensorREV extends SubsystemBase implements ColorSensor {
     return sensor.getProximity() > COLOR_SENSOR_PROXIMITY;
   }
 
+  public boolean isConnected() {
+    return sensor.isConnected();
+  }
+
 }

@@ -65,6 +65,24 @@ public final class Constants {
     public static final boolean SHOOTER = false;
   }
 
+  public static enum SystemsCheckPositions {
+    LEFT_COLOR_SENSOR(0, 0),
+    RIGHT_COLOR_SENSOR(2, 0),
+    TIME_OF_FLIGHT(0, 2),
+    SHOOTER_BEAM_BREAK(2, 2),
+    INTAKE_BEAM_BREAK(6, 0),
+    LIMELIGHT(10, 0),
+    PIXY_CAM(6, 4),
+    STRING_POT(10, 4);
+
+    public final int x, y;
+
+    private SystemsCheckPositions(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+
   public static Constants getInstance() {
     if (instance == null) {
       instance = new Constants();

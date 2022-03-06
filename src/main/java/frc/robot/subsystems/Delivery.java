@@ -7,8 +7,11 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
+import frc.robot.subsystems.hardware.ColorSensorREV;
+import frc.robot.subsystems.hardware.ColorSensorTCS;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
@@ -39,14 +42,15 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
   // Color sensors
-  // private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final ColorSensorREV leftSensor = null; //new ColorSensorREV(I2C.Port.kOnboard);
+  private final ColorSensorTCS rightSensor = null; //new ColorSensorTCS(I2C.Port.kMXP);
 
   // TOF sensor
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
   // Beam break sensor
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
+  private final boolean SHOOTER_BEAM_SYSTEMS_CHECK = shooterBeam.get(); //true if sensor sees other sensor
 
 
   /**
@@ -107,6 +111,19 @@ public class Delivery extends SubsystemBase {
         "Shooter: "   + shooterBeam.get()
       });
     }
+
+    // Systems check
+    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+
+    systemsCheck.addBoolean("Left Color Sensor", () -> (leftSensor == null ? false : leftSensor.isConnected()))
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.LEFT_COLOR_SENSOR.x, SystemsCheckPositions.LEFT_COLOR_SENSOR.y);
+    systemsCheck.addBoolean("Right Color Sensor", () -> (rightSensor == null ? false : leftSensor.isConnected()))
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.RIGHT_COLOR_SENSOR.x, SystemsCheckPositions.RIGHT_COLOR_SENSOR.y);
+    systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.TIME_OF_FLIGHT.x, SystemsCheckPositions.TIME_OF_FLIGHT.y);
   }
 
   @Override

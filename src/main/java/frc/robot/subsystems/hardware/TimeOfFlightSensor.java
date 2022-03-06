@@ -56,4 +56,13 @@ public class TimeOfFlightSensor extends SubsystemBase {
     return distanceInches;
   }
 
+  /**
+   * @return True if everything is alright
+   */
+  public boolean systemsCheck() {
+    Status status = getStatus();
+    // TODO: are these all values that would say that we aren't connected or something isn't wrong?
+    return !(status == Status.Invalid || status == Status.HardwareFailure || status == Status.InternalError);
+  }
+
 }

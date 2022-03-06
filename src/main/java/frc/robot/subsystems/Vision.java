@@ -4,8 +4,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
 
 import org.littletonrobotics.junction.Logger;
@@ -82,6 +84,13 @@ public class Vision extends SubsystemBase {
   public Vision() {
     // Automatically switch our Limelight to our default pipeline on construction
     switchPipeLine(Pipeline.DEFAULT);
+
+    // Systems check
+    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    
+    systemsCheck.addBoolean("Limelight", () -> (latency > 0))
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y);
   }
 
   @Override

@@ -3,6 +3,7 @@ package frc.robot.subsystems.hardware;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -82,7 +83,14 @@ public class PixyCam extends SubsystemBase {
         return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
       });
       infoWidget.addNumber("Pixy State", () -> state);
-   }
+    }
+
+    // Systems check
+    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    
+    systemsCheck.addBoolean("Pixy Cam", () -> (state >= 0))
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y);
   }
 
   private void connect() {

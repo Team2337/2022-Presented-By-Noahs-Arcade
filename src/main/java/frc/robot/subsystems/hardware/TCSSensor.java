@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class TCSSensor {
 
   private static final byte DEVICE_ADDRESS = 0x29;
+  private static final byte DEVICE_ID = 0x44; //See table 12 in PDF
 
   private I2C device;
 
@@ -186,4 +187,11 @@ public class TCSSensor {
     double blue = (double)data.blue / sum;
     return new Color(red, green, blue);
   }
+
+  public boolean isConnected() {
+    byte[] data = new byte[1];
+    device.read(Register.ID.value, 1, data);
+    return data[0] == DEVICE_ID;
+  }
+
 }

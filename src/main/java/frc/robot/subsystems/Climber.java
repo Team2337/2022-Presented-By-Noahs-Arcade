@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
@@ -62,6 +63,13 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("Right Temp", this::getRightMotorTemperature);
       climberWidget.addNumber("String Pot", this::getStringPotVoltage);
     }
+
+    // Systems check
+    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    
+    systemsCheck.addBoolean("String Pot", () -> (stringPot.getVoltage() > 0))
+      .withSize(2, 2)
+      .withPosition(SystemsCheckPositions.STRING_POT.x, SystemsCheckPositions.STRING_POT.y);
   }
 
   @Override

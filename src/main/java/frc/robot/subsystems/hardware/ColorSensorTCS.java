@@ -85,4 +85,8 @@ public class ColorSensorTCS extends SubsystemBase implements ColorSensor {
     return sensor.getRawColor().luminance < LUMINANCE_MAX_THRESHOLD;
   }
 
+  public boolean isConnected() {
+    return sensor.isConnected();
+  }
+
 }
