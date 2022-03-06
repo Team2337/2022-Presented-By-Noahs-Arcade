@@ -50,7 +50,6 @@ public class Delivery extends SubsystemBase {
 
   // Beam break sensor
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
-  private final boolean SHOOTER_BEAM_SYSTEMS_CHECK = shooterBeam.get(); //true if sensor sees other sensor
 
 
   /**
