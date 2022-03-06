@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -9,6 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.coordinates.PolarCoordinate;
+import frc.robot.nerdyfiles.swerve.configuration.ModuleConfiguration;
+import frc.robot.nerdyfiles.swerve.configuration.SdsModuleConfigurations;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -21,25 +21,27 @@ import frc.robot.coordinates.PolarCoordinate;
 public final class Constants {
   public static double STARTING_ANGLE = 25;
 
-  public int MODULE0_DRIVE_MOTOR_ID;
-  public int MODULE0_ANGLE_MOTOR_ID;
-  public int MODULE0_ANGLE_CANCODER_ID;
-  public double MODULE0_ANGLE_OFFSET;
+  public final ModuleConfiguration SWERVE_MODULE_CONFIGURATION;
+
+  public final int MODULE0_DRIVE_MOTOR_ID;
+  public final int MODULE0_ANGLE_MOTOR_ID;
+  public final int MODULE0_ANGLE_CANCODER_ID;
+  public final Rotation2d MODULE0_ANGLE_OFFSET;
 
   public final int MODULE1_DRIVE_MOTOR_ID;
   public final int MODULE1_ANGLE_MOTOR_ID;
   public final int MODULE1_ANGLE_CANCODER_ID;
-  public final double MODULE1_ANGLE_OFFSET;
+  public final Rotation2d MODULE1_ANGLE_OFFSET;
 
   public final int MODULE2_DRIVE_MOTOR_ID;
   public final int MODULE2_ANGLE_MOTOR_ID;
   public final int MODULE2_ANGLE_CANCODER_ID;
-  public final double MODULE2_ANGLE_OFFSET;
+  public final Rotation2d MODULE2_ANGLE_OFFSET;
 
   public final int MODULE3_DRIVE_MOTOR_ID;
   public final int MODULE3_ANGLE_MOTOR_ID;
   public final int MODULE3_ANGLE_CANCODER_ID;
-  public final double MODULE3_ANGLE_OFFSET;
+  public final Rotation2d MODULE3_ANGLE_OFFSET;
 
   public final double DRIVETRAIN_TRACK_WIDTH_INCHES;
   public final double DRIVETRAIN_WHEEL_BASE_INCHES;
@@ -75,25 +77,27 @@ public final class Constants {
     SmartDashboard.putString("Constants Robot Type", robotType.description);
     switch (robotType) {
       case SKILLSBOT:
+        SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK3_STANDARD;
+
         MODULE0_DRIVE_MOTOR_ID = 0;
         MODULE0_ANGLE_MOTOR_ID = 4;
         MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(50.701904296875);
+        MODULE0_ANGLE_OFFSET = Rotation2d.fromDegrees(-50.701904296875);
 
         MODULE1_DRIVE_MOTOR_ID = 1;
         MODULE1_ANGLE_MOTOR_ID = 5;
         MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(128.58123779296875);
+        MODULE1_ANGLE_OFFSET = Rotation2d.fromDegrees(-128.58123779296875);
 
         MODULE2_DRIVE_MOTOR_ID = 14;
         MODULE2_ANGLE_MOTOR_ID = 10;
         MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(346.63238525390625);
+        MODULE2_ANGLE_OFFSET = Rotation2d.fromDegrees(-346.63238525390625);
 
         MODULE3_DRIVE_MOTOR_ID = 15;
         MODULE3_ANGLE_MOTOR_ID = 11;
         MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(286.42730712890625);
+        MODULE3_ANGLE_OFFSET = Rotation2d.fromDegrees(-286.42730712890625);
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
         DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
@@ -104,25 +108,26 @@ public final class Constants {
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
         break;
       case PRACTICE:
+        SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK4I_L1;
+
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
         MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(130.599976);
-
+        MODULE0_ANGLE_OFFSET = Rotation2d.fromDegrees(-131.572);
         MODULE1_DRIVE_MOTOR_ID = 1;
         MODULE1_ANGLE_MOTOR_ID = 2;
         MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(175.163269);
+        MODULE1_ANGLE_OFFSET = Rotation2d.fromDegrees(-175.078);
 
         MODULE2_DRIVE_MOTOR_ID = 8;
         MODULE2_ANGLE_MOTOR_ID = 9;
         MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(278.338623);
+        MODULE2_ANGLE_OFFSET = Rotation2d.fromDegrees(83.145);
 
         MODULE3_DRIVE_MOTOR_ID = 10;
         MODULE3_ANGLE_MOTOR_ID = 11;
         MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(355.860901);
+        MODULE3_ANGLE_OFFSET = Rotation2d.fromDegrees(3.779);
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
@@ -134,25 +139,27 @@ public final class Constants {
         break;
       case COMPETITION:
       default:
+        SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK4I_L1;
+
         MODULE0_DRIVE_MOTOR_ID = 18;
         MODULE0_ANGLE_MOTOR_ID = 19;
         MODULE0_ANGLE_CANCODER_ID = 1;
-        MODULE0_ANGLE_OFFSET = -Math.toRadians(76.37109375);
+        MODULE0_ANGLE_OFFSET = Rotation2d.fromDegrees(-76.37109375);
 
         MODULE1_DRIVE_MOTOR_ID = 1;
         MODULE1_ANGLE_MOTOR_ID = 2;
         MODULE1_ANGLE_CANCODER_ID = 2;
-        MODULE1_ANGLE_OFFSET = -Math.toRadians(204.430078125);
+        MODULE1_ANGLE_OFFSET = Rotation2d.fromDegrees(-204.430078125);
 
         MODULE2_DRIVE_MOTOR_ID = 8;
         MODULE2_ANGLE_MOTOR_ID = 9;
         MODULE2_ANGLE_CANCODER_ID = 3;
-        MODULE2_ANGLE_OFFSET = -Math.toRadians(195.37382812500002);
+        MODULE2_ANGLE_OFFSET = Rotation2d.fromDegrees(-195.37382812500002);
 
         MODULE3_DRIVE_MOTOR_ID = 10;
         MODULE3_ANGLE_MOTOR_ID = 11;
         MODULE3_ANGLE_CANCODER_ID = 4;
-        MODULE3_ANGLE_OFFSET = -Math.toRadians(255.3140625);
+        MODULE3_ANGLE_OFFSET = Rotation2d.fromDegrees(-255.3140625);
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
@@ -299,12 +306,19 @@ public final class Constants {
 
   // Robot-specific configuration for our swerve drive algorithm
   public static final class Swerve {
-    /**
-     * The maximum voltage that will be delivered to the drive motors.
-     * <p>
-     * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
-     */
-    public static final double MAX_VOLTAGE = 12.0;
+
+    public enum ModulePosition {
+      FRONT_RIGHT(0),
+      FRONT_LEFT(1),
+      BACK_LEFT(2),
+      BACK_RIGHT(3);
+
+      public final int value;
+
+      ModulePosition(int value) {
+        this.value = value;
+      }
+    }
 
     //  The formula for calculating the theoretical maximum velocity is:
     //   <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
