@@ -4,7 +4,7 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
- * Stops the shooter 
+ * Stops the shooter
  *
  * @author Madison J.
  */
@@ -22,4 +22,5 @@ public class AutoStopShooter extends InstantCommand {
   public void initialize() {
     shooter.stop();
   }
+
 }

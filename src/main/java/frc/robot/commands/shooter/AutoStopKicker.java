@@ -20,6 +20,7 @@ public class AutoStopKicker extends InstantCommand {
 
   @Override
   public void initialize() {
-    kicker.stop();;
+    kicker.stop();
   }
+
 }
