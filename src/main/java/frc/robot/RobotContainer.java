@@ -154,7 +154,7 @@ public class RobotContainer {
     JoystickAnalogButton operatorTriggerRight = new JoystickAnalogButton(operatorController, 3);
 
     operatorStart.whenHeld(new StartShooter(shooter));
-    operatorB.whenHeld(new ReverseKicker(kicker));
+    operatorB.whenHeld(new RunKicker(kicker));
     operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
     operatorLeftBumper.whenPressed(new BottomToTopCommand(delivery, kicker));
     operatorY.whenPressed(new RecenterWithKicker(kicker, delivery));
