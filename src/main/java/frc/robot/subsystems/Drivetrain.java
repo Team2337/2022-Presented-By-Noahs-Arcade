@@ -63,12 +63,12 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDrivePoseEstimator odometry;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  private ChassisSpeeds realChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   // Update Drivetrain state only once per cycle
   private Pose2d pose = new Pose2d();
   // Array for Yaw Pitch and Roll values in degrees
   public double[] ypr_deg = { 0, 0, 0 };
-  public short[] xyz_accl = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -187,13 +187,13 @@ public class Drivetrain extends SubsystemBase {
    */
   public double velocity() {
     return Math.hypot(
-      Utilities.q(xyz_accl[0]),
-      Utilities.q(xyz_accl[1])
+      realChassisSpeeds.vxMetersPerSecond,
+      realChassisSpeeds.vyMetersPerSecond
     );
   }
 
   public boolean isMoving() {
-    return velocity() != 0;
+    return !Utilities.withinTolerance(0, velocity(), 0.001);
   }
 
   /**
@@ -206,7 +206,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     pigeon.getYawPitchRoll(ypr_deg);
-    pigeon.getBiasedAccelerometer(xyz_accl);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
@@ -225,6 +224,8 @@ public class Drivetrain extends SubsystemBase {
       modules[2].getState(),
       modules[3].getState()
     };
+
+    realChassisSpeeds = kinematics.toChassisSpeeds(realStates);
 
     pose = odometry.update(
       getGyroscopeRotation(),
