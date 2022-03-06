@@ -232,14 +232,10 @@ public class Drivetrain extends SubsystemBase {
       realStates
     );
 
-    realChassisSpeeds = kinematics.toChassisSpeeds(realStates);
-
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
-
-    Logger.getInstance().recordOutput("Velocity", velocity());
   }
 
 }
