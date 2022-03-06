@@ -10,6 +10,13 @@ import frc.robot.subsystems.Kicker;
 public class AutoKickerCommand extends AutoKickerWaitableCommand {
 
   /**
+   * Runs the kicker motor forward.
+   */
+  public AutoKickerCommand(Kicker kicker) {
+    this(0, kicker);
+  }
+
+  /**
    * Runs the kicker motor forward after a delay.
    */
   public AutoKickerCommand(double waitTimeSeconds, Kicker kicker) {

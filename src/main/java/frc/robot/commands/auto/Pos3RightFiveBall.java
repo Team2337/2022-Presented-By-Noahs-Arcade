@@ -23,15 +23,15 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
   public Pos3RightFiveBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
       new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
-      new AutoKickerCommand(0, kicker).withTimeout(0.5),
+      new AutoKickerCommand(kicker).withTimeout(0.5),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(3),
         new AutoStartDelivery(delivery).withTimeout(0.75)
       ),
-      new AutoKickerCommand(0, kicker).withTimeout(0.5),
+      new AutoKickerCommand(kicker).withTimeout(0.5),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(1),
       new ParallelCommandGroup(
-        new AutoKickerCommand(0, kicker).withTimeout(1.5),
+        new AutoKickerCommand(kicker).withTimeout(1.5),
         new AutoStartDelivery(delivery).withTimeout(1.5)
       ),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, 3.0, 0.025, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(4),
