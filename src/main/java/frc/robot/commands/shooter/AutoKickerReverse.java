@@ -10,6 +10,13 @@ import frc.robot.subsystems.Kicker;
 public class AutoKickerReverse extends AutoKickerWaitableCommand {
 
   /**
+   * Reverse the kicker motor
+   */
+  public AutoKickerReverse(Kicker kicker) {
+    this(0, kicker);
+  }
+
+  /**
    * Reverse the kicker motor after a delay.
    */
   public AutoKickerReverse(double waitTimeSeconds, Kicker kicker) {
