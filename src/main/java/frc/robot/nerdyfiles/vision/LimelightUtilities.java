@@ -1,5 +1,7 @@
 package frc.robot.nerdyfiles.vision;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class LimelightUtilities {
   /**
    * Algorithm from
@@ -27,20 +29,21 @@ public class LimelightUtilities {
    *                           (i.e. if the targeting region is set to
    *                           top, this should be the height of the top of the
    *                           target).
-   * @param cameraPitchRadians The pitch of the camera from the horizontal plane
-   *                           in radians.
+   * @param cameraPitch        The pitch of the camera from the horizontal plane.
    *                           Positive values up.
-   * @param targetPitchRadians The pitch of the target in the camera's lens in
-   *                           radians.
+   * @param targetPitch        The pitch of the target in the camera's lens.
    *                           Positive values up.
+   * @param targetYaw          The observed yaw of the target. Note that this
+   *                           *must* be CCW-positive.
    * @return The estimated distance to the target in meters.
    */
   public static double calculateDistanceToTargetMeters(
     double cameraHeightMeters,
     double targetHeightMeters,
-    double cameraPitchRadians,
-    double targetPitchRadians) {
-    return (targetHeightMeters - cameraHeightMeters) / Math.tan(cameraPitchRadians + targetPitchRadians);
+    Rotation2d cameraPitch,
+    Rotation2d targetPitch,
+    Rotation2d targetYaw) {
+    return (targetHeightMeters - cameraHeightMeters) / (Math.tan(cameraPitch.getRadians() + targetPitch.getRadians()) * targetYaw.getCos());
   }
 
 }

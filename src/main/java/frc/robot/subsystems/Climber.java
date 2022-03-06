@@ -70,6 +70,9 @@ public class Climber extends SubsystemBase {
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
     leftMotor.configAllSettings(motorConfig);
+
+    leftMotor.setNeutralMode(NeutralMode.Brake);
+
     rightMotor.follow(leftMotor);
 
     leftMotor.setInverted(TalonFXInvertType.Clockwise);
@@ -78,8 +81,6 @@ public class Climber extends SubsystemBase {
     leftMotor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
     // TODO: If set set a nominal voltage we can enable voltage compensation
     // leftMotor.enableVoltageCompensation(true);
-
-    leftMotor.setNeutralMode(NeutralMode.Brake);
 
     // PID for our positional hold
     /*leftMotor.config_kP(0, 0.15);

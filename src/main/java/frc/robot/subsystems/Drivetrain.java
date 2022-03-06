@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -19,24 +16,14 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotType;
-import frc.robot.RobotType.Type;
+import frc.robot.nerdyfiles.utilities.Utilities;
+import frc.robot.nerdyfiles.swerve.FXSwerveModule;
 
 public class Drivetrain extends SubsystemBase {
 
-  // The chassis speeds is the actual chassis speeds object of the robot
-  // calculated using the kinematics model + the module states
-  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-  // The drive chassis speeds are the requested chassis speeds to be moving
-  private ChassisSpeeds driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
-  /**
-   * Hardware (private)
-   */
-  private PigeonIMU pigeon;
+  private final PigeonIMU pigeon;
 
   /**
    * Array for swerve module objects, sorted by ID
@@ -45,12 +32,7 @@ public class Drivetrain extends SubsystemBase {
    * 2 is Back Left,
    * 3 is Back Right
    */
-  private SwerveModule[] modules;
-
-  /**
-   * Logging
-   */
-  private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+  private final FXSwerveModule[] modules;
 
   /**
    * Should be in the same order as the swerve modules (see above)
@@ -77,7 +59,15 @@ public class Drivetrain extends SubsystemBase {
     )
   );
 
-  private SwerveDriveOdometry odometry;
+  private final SwerveDrivePoseEstimator odometry;
+
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  private ChassisSpeeds realChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+  // Update Drivetrain state only once per cycle
+  private Pose2d pose = new Pose2d();
+  // Array for Yaw Pitch and Roll values in degrees
+  public double[] ypr_deg = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -87,103 +77,55 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(PigeonIMU pigeon) {
     this.pigeon = pigeon;
 
-    odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation());
+    odometry = new SwerveDrivePoseEstimator(
+      getGyroscopeRotation(),
+      pose,
+      kinematics,
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(Units.degreesToRadians(0.01)),
+      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
+    );
 
-    if (RobotType.getRobotType() == Type.SKILLSBOT) {
-      SmartDashboard.putString("Drivetrain Swerve Setup", "Mk3");
-      modules = new SwerveModule[] {
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(8, 0),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE0_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 0),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE1_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(4, 8),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE2_ANGLE_OFFSET
-        ),
-        Mk3SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-            .withSize(4, 8)
-            .withPosition(8, 8),
-          Mk3SwerveModuleHelper.GearRatio.STANDARD,
-          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE3_ANGLE_OFFSET
-        )
-      };
-    } else {
-      SmartDashboard.putString("Drivetrain Swerve Setup", "Mk4i");
-      modules = new SwerveModule[] {
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 0),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE0_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 0),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE1_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(4, 8),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE2_ANGLE_OFFSET
-        ),
-        Mk4SwerveModuleHelper.createFalcon500(
-          tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-              .withSize(4, 8)
-              .withPosition(8, 8),
-          Mk4SwerveModuleHelper.GearRatio.L1I,
-          Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
-          Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
-          Constants.getInstance().MODULE3_ANGLE_OFFSET
-        )
-      };
-    }
+    modules = new FXSwerveModule[] {
+      new FXSwerveModule(
+        Constants.Swerve.ModulePosition.FRONT_RIGHT.value,
+        Constants.getInstance().MODULE0_DRIVE_MOTOR_ID,
+        Constants.getInstance().MODULE0_ANGLE_MOTOR_ID,
+        Constants.getInstance().MODULE0_ANGLE_CANCODER_ID,
+        Constants.getInstance().MODULE0_ANGLE_OFFSET,
+        Constants.getInstance().SWERVE_MODULE_CONFIGURATION
+      ),
+      new FXSwerveModule(
+        Constants.Swerve.ModulePosition.FRONT_LEFT.value,
+        Constants.getInstance().MODULE1_DRIVE_MOTOR_ID,
+        Constants.getInstance().MODULE1_ANGLE_MOTOR_ID,
+        Constants.getInstance().MODULE1_ANGLE_CANCODER_ID,
+        Constants.getInstance().MODULE1_ANGLE_OFFSET,
+        Constants.getInstance().SWERVE_MODULE_CONFIGURATION
+      ),
+      new FXSwerveModule(
+        Constants.Swerve.ModulePosition.BACK_LEFT.value,
+        Constants.getInstance().MODULE2_DRIVE_MOTOR_ID,
+        Constants.getInstance().MODULE2_ANGLE_MOTOR_ID,
+        Constants.getInstance().MODULE2_ANGLE_CANCODER_ID,
+        Constants.getInstance().MODULE2_ANGLE_OFFSET,
+        Constants.getInstance().SWERVE_MODULE_CONFIGURATION
+      ),
+      new FXSwerveModule(
+        Constants.Swerve.ModulePosition.BACK_RIGHT.value,
+        Constants.getInstance().MODULE3_DRIVE_MOTOR_ID,
+        Constants.getInstance().MODULE3_ANGLE_MOTOR_ID,
+        Constants.getInstance().MODULE3_ANGLE_CANCODER_ID,
+        Constants.getInstance().MODULE3_ANGLE_OFFSET,
+        Constants.getInstance().SWERVE_MODULE_CONFIGURATION
+      ),
+    };
 
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    
+    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
@@ -194,8 +136,13 @@ public class Drivetrain extends SubsystemBase {
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
   }
 
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
+    odometry.addVisionMeasurement(visionPose, timestampSeconds);
+  }
+
   public void resetPosition(Pose2d pose) {
     odometry.resetPosition(pose, getGyroscopeRotation());
+    pose = odometry.getEstimatedPosition();
   }
 
   public Pose2d getPose() {
@@ -222,8 +169,8 @@ public class Drivetrain extends SubsystemBase {
     return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
-  public double getGyroscopeRoll(){
-    return pigeon.getRoll();
+  public Rotation2d getGyroscopePitch() {
+    return Rotation2d.fromDegrees(ypr_deg[1]);
   }
 
   public double getGyroscopePitch(){
@@ -231,56 +178,55 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    this.driveChassisSpeeds = chassisSpeeds;
+    this.chassisSpeeds = chassisSpeeds;
   }
 
   /**
-   * Get the current chassis speeds object for the drivetrain.
-   */
-  public ChassisSpeeds getChassisSpeeds() {
-    return chassisSpeeds;
-  }
-
-  /**
-   * Get the combined vx + vy velocity vector for the robot.
+   * Get the combined x + y velocity vector for the robot.
    */
   public double velocity() {
-    return Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+    return Math.hypot(
+      realChassisSpeeds.vxMetersPerSecond,
+      realChassisSpeeds.vyMetersPerSecond
+    );
   }
 
   public boolean isMoving() {
-    return velocity() > 0;
-  }
-
-  public void resetOdometry() {
-    odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
+    return !Utilities.withinTolerance(0, velocity(), 0.001);
   }
 
   /**
    * Stops all of the motors on each module
    */
   public void stopMotors() {
-    this.driveChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   }
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(driveChassisSpeeds);
+    pigeon.getYawPitchRoll(ypr_deg);
+
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (int i = 0; i < states.length; i++) {
-      SwerveModule module = modules[i];
+      FXSwerveModule module = modules[i];
       SwerveModuleState moduleState = states[i];
-      module.set(moduleState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * Constants.Swerve.MAX_VOLTAGE, moduleState.angle.getRadians());
+
+      module.set(moduleState, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
+      module.logDebug();
     }
 
-    SwerveModuleState moduleOne = getModuleState(modules[0]);
-    SwerveModuleState moduleTwo = getModuleState(modules[1]);
-    SwerveModuleState moduleThree = getModuleState(modules[2]);
-    SwerveModuleState moduleFour = getModuleState(modules[3]);
+    SwerveModuleState[] realStates = {
+      modules[0].getState(),
+      modules[1].getState(),
+      modules[2].getState(),
+      modules[3].getState()
+    };
 
+    realChassisSpeeds = kinematics.toChassisSpeeds(realStates);
 
-    Pose2d pose = odometry.update(
+    pose = odometry.update(
       getGyroscopeRotation(),
       moduleOne,
       moduleTwo,
@@ -288,29 +234,10 @@ public class Drivetrain extends SubsystemBase {
       moduleFour
     );
 
-    chassisSpeeds = kinematics.toChassisSpeeds(
-      moduleOne,
-      moduleTwo,
-      moduleThree,
-      moduleFour
-    );
+    Logger.getInstance().recordOutput("Odometry/Robot",
+      new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
-
-    // Logger.getInstance().recordOutput("Odometry/Robot",
-      // new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
-
-      // SmartDashboard.putNumber("Pose X", pose.getX());
-      // SmartDashboard.putNumber("Pose Y", pose.getY());
-      // SmartDashboard.putNumber("Pose Degrees", pose.getRotation().getDegrees());
-
-     // Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
-  }
-
-  private static final SwerveModuleState getModuleState(SwerveModule module) {
-    return new SwerveModuleState(
-      module.getDriveVelocity(),
-      new Rotation2d(module.getSteerAngle())
-    );
+    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
   }
 
 }

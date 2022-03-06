@@ -139,6 +139,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   }
 
   private void log(PolarCoordinate robotCoordinate) {
+    /*
     SmartDashboard.putNumber("ProfiledP2P/Target Distance (inches)", Units.metersToInches(target.getRadiusMeters()));
     SmartDashboard.putNumber("ProfiledP2P/Target Theta (Degrees)", target.getTheta().getDegrees());
 
@@ -156,6 +157,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
 
     SmartDashboard.putBoolean("ProfiledP2P/distanceController atGoal", distanceController.atGoal());
     SmartDashboard.putBoolean("ProfiledP2P/thetaController atGoal", thetaController.atGoal());
+    */
   }
 
 }

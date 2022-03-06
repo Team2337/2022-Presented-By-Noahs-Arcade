@@ -1,30 +1,14 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.filter.MedianFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotType;
-import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
 
-import java.nio.channels.Pipe;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
-
 
 public class Vision extends SubsystemBase {
 
@@ -230,10 +214,11 @@ public class Vision extends SubsystemBase {
 
   private double calculateDistanceToTargetMeters() {
     return LimelightUtilities.calculateDistanceToTargetMeters(
-      Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT,
+      Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT_METERS,
       Constants.HUB_HEIGHT_METERS,
       Constants.getInstance().LIMEILGHT_CAMERA_ANGLE,
-      Units.degreesToRadians(getTy())
+      Rotation2d.fromDegrees(getTy()),
+      Rotation2d.fromDegrees(getTx())
     );
   }
 

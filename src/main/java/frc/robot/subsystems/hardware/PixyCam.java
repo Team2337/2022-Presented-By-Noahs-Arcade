@@ -7,6 +7,7 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.Map;
+
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -109,7 +110,7 @@ public class PixyCam extends SubsystemBase {
     // Either number of targets or an error code
     // Be careful changing the number at the end
     // We were having OutOfMemory errors at 20 and we belive a "safe" range is 4-8
-    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 8);
+    int error = pixycam.getCCC().getBlocks(false, Pixy2CCC.CCC_SIG_ALL, 2);
 
     if (error < 0) {
       return new ArrayList<Block>();

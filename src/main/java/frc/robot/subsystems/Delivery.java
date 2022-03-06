@@ -3,15 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
-import frc.robot.subsystems.hardware.ColorSensorREV;
-import frc.robot.subsystems.hardware.ColorSensorTCS;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
@@ -40,9 +37,9 @@ public class Delivery extends SubsystemBase {
   }
 
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
-  
+
   // Color sensors
-  private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
+  // private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
   // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
 
   // TOF sensor
@@ -102,7 +99,7 @@ public class Delivery extends SubsystemBase {
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
-        "Left: "  + String.valueOf(leftSensor.getColor()),
+        // "Left: "  + String.valueOf(leftSensor.getColor()),
         // "Right: " + String.valueOf(rightSensor.getColor())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
@@ -124,6 +121,19 @@ public class Delivery extends SubsystemBase {
 
   public void start(Direction direction) {
     setSpeed(direction, Constants.DELIVERY_SPEED);
+  }
+
+  public void startDelivery(Direction direction, double speed) {
+    switch (direction) {
+      case CLOCKWISE:
+        // Rotate motor forward
+        motor.set(ControlMode.PercentOutput, speed);
+        break;
+      case COUNTER_CLOCKWISE:
+        // Rotate motor CCW
+        motor.set(ControlMode.PercentOutput, -speed);
+        break;
+    }
   }
 
   public void setSpeed(Direction direction, double speed) {
@@ -266,7 +276,7 @@ public class Delivery extends SubsystemBase {
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0);
-    
+
     // If count == balls, return false because there are no issues. Otherwise return true.
     return count != balls;
   }
@@ -277,21 +287,21 @@ public class Delivery extends SubsystemBase {
   // --- COLOR SENSOR GETTERS --- //
   // ---------------------------- //
   //////////////////////////////////
-  
+
   /**
    * Corresponds to ball position 3
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return leftSensor.seesBall();
+    return false; // leftSensor.seesBall();
   }
-  
+
   /**
    * Corresponds to ball position 1
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return false; //rightSensor.seesBall();
+    return false; // rightSensor.seesBall();
   }
 
   /**
@@ -299,7 +309,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return leftSensor.getColor();
+    return null; // leftSensor.getColor();
   }
 
   /**
@@ -335,6 +345,13 @@ public class Delivery extends SubsystemBase {
    */
   public boolean getShooterSensorStatus() {
     return !shooterBeam.get();
+  }
+
+    /**
+   * Stops the delivery mechanism
+   */
+  public void stopDelivery() {
+    motor.set(ControlMode.PercentOutput, 0.0);
   }
 
 }
