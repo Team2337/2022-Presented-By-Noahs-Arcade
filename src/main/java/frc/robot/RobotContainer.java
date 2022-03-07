@@ -133,9 +133,9 @@ public class RobotContainer {
     driverRightBumper.whileHeld(pixyPickupCommand);
 
     // driverTriggerRight.whileHeld(new RunKicker(kicker));
-    driverTriggerLeft.whenPressed(new LinearShoot(19.25, shooter, delivery, kicker));
-    driverTriggerRight.whenPressed(new LinearShoot(38.5, shooter, delivery, kicker));
-    
+    driverTriggerLeft.whenHeld(new LinearShoot(delivery, kicker, shooter, 19.25));
+    driverTriggerRight.whenHeld(new LinearShoot(delivery, kicker, shooter, 38.5));
+
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverStart.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
