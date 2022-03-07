@@ -26,6 +26,7 @@ import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShoot;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.shooter.StopAllShooterSystems;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
@@ -134,6 +135,8 @@ public class RobotContainer {
 
     driverTriggerLeft.whenHeld(new LinearShoot(19.25, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new LinearShoot(38.5, delivery, kicker, shooter));
+    driverTriggerRight.whenReleased(new StopAllShooterSystems(delivery, kicker, shooter));
+    driverTriggerLeft.whenReleased(new StopAllShooterSystems(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverStart.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));

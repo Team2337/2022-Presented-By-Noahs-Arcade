@@ -11,17 +11,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class QuickStartShooter extends CommandBase {
 
   private final Shooter shooter;
-  private double speed;
+  private final double speedFeetPerSecond;
 
-  public QuickStartShooter(double speed, Shooter shooter) {
+  public QuickStartShooter(double speedFeetPerSecond, Shooter shooter) {
     this.shooter = shooter;
-    this.speed = speed;
+    this.speedFeetPerSecond = speedFeetPerSecond;
 
     addRequirements(shooter);
   }
   @Override
   public void initialize() {
-    shooter.setSpeed(speed);
+    shooter.setSpeed(speedFeetPerSecond);
   }
 
   @Override
