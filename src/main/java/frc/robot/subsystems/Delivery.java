@@ -112,7 +112,7 @@ public class Delivery extends SubsystemBase {
     }
 
     // Systems check
-    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
     systemsCheck.addBoolean("Left Color Sensor", () -> (leftSensor == null ? false : leftSensor.isConnected()))
       .withSize(2, 2)

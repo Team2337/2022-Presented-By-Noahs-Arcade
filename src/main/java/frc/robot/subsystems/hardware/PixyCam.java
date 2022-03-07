@@ -86,9 +86,9 @@ public class PixyCam extends SubsystemBase {
     }
 
     // Systems check
-    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
     
-    systemsCheck.addBoolean("Pixy Cam", () -> (state >= 0))
+    systemsCheck.addBoolean("Pixy Cam Connected", () -> (state >= 0))
       .withSize(2, 2)
       .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y);
   }

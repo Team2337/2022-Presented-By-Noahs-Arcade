@@ -65,7 +65,7 @@ public class Climber extends SubsystemBase {
     }
 
     // Systems check
-    ShuffleboardTab systemsCheck = Shuffleboard.getTab("SYSTEMS CHECK");
+    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
     
     systemsCheck.addBoolean("String Pot", () -> (stringPot.getVoltage() > 0))
       .withSize(2, 2)
