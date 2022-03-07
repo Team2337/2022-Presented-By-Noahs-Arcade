@@ -9,6 +9,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
+import frc.robot.subsystems.hardware.PicoColorSensor;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
@@ -39,8 +40,7 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
   // Color sensors
-  // private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final PicoColorSensor colorSensors = new PicoColorSensor();
 
   // TOF sensor
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
@@ -101,6 +101,12 @@ public class Delivery extends SubsystemBase {
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         // "Left: "  + String.valueOf(leftSensor.getColor()),
         // "Right: " + String.valueOf(rightSensor.getColor())
+        "Left: " + String.valueOf(colorSensors.getRawColor0()),
+        "Right: " + String.valueOf(colorSensors.getRawColor1())
+      });
+      sensorsWidget.addStringArray("Proximities", () -> new String[]{
+        "Left: " + String.valueOf(colorSensors.getProximity0()),
+        "Right: " + String.valueOf(colorSensors.getProximity1())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
