@@ -13,20 +13,15 @@ public class QuickStartShooter extends CommandBase {
   private final Shooter shooter;
   private double speed;
 
-  public QuickStartShooter(Shooter shooter, double speed) {
+  public QuickStartShooter(double speed, Shooter shooter) {
     this.shooter = shooter;
     this.speed = speed;
 
     addRequirements(shooter);
   }
-
   @Override
-  public void execute() {
+  public void initialize() {
     shooter.setSpeed(speed);
-  }
-
-  @Override
-  public void end(boolean interrupted) {
   }
 
   @Override

@@ -11,31 +11,36 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Kicker;
 
 public class LinearShoot extends SequentialCommandGroup {
+  private final Shooter shooter;
+  private final Kicker kicker;
+  private final Delivery delivery;
+  private double speed;
+  //Speed is in ft/s
+  public LinearShoot(double speed, Delivery delivery, Kicker kicker, Shooter shooter) {
+    this.shooter = shooter;
+    this.kicker = kicker;
+    this.delivery = delivery;
+    this.speed = speed;
 
-  public LinearShoot(Delivery delivery, Kicker kicker, Shooter shooter, double speed) {
-    // Schedule commands
     addCommands(
-      new QuickStartShooter(shooter, speed),
+      new QuickStartShooter(speed, shooter),
       new InstantCommand(() -> kicker.start(0.5)),
-      new StartDelivery(delivery).withTimeout(1),
-      new ParallelCommandGroup(
-        new AutoStopKicker(kicker),
-        new AutoStopShooter(shooter),
-        new AutoStopDelivery(delivery)
-      )
+      new StartDelivery(delivery)
     );
   }
 
   @Override
   public void end(boolean interrupted) {
-    // TODO Auto-generated method stub
-    super.end(interrupted);
+    new ParallelCommandGroup(
+        new AutoStopKicker(kicker),
+        new AutoStopShooter(shooter),
+        new AutoStopDelivery(delivery)
+      );
   }
 
   @Override
   public boolean isFinished() {
-    // TODO Auto-generated method stub
-    return super.isFinished();
+    return false;
   }
   
 }
