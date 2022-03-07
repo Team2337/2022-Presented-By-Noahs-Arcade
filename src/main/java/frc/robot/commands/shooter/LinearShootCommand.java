@@ -7,12 +7,14 @@ import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Kicker;
 
-public class LinearShoot extends SequentialCommandGroup {
-  public LinearShoot(double speedFeetPerSecond, Delivery delivery, Kicker kicker, Shooter shooter) {
+public class LinearShootCommand extends SequentialCommandGroup {
+
+  public LinearShootCommand(double speedFeetPerSecond, Delivery delivery, Kicker kicker, Shooter shooter) {
     addCommands(
-      new QuickStartShooter(speedFeetPerSecond, shooter),
+      new QuickStartShooterCommand(speedFeetPerSecond, shooter),
       new InstantCommand(() -> kicker.start(0.5), kicker),
       new StartDelivery(delivery)
     );
   }
+
 }
