@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -34,14 +36,19 @@ public class Climber extends SubsystemBase {
 
   public final double START = 0;
   public final double LOW_RUNG = 100000;
-  public final double MID_RUNG = 277350;
-  public final double RICKABOOT = 120000;
+  public final double MID_RUNG = 2.5;
+  public final double RICKABOOT = 1.65; // 1.65 Stringpot
+  public final double THIRD_RUNG_MAX = 2;
+  public final double THIRD_RUNG_MIN = 1.5;
+  public final double HOOKS_ARE_SET = 1;
+
+  public final double PITCH_RANGE = 0;
 
   private double maxSpeed = 0.25;
   private double nominalForwardSpeed = 0.1;
   private double nominalReverseSpeed = -nominalForwardSpeed;
 
-  private double minEncoderValue = 500;
+  private double minEncoderValue = 30606;
   private double maxEncoderValue = 277350;
   private double minStringpotValue = 0.5;
   private double maxStringpotValue = 2.95;
@@ -55,7 +62,7 @@ public class Climber extends SubsystemBase {
     motorConfig.forwardSoftLimitEnable = true;
     motorConfig.reverseSoftLimitThreshold = minEncoderValue;
     motorConfig.reverseSoftLimitEnable = true;
-
+    //motorConfig.reverseSoftLimitEnable = false;
     motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
     //motorConfig.primaryPID.selectedFeedbackCoefficient = 1; //TODO use to convert to inches?
     motorConfig.peakOutputForward = maxSpeed;
@@ -87,8 +94,10 @@ public class Climber extends SubsystemBase {
     leftMotor.config_kI(0, 0);
     leftMotor.config_kD(0, 0); */
     leftMotor.setSelectedSensorPosition(0);
-
-    //leftMotor.setSelectedSensorPosition(getStringPotVoltage()*kConversion);
+    // This formula is used for converting Stringpot to encoder movements, so we only need one PID.
+    double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
+    double setpoint = (112676 * voltageRound - 39538);
+    leftMotor.setSelectedSensorPosition(setpoint);
     // Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
     /*leftMotor.configAllowableClosedloopError(0, 100);
@@ -99,7 +108,6 @@ public class Climber extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    Double hahafunny = getStringPotVoltage()*kConversion;
     if (logEnable) {
       ShuffleboardTab climberTab = Shuffleboard.getTab("Climber");
       ShuffleboardLayout climberWidget = climberTab.getLayout("climber Info", BuiltInLayouts.kList).withSize(3, 2)
@@ -108,14 +116,17 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("Left Temp", this::getLeftMotorTemperature);
       climberWidget.addNumber("Right Temp", this::getRightMotorTemperature);
       climberWidget.addNumber("String Pot", this::getStringPotVoltage);
-      climberWidget.addNumber("Encoder Position", this::getPosition);
+      climberWidget.addNumber("Encoder Position", this::getEncoderPosition);
       climberWidget.addBoolean("Status", this::getClimberStatus);
     }
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Voltage to Ticks", getStringPotVoltage()*kConversion);
+    double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
+    double setpoint = (112676 * voltageRound - 39538);
+    SmartDashboard.putNumber("Voltage Round", voltageRound);
+    SmartDashboard.putNumber("Voltage to Ticks", setpoint);
   }
 
   public void activateClimber() {
@@ -125,21 +136,32 @@ public class Climber extends SubsystemBase {
   public boolean getClimberStatus() {
     return climberActivated;
   }
-
+  //True if Connected
   public boolean getStringPotHealth() {
     return ((getStringPotVoltage() > 0.1) && (getStringPotVoltage() < 3.0));
   }
+  public double stringpotToEncoder(double stringpot){
+    return ((112676 * stringpot) - 39538);
+  }
+  public boolean climberWithinThirdRungRange(){
+    return (THIRD_RUNG_MIN < getStringPotVoltage() && getStringPotVoltage() < THIRD_RUNG_MAX);
+  }
 
-  public void setPositionUsingEncoder(double setpoint) {
+  public void setPosition(double setpoint) {
+    //If setpoint is within the range for a stringpot, 0-5V, convert to ticks, we will save value as Stringpot, so doesn't matter if we have it or not.
+    if (setpoint < 5){
+      setpoint = stringpotToEncoder(setpoint); //Convert to ENCODER TICKS!!!
+    }
+    //Else, we just use the ticks anyway and set
     leftMotor.set(TalonFXControlMode.Position, setpoint);
   }
 
   public void hold() {
-    double position = leftMotor.getSelectedSensorPosition();
-    setPositionUsingEncoder(position);
+    double position = getEncoderPosition();
+    setPosition(position);
   }
   
-  public double getPosition() {
+  public double getEncoderPosition() {
     return leftMotor.getSelectedSensorPosition();
   }
 

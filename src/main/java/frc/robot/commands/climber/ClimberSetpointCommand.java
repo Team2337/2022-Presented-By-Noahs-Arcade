@@ -21,11 +21,12 @@ public class ClimberSetpointCommand extends CommandBase {
   public void initialize() {
     // Sets a setpoint only if the <start> button has been pressed previously so that ClimberCommand has run atleast once.
     if(climber.getClimberStatus()){
-      climber.setPositionUsingEncoder(setpoint);
+      climber.setPosition(setpoint);
     }
-    else {
+   /* else {
       climber.stop();
-    }
+    } */
+
   }
   @Override
   public void execute(){

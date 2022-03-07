@@ -4,12 +4,13 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -40,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
    * positive y values represent moving toward the left of the robot
    * https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html#constructing-the-kinematics-object
    */
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
       Units.inchesToMeters(Constants.DRIVETRAIN_RADIUS_INCHES),
       Units.inchesToMeters(-Constants.DRIVETRAIN_RADIUS_INCHES)
@@ -146,7 +147,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return pose;
   }
 
   public Translation2d getTranslation() {
@@ -166,15 +167,14 @@ public class Drivetrain extends SubsystemBase {
    * @return The rotation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(pigeon.getYaw());
+    return Rotation2d.fromDegrees(ypr_deg[0]);
   }
 
   public Rotation2d getGyroscopePitch() {
     return Rotation2d.fromDegrees(ypr_deg[1]);
   }
-
-  public double getGyroscopePitch(){
-    return pigeon.getPitch();
+  public Rotation2d getGyroscopeRoll() {
+    return Rotation2d.fromDegrees(ypr_deg[2]);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
@@ -205,7 +205,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     pigeon.getYawPitchRoll(ypr_deg);
-
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -228,10 +227,7 @@ public class Drivetrain extends SubsystemBase {
 
     pose = odometry.update(
       getGyroscopeRotation(),
-      moduleOne,
-      moduleTwo,
-      moduleThree,
-      moduleFour
+      realStates
     );
 
     Logger.getInstance().recordOutput("Odometry/Robot",

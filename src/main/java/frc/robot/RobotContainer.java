@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.climber.JoystickClimberCommand;
@@ -140,6 +141,7 @@ public class RobotContainer {
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
+
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
@@ -169,13 +171,14 @@ public class RobotContainer {
     operatorRightLeftTrigger.whenInactive(pixyPickupCommand::clearStrategy);
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
-    operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
+    //operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
+    operatorStart.whenPressed(new ClimbSequence(operatorController, climber, drivetrain));
     operatorStart.whenReleased(climber::stop);
     //operatorBack.whenPressed(climber::goLowRung);
     //operatorBack.whenReleased(climber::holdPositionUsingEncoder);
     operatorX.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
-    operatorX.whenReleased(new ClimberSetpointCommand(climber.START, climber));
-    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    //operatorX.whenReleased(new ClimberSetpointCommand(climber.START, climber));
+    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));

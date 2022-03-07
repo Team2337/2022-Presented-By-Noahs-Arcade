@@ -4,21 +4,23 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.Climber;
-
+import frc.robot.subsystems.Drivetrain;
 /**
- * This command runs the climber using the stringpot or a joystick input
+ * This command runs the climber sequence 
  * @author Nicholas S
  */
-public class JoystickClimberCommand extends CommandBase {
+public class ClimbSequence extends CommandBase {
   private final Climber climber;
+  private final Drivetrain drivetrain;
   private final XboxController controller;
   
   private double setpoint;
   private boolean needsSetPoint;
 
-  public JoystickClimberCommand(XboxController controller, Climber climber) {
+  public ClimbSequence(XboxController controller, Climber climber, Drivetrain drivetrain) {
     this.climber = climber;
     this.controller = controller;
+    this.drivetrain = drivetrain;
     addRequirements(climber);
   }
 
@@ -41,10 +43,32 @@ public class JoystickClimberCommand extends CommandBase {
         climber.setPosition(setpoint);
     }
     else{
-        // The joystick is being used, use that value to move the climber up and down
-        // while resetting the 'first time through' tracker
-        needsSetPoint = true;
-        climber.setSpeed(output);
+      needsSetPoint = true;
+      //If going up, make sure we don't go over max
+      if (output > 0){
+        //Make sure we don't go too far in clamping
+        if (climber.getStringPotVoltage() <= climber.MID_RUNG){
+          climber.setSpeed(output);
+        }
+        else{
+          climber.stop();
+        }
+      }
+      else 
+        if ((output < 0) && climber.climberWithinThirdRungRange()){
+          if (drivetrain.getGyroscopePitch().getDegrees() < 2.3){
+            climber.setSpeed(output);
+          } 
+          else {
+            climber.stop();
+          }
+        }
+        else if ((output < 0) && climber.HOOKS_ARE_SET >= climber.getStringPotVoltage()){
+          climber.stop();
+        }
+        else {
+          climber.setSpeed(output);
+        }
       }
     }
 
