@@ -9,7 +9,10 @@ import edu.wpi.first.hal.SerialPortJNI;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.Timer;
 
-public class PicoColorSensor implements AutoCloseable {
+/**
+ * 
+ */
+public class PicoCommunicator implements AutoCloseable {
 
   public static class RawColor {
     public RawColor(int r, int g, int b, int _ir) {
@@ -187,7 +190,7 @@ public class PicoColorSensor implements AutoCloseable {
     SerialPortJNI.serialClose(port);
   }
 
-  public PicoColorSensor() {
+  public PicoCommunicator() {
     readThread = new Thread(this::threadMain);
     readThread.setName("PicoColorSensorThread");
     readThread.start();
