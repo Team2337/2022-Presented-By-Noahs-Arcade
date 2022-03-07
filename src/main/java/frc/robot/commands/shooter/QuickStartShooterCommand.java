@@ -14,8 +14,8 @@ public class QuickStartShooterCommand extends CommandBase {
   private final Shooter shooter;
 
   public QuickStartShooterCommand(double speedFeetPerSecond, Shooter shooter) {
-    this.shooter = shooter;
     this.speedFeetPerSecond = speedFeetPerSecond;
+    this.shooter = shooter;
 
     addRequirements(shooter);
   }
