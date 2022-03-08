@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
-import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
 
