@@ -23,17 +23,16 @@ public class TimeOfFlightSensor extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (getStatus() == Status.Valid) {
+  //  if (getStatus() == Status.Valid) {
       validCounter = 0;
       // mm -> m, then m -> inches
       distanceInches = Units.metersToInches((getDistanceMM() / 1000));
-    } else {
+   /* } /*else {
       validCounter++;
       if (validCounter >= MAX_VALID_COUNTER) {
-        distanceInches = -1;
+        distanceInches = 0;
         validCounter = 0;
-      }
-    }
+      } */
 
     SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
     SmartDashboard.putString("TimeOfFlight/Status", getStatus().toString());
