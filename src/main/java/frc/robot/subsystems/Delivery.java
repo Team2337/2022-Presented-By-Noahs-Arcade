@@ -9,6 +9,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
+import frc.robot.subsystems.hardware.PicoColorSensors;
 import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
@@ -39,8 +40,7 @@ public class Delivery extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
 
   // Color sensors
-  // private final ColorSensorREV leftSensor = new ColorSensorREV(I2C.Port.kOnboard);
-  // private final ColorSensorTCS rightSensor = new ColorSensorTCS(I2C.Port.kMXP);
+  private final PicoColorSensors colorSensors = new PicoColorSensors();
 
   // TOF sensor
   private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
@@ -89,7 +89,7 @@ public class Delivery extends SubsystemBase {
       infoWidget.addNumber("Balls", () -> balls);
       infoWidget.addBoolean("Sees Ball", this::getLeftColorSensorStatus);
 
-      ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors", BuiltInLayouts.kList)
+      ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors and States", BuiltInLayouts.kList)
         .withSize(6, 8)
         .withPosition(6, 0);
       sensorsWidget.addStringArray("Ball positions", () -> new String[]{
@@ -99,8 +99,12 @@ public class Delivery extends SubsystemBase {
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
-        // "Left: "  + String.valueOf(leftSensor.getColor()),
-        // "Right: " + String.valueOf(rightSensor.getColor())
+        "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
+        "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
+      });
+      sensorsWidget.addStringArray("Proximities", () -> new String[]{
+        "Left: " + String.valueOf(colorSensors.leftSensorSeesBall()),
+        "Right: " + String.valueOf(colorSensors.rightSensorSeesBall())
       });
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
@@ -273,9 +277,9 @@ public class Delivery extends SubsystemBase {
   public boolean hasIssues() {
     int count =
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0);
+      (storedBalls[Slot.LEFT.value] != null ? 1 : 0) +
+      (storedBalls[Slot.RIGHT.value] != null ? 1 : 0) +
+      (storedBalls[Slot.TOP.value] != null ? 1 : 0);
 
     // If count == balls, return false because there are no issues. Otherwise return true.
     return count != balls;
@@ -293,7 +297,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return false; // leftSensor.seesBall();
+    return colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -301,7 +305,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return false; // rightSensor.seesBall();
+    return colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -309,7 +313,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return null; // leftSensor.getColor();
+    return colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -317,7 +321,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return null; // rightSensor.getColor();
+    return colorSensors.getRightSensorBallColor();
   }
 
 
