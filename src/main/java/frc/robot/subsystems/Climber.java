@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.lang.invoke.VolatileCallSite;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -50,9 +51,7 @@ public class Climber extends SubsystemBase {
 
   private double minEncoderValue = 30606;
   private double maxEncoderValue = 277350;
-  private double minStringpotValue = 0.5;
-  private double maxStringpotValue = 2.95;
-  private double kConversion = 277350/(2.95 - 0.5) ;  //value to convert stringpot to encoder value
+    //value to convert stringpot to encoder value
 
   public boolean climberActivated = false;
   public Climber() {
@@ -96,9 +95,9 @@ public class Climber extends SubsystemBase {
     leftMotor.setSelectedSensorPosition(0);
     // This formula is used for converting Stringpot to encoder movements, so we only need one PID.
     double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
-    double setpoint = (112676 * voltageRound - 39538);
+    double setpoint = stringpotToEncoder(voltageRound);
     leftMotor.setSelectedSensorPosition(setpoint);
-    // Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048
+    // Motor turns 25 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
     /*leftMotor.configAllowableClosedloopError(0, 100);
     leftMotor.configNominalOutputForward(0.1);
@@ -118,15 +117,15 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("String Pot", this::getStringPotVoltage);
       climberWidget.addNumber("Encoder Position", this::getEncoderPosition);
       climberWidget.addBoolean("Status", this::getClimberStatus);
+      double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
+      double setpoint = (112676 * voltageRound - 39538);
+      SmartDashboard.putNumber("Voltage Round", voltageRound);
+      SmartDashboard.putNumber("Voltage to Ticks", setpoint);
     }
   }
 
   @Override
   public void periodic() {
-    double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
-    double setpoint = (112676 * voltageRound - 39538);
-    SmartDashboard.putNumber("Voltage Round", voltageRound);
-    SmartDashboard.putNumber("Voltage to Ticks", setpoint);
   }
 
   public void activateClimber() {
@@ -138,8 +137,9 @@ public class Climber extends SubsystemBase {
   }
   //True if Connected
   public boolean getStringPotHealth() {
-    return ((getStringPotVoltage() > 0.1) && (getStringPotVoltage() < 3.0));
+    return ((getStringPotVoltage() > 0.1) && (getStringPotVoltage() < 4.3));
   }
+  //Equation found using Google Sheets
   public double stringpotToEncoder(double stringpot){
     return ((112676 * stringpot) - 39538);
   }

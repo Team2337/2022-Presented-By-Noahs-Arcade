@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -177,7 +180,8 @@ public class RobotContainer {
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
     //operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
-    operatorStart.whenPressed(new ClimbSequence(operatorController, climber, drivetrain));
+    Supplier<Boolean> driverOverride = () -> operatorStation.blackButton.get();
+    operatorStart.whenPressed(new ClimbSequence(0., driverOverride, operatorController, climber, drivetrain));
     operatorStart.whenReleased(climber::stop);
     //operatorBack.whenPressed(climber::goLowRung);
     //operatorBack.whenReleased(climber::holdPositionUsingEncoder);
