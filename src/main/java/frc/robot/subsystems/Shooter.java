@@ -25,7 +25,7 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 public class Shooter extends SubsystemBase {
 
   private static double kMotorShutdownTempCelcius = 70;
-  private static double kShooterSpeedFeetPerSecondTolerance = 0.1;
+  private static double kShooterSpeedFeetPerSecondTolerance = 7;
 
   // Top Wheel == Left Motor, Bottom Wheel == Right Motor
   public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);

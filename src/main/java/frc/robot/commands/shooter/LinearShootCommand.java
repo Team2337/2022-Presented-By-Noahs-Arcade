@@ -11,6 +11,8 @@ public class LinearShootCommand extends SequentialCommandGroup {
 
   public LinearShootCommand(double speedFeetPerSecond, Delivery delivery, Kicker kicker, Shooter shooter) {
     addCommands(
+      new ReverseShooter(shooter).withTimeout(0.2),
+      new ReverseKicker(kicker).withTimeout(0.2),
       new QuickStartShooterCommand(speedFeetPerSecond, shooter),
       new InstantCommand(() -> kicker.start(0.5), kicker),
       new StartDelivery(delivery)

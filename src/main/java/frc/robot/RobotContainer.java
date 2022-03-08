@@ -180,7 +180,7 @@ public class RobotContainer {
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     // intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery, kicker));
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
 
     /** Driverstation Controls * */
 
