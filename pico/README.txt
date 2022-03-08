@@ -14,11 +14,11 @@ Pinout of Pico:
 
 HOOKING UP THE PICO TO THE ROBORIO:
 - MXP (roboRIO) to Pico:
-  - Pin 1 MXP to pin 39 Pico
-  - Pin 8 MXP to pin 38 Pico
-  - Pin 10 MXP to pin 1 Pico
+  - Pin 1 MXP to pin 39 Pico (power)
+  - Pin 8 MXP to pin 38 Pico (ground)
+  - Pin 10 MXP to pin 1 Pico (UART)
 - RoboRIO to REV Sensors
   - Both REV sensors ground to pin 8 Pico
   - Both REV sensors power to pin 36 Pico
-  - REV SDA (white) to pins 6 and 9 respectively Pico
-  - REV SCL (blue) to pins 7 and 10 respectively Pico
+  - REV SDA (white) to pins 6 and 9 for left and right respectively Pico
+  - REV SCL (blue) to pins 7 and 10 for left and right respectively Pico
