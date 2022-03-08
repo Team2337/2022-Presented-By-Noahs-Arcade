@@ -17,7 +17,7 @@ public class HeadingToTargetCommand extends CommandBase {
 
   private Translation2d targetMeters;
   private Supplier<Translation2d> robotTranslationSupplier;
-  private Heading heading;
+  protected Heading heading;
 
   public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Heading heading) {
     this(Constants.kHub, robotTranslationSupplier, heading);
