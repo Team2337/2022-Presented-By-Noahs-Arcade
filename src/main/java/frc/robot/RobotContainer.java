@@ -24,8 +24,10 @@ import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
@@ -132,7 +134,10 @@ public class RobotContainer {
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
     driverRightBumper.whileHeld(pixyPickupCommand);
 
-    driverTriggerRight.whileHeld(new RunKicker(kicker));
+    driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
+    driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
+    driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
+    driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverStart.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
