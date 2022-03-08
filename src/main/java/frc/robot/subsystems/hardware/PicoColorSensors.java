@@ -9,14 +9,14 @@ import frc.robot.subsystems.hardware.PicoCommunicator.RawColor;
 
 /**
  * Abstraction for {@link PicoCommunicator} for easier and clearer use.
- * 
+ *
  * @author Michael F
  */
 public class PicoColorSensors {
 
   // Proximity where ball is roughly 2 inches away from sensor
-  private final int PROXIMITY_THRESHOLD = 300; //TODO: tune me
-  
+  private final int PROXIMITY_THRESHOLD = 300; // TODO: tune me
+
   // Class to abstract
   private final PicoCommunicator pico = new PicoCommunicator();
 
