@@ -60,7 +60,7 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
-  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.8;
+  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 4.5;
 
 
   /**

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
+import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.delivery.commandgroups.*;
 import frc.robot.commands.pixy.PixyPickupCommand;
@@ -145,14 +146,16 @@ public class RobotContainer {
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
     Trigger operatorRightLeftTrigger = operatorRightTrigger.and(operatorLeftTrigger);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
-    operatorA.whileHeld(new StartShooter(shooter));
+    operatorStart.whileHeld(new StartShooter(shooter));
     operatorB.whileHeld(new RunKicker(kicker));
 
     operatorRightBumper.whenPressed(intake::start, intake);
@@ -172,10 +175,11 @@ public class RobotContainer {
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
-    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
 
     /** Driverstation Controls * */
 

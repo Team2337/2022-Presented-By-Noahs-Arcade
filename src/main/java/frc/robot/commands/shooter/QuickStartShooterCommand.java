@@ -27,6 +27,7 @@ public class QuickStartShooterCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    //TODO: Change to Percentage or another method
     return shooter.isShooterToSpeed();
   }
 
