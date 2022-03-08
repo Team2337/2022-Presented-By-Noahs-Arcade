@@ -128,8 +128,7 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
     // Note that this command assumes we're facing the target (use with Heading)
     return new AutoDrive.State(
       -output,
-      strafe,
-      false
+      strafe
     );
   }
 

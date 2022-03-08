@@ -40,14 +40,14 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  // private final PixyCam pixyCam = new PixyCam();
+  private final PixyCam pixyCam = new PixyCam();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Kicker kicker = new Kicker();
   private final AutoDrive autoDrive = new AutoDrive();
-  // private final Delivery delivery = new Delivery();
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
@@ -120,7 +120,7 @@ public class RobotContainer {
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftkLeftBumper);
+    JoystickButton driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
