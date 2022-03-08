@@ -19,7 +19,7 @@ public class FlareCommand extends SequentialCommandGroup {
 
   public FlareCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, AutoDrive autoDrive, Drivetrain drivetrain, Heading heading) {
     addCommands(
-      new HeadingToTargetSequenceCommand(targetMeters, robotTranslationSupplier, heading).withTimeout(1),
+      new HeadingToTargetSequenceCommand(targetMeters, robotTranslationSupplier, heading),
       new DistanceToTargetCommand(targetMeters, Units.inchesToMeters(10), robotTranslationSupplier, autoDrive, heading)
     );
   }

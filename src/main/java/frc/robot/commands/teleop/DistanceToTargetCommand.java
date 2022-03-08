@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -26,7 +27,9 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
   private double distanceMeters;
   private AutoDrive autoDrive;
 
-  private ProfiledPIDController distanceController;
+  private TrapezoidProfile profile;
+  // private ProfiledPIDController distanceController;
+  private PIDController distanceController;
   private double output = 0.0;
 
   public DistanceToTargetCommand(double distanceMeters, Supplier<Translation2d> translationSupplier, AutoDrive autoDrive, Heading heading) {
@@ -39,13 +42,16 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
     this.distanceMeters = distanceMeters;
     this.autoDrive = autoDrive;
 
+    distanceController = new PIDController(1.5, 0.0, 0.0);
+    /*
     distanceController = new ProfiledPIDController(1.5, 0.0, 0.0,
       // Speeds have been tuned for 143" move (Ball 2 -> 10in from Hub)
       new TrapezoidProfile.Constraints(
         Units.inchesToMeters(160),
-        Units.inchesToMeters(80)
+        Units.inchesToMeters(50)
       )
     );
+    */
     // Tolerance for our distance is within ~2 inches (should be Good Enough™️)
     distanceController.setTolerance(Units.inchesToMeters(2));
 
@@ -58,11 +64,22 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
 
     autoDrive.setDelegate(this);
 
-    // Set our initial setpoint for our profiled PID controllers
-    // to avoid a JUMP to their starting values on first run
+    // Set our initial setpoint for our profile to avoid
+    // a JUMP to their starting values on first run
     PolarCoordinate robotCoordinate = getRobotCoordinate();
-    distanceController.reset(
-      robotCoordinate.getRadiusMeters()
+    profile = new TrapezoidProfile(
+      new TrapezoidProfile.Constraints(
+        Units.inchesToMeters(160),
+        Units.inchesToMeters(60)
+      ),
+      new TrapezoidProfile.State(
+        distanceMeters,
+        0
+      ),
+      new TrapezoidProfile.State(
+        robotCoordinate.getRadiusMeters(),
+        0
+      )
     );
   }
 
@@ -71,15 +88,23 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
     super.execute();
 
     PolarCoordinate robotCoordinate = getRobotCoordinate();
+    var m_setpoint = profile.calculate(distanceController.getPeriod());
     output = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
-      distanceMeters
+      m_setpoint.position
     );
 
     Logger.getInstance().recordOutput("Flare/output", output);
     Logger.getInstance().recordOutput("Flare/Error", distanceController.getPositionError());
     Logger.getInstance().recordOutput("Flare/Velocity Error", distanceController.getVelocityError());
+    /*
     Logger.getInstance().recordOutput("Flare/atTarget", distanceController.atGoal());
+    Logger.getInstance().recordOutput("Flare/Robot Distance", robotCoordinate.getRadiusMeters());
+    Logger.getInstance().recordOutput("Flare/Goal Position", distanceController.getGoal().position);
+    Logger.getInstance().recordOutput("Flare/Goal Velocity", distanceController.getGoal().velocity);
+    Logger.getInstance().recordOutput("Flare/Setpoint Position", distanceController.getSetpoint().position);
+    Logger.getInstance().recordOutput("Flare/Setpoint Velocity", distanceController.getSetpoint().velocity);
+    */
 
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 1.0;
