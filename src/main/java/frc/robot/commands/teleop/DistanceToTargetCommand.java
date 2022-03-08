@@ -88,6 +88,11 @@ public class DistanceToTargetCommand extends HeadingToTargetCommand implements A
     super.execute();
 
     PolarCoordinate robotCoordinate = getRobotCoordinate();
+
+    // var profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint);
+    // m_setpoint = profile.calculate(getPeriod());
+    // return m_controller.calculate(measurement, m_setpoint.position);
+    // TODO: Pretty sure we *will* have to calculate a new profile every time here...
     var m_setpoint = profile.calculate(distanceController.getPeriod());
     output = distanceController.calculate(
       robotCoordinate.getRadiusMeters(),
