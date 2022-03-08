@@ -99,8 +99,6 @@ public class Delivery extends SubsystemBase {
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
-        // "Left: "  + String.valueOf(leftSensor.getColor()),
-        // "Right: " + String.valueOf(rightSensor.getColor())
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
       });
@@ -279,9 +277,9 @@ public class Delivery extends SubsystemBase {
   public boolean hasIssues() {
     int count =
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0);
+      (storedBalls[Slot.LEFT.value] != null ? 1 : 0) +
+      (storedBalls[Slot.RIGHT.value] != null ? 1 : 0) +
+      (storedBalls[Slot.TOP.value] != null ? 1 : 0);
 
     // If count == balls, return false because there are no issues. Otherwise return true.
     return count != balls;
@@ -299,7 +297,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return false; // leftSensor.seesBall();
+    return colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -307,7 +305,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return false; // rightSensor.seesBall();
+    return colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -315,7 +313,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return null; // leftSensor.getColor();
+    return colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -323,7 +321,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return null; // rightSensor.getColor();
+    return colorSensors.getRightSensorBallColor();
   }
 
 
