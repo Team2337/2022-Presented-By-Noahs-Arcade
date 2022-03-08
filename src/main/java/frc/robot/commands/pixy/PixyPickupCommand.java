@@ -12,6 +12,7 @@ import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
+import frc.robot.subsystems.Intake;
 
 public class PixyPickupCommand extends CommandBase implements AutoDrivableCommand {
 
@@ -38,6 +39,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
   private final AutoDrive autoDrive;
+  private final Intake intake;
   private final PixyCam pixyCam;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
@@ -48,11 +50,12 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
 
-  public PixyPickupCommand(AutoDrive autoDrive, PixyCam pixyCam) {
+  public PixyPickupCommand(AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
     this.pixyCam = pixyCam;
+    this.intake = intake;
     this.autoDrive = autoDrive;
 
-    addRequirements(autoDrive);
+    addRequirements(autoDrive, intake);
   }
 
   @Override
@@ -140,6 +143,9 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
       return;
     }
 
+    // The first time we see a ball, we should turn the intake on
+    intake.start();
+
     double frameCenter = pixyCam.getFrameWidth() / 2.0;
     double output = strafeController.calculate(
       (double) targetBall.getX(),
@@ -166,6 +172,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void end(boolean interrupted) {
     autoDrive.clearDelegate();
+    intake.stop();
   }
 
   @Override
