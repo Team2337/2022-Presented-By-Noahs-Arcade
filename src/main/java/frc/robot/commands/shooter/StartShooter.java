@@ -28,9 +28,4 @@ public class StartShooter extends CommandBase {
     shooter.stop();
   }
 
-  @Override
-  public boolean isFinished() {
-    return shooter.isOverheated();
-  }
-
 }

@@ -1,17 +1,16 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
@@ -24,6 +23,12 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 
 public class Shooter extends SubsystemBase {
 
+  // This is for 40.7 ft/s, RING OF FIRE!!!
+  private static double kP = 0.06;
+  private static double kI = 0;
+  private static double kD = 0.000;
+  private static double kF = 0.05;
+
   private static double kMotorShutdownTempCelcius = 70;
   private static double kShooterSpeedFeetPerSecondTolerance = 7;
 
@@ -31,44 +36,7 @@ public class Shooter extends SubsystemBase {
   public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
   public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
 
-  // This is for 40.7 ft/s, RING OF FIRE!!!
-  private double kP = 0.06;
-  private double kI = 0;
-  private double kD = 0.000;
-  private double kF = 0.05;
-
   private double targetSpeed = 0.0;
-
-  private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-
-  private ShuffleboardLayout temps;
-  private ShuffleboardLayout pid = tab.getLayout("PID Control", BuiltInLayouts.kList)
-    .withSize(4, 8)
-    .withPosition(0, 0);
-  private NetworkTableEntry kep = pid
-    .add("kP", kP)
-    .withWidget(BuiltInWidgets.kTextView)
-    .getEntry();
-  private NetworkTableEntry kei = pid
-    .add("kI", kI)
-    .withWidget(BuiltInWidgets.kTextView)
-    .getEntry();
-  private NetworkTableEntry ked = pid
-    .add("kD", kD)
-    .withWidget(BuiltInWidgets.kTextView)
-    .getEntry();
-  private NetworkTableEntry kef = pid
-    .add("kF", kF)
-    .withWidget(BuiltInWidgets.kTextView)
-    .getEntry();
-
-  private ShuffleboardLayout speeds = tab.getLayout("Shooter Speeds", BuiltInLayouts.kList)
-    .withSize(4, 8)
-    .withPosition(4, 0);
-  public NetworkTableEntry shooterSpeedFeetPerSecondWidget = speeds
-    .add("Set Wheel Speed (ft/s)", targetSpeed)
-    .withWidget(BuiltInWidgets.kTextView)
-    .getEntry();
 
   private StatorCurrentLimitConfiguration currentLimitConfiguration = CTREUtils.defaultCurrentLimit();
 
@@ -76,29 +44,52 @@ public class Shooter extends SubsystemBase {
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
 
+    configureShooterMotor(leftMotor);
     rightMotor.follow(leftMotor);
+
     leftMotor.setNeutralMode(NeutralMode.Coast);
+    rightMotor.setNeutralMode(NeutralMode.Coast);
 
     leftMotor.setInverted(TalonFXInvertType.CounterClockwise);
     rightMotor.setInverted(TalonFXInvertType.Clockwise);
 
-    leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
-    leftMotor.configClosedloopRamp(0.2);
-    leftMotor.configVoltageCompSaturation(9);
     leftMotor.enableVoltageCompensation(true);
-
-    configurePID(kP, kI, kD, kF);
+    rightMotor.enableVoltageCompensation(true);
 
     setupShuffleboard(Constants.DashboardLogging.SHOOTER);
   }
 
+  private ErrorCode configureShooterMotor(TalonFX motor) {
+    TalonFXConfiguration configuration = new TalonFXConfiguration();
+
+    configuration.statorCurrLimit = currentLimitConfiguration;
+
+    configuration.slot0.kP = kP;
+    configuration.slot0.kI = kI;
+    configuration.slot0.kD = kD;
+    configuration.slot0.kF = kF;
+
+    configuration.closedloopRamp = 0.2;
+
+    configuration.voltageCompSaturation = 9;
+
+    return motor.configAllSettings(configuration, 250);
+  }
+
   private void setupShuffleboard(Boolean logEnable) {
-    temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList).withSize(4, 8).withPosition(8, 0);
+    ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+
+    ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
+      .withSize(4, 8)
+      .withPosition(8, 0);
     temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
     temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
     temps.addBoolean("Motors Overheating?", () -> isOverheated());
 
     if (logEnable) {
+      ShuffleboardLayout speeds = tab.getLayout("Shooter Speeds", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(4, 0);
       speeds.addNumber("Left Motor RPM", () -> getMotorRPM(leftMotor));
       speeds.addNumber("Right Motor RPM", () -> getMotorRPM(rightMotor));
       speeds.addNumber("Top Wheel Speed (ft per s)", () -> getMotorWheelSpeed(leftMotor));
@@ -106,59 +97,37 @@ public class Shooter extends SubsystemBase {
       speeds.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
       speeds.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
     }
-
   }
 
   @Override
   public void periodic() {
-    if (kep.getDouble(0) != kP) {
-      kP = kep.getDouble(0);
-      configurePID(kP, kI, kD, kF);
+    log();
+
+    if (isOverheated()) {
+      stop();
     }
-    if (kei.getDouble(0) != kI) {
-      kI = kei.getDouble(0);
-      configurePID(kP, kI, kD, kF);
-    }
-    if (ked.getDouble(0) != kD) {
-      kD = ked.getDouble(0);
-      configurePID(kP, kI, kD, kF);
-    }
-    if (kef.getDouble(0) != kF) {
-      kF = kef.getDouble(0);
-      configurePID(kP, kI, kD, kF);
-    }
+  }
+
+  private void log() {
     Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
     Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
-  public void configurePID(double kp, double ki, double kd, double kf) {
-    leftMotor.config_kP(0, kp);
-    leftMotor.config_kI(0, ki);
-    leftMotor.config_kD(0, kd);
-    leftMotor.config_kF(0, kf);
-  }
-
-  public boolean getLeftMotorOverTemp() {
-    return leftMotor.getTemperature() >= kMotorShutdownTempCelcius;
-  }
-
-  public boolean getRightMotorOverTemp() {
-    return rightMotor.getTemperature() >= kMotorShutdownTempCelcius;
-  }
+  // ** Public API **
 
   public void setSpeed(double speedFeetPerSecond) {
-    if(speedFeetPerSecond != targetSpeed){
+    if (isOverheated()) {
+      return;
+    }
+
+    if (speedFeetPerSecond != targetSpeed){
       targetSpeed = speedFeetPerSecond;
     }
+
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
-    SmartDashboard.putNumber("Ticks per 100ms", ticksPerHundredMiliseconds);
 
     enableMotorCurrentLimiting();
     leftMotor.set(ControlMode.Velocity, ticksPerHundredMiliseconds);
-  }
-
-  public double getSpeed() {
-    return leftMotor.getSelectedSensorVelocity();
   }
 
   public void stop() {
@@ -167,12 +136,22 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterToSpeed() {
-    // TODO: Tune our deadband range
+    // TODO: Change to Percentage or another method
     return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
-  public boolean isOverheated() {
-    return getLeftMotorOverTemp() || getRightMotorOverTemp();
+  // ** Private API **
+
+  public double getVelocity() {
+    return leftMotor.getSelectedSensorVelocity();
+  }
+
+  private boolean isOverheated() {
+    return isMotorOverheated(leftMotor) || isMotorOverheated(rightMotor);
+  }
+
+  private boolean isMotorOverheated(TalonFX motor) {
+    return motor.getTemperature() >= kMotorShutdownTempCelcius;
   }
 
   private double getMotorRPM(TalonFX motor) {
@@ -219,4 +198,5 @@ public class Shooter extends SubsystemBase {
       leftMotor.configStatorCurrentLimit(currentLimitConfiguration, 0);
     }
   }
+
 }
