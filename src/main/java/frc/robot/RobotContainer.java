@@ -18,13 +18,13 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
+import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
-import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.StartShooter;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
@@ -151,7 +151,7 @@ public class RobotContainer {
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
     operatorStart.whileHeld(new StartShooter(shooter));
-    operatorA.whileHeld(new RunKicker(kicker));
+    operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
     operatorRightTrigger.whenPressed(intake::start, intake);
     operatorRightTrigger.whenReleased(intake::stop, intake);
