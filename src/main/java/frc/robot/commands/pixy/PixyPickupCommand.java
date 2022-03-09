@@ -58,6 +58,14 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     addRequirements(autoDrive, intake);
   }
 
+  public PixyPickupCommand(AutoDrive autoDrive, PixyCam pixyCam, PickupStrategy strategy)  {
+    this.pixyCam = pixyCam;
+    this.autoDrive = autoDrive;
+    this.strategy = strategy;
+    setStrategy(strategy);
+    addRequirements(autoDrive);
+  }
+
   @Override
   public void initialize() {
     autoDrive.setDelegate(this);
