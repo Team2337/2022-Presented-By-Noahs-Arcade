@@ -162,12 +162,10 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorRightBumper.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.RED));
-    operatorRightBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam));
+    operatorRightBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam, PickupStrategy.RED));
     operatorRightBumper.whenReleased(pixyPickupCommand::clearStrategy);
 
-    operatorLeftBumper.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.BLUE));
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam));
+    operatorLeftBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam, PickupStrategy.BLUE));
     operatorLeftBumper.whenReleased(pixyPickupCommand::clearStrategy);
 
     operatorRightLeftBumper.whenActive(() -> pixyPickupCommand.setStrategy(PickupStrategy.ANY));
