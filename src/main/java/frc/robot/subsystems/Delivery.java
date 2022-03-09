@@ -37,7 +37,10 @@ public class Delivery extends SubsystemBase {
     }
   }
 
-  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
+  private final TalonFX motor = new TalonFX(
+    Constants.DELIVERY_MOTOR_ID,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   // Color sensors
   private final PicoColorSensors colorSensors = new PicoColorSensors();
