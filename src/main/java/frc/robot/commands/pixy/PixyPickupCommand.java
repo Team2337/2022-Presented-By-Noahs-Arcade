@@ -38,32 +38,24 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private static final double MAX_STRAFE_OUTPUT = 0.5;
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
+  private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
   private final Intake intake;
   private final PixyCam pixyCam;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
 
-  private PickupStrategy strategy;
-
   private Block targetBall;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
 
-  public PixyPickupCommand(AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+  public PixyPickupCommand(PickupStrategy strategy, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+    this.strategy = strategy;
+    this.autoDrive = autoDrive;
     this.pixyCam = pixyCam;
     this.intake = intake;
-    this.autoDrive = autoDrive;
 
     addRequirements(autoDrive, intake);
-  }
-
-  public PixyPickupCommand(AutoDrive autoDrive, PixyCam pixyCam, PickupStrategy strategy)  {
-    this.pixyCam = pixyCam;
-    this.autoDrive = autoDrive;
-    this.strategy = strategy;
-    setStrategy(strategy);
-    addRequirements(autoDrive);
   }
 
   @Override
@@ -82,17 +74,6 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     Logger.getInstance().recordOutput("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
     Logger.getInstance().recordOutput("PixyPickup/Strafe Output", strafeOutput);
     Logger.getInstance().recordOutput("PixyPickup/Controller Error", strafeController.getPositionError());
-  }
-
-  public void setStrategy(PickupStrategy strategy) {
-    if (this.strategy != strategy) {
-      resetInternalState();
-    }
-    this.strategy = strategy;
-  }
-
-  public void clearStrategy() {
-    setStrategy(null);
   }
 
   private void resetInternalState() {
