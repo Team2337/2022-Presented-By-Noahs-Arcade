@@ -82,9 +82,9 @@ public class Drivetrain extends SubsystemBase {
       getGyroscopeRotation(),
       pose,
       kinematics,
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(1)),
       VecBuilder.fill(Units.degreesToRadians(0.01)),
-      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(5))
+      VecBuilder.fill(0.25, 0.25, Units.degreesToRadians(1))
     );
 
     modules = new FXSwerveModule[] {
