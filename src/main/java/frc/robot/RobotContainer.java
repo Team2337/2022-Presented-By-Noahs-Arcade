@@ -123,7 +123,7 @@ public class RobotContainer {
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
-    PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, pixyCam);
+    PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, intake, pixyCam);
 
     driverX.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
