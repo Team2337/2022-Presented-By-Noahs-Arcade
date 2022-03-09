@@ -12,6 +12,7 @@ import frc.robot.subsystems.Delivery.Direction;
 public class BottomToTopCommand extends CommandBase {
 
   private final Delivery delivery;
+
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
@@ -19,6 +20,7 @@ public class BottomToTopCommand extends CommandBase {
 
   public BottomToTopCommand(Delivery delivery){
     this.delivery = delivery;
+
     addRequirements(delivery);
   }
 

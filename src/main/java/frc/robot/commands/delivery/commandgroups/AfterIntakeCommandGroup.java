@@ -12,10 +12,10 @@ public class AfterIntakeCommandGroup extends SequentialCommandGroup {
   public AfterIntakeCommandGroup(Intake intake, Delivery delivery, Kicker kicker) {
     // Schedule commands
     addCommands(
-      new InstantCommand(delivery::addNewBall),
-      // new InstantCommand(intake::reverse),
+      new InstantCommand(delivery::addNewBall, delivery),
+      // new InstantCommand(intake::reverse, intake),
       new BottomToSideCommand(delivery, kicker)
     );
   }
-  
+
 }
