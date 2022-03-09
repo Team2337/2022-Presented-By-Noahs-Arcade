@@ -26,11 +26,11 @@ public class FirstMove extends SequentialCommandGroup {
   public FirstMove(PolarCoordinate pickupLocation, AutoDrive autoDrive, Drivetrain drivetrain, Heading heading, Intake intake, Shooter shooter) {
     this.drivetrain = drivetrain;
     addCommands(
-      new AutoStartShooter(38.5, shooter),
-      new ParallelCommandGroup(
-        new AutoStartIntake(intake),
+      // new AutoStartShooter(38.5, shooter),
+      // new ParallelCommandGroup(
+        // new AutoStartIntake(intake),
         new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)
-        )
+        // )
     );
   }
 

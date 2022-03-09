@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -75,6 +76,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
+    autonChooser.addOption("Test Backup", new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 

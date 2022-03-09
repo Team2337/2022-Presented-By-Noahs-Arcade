@@ -28,14 +28,15 @@ public class Pos3RightTwoBall extends SequentialCommandGroup {
   public Pos3RightTwoBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     this.drivetrain = drivetrain;
     addCommands(
-      new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
-      new ParallelCommandGroup(
-        new AutoStartDelivery(delivery).withTimeout(1),
-        new AutoKickerCommand(kicker).withTimeout(1)
-      ),
+      // new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading).withTimeout(5),
+      // new ParallelCommandGroup(
+        // new AutoStartDelivery(delivery).withTimeout(1),
+        // new AutoKickerCommand(kicker).withTimeout(1)
+      // ),
       new WaitCommand(3),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
-      new AutoStopAllCommands(delivery, intake, kicker, shooter)
+      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3)
+      // new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }
 }
