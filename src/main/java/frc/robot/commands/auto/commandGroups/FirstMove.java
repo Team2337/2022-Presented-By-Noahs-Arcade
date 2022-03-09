@@ -15,12 +15,16 @@ import frc.robot.subsystems.Shooter;
 
 public class FirstMove extends SequentialCommandGroup {
 
+  private Drivetrain drivetrain;
+  private Shooter shooter;
+  private Intake intake;
   private double forwardP = 2.5;
   private double strafeP = 0.05;
   private double forwardAcceleration = Units.inchesToMeters(90);
   private double strafeAcceleration = 12;
 
   public FirstMove(PolarCoordinate pickupLocation, AutoDrive autoDrive, Drivetrain drivetrain, Heading heading, Intake intake, Shooter shooter) {
+    this.drivetrain = drivetrain;
     addCommands(
       new AutoStartShooter(38.5, shooter),
       new ParallelCommandGroup(
