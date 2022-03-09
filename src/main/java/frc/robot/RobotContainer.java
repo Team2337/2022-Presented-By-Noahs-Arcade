@@ -123,14 +123,11 @@ public class RobotContainer {
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
-    PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, intake, pixyCam);
-
     driverA.whenPressed(heading::enableMaintainHeading);
     driverB.whileHeld(new StartShooter(shooter));
 
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
-    // driverRightBumper.whileHeld(pixyPickupCommand);
 
     driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
@@ -162,19 +159,13 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorRightBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam, PickupStrategy.RED));
-    operatorRightBumper.whenReleased(pixyPickupCommand::clearStrategy);
-
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(autoDrive, pixyCam, PickupStrategy.BLUE));
-    operatorLeftBumper.whenReleased(pixyPickupCommand::clearStrategy);
-
-    operatorRightLeftBumper.whenActive(() -> pixyPickupCommand.setStrategy(PickupStrategy.ANY));
-    operatorRightLeftBumper.whenInactive(pixyPickupCommand::clearStrategy);
+    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
