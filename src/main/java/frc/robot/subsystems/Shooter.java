@@ -33,8 +33,8 @@ public class Shooter extends SubsystemBase {
   private static double kShooterSpeedFeetPerSecondTolerance = 7;
 
   // Top Wheel == Left Motor, Bottom Wheel == Right Motor
-  public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
-  public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
+  public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR, "Upper");
+  public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR, "Upper");
 
   private double targetSpeed = 0.0;
 
@@ -53,8 +53,8 @@ public class Shooter extends SubsystemBase {
     leftMotor.setInverted(TalonFXInvertType.CounterClockwise);
     rightMotor.setInverted(TalonFXInvertType.Clockwise);
 
-    leftMotor.enableVoltageCompensation(true);
-    rightMotor.enableVoltageCompensation(true);
+    // leftMotor.enableVoltageCompensation(true);
+    // rightMotor.enableVoltageCompensation(true);
 
     setupShuffleboard(Constants.DashboardLogging.SHOOTER);
   }
@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
 
     configuration.closedloopRamp = 0.2;
 
-    configuration.voltageCompSaturation = 9;
+    // configuration.voltageCompSaturation = 9;
 
     return motor.configAllSettings(configuration, 250);
   }

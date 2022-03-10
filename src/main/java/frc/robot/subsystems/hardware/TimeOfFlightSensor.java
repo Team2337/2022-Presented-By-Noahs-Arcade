@@ -15,16 +15,16 @@ public class TimeOfFlightSensor extends SubsystemBase {
   private double distanceInches;
 
   public TimeOfFlightSensor() {
-    sensor.setRangingMode(RangingMode.Short, 24);
+    sensor.setRangingMode(RangingMode.Short, 100);
     sensor.setRangeOfInterest(6, 6, 10, 10);
   }
 
   @Override
   public void periodic() {
-    distanceInches = Units.metersToInches((getDistanceMM() / 1000));
+    // distanceInches = Units.metersToInches((getDistanceMM() / 1000));
 
-    SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
-    SmartDashboard.putString("TimeOfFlight/Status", getStatus().toString());
+    // SmartDashboard.putNumber("TimeOfFlight/Distance (in)", getDistanceInches());
+    // SmartDashboard.putString("TimeOfFlight/Status", getStatus().toString());
   }
 
   private Status getStatus() {

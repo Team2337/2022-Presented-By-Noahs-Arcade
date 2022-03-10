@@ -32,6 +32,7 @@ import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -40,15 +41,16 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   // private final PixyCam pixyCam = new PixyCam();
+  //private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
-  // private final Climber climber = new Climber();
-  // private final Intake intake = new Intake();
+  private final Climber climber = new Climber();
+  private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
-  // private final Kicker kicker = new Kicker();
+  private final Kicker kicker = new Kicker();
   private final AutoDrive autoDrive = new AutoDrive();
-  // private final Delivery delivery = new Delivery();
+  private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  // private final Vision vision = new Vision();
+  private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -57,7 +59,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
-    // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     SmartDashboard.putData("Drivetrain", drivetrain);
 
@@ -80,7 +82,7 @@ public class RobotContainer {
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
     */
-    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, drivetrain, heading, shooter));
+    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 
@@ -113,7 +115,7 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(60, 250);
+    pigeon.setYaw(70, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 

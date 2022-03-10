@@ -9,6 +9,7 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.intake.AutoStartIntake;
+import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.shooter.AutoStartShooter;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
@@ -20,18 +21,20 @@ import frc.robot.subsystems.Shooter;
 
 public class BackupTest extends SequentialCommandGroup {
 
-  public BackupTest(AutoDrive autoDrive, Drivetrain drivetrain, Heading heading, Shooter shooter) {
+  public BackupTest(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
       // new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
+      new AutoStartIntake(intake),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(90), 8, autoDrive, heading).withTimeout(5),
+      new WaitCommand(1),
       new AutoStartShooter(38.5, shooter),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading).withTimeout(5),
-      // new ParallelTest(delivery, kicker),
-        // new AutoStartIntake(intake),
-      // new AutoStartDelivery(delivery).withTimeout(1),
-      // new AutoKickerCommand(kicker).withTimeout(1),
-      new WaitCommand(3),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3)
-      // new AutoStopAllCommands(delivery, intake, kicker, shooter)
+      new WaitCommand(1),
+      new ParallelTest(delivery, kicker),
+      new AutoStartDelivery(delivery).withTimeout(1),
+      new WaitCommand(1),
+      new ForwardKickerCommand(kicker).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
+      new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }
 

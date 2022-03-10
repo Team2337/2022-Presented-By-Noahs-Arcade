@@ -37,16 +37,16 @@ public class Delivery extends SubsystemBase {
     }
   }
 
-  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
+  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID, "Upper");
 
   // Color sensors
-  private final PicoColorSensors colorSensors = new PicoColorSensors();
+  // private final PicoColorSensors colorSensors = new PicoColorSensors();
 
   // TOF sensor
-  private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
+  // private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
   // Beam break sensor
-  private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
+  // private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
 
 
   /**
@@ -57,7 +57,7 @@ public class Delivery extends SubsystemBase {
    * <li><code>[2]</code>: Top
    * <li><code>[3]</code>: Left
    */
-  private final BallColor[] storedBalls = new BallColor[4];
+  // private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
   private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 4.5;
@@ -92,12 +92,15 @@ public class Delivery extends SubsystemBase {
       ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors and States", BuiltInLayouts.kList)
         .withSize(6, 8)
         .withPosition(6, 0);
+        /*
       sensorsWidget.addStringArray("Ball positions", () -> new String[]{
         "Bottom: " + String.valueOf(storedBalls[Slot.BOTTOM.value]),
         "Right: "  + String.valueOf(storedBalls[Slot.RIGHT.value]),
         "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
+      */
+      /*
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -110,6 +113,7 @@ public class Delivery extends SubsystemBase {
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
         "Shooter: "   + shooterBeam.get()
       });
+      */
     }
   }
 
@@ -172,7 +176,7 @@ public class Delivery extends SubsystemBase {
    */
   public void addNewBall() {
     balls++;
-    storedBalls[Slot.BOTTOM.value] = BallColor.UNKNOWN;
+    // storedBalls[Slot.BOTTOM.value] = BallColor.UNKNOWN;
   }
 
   /**
@@ -180,45 +184,52 @@ public class Delivery extends SubsystemBase {
    */
   public void removeTopBall() {
     balls--;
-    storedBalls[Slot.TOP.value] = null;
+    // storedBalls[Slot.TOP.value] = null;
   }
 
   /**
    * Rotates the internal state clockwise
    */
   public void rotateArrayClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
    * Rotates the internal state counter-clockwise
    */
   public void rotateArrayCounterClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
+    */
   }
 
   public void resetArray() {
+    /*
     storedBalls[Slot.BOTTOM.value] = null;
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
     storedBalls[Slot.TOP.value] = null;
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
    * @return Which way to turn in BottomToSideCommand
    */
   public Direction getBottomToSideRotation() {
+    /*
     if (storedBalls[Slot.BOTTOM.value] == null) {
       return null;
     }
-
-    return storedBalls[Slot.RIGHT.value] == null ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
+    */
+    return null; // storedBalls[Slot.RIGHT.value] == null ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
   }
 
   /**
@@ -226,6 +237,7 @@ public class Delivery extends SubsystemBase {
    * @return Which way to turn in SideToTopCommand. Returns null if no need to turn or ball is on bottom.
    */
   public Direction getSideToTopDirection(BallColor ballColor) {
+    /*
     if (storedBalls[Slot.LEFT.value] == ballColor) {
       // Ball is on the left, rotate clockwise
       return Direction.CLOCKWISE;
@@ -233,6 +245,7 @@ public class Delivery extends SubsystemBase {
       // Ball is on the right, rotate counter-clockwise
       return Direction.COUNTER_CLOCKWISE;
     }
+    */
     return null;
   }
 
@@ -240,28 +253,28 @@ public class Delivery extends SubsystemBase {
    * @return The color of the bottom slot of the internal state
    */
   public BallColor getBottomPositionColor() {
-    return storedBalls[Slot.BOTTOM.value];
+    return null; // storedBalls[Slot.BOTTOM.value];
   }
 
   /**
    * @return The color of the right slot of the internal state
    */
   public BallColor getRightPositionColor() {
-    return storedBalls[Slot.RIGHT.value];
+    return null; // storedBalls[Slot.RIGHT.value];
   }
 
   /**
    * @return The color of the top slot of the internal state
    */
   public BallColor getTopPositionColor() {
-    return storedBalls[Slot.TOP.value];
+    return null; // storedBalls[Slot.TOP.value];
   }
 
   /**
    * @return The color of the left slot of the internal state
    */
   public BallColor getLeftPositionColor() {
-    return storedBalls[Slot.LEFT.value];
+    return null; // storedBalls[Slot.LEFT.value];
   }
 
   /**
@@ -275,14 +288,15 @@ public class Delivery extends SubsystemBase {
    * @return If there are consistency issues with the balls in the robot (if one is missing)
    */
   public boolean hasIssues() {
+    /*
     int count =
       (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
       (storedBalls[Slot.LEFT.value] != null ? 1 : 0) +
       (storedBalls[Slot.RIGHT.value] != null ? 1 : 0) +
       (storedBalls[Slot.TOP.value] != null ? 1 : 0);
-
+    */
     // If count == balls, return false because there are no issues. Otherwise return true.
-    return count != balls;
+    return false; // count != balls;
   }
 
 
@@ -297,7 +311,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return colorSensors.leftSensorSeesBall();
+    return false; // colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -305,7 +319,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return colorSensors.rightSensorSeesBall();
+    return false; // colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -313,7 +327,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return colorSensors.getLeftSensorBallColor();
+    return null; // colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -321,7 +335,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return colorSensors.getRightSensorBallColor();
+    return null; // colorSensors.getRightSensorBallColor();
   }
 
 
@@ -335,12 +349,12 @@ public class Delivery extends SubsystemBase {
    * @return The reading of the lineup time of flight sensor in inches
    */
   public double getLineupSensorValue() {
-    return lineupSensor.getDistanceInches();
+    return 0; // lineupSensor.getDistanceInches();
   }
 
   public boolean isBallInTopSlot() {
     // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
+    return false; // lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
   }
 
   /**
@@ -348,7 +362,7 @@ public class Delivery extends SubsystemBase {
    * @return Gets whether or not the shooter (output) golf ball sensor sees something
    */
   public boolean getShooterSensorStatus() {
-    return !shooterBeam.get();
+    return false; // !shooterBeam.get();
   }
 
     /**
