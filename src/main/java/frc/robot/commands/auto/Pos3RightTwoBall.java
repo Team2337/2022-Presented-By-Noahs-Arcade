@@ -8,7 +8,7 @@ import frc.robot.Constants;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
-import frc.robot.commands.shooter.AutoKickerCommand;
+import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Drivetrain;
