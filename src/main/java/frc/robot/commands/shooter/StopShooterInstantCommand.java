@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
  *
  * @author Madison J.
  */
-public class AutoStopShooter extends InstantCommand {
+public class StopShooterInstantCommand extends InstantCommand {
 
   private final Shooter shooter;
 
-  public AutoStopShooter(Shooter shooter) {
+  public StopShooterInstantCommand(Shooter shooter) {
     this.shooter = shooter;
 
     addRequirements(shooter);

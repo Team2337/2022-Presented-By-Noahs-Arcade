@@ -9,7 +9,7 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.shooter.AutoStartShooter;
+import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Drivetrain;
@@ -28,11 +28,11 @@ public class ShowcaseTesting extends SequentialCommandGroup {
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 12, autoDrive, heading).withTimeout(3),
         new AutoStartDelivery(delivery).withTimeout(0.75),
-        new AutoStartShooter(39, shooter)
+        new StartShooterInstantCommand(39, shooter)
       ),
       new WaitCommand(1),
       new ForwardKickerCommand(kicker).withTimeout(0.5),
-      new AutoStartShooter(40.7, shooter),
+      new StartShooterInstantCommand(40.7, shooter),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 3.0, 0.05, Units.inchesToMeters(120), 15, autoDrive, heading).withTimeout(1),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(1.5),

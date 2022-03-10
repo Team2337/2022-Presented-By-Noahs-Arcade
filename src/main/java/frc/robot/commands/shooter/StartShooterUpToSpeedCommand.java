@@ -4,16 +4,17 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- *Runs the shooter when a button is held and make sure it stops correctly
+ * Start the shooter at a given speed. Command will finish when the shooter is up
+ * to speed. Command will not stop the shooter.
  *
  * @author Nicholas S.
  */
-public class QuickStartShooterCommand extends CommandBase {
+public class StartShooterUpToSpeedCommand extends CommandBase {
 
   private final double speedFeetPerSecond;
   private final Shooter shooter;
 
-  public QuickStartShooterCommand(double speedFeetPerSecond, Shooter shooter) {
+  public StartShooterUpToSpeedCommand(double speedFeetPerSecond, Shooter shooter) {
     this.speedFeetPerSecond = speedFeetPerSecond;
     this.shooter = shooter;
 
