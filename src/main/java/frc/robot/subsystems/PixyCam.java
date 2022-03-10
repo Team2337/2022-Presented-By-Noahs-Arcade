@@ -1,4 +1,4 @@
-package frc.robot.subsystems.hardware;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

@@ -259,7 +259,7 @@ public final class Constants {
     public static final PolarCoordinate kBallR1RunOver = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Constants.Auto.kBallR1.getTheta()
-    ); 
+    );
     //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
@@ -393,6 +393,8 @@ public final class Constants {
   public static final double INTAKE_REVERSE_SPEED = -0.5;
 
   public static final int SHOOTER_BEAM_ID = 2;
+
+  public static final String UPPER_CANIVORE_ID = "Upper";
 
   public static enum BallColor {
     RED,

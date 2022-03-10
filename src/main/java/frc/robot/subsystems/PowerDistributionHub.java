@@ -1,4 +1,4 @@
-package frc.robot.subsystems.hardware;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;

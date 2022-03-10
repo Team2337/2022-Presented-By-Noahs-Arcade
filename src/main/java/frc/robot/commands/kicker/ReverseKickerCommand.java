@@ -1,4 +1,4 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.kicker;
 
 import frc.robot.subsystems.Kicker;
 
@@ -7,19 +7,19 @@ import frc.robot.subsystems.Kicker;
  * @author Madison J.
  *
  */
-public class AutoKickerReverse extends AutoKickerWaitableCommand {
+public class ReverseKickerCommand extends WaitableKickerCommand {
 
   /**
    * Reverse the kicker motor
    */
-  public AutoKickerReverse(Kicker kicker) {
+  public ReverseKickerCommand(Kicker kicker) {
     this(0, kicker);
   }
 
   /**
    * Reverse the kicker motor after a delay.
    */
-  public AutoKickerReverse(double waitTimeSeconds, Kicker kicker) {
+  public ReverseKickerCommand(double waitTimeSeconds, Kicker kicker) {
     super(kicker::reverse, waitTimeSeconds, kicker);
   }
 

@@ -21,8 +21,14 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
 public class Climber extends SubsystemBase {
 
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
-  private final TalonFX leftMotor = new TalonFX(Constants.CLIMBER_LEFT_MOTOR_ID);
-  private final TalonFX rightMotor = new TalonFX(Constants.CLIMBER_RIGHT_MOTOR_ID);
+  private final TalonFX leftMotor = new TalonFX(
+    Constants.CLIMBER_LEFT_MOTOR_ID,
+    Constants.UPPER_CANIVORE_ID
+  );
+  private final TalonFX rightMotor = new TalonFX(
+    Constants.CLIMBER_RIGHT_MOTOR_ID,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   public Climber() {
     leftMotor.configFactoryDefault();

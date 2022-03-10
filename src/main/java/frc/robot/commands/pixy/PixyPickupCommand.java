@@ -9,9 +9,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
-import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
+import frc.robot.subsystems.Intake;
 
 public class PixyPickupCommand extends CommandBase implements AutoDrivableCommand {
 
@@ -37,22 +38,24 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private static final double MAX_STRAFE_OUTPUT = 0.5;
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
+  private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
+  private final Intake intake;
   private final PixyCam pixyCam;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
-
-  private PickupStrategy strategy;
 
   private Block targetBall;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
 
-  public PixyPickupCommand(AutoDrive autoDrive, PixyCam pixyCam) {
-    this.pixyCam = pixyCam;
+  public PixyPickupCommand(PickupStrategy strategy, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+    this.strategy = strategy;
     this.autoDrive = autoDrive;
+    this.pixyCam = pixyCam;
+    this.intake = intake;
 
-    addRequirements(autoDrive);
+    addRequirements(autoDrive, intake);
   }
 
   @Override
@@ -71,17 +74,6 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     Logger.getInstance().recordOutput("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
     Logger.getInstance().recordOutput("PixyPickup/Strafe Output", strafeOutput);
     Logger.getInstance().recordOutput("PixyPickup/Controller Error", strafeController.getPositionError());
-  }
-
-  public void setStrategy(PickupStrategy strategy) {
-    if (this.strategy != strategy) {
-      resetInternalState();
-    }
-    this.strategy = strategy;
-  }
-
-  public void clearStrategy() {
-    setStrategy(null);
   }
 
   private void resetInternalState() {
@@ -140,6 +132,9 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
       return;
     }
 
+    // The first time we see a ball, we should turn the intake on
+    intake.start();
+
     double frameCenter = pixyCam.getFrameWidth() / 2.0;
     double output = strafeController.calculate(
       (double) targetBall.getX(),
@@ -166,6 +161,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void end(boolean interrupted) {
     autoDrive.clearDelegate();
+    intake.stop();
   }
 
   @Override
