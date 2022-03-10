@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.swerve.configuration.ModuleConfiguration;
@@ -64,6 +66,9 @@ public final class Constants {
     public static final boolean PIXY = false;
     public static final boolean SHOOTER = false;
   }
+
+  // 28x13
+  public static final ShuffleboardTab DRIVER_DASHBOARD = Shuffleboard.getTab("DRIVER DASHBOARD");
 
   public static Constants getInstance() {
     if (instance == null) {

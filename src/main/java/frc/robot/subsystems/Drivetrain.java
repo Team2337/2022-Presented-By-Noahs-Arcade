@@ -128,13 +128,22 @@ public class Drivetrain extends SubsystemBase {
   private void setupShuffleboard(Boolean logEnable) {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
-      ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
+      ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
       chassisSpeedsWidget.addNumber("vy meters per s", () -> chassisSpeeds.vyMetersPerSecond);
       chassisSpeedsWidget.addNumber("omega radians per s", () -> chassisSpeeds.omegaRadiansPerSecond);
     }
-    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
+    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList)
+      .withSize(4, 8)
+      .withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
+
+    // Driver Dashboard
+    Constants.DRIVER_DASHBOARD.addNumber("Gyro Degrees", () -> getGyroscopeRotation().getDegrees())
+      .withSize(3, 3)
+      .withPosition(0, 6);
   }
 
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {

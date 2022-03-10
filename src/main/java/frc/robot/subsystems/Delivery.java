@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -111,6 +113,12 @@ public class Delivery extends SubsystemBase {
         "Shooter: "   + shooterBeam.get()
       });
     }
+    
+    Constants.DRIVER_DASHBOARD.addNumber("Delivery Temp (°F)", () -> getTemperature())
+      .withPosition(10, 3)
+      .withSize(3, 4)
+      .withWidget(BuiltInWidgets.kDial)
+      .withProperties(Map.of("Min", 60, "Max", 158));
   }
 
   @Override
@@ -158,6 +166,13 @@ public class Delivery extends SubsystemBase {
    */
   public void stop() {
     motor.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  /**
+   * @return Gets motor temperature in Fahrenheit
+   */
+  public double getTemperature() {
+    return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
   }
 
 

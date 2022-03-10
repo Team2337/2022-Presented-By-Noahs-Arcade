@@ -1,12 +1,11 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
@@ -43,6 +42,15 @@ public class Intake extends SubsystemBase {
       intakeWidget.addNumber("Speed (%)", this::getSpeed);
       intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
     }
+
+    Constants.DRIVER_DASHBOARD.addBoolean("Intake Sensor", this::getBeamBreakSensorStatus)
+      .withPosition(7, 0)
+      .withSize(3, 3);
+    Constants.DRIVER_DASHBOARD.addNumber("Intake Temp (°F)", () -> getTemperature())
+      .withPosition(7, 3)
+      .withSize(3, 4)
+      .withWidget(BuiltInWidgets.kDial)
+      .withProperties(Map.of("Min", 60, "Max", 158));
   }
 
   @Override

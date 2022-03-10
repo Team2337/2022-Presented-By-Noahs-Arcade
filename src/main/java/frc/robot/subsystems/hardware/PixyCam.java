@@ -3,6 +3,7 @@ package frc.robot.subsystems.hardware;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class PixyCam extends SubsystemBase {
 
   private Block largestRedTarget;
   private Block largestBlueTarget;
+
+  private SuppliedValueWidget<Boolean> seesBallWidget = null;
 
   /**
    * Creates a PixyCam connected on the SPI chipselect 0
@@ -82,7 +85,11 @@ public class PixyCam extends SubsystemBase {
         return largestBlueTarget == null ? "" : String.valueOf(getTargetAngle(largestBlueTarget));
       });
       infoWidget.addNumber("Pixy State", () -> state);
-   }
+    }
+    seesBallWidget = Constants.DRIVER_DASHBOARD.addBoolean("Color Pixy Sees", () -> (largestRedTarget != null || largestBlueTarget != null))
+      .withPosition(10, 0)
+      .withSize(3, 3)
+      .withProperties(Map.of("Color when false", "#000000"));
   }
 
   private void connect() {
@@ -101,6 +108,27 @@ public class PixyCam extends SubsystemBase {
     }
 
     filterTargets(updatePixy());
+
+    // Update seesBallWidget
+    if (seesBallWidget != null) {
+      switch (BallColor.getAllianceColor()) {
+        default:
+        case RED:
+          if (largestRedTarget != null) {
+            seesBallWidget.withProperties(Map.of("Color when true", "#ff3333"));
+          } else if (largestBlueTarget != null) {
+            seesBallWidget.withProperties(Map.of("Color when true", "#3333ff"));
+          }
+          break;
+        case BLUE:
+          if (largestBlueTarget != null) {
+            seesBallWidget.withProperties(Map.of("Color when true", "#3333ff"));
+          } else if (largestRedTarget != null) {
+            seesBallWidget.withProperties(Map.of("Color when true", "#ff3333"));
+          }
+          break;
+      }
+    }
   }
 
   /**
