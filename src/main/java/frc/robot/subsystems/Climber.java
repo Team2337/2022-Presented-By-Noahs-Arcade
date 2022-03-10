@@ -75,6 +75,7 @@ public class Climber extends SubsystemBase {
     configureClimberMotor(leftMotor);
     rightMotor.follow(leftMotor);
 
+    // Zero our motor at start. Start should always be zero for our encoder ticks.
     leftMotor.setSelectedSensorPosition(0);
 
     leftMotor.setNeutralMode(NeutralMode.Brake);
