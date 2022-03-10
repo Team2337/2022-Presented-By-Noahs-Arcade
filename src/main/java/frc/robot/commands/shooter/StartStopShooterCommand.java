@@ -4,15 +4,17 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- *Runs the shooter in reverse and make sure it stops correctly
+ * Runs the shooter at a given speed. Stops the shooter when the command ends.
  *
  * @author Nicholas S.
  */
-public class ReverseShooter extends CommandBase {
+public class StartStopShooterCommand extends CommandBase {
 
+  private final double speedFeetPerSecond;
   private final Shooter shooter;
 
-  public ReverseShooter(Shooter shooter) {
+  public StartStopShooterCommand(double speedFeetPerSecond, Shooter shooter) {
+    this.speedFeetPerSecond = speedFeetPerSecond;
     this.shooter = shooter;
 
     addRequirements(shooter);
@@ -20,17 +22,12 @@ public class ReverseShooter extends CommandBase {
 
   @Override
   public void execute() {
-    shooter.setSpeed(-10);
+    shooter.setSpeed(speedFeetPerSecond);
   }
 
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 
 }

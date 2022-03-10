@@ -25,7 +25,7 @@ import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
-import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
@@ -124,7 +124,7 @@ public class RobotContainer {
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     driverA.whenPressed(heading::enableMaintainHeading);
-    driverB.whileHeld(new StartShooter(shooter));
+    driverB.whileHeld(new StartStopShooterCommand(38.5, shooter));
 
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
@@ -150,7 +150,6 @@ public class RobotContainer {
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
-    operatorStart.whileHeld(new StartShooter(shooter));
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
     operatorRightTrigger.whenPressed(intake::start, intake);
