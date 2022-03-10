@@ -33,8 +33,14 @@ public class Shooter extends SubsystemBase {
   private static double kShooterSpeedFeetPerSecondTolerance = 7;
 
   // Top Wheel == Left Motor, Bottom Wheel == Right Motor
-  public TalonFX leftMotor = new TalonFX(Constants.SHOOTER_LEFT_MOTOR);
-  public TalonFX rightMotor = new TalonFX(Constants.SHOOTER_RIGHT_MOTOR);
+  public TalonFX leftMotor = new TalonFX(
+    Constants.SHOOTER_LEFT_MOTOR,
+    Constants.UPPER_CANIVORE_ID
+  );
+  public TalonFX rightMotor = new TalonFX(
+    Constants.SHOOTER_RIGHT_MOTOR,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   private double targetSpeed = 0.0;
 
