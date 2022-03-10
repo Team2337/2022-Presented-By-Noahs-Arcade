@@ -54,7 +54,7 @@ public final class Constants {
   private static Constants instance;
 
   public static final class DashboardLogging {
-    public static final boolean CLIMBER = false;
+    public static final boolean CLIMBER = true;
     public static final boolean DELIVERY = false;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
@@ -353,6 +353,11 @@ public final class Constants {
   public static final class Vision {
     public static final double IMAGE_PROCESSING_LATENCY_MS = 11;
     public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
+  }
+
+  public static enum ClimberSetpoint {
+    START,
+    RICKABOOT
   }
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;
