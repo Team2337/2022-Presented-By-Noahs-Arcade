@@ -39,16 +39,16 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
+  // private final PixyCam pixyCam = new PixyCam();
 
-  private final Climber climber = new Climber();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final Kicker kicker = new Kicker();
+  // private final Climber climber = new Climber();
+  // private final Intake intake = new Intake();
+  // private final Shooter shooter = new Shooter();
+  // private final Kicker kicker = new Kicker();
   private final AutoDrive autoDrive = new AutoDrive();
-  private final Delivery delivery = new Delivery();
+  // private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
-  private final Vision vision = new Vision();
+  // private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -57,12 +57,15 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
-    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+
+    SmartDashboard.putData("Drivetrain", drivetrain);
 
     // Configure the button bindings
     configureButtonBindings();
 
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
+    /*
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -76,7 +79,8 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
-    autonChooser.addOption("Test Backup", new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 2.5, 0.05, Units.inchesToMeters(90), 12, autoDrive, heading));
+    */
+    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 
@@ -156,6 +160,7 @@ public class RobotContainer {
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
     driverA.whenPressed(heading::enableMaintainHeading);
+    /*
     driverB.whileHeld(new StartShooter(shooter));
 
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
@@ -181,7 +186,7 @@ public class RobotContainer {
     Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
-
+    /*
     operatorStart.whileHeld(new StartShooter(shooter));
     operatorA.whileHeld(new RunKicker(kicker));
 
@@ -201,10 +206,11 @@ public class RobotContainer {
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
-
+    */
     /** Driverstation Controls * */
 
-    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery)); 
+    
   }
 
 
