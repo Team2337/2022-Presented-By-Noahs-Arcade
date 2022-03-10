@@ -130,10 +130,6 @@ public class RobotContainer {
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
-    // NOTE: This is temp, and should not be checked in. Just a test.
-    // driverRightBumper.whenPressed(() -> climber.moveToSetpoint(ClimberSetpoint.RICKABOOT));
-    // driverRightBumper.whenReleased(() -> climber.moveToSetpoint(ClimberSetpoint.START));
-
     driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
@@ -168,6 +164,7 @@ public class RobotContainer {
     // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
 
+    // NOTE: This is temp, and should not be checked in to main
     operatorRightBumper.whenPressed(() -> climber.moveToSetpoint(ClimberSetpoint.RICKABOOT));
     operatorRightBumper.whenReleased(() -> climber.moveToSetpoint(ClimberSetpoint.START));
 

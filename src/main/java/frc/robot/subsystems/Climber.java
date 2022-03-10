@@ -51,21 +51,21 @@ public class Climber extends SubsystemBase {
   private final TalonFX leftMotor = new TalonFX(Constants.CLIMBER_LEFT_MOTOR_ID);
   private final TalonFX rightMotor = new TalonFX(Constants.CLIMBER_RIGHT_MOTOR_ID);
 
+  private boolean hasRobotBeenEnabledFirstTime = false;
+
   // Starting voltage is roughly ~0.33v
   private static final double STRING_POT_UPPER_SOFT_LIMIT = 3.0;
   private static final double STRING_POT_LOWER_SOFT_LIMIT = 0.1;
-  
+
   private Double stringPotStartingVoltage;
-  private double stringPotVoltage;
-  private boolean hasRobotBeenEnabledFirstTime = false;
   private PIDController stringPotPIDController = new PIDController(6.0, 0.0, 0.0);
 
   private static final double ENCODER_UPPER_SOFT_LIMIT = 100000;
   private static final double ENCODER_LOWER_SOFT_LIMIT = 0; // Zero == where the motor boots
-
-  private double motorPosition;
+  private static final double ENCODER_ALLOWABLE_CLOSED_LOOP_ERROR_TICKS = 100;
 
   private ClimberSetpoint setpoint;
+  private ClimberSetpoint currentSetpoint = ClimberSetpoint.START;
 
   public Climber() {
     leftMotor.configFactoryDefault();
@@ -106,8 +106,8 @@ public class Climber extends SubsystemBase {
     configuration.slot0.allowableClosedloopError = 100; // ticks
 
     // Nominal outputs configured to help fight gravity while we're holding a position
-    configuration.nominalOutputForward = 0.1;
-    configuration.nominalOutputReverse = 0.1;
+    // configuration.nominalOutputForward = 0.1;
+    // configuration.nominalOutputReverse = 0.1;
 
     return motor.configAllSettings(configuration, 250);
   }
@@ -120,19 +120,25 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("Speed", this::getSpeed);
       climberWidget.addNumber("Left Temp", this::getLeftMotorTemperatureCelsius);
       climberWidget.addNumber("Right Temp", this::getRightMotorTemperatureCelsius);
+      climberWidget.addString("Current Setpoint", () -> this.currentSetpoint == null ? "N/A" : this.currentSetpoint.toString());
       climberWidget.addNumber("String Pot Voltage (V)", this::getStringPotVoltage);
       climberWidget.addNumber("Left Motor Position (Ticks)", this::getMotorPosition);
       climberWidget.addNumber("Start String Pot Position", () -> stringPotHasStartingVoltage() ? stringPotStartingVoltage : 0.0);
-      climberWidget.addNumber("Controller Error", () -> stringPotPIDController.getPositionError());
+      climberWidget.addNumber("String Pot Controller Error", () -> stringPotPIDController.getPositionError());
+      climberWidget.addNumber("Encoder Controller Target", () -> leftMotor.getClosedLoopTarget());
+      climberWidget.addNumber("Encoder Controller Error", () -> leftMotor.getClosedLoopError());
     }
   }
 
   @Override
   public void periodic() {
-    stringPotVoltage = stringPot.getVoltage();
-    motorPosition = leftMotor.getSelectedSensorPosition();
+    // ALWAYS clear our setpoint when we disable. If we re-enable, we don't want the climber
+    // moving to the last set position.
+    if (DriverStation.isDisabled() && setpoint != null) {
+      setpoint = null;
+    }
 
-    if (!hasRobotBeenEnabledFirstTime && DriverStation.isEnabled()) {
+    if (DriverStation.isEnabled() && !hasRobotBeenEnabledFirstTime) {
       hasRobotBeenEnabledFirstTime = true;
     }
 
@@ -140,7 +146,7 @@ public class Climber extends SubsystemBase {
     // string pot voltage, let's assume we're never going to get one and fallback
     // to using our encoders.
     if (!hasRobotBeenEnabledFirstTime && isStringPotConnected() && !stringPotHasStartingVoltage()) {
-      stringPotStartingVoltage = stringPotVoltage;
+      stringPotStartingVoltage = getStringPotVoltage();
     }
 
     // Attempt to move our climber to it's new setpoint. If the move to setpoint method
@@ -152,6 +158,15 @@ public class Climber extends SubsystemBase {
   }
 
   /** Public API */
+
+  /**
+   * Get the currently held setpoint for the clibmer. If the climber is
+   * moving between setpoints, this will report the previous setpoint.
+   * The new setpoint will be reported once the climber reaches that setpoint.
+   */
+  public ClimberSetpoint getCurrentSetpoint() {
+    return this.currentSetpoint;
+  }
 
   public void moveToSetpoint(ClimberSetpoint setpoint) {
     // Note: Rickaboot and start should be the only automatic position moves available
@@ -176,6 +191,11 @@ public class Climber extends SubsystemBase {
   }
 
   /** Internal API */
+
+  private void setCurrentSetpoint(ClimberSetpoint setpoint) {
+    this.currentSetpoint = setpoint;
+    this.setpoint = null;
+  }
 
   private static boolean withinRange(ClimberPosition position, Predicate<Double> stringPotLimitPredicate, Predicate<Double> encoderLimitPredicate) {
     if (position.sensor == ClimberSensor.STRING_POT) {
@@ -229,12 +249,14 @@ public class Climber extends SubsystemBase {
       );
 
       output = Math.copySign(Math.min(Math.abs(output), MAX_SPEED), output);
-      
+
       SmartDashboard.putNumber("Climber Output", output);
 
       // If we've arrived at our setpoint - clear out the setpoint field so we don't
       // attempt to hold the climber at the setpoint. The brake mode motors do that for us.
       if (stringPotPIDController.atSetpoint()) {
+        // We've arrived! Update our setpoint accordingly.
+        setCurrentSetpoint(setpoint);
         return true;
       }
 
@@ -247,9 +269,17 @@ public class Climber extends SubsystemBase {
         setSpeed(output);
         return false;
       }
+
       // If neither case matches above - we're not safe to move the climber
       return true;
     } else if (setpointPosition.sensor == ClimberSensor.ENCODER) {
+      // Check to see if our error is less than our allowable error. If it is - we've arrived.
+      if (Math.abs(leftMotor.getClosedLoopError()) < ENCODER_ALLOWABLE_CLOSED_LOOP_ERROR_TICKS) {
+        // We've arrived! Update our setpoint accordingly.
+        setCurrentSetpoint(setpoint);
+        return true;
+      }
+
       if (setpointPosition.value > currentPosition.value && belowUpperLimit(currentPosition)) {
         // Only allow moving upward if we're below our upper limit
         setPosition(setpointPosition.value);
@@ -259,6 +289,7 @@ public class Climber extends SubsystemBase {
         setPosition(setpointPosition.value);
         return false;
       }
+
       // If neither case matches above - we're not safe to move the climber
       return true;
     }
@@ -317,14 +348,17 @@ public class Climber extends SubsystemBase {
   }
 
   private void setPosition(double position) {
+    if (leftMotor.getClosedLoopTarget() == position) {
+      return;
+    }
     leftMotor.set(ControlMode.Position, position);
   }
 
   /** String Pot */
 
   private boolean shouldUseStringPot() {
-    return false;
-    // return stringPotHasStartingVoltage() && isStringPotConnected() && areStringPotLimitsSetup();
+    // return false; // For setting the encoder values
+    return stringPotHasStartingVoltage() && isStringPotConnected() && areStringPotLimitsSetup();
   }
 
   private boolean stringPotHasStartingVoltage() {
@@ -332,7 +366,7 @@ public class Climber extends SubsystemBase {
   }
 
   private double getStringPotVoltage() {
-    return stringPotVoltage;
+    return stringPot.getVoltage();
   }
 
   private boolean isStringPotConnected() {
@@ -344,23 +378,23 @@ public class Climber extends SubsystemBase {
   }
 
   private Double getStringPotLowerLimit() {
-    // If our string pot is not connected - we have no lower limit
     if (!isStringPotConnected()) {
       return null;
     }
-    // stringPotStartingVoltage may still be null - so either null or value
-    // TODO: Fix this to work like the maximum value I suppose?
+    // If our starting voltage is below our lower limit, our lower
+    // limit is going to be our starting voltage.
+    if (stringPotHasStartingVoltage() && stringPotStartingVoltage < STRING_POT_LOWER_SOFT_LIMIT) {
+      return stringPotStartingVoltage;
+    }
     return STRING_POT_LOWER_SOFT_LIMIT;
   }
 
   private Double getStringPotUpperLimit() {
-    // If our starting voltage is above our upper limit, our upper
-    // limit is going to be our starting voltage.
-    // In the case that the upper and lower limit are the starting
-    // voltages, the climber should not move.
     if (!isStringPotConnected()) {
       return null;
     }
+    // If our starting voltage is above our upper limit, our upper
+    // limit is going to be our starting voltage.
     if (stringPotHasStartingVoltage() && stringPotStartingVoltage > STRING_POT_UPPER_SOFT_LIMIT) {
       return stringPotStartingVoltage;
     }
@@ -370,7 +404,7 @@ public class Climber extends SubsystemBase {
   /** Motor Encoders */
 
   private double getMotorPosition() {
-    return motorPosition;
+    return leftMotor.getSelectedSensorPosition();
   }
 
   /** System Shuffleboard */
