@@ -43,7 +43,7 @@ public class RobotContainer {
 
   // private final Climber climber = new Climber();
   // private final Intake intake = new Intake();
-  // private final Shooter shooter = new Shooter();
+  private final Shooter shooter = new Shooter();
   // private final Kicker kicker = new Kicker();
   private final AutoDrive autoDrive = new AutoDrive();
   // private final Delivery delivery = new Delivery();
@@ -80,7 +80,7 @@ public class RobotContainer {
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
     */
-    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, drivetrain, heading));
+    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, drivetrain, heading, shooter));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 

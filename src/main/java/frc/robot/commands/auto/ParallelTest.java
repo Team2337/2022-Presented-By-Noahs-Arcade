@@ -9,7 +9,7 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.intake.AutoStartIntake;
-import frc.robot.commands.shooter.AutoKickerCommand;
+import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.shooter.AutoStartShooter;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
@@ -27,7 +27,7 @@ public class ParallelTest extends ParallelCommandGroup {
   public ParallelTest(Delivery delivery, Kicker kicker) {
     addCommands(
       new AutoStartDelivery(delivery).withTimeout(1),
-      new AutoKickerCommand(kicker).withTimeout(1)
+      new ForwardKickerCommand(kicker).withTimeout(1)
     );
   }
 }
