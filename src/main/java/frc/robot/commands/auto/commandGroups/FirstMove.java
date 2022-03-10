@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.ProfiledPointToPointCommand;
 import frc.robot.commands.intake.AutoStartIntake;
-import frc.robot.commands.shooter.AutoStartShooter;
+import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
@@ -22,7 +22,7 @@ public class FirstMove extends SequentialCommandGroup {
 
   public FirstMove(PolarCoordinate pickupLocation, AutoDrive autoDrive, Drivetrain drivetrain, Heading heading, Intake intake, Shooter shooter) {
     addCommands(
-      new AutoStartShooter(38.5, shooter),
+      new StartShooterInstantCommand(38.5, shooter),
       new ParallelCommandGroup(
         new AutoStartIntake(intake),
         new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)

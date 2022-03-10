@@ -20,22 +20,21 @@ import frc.robot.Constants.BallColor;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
+import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
-import frc.robot.commands.delivery.commandgroups.*;
+import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
-import frc.robot.commands.shooter.RunKicker;
-import frc.robot.commands.shooter.StartShooter;
+import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.hardware.PixyCam;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -138,14 +137,11 @@ public class RobotContainer {
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
     JoystickButton driverStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
-    PixyPickupCommand pixyPickupCommand = new PixyPickupCommand(autoDrive, pixyCam);
-
-    driverX.whenPressed(heading::enableMaintainHeading);
-    driverB.whileHeld(new StartShooter(shooter));
+    driverA.whenPressed(heading::enableMaintainHeading);
+    driverB.whileHeld(new StartStopShooterCommand(38.5, shooter));
 
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
-    driverRightBumper.whileHeld(pixyPickupCommand);
 
     driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
@@ -153,43 +149,39 @@ public class RobotContainer {
     driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    driverStart.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
+    driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
-    Trigger operatorRightLeftTrigger = operatorRightTrigger.and(operatorLeftTrigger);
+    Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+    JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
-    operatorA.whileHeld(new StartShooter(shooter));
-    operatorB.whileHeld(new RunKicker(kicker));
+    operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
-    operatorRightBumper.whenPressed(intake::start, intake);
-    operatorRightBumper.whenReleased(intake::stop, intake);
+    operatorRightTrigger.whenPressed(intake::start, intake);
+    operatorRightTrigger.whenReleased(intake::stop, intake);
 
-    operatorLeftBumper.whenPressed(intake::reverse, intake);
-    operatorLeftBumper.whenReleased(intake::stop, intake);
+    operatorLeftTrigger.whenPressed(intake::reverse, intake);
+    operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorRightTrigger.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.RED));
-    operatorRightTrigger.whenReleased(pixyPickupCommand::clearStrategy);
-
-    operatorLeftTrigger.whenPressed(() -> pixyPickupCommand.setStrategy(PickupStrategy.BLUE));
-    operatorLeftTrigger.whenReleased(pixyPickupCommand::clearStrategy);
-
-    operatorRightLeftTrigger.whenActive(() -> pixyPickupCommand.setStrategy(PickupStrategy.ANY));
-    operatorRightLeftTrigger.whenInactive(pixyPickupCommand::clearStrategy);
+    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
-    // operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new AfterIntakeCommandGroup(intake, delivery, kicker));
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
 
     /** Driverstation Controls * */
 

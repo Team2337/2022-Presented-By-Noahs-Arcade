@@ -8,23 +8,25 @@ import frc.robot.subsystems.Delivery.Direction;
 
 /**
  * Moves a ball from delivery into the shooter and resets its position in delivery.
- * 
+ *
  * @author Nicholas S, Michael F
  */
 public class SideToTopCommand extends CommandBase {
 
+  private final BallColor ballColor;
   private final Delivery delivery;
   private final Kicker kicker;
+
   private Direction direction;
-  private BallColor ballColor;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
-  
-  public SideToTopCommand(Delivery delivery, Kicker kicker, BallColor ballColor){
+
+  public SideToTopCommand(BallColor ballColor, Delivery delivery, Kicker kicker){
+    this.ballColor = ballColor;
     this.delivery = delivery;
     this.kicker = kicker;
-    this.ballColor = ballColor;
+
     addRequirements(delivery, kicker);
   }
 

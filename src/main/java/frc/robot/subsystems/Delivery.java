@@ -39,7 +39,10 @@ public class Delivery extends SubsystemBase {
     }
   }
 
-  private final TalonFX motor = new TalonFX(Constants.DELIVERY_MOTOR_ID);
+  private final TalonFX motor = new TalonFX(
+    Constants.DELIVERY_MOTOR_ID,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   // Color sensors
   private final PicoColorSensors colorSensors = new PicoColorSensors();
@@ -62,7 +65,7 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
-  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 3.8;
+  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 4.5;
 
 
   /**

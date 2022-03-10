@@ -11,7 +11,10 @@ import frc.robot.RobotType.Type;
 
 public class Kicker extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(Constants.KICKER_MOTOR);
+  private TalonFX motor = new TalonFX(
+    Constants.KICKER_MOTOR,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   public Kicker() {
     motor.configFactoryDefault();

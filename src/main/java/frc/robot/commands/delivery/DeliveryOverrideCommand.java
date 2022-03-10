@@ -20,7 +20,7 @@ public class DeliveryOverrideCommand extends CommandBase {
   @Override
   public void execute() {
     // Doesn't run motor unless axis is pushed psat threshold to prevent drifting
-    delivery.setSpeed(Delivery.Direction.CLOCKWISE, Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() * Constants.DELIVERY_SPEED : 0);
+    delivery.setSpeed(Delivery.Direction.CLOCKWISE, Math.abs(controller.getLeftX()) > 0.1 ? -controller.getLeftX() * Constants.DELIVERY_SPEED : 0);
   }
 
   @Override

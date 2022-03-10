@@ -21,7 +21,7 @@ public class SwerveDriveCommand extends CommandBase {
   private final Drivetrain drivetrain;
 
   // Smooth our our joystick values
-  private static double kSlewRateOfChangePerSecond = 1.2;
+  private static double kSlewRateOfChangePerSecond = 1.75;
   SlewRateLimiter forwardSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
   SlewRateLimiter strafeSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
   SlewRateLimiter rotationSlew = new SlewRateLimiter(kSlewRateOfChangePerSecond);
@@ -59,7 +59,7 @@ public class SwerveDriveCommand extends CommandBase {
       strafe = strafeSlew.calculate(strafe);
       rotation = rotationSlew.calculate(rotation);
     }
-
+    
     // If a driver-initiated rotation is provided, disable our rotation
     // controller to let the driver rotate freely.
     // Never allow this flow in autonomous (protect against floating joystick

@@ -18,7 +18,10 @@ import frc.robot.nerdyfiles.utilities.Utilities;
  */
 public class Intake extends SubsystemBase {
 
-  private final TalonFX motor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+  private final TalonFX motor = new TalonFX(
+    Constants.INTAKE_MOTOR_ID,
+    Constants.UPPER_CANIVORE_ID
+  );
 
   // Beam break sensor
   private final DigitalInput intakeBeam = new DigitalInput(Constants.getInstance().INTAKE_BEAM_ID);
