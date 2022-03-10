@@ -116,12 +116,6 @@ public class Delivery extends SubsystemBase {
         "Shooter: "   + shooterBeam.get()
       });
     }
-    
-    Constants.DRIVER_DASHBOARD.addNumber("Delivery Temp (°F)", () -> getTemperature())
-      .withPosition(10, 3)
-      .withSize(3, 4)
-      .withWidget(BuiltInWidgets.kDial)
-      .withProperties(Map.of("Min", 60, "Max", 158));
   }
 
   @Override

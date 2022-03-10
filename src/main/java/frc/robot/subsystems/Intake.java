@@ -49,11 +49,6 @@ public class Intake extends SubsystemBase {
     Constants.DRIVER_DASHBOARD.addBoolean("Intake Sensor", this::getBeamBreakSensorStatus)
       .withPosition(7, 0)
       .withSize(3, 3);
-    Constants.DRIVER_DASHBOARD.addNumber("Intake Temp (°F)", () -> getTemperature())
-      .withPosition(7, 3)
-      .withSize(3, 4)
-      .withWidget(BuiltInWidgets.kDial)
-      .withProperties(Map.of("Min", 60, "Max", 158));
   }
 
   @Override

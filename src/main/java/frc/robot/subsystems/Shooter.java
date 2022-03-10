@@ -102,17 +102,6 @@ public class Shooter extends SubsystemBase {
       speeds.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
       speeds.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
     }
-    
-    Constants.DRIVER_DASHBOARD.addNumber("L Shooter Temp (°F)", () -> Utilities.convertCelsiusToFahrenheit(leftMotor.getTemperature()))
-      .withPosition(7, 7)
-      .withSize(3, 4)
-      .withWidget(BuiltInWidgets.kDial)
-      .withProperties(Map.of("Min", 60, "Max", 158));
-    Constants.DRIVER_DASHBOARD.addNumber("R Shooter Temp (°F)", () -> Utilities.convertCelsiusToFahrenheit(rightMotor.getTemperature()))
-      .withPosition(10, 7)
-      .withSize(3, 4)
-      .withWidget(BuiltInWidgets.kDial)
-      .withProperties(Map.of("Min", 60, "Max", 158));
   }
 
   @Override
