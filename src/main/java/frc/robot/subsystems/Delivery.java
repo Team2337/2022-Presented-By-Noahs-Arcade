@@ -119,10 +119,10 @@ public class Delivery extends SubsystemBase {
     // Systems check
     ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
-    systemsCheck.addBoolean("Left Color Sensor", () -> (leftSensor == null ? false : leftSensor.isConnected()))
+    systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
       .withSize(2, 2)
       .withPosition(SystemsCheckPositions.LEFT_COLOR_SENSOR.x, SystemsCheckPositions.LEFT_COLOR_SENSOR.y);
-    systemsCheck.addBoolean("Right Color Sensor", () -> (rightSensor == null ? false : leftSensor.isConnected()))
+    systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
       .withSize(2, 2)
       .withPosition(SystemsCheckPositions.RIGHT_COLOR_SENSOR.x, SystemsCheckPositions.RIGHT_COLOR_SENSOR.y);
     systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
