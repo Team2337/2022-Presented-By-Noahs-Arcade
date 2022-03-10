@@ -131,8 +131,8 @@ public class RobotContainer {
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
     // NOTE: This is temp, and should not be checked in. Just a test.
-    driverRightBumper.whenPressed(() -> climber.moveToSetpoint(ClimberSetpoint.RICKABOOT));
-    driverRightBumper.whenReleased(() -> climber.moveToSetpoint(ClimberSetpoint.START));
+    // driverRightBumper.whenPressed(() -> climber.moveToSetpoint(ClimberSetpoint.RICKABOOT));
+    // driverRightBumper.whenReleased(() -> climber.moveToSetpoint(ClimberSetpoint.START));
 
     driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
@@ -164,9 +164,12 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
-    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+    // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+
+    operatorRightBumper.whenPressed(() -> climber.moveToSetpoint(ClimberSetpoint.RICKABOOT));
+    operatorRightBumper.whenReleased(() -> climber.moveToSetpoint(ClimberSetpoint.START));
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 

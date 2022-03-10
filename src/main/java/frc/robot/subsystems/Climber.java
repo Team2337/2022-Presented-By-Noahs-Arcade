@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberSetpoint;
@@ -27,8 +28,7 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
  */
 public class Climber extends SubsystemBase {
 
-  // private static final double MAX_SPEED = 0.70;
-  private static final double MAX_SPEED = 0.10;
+  private static final double MAX_SPEED = 1.0;
 
   private enum ClimberSensor {
     STRING_POT,
@@ -51,15 +51,18 @@ public class Climber extends SubsystemBase {
   private final TalonFX leftMotor = new TalonFX(Constants.CLIMBER_LEFT_MOTOR_ID);
   private final TalonFX rightMotor = new TalonFX(Constants.CLIMBER_RIGHT_MOTOR_ID);
 
+  // Starting voltage is roughly ~0.33v
   private static final double STRING_POT_UPPER_SOFT_LIMIT = 3.0;
+  private static final double STRING_POT_LOWER_SOFT_LIMIT = 0.1;
+  
   private Double stringPotStartingVoltage;
   private double stringPotVoltage;
   private boolean hasRobotBeenEnabledFirstTime = false;
-  private PIDController stringPotPIDController = new PIDController(0.1, 0.0, 0.0);
+  private PIDController stringPotPIDController = new PIDController(6.0, 0.0, 0.0);
 
-  private static final double ENCODER_UPPER_SOFT_LIMIT = 3000;
+  private static final double ENCODER_UPPER_SOFT_LIMIT = 100000;
   private static final double ENCODER_LOWER_SOFT_LIMIT = 0; // Zero == where the motor boots
-  // TODO: We need an "even lower limit" for when we're doing our pullup
+
   private double motorPosition;
 
   private ClimberSetpoint setpoint;
@@ -72,11 +75,15 @@ public class Climber extends SubsystemBase {
     configureClimberMotor(leftMotor);
     rightMotor.follow(leftMotor);
 
+    leftMotor.setSelectedSensorPosition(0);
+
     leftMotor.setNeutralMode(NeutralMode.Brake);
     rightMotor.setNeutralMode(NeutralMode.Brake);
 
     leftMotor.setInverted(TalonFXInvertType.Clockwise);
     rightMotor.setInverted(TalonFXInvertType.OpposeMaster);
+
+    stringPotPIDController.setTolerance(0.01);
 
     setupShuffleboard(Constants.DashboardLogging.CLIMBER);
   }
@@ -93,6 +100,7 @@ public class Climber extends SubsystemBase {
     configuration.slot0.kP = 0.15;
     configuration.slot0.kI = 0.0;
     configuration.slot0.kD = 0.1;
+
     // Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
     configuration.slot0.allowableClosedloopError = 100; // ticks
@@ -114,6 +122,8 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("Right Temp", this::getRightMotorTemperatureCelsius);
       climberWidget.addNumber("String Pot Voltage (V)", this::getStringPotVoltage);
       climberWidget.addNumber("Left Motor Position (Ticks)", this::getMotorPosition);
+      climberWidget.addNumber("Start String Pot Position", () -> stringPotHasStartingVoltage() ? stringPotStartingVoltage : 0.0);
+      climberWidget.addNumber("Controller Error", () -> stringPotPIDController.getPositionError());
     }
   }
 
@@ -129,7 +139,7 @@ public class Climber extends SubsystemBase {
     // If we've enabled the robot for the first time and we do not have a starting
     // string pot voltage, let's assume we're never going to get one and fallback
     // to using our encoders.
-    if (!hasRobotBeenEnabledFirstTime && isStringPotConnected() && stringPotStartingVoltage == null) {
+    if (!hasRobotBeenEnabledFirstTime && isStringPotConnected() && !stringPotHasStartingVoltage()) {
       stringPotStartingVoltage = stringPotVoltage;
     }
 
@@ -217,6 +227,11 @@ public class Climber extends SubsystemBase {
         currentPosition.value,
         setpointPosition.value
       );
+
+      output = Math.copySign(Math.min(Math.abs(output), MAX_SPEED), output);
+      
+      SmartDashboard.putNumber("Climber Output", output);
+
       // If we've arrived at our setpoint - clear out the setpoint field so we don't
       // attempt to hold the climber at the setpoint. The brake mode motors do that for us.
       if (stringPotPIDController.atSetpoint()) {
@@ -259,9 +274,9 @@ public class Climber extends SubsystemBase {
             stringPotStartingVoltage,
             ClimberSensor.STRING_POT
           );
-        case RICKABOOT:  // TODO: Figure out Rickaboot string pot voltage
+        case RICKABOOT:
           return new ClimberPosition(
-            stringPotStartingVoltage,
+            1.65,
             ClimberSensor.STRING_POT
           );
       }
@@ -272,9 +287,9 @@ public class Climber extends SubsystemBase {
             0.0,
             ClimberSensor.ENCODER
           );
-        case RICKABOOT:  // TODO: Figure out Rickaboot encoder value
+        case RICKABOOT:
           return new ClimberPosition(
-            0.0,
+            148500, // TODO: This needs to be fixed...
             ClimberSensor.ENCODER
           );
       }
@@ -298,8 +313,7 @@ public class Climber extends SubsystemBase {
 
   // TODO: Make private - provide some other method here to move via joystick control
   public void setSpeed(double speed) {
-    double cappedSpeed = Math.copySign(Math.min(Math.abs(speed), MAX_SPEED), speed);
-    leftMotor.set(ControlMode.PercentOutput, cappedSpeed);
+    leftMotor.set(ControlMode.PercentOutput, speed);
   }
 
   private void setPosition(double position) {
@@ -309,7 +323,12 @@ public class Climber extends SubsystemBase {
   /** String Pot */
 
   private boolean shouldUseStringPot() {
-    return isStringPotConnected() && areStringPotLimitsSetup();
+    return false;
+    // return stringPotHasStartingVoltage() && isStringPotConnected() && areStringPotLimitsSetup();
+  }
+
+  private boolean stringPotHasStartingVoltage() {
+    return stringPotStartingVoltage != null;
   }
 
   private double getStringPotVoltage() {
@@ -330,7 +349,8 @@ public class Climber extends SubsystemBase {
       return null;
     }
     // stringPotStartingVoltage may still be null - so either null or value
-    return stringPotStartingVoltage;
+    // TODO: Fix this to work like the maximum value I suppose?
+    return STRING_POT_LOWER_SOFT_LIMIT;
   }
 
   private Double getStringPotUpperLimit() {
@@ -341,7 +361,7 @@ public class Climber extends SubsystemBase {
     if (!isStringPotConnected()) {
       return null;
     }
-    if (stringPotStartingVoltage != null && stringPotStartingVoltage > STRING_POT_UPPER_SOFT_LIMIT) {
+    if (stringPotHasStartingVoltage() && stringPotStartingVoltage > STRING_POT_UPPER_SOFT_LIMIT) {
       return stringPotStartingVoltage;
     }
     return STRING_POT_UPPER_SOFT_LIMIT;
