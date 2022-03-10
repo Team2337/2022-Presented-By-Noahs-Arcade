@@ -75,9 +75,6 @@ public class RobotContainer {
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
 
-
-
-
     SmartDashboard.putData("AutonChooser", autonChooser);
   }
 
