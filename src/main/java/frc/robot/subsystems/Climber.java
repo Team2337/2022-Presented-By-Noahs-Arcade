@@ -103,7 +103,7 @@ public class Climber extends SubsystemBase {
 
     // Motor turns 16 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
-    configuration.slot0.allowableClosedloopError = 100; // ticks
+    configuration.slot0.allowableClosedloopError = ENCODER_ALLOWABLE_CLOSED_LOOP_ERROR_TICKS; // ticks
 
     // Nominal outputs configured to help fight gravity while we're holding a position
     // configuration.nominalOutputForward = 0.1;
