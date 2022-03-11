@@ -2,11 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -97,6 +97,27 @@ public class Heading extends SubsystemBase {
     if (pCurrent != pDesired) {
       rotationController.setP(pDesired);
     }
+
+    log();
+  }
+
+  private void log() {
+    SmartDashboard.putNumber("Heading/kP", rotationController.getP());
+    SmartDashboard.putBoolean("Heading/Is Moving", drivetrainIsMovingSupplier.get());
+
+    if (maintainHeading != null) {
+      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
+    } else {
+      SmartDashboard.putString("Heading/Maintain Heading (Degrees)", "null");
+    }
+    if (nextHeading != null) {
+      SmartDashboard.putString("Heading/Next Heading (Degrees)", String.valueOf(nextHeading.getDegrees()));
+    } else {
+      SmartDashboard.putString("Heading/Next Heading (Degrees)", "null");
+    }
+    SmartDashboard.putNumber("Heading/Rotation Controller Error", rotationController.getPositionError());
+    SmartDashboard.putBoolean("Heading/Enabled", enabled);
+    SmartDashboard.putBoolean("Heading/At Maintain Heading", atMaintainHeading());
   }
 
   public void enableMaintainHeading() {
@@ -196,11 +217,13 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
+      SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
+      SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
 
@@ -211,6 +234,7 @@ public class Heading extends SubsystemBase {
     );
     // If our controller is within our tolerance - do not provide a nominal output
     if (rotationController.atSetpoint()) {
+      SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
     // Clamp to some max speed (should be between [0.0, 1.0])
@@ -227,6 +251,7 @@ public class Heading extends SubsystemBase {
       ),
       clampedOutput
     );
+    SmartDashboard.putNumber("Heading/Rotation Controller Output", nominalClampedOutput);
     return nominalClampedOutput;
   }
 

@@ -3,12 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-/*
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.LogSocketServer;
-*/
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +28,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Logger logger = Logger.getInstance();
+    LiveWindow.disableAllTelemetry();
+
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
+    m_robotContainer = new RobotContainer();
+
+    m_robotContainer.resetRobot();
+
+    SmartDashboard.putData(CommandScheduler.getInstance());
+  }
+
+  /*
+  private void setupLogger() {
+    Logger logger = Logger.getInstance();
 
     // Run as fast as possible during replay
     // setUseTiming(isReal());
@@ -48,19 +56,11 @@ public class Robot extends TimedRobot {
     // Provide log data over the network, viewable in Advantage Scope.
     logger.addDataReceiver(new LogSocketServer(5800));
 
-    // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    // Start logging! No more data receivers, replay sources, or metadata values may
+    // be added.
     logger.start();
-    */
-    LiveWindow.disableAllTelemetry();
-
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    
-    m_robotContainer.resetRobot();
-
-    SmartDashboard.putData(CommandScheduler.getInstance());
   }
+  */
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like

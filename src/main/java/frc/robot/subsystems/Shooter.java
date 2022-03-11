@@ -7,8 +7,8 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
@@ -105,7 +105,7 @@ public class Shooter extends SubsystemBase {
 
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
-      
+
       systemsCheck.addNumber("L Shooter Temp (°C)", () -> leftMotor.getTemperature())
         .withPosition(SystemsCheckPositions.L_SHOOTER_TEMP.x, SystemsCheckPositions.L_SHOOTER_TEMP.y)
         .withSize(3, 4)
@@ -129,7 +129,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void log() {
-
+    SmartDashboard.putNumber("Shooter/Speed", getMotorWheelSpeed(leftMotor));
+    SmartDashboard.putNumber("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
   // ** Public API **
