@@ -16,7 +16,7 @@ public class StartShooterUpToSpeedDistanceCommand extends ConditionalCommand {
 
   // Set the shooter speed to the low goal speed if we're
   // kLowGoalThresholdInches or less from the goal
-  private static final double kLowGoalThresholdInches = 12;
+  private static final double kLowGoalThresholdInches = 72;
   private static final double kLowGoalSpeedFeetPerSecond = 19.25;
   private static final double kHighGoalSpeedFeetPerSecond = 38.5;
 
