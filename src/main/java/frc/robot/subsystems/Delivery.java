@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.hardware.PicoColorSensors;
@@ -114,6 +117,27 @@ public class Delivery extends SubsystemBase {
         "Shooter: "   + shooterBeam.get()
       });
     }
+
+    // Systems check
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+
+      systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
+        .withPosition(SystemsCheckPositions.L_COLOR_SENSOR.x, SystemsCheckPositions.L_COLOR_SENSOR.y)
+        .withSize(3, 3);
+      systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
+        .withPosition(SystemsCheckPositions.R_COLOR_SENSOR.x, SystemsCheckPositions.R_COLOR_SENSOR.y)
+        .withSize(3, 3);
+      systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
+        .withPosition(SystemsCheckPositions.TOF_SENSOR.x, SystemsCheckPositions.TOF_SENSOR.y)
+        .withSize(3, 3);
+
+      systemsCheck.addNumber("Delivery Temp (°C)", () -> getTemperature())
+        .withPosition(SystemsCheckPositions.DELIVERY_TEMP.x, SystemsCheckPositions.DELIVERY_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
+    }
   }
 
   @Override
@@ -154,6 +178,10 @@ public class Delivery extends SubsystemBase {
         motor.set(ControlMode.PercentOutput, -speed);
         break;
     }
+  }
+
+  public double getTemperature() {
+    return motor.getTemperature();
   }
 
   /**
