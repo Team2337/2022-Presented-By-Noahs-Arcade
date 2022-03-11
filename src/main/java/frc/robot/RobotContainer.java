@@ -64,6 +64,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // Create auton selector
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -79,16 +80,14 @@ public class RobotContainer {
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
 
-    // Put it on SmartDashboard
     SmartDashboard.putData("AutonChooser", autonChooser);
     
-    // Also put it on driver dashboard
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser)
       .withSize(6, 3)
       .withPosition(0, 0);
     
-    // Put some more things on driver dashboard
+    // Put alliance on driver dashboard
     Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
       .withPosition(3, 6)
       .withSize(3, 3)

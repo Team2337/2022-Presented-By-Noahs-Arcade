@@ -55,7 +55,7 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
 public class AutoDrive extends SubsystemBase {
 
   public AutoDrive() {
-    Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", () -> SmartDashboard.getString("AutoDrive/Command", ""))
+    Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", this::getAutoDriveCommand)
       .withPosition(0, 3)
       .withSize(6, 3);
   }
@@ -111,6 +111,10 @@ public class AutoDrive extends SubsystemBase {
       return null;
     }
     return command.calculate(forward, strafe, isFieldOriented);
+  }
+
+  public String getAutoDriveCommand() {
+    return SmartDashboard.getString("AutoDrive/Command", "");
   }
 
   @Override

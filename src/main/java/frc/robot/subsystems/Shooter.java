@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
-
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;

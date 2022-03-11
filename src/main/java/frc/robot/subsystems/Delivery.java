@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -163,13 +161,6 @@ public class Delivery extends SubsystemBase {
    */
   public void stop() {
     motor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  /**
-   * @return Gets motor temperature in Fahrenheit
-   */
-  public double getTemperature() {
-    return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
   }
 
 
