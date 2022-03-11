@@ -51,6 +51,7 @@ public final class Constants {
   public final double LIMELIGHT_CAMERA_HEIGHT_METERS;
   public final Rotation2d LIMEILGHT_CAMERA_ANGLE;
 
+  public final int CENTERING_BEAM_ID;
   public final int INTAKE_BEAM_ID;
 
   private static Constants instance;
@@ -77,7 +78,7 @@ public final class Constants {
     // Delivery Sensors (3x3 widgets)
     L_COLOR_SENSOR(7, 0),
     R_COLOR_SENSOR(10, 0),
-    TOF_SENSOR(13, 0),
+    CENTERING_SENSOR(13, 0),
     // Other sensors (also 3x3 widgets)
     STRING_POT(7, 3),
     PIXY_CAM(10, 3),
@@ -129,9 +130,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
         DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
-
+        
+        CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 0;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
         break;
@@ -159,9 +161,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
-
+        
+        CENTERING_BEAM_ID = 1;
         INTAKE_BEAM_ID = 0;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(30.91193711));
         break;
@@ -192,8 +195,9 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
+        CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 9;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(38.1));
         break;
