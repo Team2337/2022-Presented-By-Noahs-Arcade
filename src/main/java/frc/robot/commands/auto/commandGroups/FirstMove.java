@@ -15,10 +15,10 @@ import frc.robot.subsystems.Shooter;
 
 public class FirstMove extends SequentialCommandGroup {
 
-  private double forwardP = 2.5;
-  private double strafeP = 0.05;
-  private double forwardAcceleration = Units.inchesToMeters(90);
-  private double strafeAcceleration = 12;
+  private double forwardP = 1.5;
+  private double strafeP = 0.025;
+  private double forwardAcceleration = Units.inchesToMeters(45);
+  private double strafeAcceleration = 6;
 
   public FirstMove(PolarCoordinate pickupLocation, AutoDrive autoDrive, Drivetrain drivetrain, Heading heading, Intake intake, Shooter shooter) {
     addCommands(

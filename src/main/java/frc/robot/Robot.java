@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     
     m_robotContainer.resetRobot();
+
+    SmartDashboard.putData(CommandScheduler.getInstance());
   }
 
   /**

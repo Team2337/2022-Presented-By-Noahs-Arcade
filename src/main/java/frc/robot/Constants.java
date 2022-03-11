@@ -404,6 +404,7 @@ public final class Constants {
   public static final double INTAKE_REVERSE_SPEED = -0.5;
 
   public static final int SHOOTER_BEAM_ID = 2;
+  public static final int CENTERING_BEAM_ID = 8;
 
   public static final String UPPER_CANIVORE_ID = "Upper";
 

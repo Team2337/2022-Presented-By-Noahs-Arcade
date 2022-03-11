@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -87,6 +88,10 @@ public class Heading extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (DriverStation.isAutonomous()) {
+      P_MOVING = 0.005;
+      P_STATIONARY = 0.005;
+    }
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
     if (pCurrent != pDesired) {

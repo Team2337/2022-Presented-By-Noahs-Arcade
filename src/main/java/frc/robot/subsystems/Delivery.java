@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
@@ -53,6 +54,8 @@ public class Delivery extends SubsystemBase {
 
   // Beam break sensor
   // private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
+
+  private final DigitalInput ballCenteringSensor = new DigitalInput(Constants.CENTERING_BEAM_ID);
 
 
   /**
@@ -143,7 +146,9 @@ public class Delivery extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putBoolean("Shooter Sensor Status", !ballCenteringSensor.get());
+  }
 
 
   ///////////////////////////
@@ -373,7 +378,7 @@ public class Delivery extends SubsystemBase {
 
   public boolean isBallInTopSlot() {
     // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return false; // lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
+    return getShooterSensorStatus();
   }
 
   /**
@@ -381,7 +386,7 @@ public class Delivery extends SubsystemBase {
    * @return Gets whether or not the shooter (output) golf ball sensor sees something
    */
   public boolean getShooterSensorStatus() {
-    return false; // !shooterBeam.get();
+    return !ballCenteringSensor.get();
   }
 
     /**
