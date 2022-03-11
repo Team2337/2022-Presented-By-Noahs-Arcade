@@ -1,16 +1,15 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
-import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * Subsystem for the intake mechanism
@@ -45,6 +44,16 @@ public class Intake extends SubsystemBase {
       ShuffleboardLayout intakeWidget = intakeTab.getLayout("Intake Info", BuiltInLayouts.kList).withSize(3,2).withPosition(4, 0);
       intakeWidget.addNumber("Speed (%)", this::getSpeed);
       intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
+    }
+
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+
+      systemsCheck.addNumber("Intake Temp (°C)", () -> getTemperature())
+        .withPosition(SystemsCheckPositions.INTAKE_TEMP.x, SystemsCheckPositions.INTAKE_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
     }
   }
 
@@ -91,7 +100,7 @@ public class Intake extends SubsystemBase {
    * Returns the temperature of the intake motor (in Celsius)
    */
   private double getTemperature() {
-    return Utilities.convertCelsiusToFahrenheit(motor.getTemperature());
+    return motor.getTemperature();
   }
 
   /**

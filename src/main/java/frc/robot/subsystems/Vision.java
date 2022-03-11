@@ -90,8 +90,8 @@ public class Vision extends SubsystemBase {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
       
       systemsCheck.addBoolean("Limelight Connected", () -> (latency > 0))
-        .withSize(2, 2)
-        .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y);
+        .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y)
+        .withSize(3, 3);
     }
   }
 

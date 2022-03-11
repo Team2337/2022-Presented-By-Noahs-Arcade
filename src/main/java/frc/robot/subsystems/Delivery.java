@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -121,14 +123,20 @@ public class Delivery extends SubsystemBase {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
       systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
-        .withSize(2, 2)
-        .withPosition(SystemsCheckPositions.LEFT_COLOR_SENSOR.x, SystemsCheckPositions.LEFT_COLOR_SENSOR.y);
+        .withPosition(SystemsCheckPositions.L_COLOR_SENSOR.x, SystemsCheckPositions.L_COLOR_SENSOR.y)
+        .withSize(3, 3);
       systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
-        .withSize(2, 2)
-        .withPosition(SystemsCheckPositions.RIGHT_COLOR_SENSOR.x, SystemsCheckPositions.RIGHT_COLOR_SENSOR.y);
+        .withPosition(SystemsCheckPositions.R_COLOR_SENSOR.x, SystemsCheckPositions.R_COLOR_SENSOR.y)
+        .withSize(3, 3);
       systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
-        .withSize(2, 2)
-        .withPosition(SystemsCheckPositions.TIME_OF_FLIGHT.x, SystemsCheckPositions.TIME_OF_FLIGHT.y);
+        .withPosition(SystemsCheckPositions.TOF_SENSOR.x, SystemsCheckPositions.TOF_SENSOR.y)
+        .withSize(3, 3);
+
+      systemsCheck.addNumber("Delivery Temp (°C)", () -> getTemperature())
+        .withPosition(SystemsCheckPositions.DELIVERY_TEMP.x, SystemsCheckPositions.DELIVERY_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
     }
   }
 
@@ -170,6 +178,10 @@ public class Delivery extends SubsystemBase {
         motor.set(ControlMode.PercentOutput, -speed);
         break;
     }
+  }
+
+  public double getTemperature() {
+    return motor.getTemperature();
   }
 
   /**
