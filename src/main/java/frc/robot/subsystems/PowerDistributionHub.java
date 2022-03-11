@@ -31,7 +31,7 @@ public class PowerDistributionHub extends SubsystemBase {
       widget.addNumber("Total Current (Amps)", pdh::getTotalCurrent);
       widget.addNumber("Total Energy (Joules)", pdh::getTotalEnergy);
       widget.addNumber("Total Power (Watts)", pdh::getTotalPower);
-   }
+    }
   }
 
   @Override

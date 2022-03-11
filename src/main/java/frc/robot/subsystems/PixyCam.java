@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -86,10 +87,20 @@ public class PixyCam extends SubsystemBase {
       });
       infoWidget.addNumber("Pixy State", () -> state);
     }
+    
     seesBallWidget = Constants.DRIVER_DASHBOARD.addBoolean("Color Pixy Sees", () -> (largestRedTarget != null || largestBlueTarget != null))
       .withPosition(10, 0)
       .withSize(3, 3)
       .withProperties(Map.of("Color when false", "#000000"));
+
+    // Systems check
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+      
+      systemsCheck.addBoolean("Pixy Cam Connected", () -> (state >= 0))
+        .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
+        .withSize(3, 3);
+    }
   }
 
   private void connect() {

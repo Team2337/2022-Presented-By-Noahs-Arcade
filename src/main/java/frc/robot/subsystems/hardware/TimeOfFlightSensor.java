@@ -25,4 +25,11 @@ public class TimeOfFlightSensor {
     return sensor.getRange();
   }
 
+  /**
+   * @return True if everything is alright
+   */
+  public boolean systemsCheck() {
+    return getDistanceInches() > 0.0;
+  }
+
 }

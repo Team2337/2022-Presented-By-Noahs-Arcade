@@ -67,8 +67,37 @@ public final class Constants {
     public static final boolean SHOOTER = false;
   }
 
+  // Driver dashboard
   // 28x13
   public static final ShuffleboardTab DRIVER_DASHBOARD = Shuffleboard.getTab("DRIVER DASHBOARD");
+
+  // Systems check
+  public static enum SystemsCheckPositions {
+    // Temperatures (3x4 widgets)
+    INTAKE_TEMP(0, 0),
+    DELIVERY_TEMP(3, 0),
+    L_SHOOTER_TEMP(0, 4),
+    R_SHOOTER_TEMP(3, 4),
+    L_CLIMBER_TEMP(0, 8),
+    R_CLIMBER_TEMP(3, 8),
+    // Delivery Sensors (3x3 widgets)
+    L_COLOR_SENSOR(7, 0),
+    R_COLOR_SENSOR(10, 0),
+    TOF_SENSOR(13, 0),
+    // Other sensors (also 3x3 widgets)
+    STRING_POT(7, 3),
+    PIXY_CAM(10, 3),
+    LIMELIGHT(13, 3);
+
+    public final int x, y;
+
+    private SystemsCheckPositions(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  public static final boolean DO_SYSTEMS_CHECK = true;
+  public static final ShuffleboardTab SYSTEMS_CHECK_TAB = Shuffleboard.getTab("SYSTEMS CHECK");
 
   public static Constants getInstance() {
     if (instance == null) {
@@ -359,6 +388,9 @@ public final class Constants {
     public static final double IMAGE_PROCESSING_LATENCY_MS = 11;
     public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
   }
+
+  public static final double MOTOR_MINIMUM_TEMP_CELSIUS = 15.0; // Used in Shuffleboard for temperature dials
+  public static final double MOTOR_SHUTDOWN_TEMP_CELSIUS = 70.0;
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;
   public static final int CLIMBER_RIGHT_MOTOR_ID = 3;
