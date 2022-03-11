@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.utilities.Utilities;
@@ -67,8 +66,10 @@ public class Drivetrain extends SubsystemBase {
 
   // Update Drivetrain state only once per cycle
   private Pose2d pose = new Pose2d();
+  // private Field2d field = new Field2d();
+
   // Array for Yaw Pitch and Roll values in degrees
-  public double[] ypr_deg = { 0, 0, 0 };
+  private double[] ypr_deg = { 0, 0, 0 };
 
   /**
    * Subsystem where swerve modules are configured,
@@ -232,10 +233,14 @@ public class Drivetrain extends SubsystemBase {
       realStates
     );
 
+    // field.setRobotPose(pose);
+
+    /*
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
+    */
 
-    Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+    SmartDashboard.putNumber("Gyro", getGyroscopeRotation().getDegrees());
   }
 
 }
