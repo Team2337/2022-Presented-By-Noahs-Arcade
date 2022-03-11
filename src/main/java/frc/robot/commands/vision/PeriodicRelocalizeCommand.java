@@ -1,6 +1,5 @@
 package frc.robot.commands.vision;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -49,9 +48,7 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
     }
 
     if (pose != null) {
-      Logger.getInstance().recordOutput("Vision/Robot",
-        new double[] { pose.getX(), pose.getY(),
-          pose.getRotation().getRadians() });
+
     }
   }
 

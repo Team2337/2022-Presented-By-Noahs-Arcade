@@ -1,6 +1,5 @@
 package frc.robot.commands.pixy;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -70,10 +69,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     if (strategy != null) {
       strategyString = strategy.toString();
     }
-    Logger.getInstance().recordOutput("PixyPickup/Strategy", strategyString);
-    Logger.getInstance().recordOutput("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
-    Logger.getInstance().recordOutput("PixyPickup/Strafe Output", strafeOutput);
-    Logger.getInstance().recordOutput("PixyPickup/Controller Error", strafeController.getPositionError());
+
   }
 
   private void resetInternalState() {
