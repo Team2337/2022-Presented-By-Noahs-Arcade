@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private String startingPos = "UnSet";
 
   private RobotContainer m_robotContainer;
   private boolean autonomousRan = false;
@@ -81,7 +82,11 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    startingPos = m_robotContainer.getStartingPosition();
+    SmartDashboard.putString("start", startingPos);
+    m_robotContainer.resetRobotChooser(startingPos);
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
