@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
@@ -53,18 +54,17 @@ public class PixyCam extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
+    // Normal debug
     if (logEnable) {
       ShuffleboardTab pixyTab = Shuffleboard.getTab("PixyCam");
       pixyTab.addBoolean("Targeting red", () -> (largestRedTarget != null))
         .withSize(4, 4)
         .withPosition(12, 0)
-        .withProperties(Map.of("Color when true", "#ff6666"))
-        .withProperties(Map.of("Color when false", "#000000"));
+        .withProperties(Map.of("Color when true", "#ff6666", "Color when false", "#000000"));
       pixyTab.addBoolean("Targeting blue", () -> (largestBlueTarget != null))
         .withSize(4, 4)
         .withPosition(12, 4)
-        .withProperties(Map.of("Color when true", "#6666ff"))
-        .withProperties(Map.of("Color when false", "#000000"));
+        .withProperties(Map.of("Color when true", "#6666ff", "Color when false", "#000000"));
 
       ShuffleboardLayout infoWidget = pixyTab.getLayout("Vision Info", BuiltInLayouts.kList).withSize(8, 6).withPosition(4, 4);
       infoWidget.addNumber("Red target x", () -> {
@@ -88,9 +88,10 @@ public class PixyCam extends SubsystemBase {
       infoWidget.addNumber("Pixy State", () -> state);
     }
     
+    // Driver dashboard
     seesBallWidget = Constants.DRIVER_DASHBOARD.addBoolean("Color Pixy Sees", () -> (largestRedTarget != null || largestBlueTarget != null))
-      .withPosition(10, 0)
-      .withSize(3, 3)
+      .withPosition(DriverDashboardPositions.PIXY_COLOR.x, DriverDashboardPositions.PIXY_COLOR.y)
+      .withSize(DriverDashboardPositions.PIXY_COLOR.width, DriverDashboardPositions.PIXY_COLOR.height)
       .withProperties(Map.of("Color when false", "#000000"));
 
     // Systems check

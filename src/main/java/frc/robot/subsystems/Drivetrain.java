@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.nerdyfiles.swerve.FXSwerveModule;
 
@@ -126,6 +127,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
+    // Normal debug
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList)
@@ -142,8 +144,8 @@ public class Drivetrain extends SubsystemBase {
 
     // Driver Dashboard
     Constants.DRIVER_DASHBOARD.addNumber("Gyro Degrees", () -> getGyroscopeRotation().getDegrees())
-      .withSize(3, 3)
-      .withPosition(0, 6);
+      .withPosition(DriverDashboardPositions.GYRO_DEGREES.x, DriverDashboardPositions.GYRO_DEGREES.y)
+      .withSize(DriverDashboardPositions.GYRO_DEGREES.width, DriverDashboardPositions.GYRO_DEGREES.height);
   }
 
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {

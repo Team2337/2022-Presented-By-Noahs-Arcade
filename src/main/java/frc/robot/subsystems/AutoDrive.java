@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 
 /**
@@ -56,8 +57,8 @@ public class AutoDrive extends SubsystemBase {
 
   public AutoDrive() {
     Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", this::getAutoDriveCommand)
-      .withPosition(0, 3)
-      .withSize(6, 3);
+      .withPosition(DriverDashboardPositions.AUTODRIVE_COMMAND.x, DriverDashboardPositions.AUTODRIVE_COMMAND.y)
+      .withSize(DriverDashboardPositions.AUTODRIVE_COMMAND.width, DriverDashboardPositions.AUTODRIVE_COMMAND.height);
   }
 
   private WeakReference<AutoDrivableCommand> delegateReference;
