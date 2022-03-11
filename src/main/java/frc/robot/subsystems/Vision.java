@@ -1,12 +1,17 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.cscore.VideoException;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
 
@@ -20,7 +25,8 @@ public class Vision extends SubsystemBase {
     X("tx"),
     Y("ty"),
     LATENCY("tl"),
-    VALID_TARGET("tv");
+    VALID_TARGET("tv"),
+    STREAM("stream");
 
     private String key;
 
@@ -81,9 +87,27 @@ public class Vision extends SubsystemBase {
 
   public int relocalizeCounter = 0;
 
+  private HttpCamera limelightStream;
+
   public Vision() {
     // Automatically switch our Limelight to our default pipeline on construction
     switchPipeLine(Pipeline.DEFAULT);
+
+    try {
+      // Set up limelight camera
+      getLimelightEntry(LimelightKey.STREAM).setNumber(2);
+      String limelightIp = SmartDashboard.getString("limelight_Stream", "");
+      limelightStream = new HttpCamera("limelight", limelightIp + "/stream.mjpg");
+      
+      // Driver dashboard
+      Constants.DRIVER_DASHBOARD.add("Driver Camera", limelightStream)
+        .withPosition(DriverDashboardPositions.DRIVER_CAM.x, DriverDashboardPositions.DRIVER_CAM.y)
+        .withSize(DriverDashboardPositions.DRIVER_CAM.width, DriverDashboardPositions.DRIVER_CAM.height);
+    } catch (VideoException e) {
+      // Happens if cannot connect to the IP, which would happen if it is invalid
+      DriverStation.reportError("Limelight not plugged in or is not working correctly!", false);
+    }
+
 
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
