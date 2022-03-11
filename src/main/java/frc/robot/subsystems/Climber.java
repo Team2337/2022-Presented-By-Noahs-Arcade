@@ -133,7 +133,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // ALWAYS clear our setpoint when we disable. If we re-enable, we don't want the climber
+   // ALWAYS clear our setpoint when we disable. If we re-enable, we don't want the climber
     // moving to the last set position.
     if (DriverStation.isDisabled() && setpoint != null) {
       setpoint = null;
@@ -153,9 +153,9 @@ public class Climber extends SubsystemBase {
     // Attempt to move our climber to it's new setpoint. If the move to setpoint method
     // does NOT properly handle it's cases - we'll stop the climber.
     boolean shouldStopClimber = periodicMoveToSetpoint();
-    if (shouldStopClimber) {
+    /*if (shouldStopClimber) {
       stop();
-    }
+    } */
   }
 
   /** Public API */
@@ -258,6 +258,7 @@ public class Climber extends SubsystemBase {
       if (stringPotPIDController.atSetpoint()) {
         // We've arrived! Update our setpoint accordingly.
         setCurrentSetpoint(setpoint);
+        stop();
         return true;
       }
 
@@ -278,6 +279,7 @@ public class Climber extends SubsystemBase {
       if (Math.abs(leftMotor.getClosedLoopError()) < ENCODER_ALLOWABLE_CLOSED_LOOP_ERROR_TICKS) {
         // We've arrived! Update our setpoint accordingly.
         setCurrentSetpoint(setpoint);
+        stop();
         return true;
       }
 
@@ -371,7 +373,7 @@ public class Climber extends SubsystemBase {
   }
 
   private boolean isStringPotConnected() {
-    return getStringPotVoltage() > 0;
+    return getStringPotVoltage() > 0.26;
   }
 
   private boolean areStringPotLimitsSetup() {
