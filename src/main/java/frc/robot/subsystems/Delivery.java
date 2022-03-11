@@ -43,10 +43,10 @@ public class Delivery extends SubsystemBase {
   );
 
   // Color sensors
-  private final PicoColorSensors colorSensors = new PicoColorSensors();
+  //private final PicoColorSensors colorSensors = new PicoColorSensors();
 
   // TOF sensor
-  private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
+  //private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
   // Beam break sensor
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
@@ -101,6 +101,7 @@ public class Delivery extends SubsystemBase {
         "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
+      /*
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -113,6 +114,7 @@ public class Delivery extends SubsystemBase {
         "Lineup (in): "  + lineupSensor.getDistanceInches(),
         "Shooter: "   + shooterBeam.get()
       });
+      */
     }
   }
 
@@ -300,7 +302,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return colorSensors.leftSensorSeesBall();
+    return false;// colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -308,7 +310,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return colorSensors.rightSensorSeesBall();
+    return false;//colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -316,7 +318,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return colorSensors.getLeftSensorBallColor();
+    return null;//colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -324,7 +326,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return colorSensors.getRightSensorBallColor();
+    return null;//colorSensors.getRightSensorBallColor();
   }
 
 
@@ -338,12 +340,12 @@ public class Delivery extends SubsystemBase {
    * @return The reading of the lineup time of flight sensor in inches
    */
   public double getLineupSensorValue() {
-    return lineupSensor.getDistanceInches();
+    return 0;//lineupSensor.getDistanceInches();
   }
 
   public boolean isBallInTopSlot() {
     // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
+    return false;//lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
   }
 
   /**

@@ -210,11 +210,11 @@ public final class Constants {
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(62)
+      Rotation2d.fromDegrees(-152)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(76 + 180)
+      Rotation2d.fromDegrees(-104.75)
     );
 
     public static final PolarCoordinate kResetToZero = new PolarCoordinate(
@@ -265,7 +265,7 @@ public final class Constants {
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(260.25)
+      Rotation2d.fromDegrees(-99.75)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),

@@ -38,7 +38,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
+  //private final PixyCam pixyCam = new PixyCam();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -51,6 +51,7 @@ public class RobotContainer {
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
+  private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -75,7 +76,15 @@ public class RobotContainer {
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
 
+    autonChooser.addOption("Test Backup", new BackupTest(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+
     SmartDashboard.putData("AutonChooser", autonChooser);
+
+    startingPosChooser.setDefaultOption("Right", "Right");
+    startingPosChooser.addOption("Left", "Left");
+    startingPosChooser.addOption("Middle", "Middle");
+
+    SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
   }
 
   public void resetRobot() {
@@ -100,8 +109,34 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
+    pigeon.setYaw(70, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  }
+
+  public void resetRobotChooser(String startPos) {
+    switch (startPos) {
+
+    case "Left":
+      pigeon.setYaw(-60, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+    case "Middle":
+      pigeon.setYaw(14, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition2MiddleStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+
+    case "Right":
+      pigeon.setYaw(70, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+    default:
+        pigeon.setYaw(60, 250);
+        drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));      
+    break;
+    }
   }
 
   public void enableMaintainHeading() {
@@ -155,9 +190,9 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
-    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+    //operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    //operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    //operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
 
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
@@ -174,5 +209,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
+  }
+
+  public String getStartingPosition() {
+    return startingPosChooser.getSelected();
   }
 }
