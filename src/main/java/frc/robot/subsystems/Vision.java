@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
 
-import org.littletonrobotics.junction.Logger;
+// import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -102,12 +102,14 @@ public class Vision extends SubsystemBase {
   }
 
   private void log() {
+    /*
     Logger.getInstance().recordOutput("Vision/# of relocalization", relocalizeCounter);
     Logger.getInstance().recordOutput("Vision/tx", getTx());
     Logger.getInstance().recordOutput("Vision/ty", getTy());
     Logger.getInstance().recordOutput("Vision/latency", getLatency());
     Logger.getInstance().recordOutput("Vision/Valid Target", hasActiveTarget());
     Logger.getInstance().recordOutput("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
+    */
   }
 
   /** Limelight Network Table Access */

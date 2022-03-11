@@ -10,7 +10,6 @@ import frc.robot.Constants.BallColor;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.hardware.PicoColorSensors;
-import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
  * Subsystem for the delivery mechanism

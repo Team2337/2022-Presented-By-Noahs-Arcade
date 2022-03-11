@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import org.littletonrobotics.junction.Logger;
+// import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -231,11 +231,12 @@ public class Drivetrain extends SubsystemBase {
       getGyroscopeRotation(),
       realStates
     );
-
+    /*
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });
 
     Logger.getInstance().recordOutput("Gyro", pigeon.getYaw());
+    */
   }
 
 }

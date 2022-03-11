@@ -32,7 +32,6 @@ import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -41,7 +40,6 @@ public class RobotContainer {
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
   // private final PixyCam pixyCam = new PixyCam();
-  //private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();

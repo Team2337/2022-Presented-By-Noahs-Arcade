@@ -24,6 +24,7 @@ public class BackupTest extends SequentialCommandGroup {
   public BackupTest(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
       // new FirstMove(Constants.Auto.kBallR3RunOver, autoDrive, drivetrain, heading, intake, shooter),
+      new WaitCommand(3),
       new AutoStartIntake(intake),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR3RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(90), 8, autoDrive, heading).withTimeout(5),
       new WaitCommand(1),

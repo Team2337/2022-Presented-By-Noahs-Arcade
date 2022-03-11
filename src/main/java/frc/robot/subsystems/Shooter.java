@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import org.littletonrobotics.junction.Logger;
+// import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -109,8 +109,10 @@ public class Shooter extends SubsystemBase {
   }
 
   private void log() {
+    /*
     Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
     Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
+    */
   }
 
   // ** Public API **
