@@ -173,6 +173,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public void end(boolean interrupted) {
     autoDrive.clearDelegate();
     intake.stop();
+    targetBall = null;
   }
 
   @Override
