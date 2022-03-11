@@ -44,12 +44,9 @@ public class Robot extends TimedRobot {
     Logger logger = Logger.getInstance();
 
     // Run as fast as possible during replay
-    // setUseTiming(isReal());
+    setUseTiming(isReal());
     // Log & replay "SmartDashboard" values (no tables are logged by default).
-    // LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
-    // Set a metadata value
-    /*
-    logger.recordMetadata("ProjectName", "2022Relentless");
+    LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
 
     // Log to USB stick (name will be selected automatically)
     // logger.addDataReceiver(new ByteLogReceiver("/media/sda1/"));
