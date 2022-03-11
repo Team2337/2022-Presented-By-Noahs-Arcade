@@ -7,7 +7,7 @@ import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Kicker;
 
 public class PrepareShooterCommandGroup extends SequentialCommandGroup {
-  
+
   public PrepareShooterCommandGroup(BallColor ballColor, Delivery delivery, Kicker kicker) {
     // Check which way we need to rotate
     if (delivery.getTopPositionColor() == ballColor) {
@@ -17,12 +17,12 @@ public class PrepareShooterCommandGroup extends SequentialCommandGroup {
       // Ball is at bottom
       addCommands(
         new BottomToSideCommand(delivery, kicker),
-        new SideToTopCommand(delivery, kicker, ballColor)
+        new SideToTopCommand(ballColor, delivery, kicker)
       );
     } else {
       // Ball is at side
       addCommands(
-        new SideToTopCommand(delivery, kicker, ballColor)
+        new SideToTopCommand(ballColor, delivery, kicker)
       );
     }
   }

@@ -1,10 +1,9 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.kicker;
 
 import frc.robot.subsystems.Kicker;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoKickerWaitableCommand extends CommandBase {
+public abstract class WaitableKickerCommand extends CommandBase {
 
   private final Runnable kickerRunnable;
   private final double waitCycles;
@@ -15,7 +14,7 @@ public class AutoKickerWaitableCommand extends CommandBase {
   /**
    * Run a Kicker command after a set number of seconds.
    */
-  public AutoKickerWaitableCommand(Runnable kickerRunnable, double waitTimeSeconds, Kicker kicker) {
+  public WaitableKickerCommand(Runnable kickerRunnable, double waitTimeSeconds, Kicker kicker) {
     this.kickerRunnable = kickerRunnable;
     // Puts wait into iterations from seconds
     this.waitCycles = waitTimeSeconds / 50; // 50 == 0.02s - our cycle time
@@ -31,7 +30,6 @@ public class AutoKickerWaitableCommand extends CommandBase {
 
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Wait Counter", waitCounter);
     if (waitCounter >= waitCycles) {
       kickerRunnable.run();
     } else {
@@ -42,11 +40,6 @@ public class AutoKickerWaitableCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     kicker.stop();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 
 }

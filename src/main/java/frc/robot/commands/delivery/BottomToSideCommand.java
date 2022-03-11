@@ -7,23 +7,24 @@ import frc.robot.subsystems.Delivery.Direction;
 
 /**
  * Moves a ball into position to be checeked and updates its color value.
- * 
+ *
  * @author Michael F, Nicholas S
  */
 public class BottomToSideCommand extends CommandBase {
 
   private final Delivery delivery;
   private final Kicker kicker;
+
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
-  
+
   public BottomToSideCommand(Delivery delivery, Kicker kicker) {
     this.delivery = delivery;
     this.kicker = kicker;
-    
-    addRequirements(delivery);
+
+    addRequirements(delivery, kicker);
   }
 
   @Override

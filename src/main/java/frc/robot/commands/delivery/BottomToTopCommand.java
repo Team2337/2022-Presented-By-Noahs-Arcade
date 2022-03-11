@@ -2,7 +2,6 @@ package frc.robot.commands.delivery;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Delivery;
-import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Delivery.Direction;
 
 /**
@@ -13,16 +12,16 @@ import frc.robot.subsystems.Delivery.Direction;
 public class BottomToTopCommand extends CommandBase {
 
   private final Delivery delivery;
-  private final Kicker kicker;
+
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
 
-  public BottomToTopCommand(Delivery delivery, Kicker kicker){
+  public BottomToTopCommand(Delivery delivery){
     this.delivery = delivery;
-    this.kicker = kicker;
-    addRequirements(delivery, kicker);
+
+    addRequirements(delivery);
   }
 
   @Override
@@ -38,7 +37,6 @@ public class BottomToTopCommand extends CommandBase {
 
     // Check if we need to move ball before checking to stop and start the motor
     delivery.start(direction);
-    kicker.setSpeed(-0.2);
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 
@@ -60,7 +58,6 @@ public class BottomToTopCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     delivery.stop();
-    kicker.stop();
   }
 
   @Override

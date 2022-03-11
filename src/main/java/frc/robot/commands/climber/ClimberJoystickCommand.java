@@ -8,7 +8,7 @@ import frc.robot.subsystems.Climber;
 
 public class ClimberJoystickCommand extends CommandBase {
 
-  private static final double MAX_SPEED = 0.25;
+  private static final double MAX_SPEED = 0.5;
 
   private final Climber climber;
   private final XboxController controller;

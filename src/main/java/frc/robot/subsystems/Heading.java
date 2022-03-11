@@ -19,8 +19,11 @@ import frc.robot.nerdyfiles.utilities.Utilities;
  */
 public class Heading extends SubsystemBase {
 
-  private static double NOMINAL_OUTPUT_STATIONARY = 0.03;
-  private static double NOMINAL_OUTPUT_MOVING = 0.02;
+  private static double NOMINAL_OUTPUT_STATIONARY = 0.06;
+  private static double NOMINAL_OUTPUT_MOVING = 0.03;
+
+  private static double P_MOVING = 0.005;
+  private static double P_STATIONARY = 0.007;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -63,7 +66,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(0.007, 0.0, 0.0);
+  private PIDController rotationController = new PIDController(P_STATIONARY, 0.1, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -83,11 +86,19 @@ public class Heading extends SubsystemBase {
     rotationController.setTolerance(1.0);
   }
 
-
   @Override
   public void periodic() {
+    double pCurrent = rotationController.getP();
+    double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
+    if (pCurrent != pDesired) {
+      rotationController.setP(pDesired);
+    }
+
+    Logger.getInstance().recordOutput("Heading/kP", rotationController.getP());
+    Logger.getInstance().recordOutput("Heading/Is Moving", drivetrainIsMovingSupplier.get());
+
     if (maintainHeading != null) {
-      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", maintainHeading.getDegrees());
+      Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", String.valueOf(maintainHeading.getDegrees()));
     } else {
       Logger.getInstance().recordOutput("Heading/Maintain Heading (Degrees)", "null");
     }
@@ -198,13 +209,13 @@ public class Heading extends SubsystemBase {
   public double calculateRotation() {
     // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
     if (!this.enabled) {
-      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
 
     // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
     if (maintainHeading == null) {
-      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", "n/a");
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
 
@@ -215,9 +226,9 @@ public class Heading extends SubsystemBase {
     );
     // If our controller is within our tolerance - do not provide a nominal output
     if (rotationController.atSetpoint()) {
+      Logger.getInstance().recordOutput("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
-    Logger.getInstance().recordOutput("Heading/Rotation Controller Output", output);
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clampedOutput = MathUtil.clamp(
