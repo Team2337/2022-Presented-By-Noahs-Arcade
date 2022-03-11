@@ -117,17 +117,19 @@ public class Delivery extends SubsystemBase {
     }
 
     // Systems check
-    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
-    systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
-      .withSize(2, 2)
-      .withPosition(SystemsCheckPositions.LEFT_COLOR_SENSOR.x, SystemsCheckPositions.LEFT_COLOR_SENSOR.y);
-    systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
-      .withSize(2, 2)
-      .withPosition(SystemsCheckPositions.RIGHT_COLOR_SENSOR.x, SystemsCheckPositions.RIGHT_COLOR_SENSOR.y);
-    systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
-      .withSize(2, 2)
-      .withPosition(SystemsCheckPositions.TIME_OF_FLIGHT.x, SystemsCheckPositions.TIME_OF_FLIGHT.y);
+      systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
+        .withSize(2, 2)
+        .withPosition(SystemsCheckPositions.LEFT_COLOR_SENSOR.x, SystemsCheckPositions.LEFT_COLOR_SENSOR.y);
+      systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
+        .withSize(2, 2)
+        .withPosition(SystemsCheckPositions.RIGHT_COLOR_SENSOR.x, SystemsCheckPositions.RIGHT_COLOR_SENSOR.y);
+      systemsCheck.addBoolean("Time Of Flight", lineupSensor::systemsCheck)
+        .withSize(2, 2)
+        .withPosition(SystemsCheckPositions.TIME_OF_FLIGHT.x, SystemsCheckPositions.TIME_OF_FLIGHT.y);
+    }
   }
 
   @Override

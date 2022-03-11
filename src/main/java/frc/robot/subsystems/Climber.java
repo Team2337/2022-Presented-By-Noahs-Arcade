@@ -71,11 +71,13 @@ public class Climber extends SubsystemBase {
     }
 
     // Systems check
-    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
-    
-    systemsCheck.addBoolean("String Pot", () -> (stringPot.getVoltage() > 0))
-      .withSize(2, 2)
-      .withPosition(SystemsCheckPositions.STRING_POT.x, SystemsCheckPositions.STRING_POT.y);
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+      
+      systemsCheck.addBoolean("String Pot", () -> (stringPot.getVoltage() > 0))
+        .withSize(2, 2)
+        .withPosition(SystemsCheckPositions.STRING_POT.x, SystemsCheckPositions.STRING_POT.y);
+    }
   }
 
   @Override

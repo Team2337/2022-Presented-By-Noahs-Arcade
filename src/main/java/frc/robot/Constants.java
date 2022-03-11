@@ -84,6 +84,7 @@ public final class Constants {
       this.y = y;
     }
   }
+  public static final boolean DO_SYSTEMS_CHECK = true;
   public static final ShuffleboardTab SYSTEMS_CHECK_TAB = Shuffleboard.getTab("SYSTEMS CHECK");
 
   public static Constants getInstance() {

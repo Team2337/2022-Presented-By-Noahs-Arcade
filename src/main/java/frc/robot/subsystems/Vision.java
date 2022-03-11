@@ -86,11 +86,13 @@ public class Vision extends SubsystemBase {
     switchPipeLine(Pipeline.DEFAULT);
 
     // Systems check
-    ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
-    
-    systemsCheck.addBoolean("Limelight Connected", () -> (latency > 0))
-      .withSize(2, 2)
-      .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y);
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+      
+      systemsCheck.addBoolean("Limelight Connected", () -> (latency > 0))
+        .withSize(2, 2)
+        .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y);
+    }
   }
 
   @Override
