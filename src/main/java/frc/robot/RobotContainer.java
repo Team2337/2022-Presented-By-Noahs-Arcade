@@ -65,7 +65,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
-    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -98,7 +98,7 @@ public class RobotContainer {
   }
 
   public void resetRobotTeleop() {
-    pigeon.setYaw(25, 250);
+    pigeon.setYaw(0, 250);
     drivetrain.resetPosition(
       new Pose2d(
         Constants.Auto.kResetToZero.toFieldCoordinate(),
@@ -108,8 +108,8 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(67, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    pigeon.setYaw(-35, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void resetRobotChooser(String startPos) {
@@ -126,7 +126,7 @@ public class RobotContainer {
     break;
 
     case "Right":
-      pigeon.setYaw(80, 250);
+      pigeon.setYaw(75, 250);
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
@@ -162,8 +162,8 @@ public class RobotContainer {
     driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
-    driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
+    // driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    // driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
@@ -194,8 +194,8 @@ public class RobotContainer {
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
+    // Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
+    // intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
 
     /** Driverstation Controls * */
 

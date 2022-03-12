@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
@@ -23,6 +24,7 @@ public class Heading extends SubsystemBase {
 
   private static double P_MOVING = 0.005;
   private static double P_STATIONARY = 0.007;
+  private static double P_AUTO = 0.005;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -65,7 +67,7 @@ public class Heading extends SubsystemBase {
   /**
    * PID used to converge the robot to the maintainHeading from it's current heading.
    */
-  private PIDController rotationController = new PIDController(P_STATIONARY, 0.1, 0.0);
+  private PIDController rotationController = new PIDController(P_STATIONARY, 0.0, 0.0);
 
   /**
    * Heading subsystem to maintain a static heading of the robot.
@@ -87,6 +89,13 @@ public class Heading extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (DriverStation.isAutonomous()) {
+      P_MOVING = 0.005;
+      P_STATIONARY = 0.007;
+    } else {
+      P_MOVING = 0.005;
+      P_STATIONARY = 0.007;
+    }
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
     if (pCurrent != pDesired) {
