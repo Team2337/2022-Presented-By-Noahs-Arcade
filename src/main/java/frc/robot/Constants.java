@@ -132,8 +132,8 @@ public final class Constants {
 
         INTAKE_BEAM_ID = 0;
 
-        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
-        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34.98));
         break;
       case PRACTICE:
         SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK4I_L1;
@@ -194,8 +194,8 @@ public final class Constants {
 
         INTAKE_BEAM_ID = 9;
 
-        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
-        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(38.1));
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(24.79));
         break;
     }
   }
@@ -233,16 +233,24 @@ public final class Constants {
     // Starting Locations
 
     public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(122.25)
+      Units.inchesToMeters(97),
+      // Starting angle of -35
+      Rotation2d.fromDegrees(147.75)
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(62)
+      Units.inchesToMeters(94),
+      // Starting angle of 35
+      Rotation2d.fromDegrees(35)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(76 + 180)
+      Units.inchesToMeters(93),
+      // Starting angle of 67.42
+      Rotation2d.fromDegrees(-100.25)
+    );
+    public static final PolarCoordinate kPositionFarRightStart = new PolarCoordinate(
+      Units.inchesToMeters(93),
+      // Starting angle of -90
+      Rotation2d.fromDegrees(-90)
     );
 
     public static final PolarCoordinate kResetToZero = new PolarCoordinate(
@@ -293,7 +301,7 @@ public final class Constants {
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(260.25)
+      Rotation2d.fromDegrees(-99.75)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),

@@ -39,7 +39,7 @@ public class RobotContainer {
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
+  // private final PixyCam pixyCam = new PixyCam();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -91,7 +91,7 @@ public class RobotContainer {
   }
 
   public void resetRobotTeleop() {
-    pigeon.setYaw(0, 250);
+    pigeon.setYaw(25, 250);
     drivetrain.resetPosition(
       new Pose2d(
         Constants.Auto.kResetToZero.toFieldCoordinate(),
@@ -101,7 +101,7 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
+    pigeon.setYaw(67, 250);
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
@@ -155,11 +155,11 @@ public class RobotContainer {
 
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
-
+    /*
     operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
     operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
-
+    */
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));

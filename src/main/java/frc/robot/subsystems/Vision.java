@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
@@ -108,6 +109,8 @@ public class Vision extends SubsystemBase {
     if (hasValidTarget) {
       distanceToTargetMeters = calculateDistanceToTargetMeters();
     }
+
+    SmartDashboard.putNumber("Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
 
     log();
   }
