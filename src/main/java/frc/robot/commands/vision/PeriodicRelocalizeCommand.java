@@ -1,7 +1,5 @@
 package frc.robot.commands.vision;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
@@ -13,6 +11,7 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
 
   // The most recent Vision pose - stored for our scope visualization
   private Pose2d pose;
+  // private Field2d field = new Field2d();
 
   // Feed our pose estimator a new vision pose every ~0.2s
   private static final int RELOCALIZE_DEBOUNCE_LIMIT = 10;
@@ -49,9 +48,12 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
     }
 
     if (pose != null) {
+      // field.setRobotPose(pose);
+      /*
       Logger.getInstance().recordOutput("Vision/Robot",
         new double[] { pose.getX(), pose.getY(),
           pose.getRotation().getRadians() });
+      */
     }
   }
 

@@ -2,11 +2,10 @@ package frc.robot.commands.pixy;
 
 import java.util.ArrayList;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.nerdyfiles.utilities.Utilities;
@@ -72,10 +71,10 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     if (strategy != null) {
       strategyString = strategy.toString();
     }
-    Logger.getInstance().recordOutput("PixyPickup/Strategy", strategyString);
-    Logger.getInstance().recordOutput("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
-    Logger.getInstance().recordOutput("PixyPickup/Strafe Output", strafeOutput);
-    Logger.getInstance().recordOutput("PixyPickup/Controller Error", strafeController.getPositionError());
+    SmartDashboard.putString("PixyPickup/Strategy", strategyString);
+    SmartDashboard.putNumber("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
+    SmartDashboard.putNumber("PixyPickup/Strafe Output", strafeOutput);
+    SmartDashboard.putNumber("PixyPickup/Controller Error", strafeController.getPositionError());
   }
 
   private void resetInternalState() {

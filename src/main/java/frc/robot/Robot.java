@@ -4,11 +4,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.LogSocketServer;
-
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,8 +16,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private String startingPos = "UnSet";
 
   private RobotContainer m_robotContainer;
   private boolean autonomousRan = false;
@@ -32,6 +29,17 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    LiveWindow.disableAllTelemetry();
+
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
+    m_robotContainer = new RobotContainer();
+
+    m_robotContainer.resetRobot();
+  }
+
+  /*
+  private void setupLogger() {
     Logger logger = Logger.getInstance();
 
     // Run as fast as possible during replay
@@ -46,16 +54,11 @@ public class Robot extends LoggedRobot {
     // Provide log data over the network, viewable in Advantage Scope.
     logger.addDataReceiver(new LogSocketServer(5800));
 
-    // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    // Start logging! No more data receivers, replay sources, or metadata values may
+    // be added.
     logger.start();
-    LiveWindow.disableAllTelemetry();
-
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    
-    m_robotContainer.resetRobot();
   }
+  */
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -79,7 +82,11 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    startingPos = m_robotContainer.getStartingPosition();
+    SmartDashboard.putString("start", startingPos);
+    m_robotContainer.resetRobotChooser(startingPos);
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
