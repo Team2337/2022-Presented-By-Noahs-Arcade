@@ -37,6 +37,7 @@ import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.hardware.PixyCam;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);

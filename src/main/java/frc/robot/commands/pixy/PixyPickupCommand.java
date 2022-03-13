@@ -1,5 +1,7 @@
 package frc.robot.commands.pixy;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -9,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
-import frc.robot.subsystems.PixyCam;
+import frc.robot.subsystems.hardware.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Intake;
@@ -88,29 +90,38 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public void execute() {
     log();
 
+    if (!pixyCam.isConnected()) {
+      return;
+    }
+
     if (strategy == null) {
       return;
     }
 
+    ArrayList<Block> blocks = pixyCam.getBlocks();
+
     Block latestTargetBall = null;
-    if (strategy == PickupStrategy.ANY) {
+    if (strategy == PickupStrategy.RED) {
+      latestTargetBall = PixyCam.getLargestRedBlock(blocks);
+    } else if (strategy == PickupStrategy.BLUE) {
+      latestTargetBall = PixyCam.getLargestBlueBlock(blocks);
+    } else if (strategy == PickupStrategy.ANY) {
+      Block largestRed = PixyCam.getLargestRedBlock(blocks);
+      Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
+
       switch (DriverStation.getAlliance()) {
         default:
         case Red:
           // If alliance is red, prioritize red targets if they are there;
           // otherwise get blue targets
-          latestTargetBall = pixyCam.getRedTarget() == null ? pixyCam.getBlueTarget() : pixyCam.getRedTarget();
+          latestTargetBall = largestRed == null ? largestBlue : largestRed;
           break;
         case Blue:
           // If alliance is blue, prioritize blue targets if they are there;
           // otherwise get red targets
-          latestTargetBall = pixyCam.getBlueTarget() == null ? pixyCam.getRedTarget() : pixyCam.getBlueTarget();
+          latestTargetBall = largestBlue == null ? largestRed : largestBlue;
           break;
       }
-    } else if (strategy == PickupStrategy.RED) {
-      latestTargetBall = pixyCam.getRedTarget();
-    } else if (strategy == PickupStrategy.BLUE) {
-      latestTargetBall = pixyCam.getBlueTarget();
     }
 
     // If our `latestTargetBall` is null, remember where our last seen ball was
@@ -162,11 +173,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public void end(boolean interrupted) {
     autoDrive.clearDelegate();
     intake.stop();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
+    targetBall = null;
   }
 
   @Override
