@@ -1,0 +1,23 @@
+{
+  "NetworkTables": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/AutonChooser": "String Chooser",
+      "/SmartDashboard/StartingAngleChooser": "String Chooser",
+      "/SmartDashboard/StartingPositionChooser": "String Chooser",
+      "/SmartDashboard/field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/field": {
+        "image": "C:\\Users\\EngiNERDS-1\\Downloads\\2022-field.png",
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client",
+    "serverTeam": "2337"
+  }
+}
