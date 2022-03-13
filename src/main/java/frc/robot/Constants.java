@@ -75,7 +75,6 @@ public final class Constants {
     GYRO_DEGREES(0, 6, 3, 3),
     ALLIANCE(3, 6, 3, 3),
     INTAKE_BEAM(7, 0, 3, 3),
-    PIXY_COLOR(10, 0, 3, 3),
     DRIVER_CAM(14, 0, 10, 7);
 
     public final int x, y, width, height;

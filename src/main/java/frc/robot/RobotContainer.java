@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.Constants.DriverDashboardPositions;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
@@ -95,6 +96,12 @@ public class RobotContainer {
       .withPosition(3, 6)
       .withSize(3, 3)
       .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
+
+    if (Constants.DO_SYSTEMS_CHECK) {
+      Constants.SYSTEMS_CHECK_TAB.addBoolean("Pixy Cam Connected", pixyCam::isConnected)
+        .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
+        .withSize(3, 3);
+    }
   }
 
   public void resetRobot() {
