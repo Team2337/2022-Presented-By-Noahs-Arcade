@@ -28,12 +28,12 @@ public class Climber extends SubsystemBase {
 
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
-    Constants.CLIMBER_LEFT_MOTOR_ID,
-    Constants.UPPER_CANIVORE_ID
+    Constants.CLIMBER_LEFT_MOTOR_ID//,
+    //Constants.UPPER_CANIVORE_ID
   );
   private final TalonFX rightMotor = new TalonFX(
-    Constants.CLIMBER_RIGHT_MOTOR_ID,
-    Constants.UPPER_CANIVORE_ID
+    Constants.CLIMBER_RIGHT_MOTOR_ID//,
+   // Constants.UPPER_CANIVORE_ID
   );
 
   private final static double kP = 0.15;
@@ -51,7 +51,7 @@ public class Climber extends SubsystemBase {
 
   public final double PITCH_RANGE = 0;
 
-  private double maxSpeed = 0.25;
+  private double maxSpeed = 1;
   private double nominalForwardSpeed = 0.1;
   private double nominalReverseSpeed = -nominalForwardSpeed;
 
