@@ -72,9 +72,10 @@ public final class Constants {
   public static enum DriverDashboardPositions {
     // TODO: could we make this easier by using a method to pass in the widget and one of these enums?
     AUTON_CHOOSER(0, 0, 6, 3),
-    AUTODRIVE_COMMAND(0, 3, 6, 3),
-    GYRO_DEGREES(0, 6, 3, 3),
-    ALLIANCE(3, 6, 3, 3),
+    STARTING_POS_CHOOSER(0, 3, 6, 3),
+    AUTODRIVE_COMMAND(0, 6, 6, 3),
+    GYRO_DEGREES(0, 9, 3, 3),
+    ALLIANCE(3, 9, 3, 3),
     INTAKE_BEAM(7, 0, 3, 3),
     DRIVER_CAM(14, 0, 10, 7);
 

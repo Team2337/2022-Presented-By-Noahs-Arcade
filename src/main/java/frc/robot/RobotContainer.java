@@ -93,10 +93,16 @@ public class RobotContainer {
 
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
     
+    // Add dropdowns to driver dashboard
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser)
       .withPosition(DriverDashboardPositions.AUTON_CHOOSER.x, DriverDashboardPositions.AUTON_CHOOSER.y)
       .withSize(DriverDashboardPositions.AUTON_CHOOSER.width, DriverDashboardPositions.AUTON_CHOOSER.height);
+    
+      Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", autonChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_POS_CHOOSER.x, DriverDashboardPositions.STARTING_POS_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_POS_CHOOSER.width, DriverDashboardPositions.STARTING_POS_CHOOSER.height);
     
     // Put alliance on driver dashboard
     Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
