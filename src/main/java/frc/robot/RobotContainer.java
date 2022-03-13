@@ -59,6 +59,7 @@ public class RobotContainer {
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
+  private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -85,6 +86,12 @@ public class RobotContainer {
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
+
+    startingPosChooser.setDefaultOption("Right", "Right");
+    startingPosChooser.addOption("Left", "Left");
+    startingPosChooser.addOption("Middle", "Middle");
+
+    SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
     
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser)
@@ -130,6 +137,31 @@ public class RobotContainer {
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
+  public void resetRobotChooser(String startPos) {
+    switch (startPos) {
+
+    case "Left":
+      pigeon.setYaw(-32.25, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+    case "Middle":
+      pigeon.setYaw(45, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition2MiddleStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+    case "Right":
+      pigeon.setYaw(80, 250);
+      drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    break;
+
+    default:
+        pigeon.setYaw(80, 250);
+        drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));      
+    break;
+    }
+  }
+
   public void enableMaintainHeading() {
     heading.enableMaintainHeading();
   }
@@ -152,10 +184,8 @@ public class RobotContainer {
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
-    driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
-    driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
+    driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
-    driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
@@ -197,8 +227,11 @@ public class RobotContainer {
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
-
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
+  }
+
+  public String getStartingPosition() {
+    return startingPosChooser.getSelected();
   }
 }

@@ -15,8 +15,6 @@ import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
 
-import org.littletonrobotics.junction.Logger;
-
 public class Vision extends SubsystemBase {
 
   private enum LimelightKey {
@@ -112,7 +110,7 @@ public class Vision extends SubsystemBase {
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
-      
+
       systemsCheck.addBoolean("Limelight Connected", () -> (latency > 0))
         .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y)
         .withSize(3, 3);
@@ -137,12 +135,12 @@ public class Vision extends SubsystemBase {
   }
 
   private void log() {
-    Logger.getInstance().recordOutput("Vision/# of relocalization", relocalizeCounter);
-    Logger.getInstance().recordOutput("Vision/tx", getTx());
-    Logger.getInstance().recordOutput("Vision/ty", getTy());
-    Logger.getInstance().recordOutput("Vision/latency", getLatency());
-    Logger.getInstance().recordOutput("Vision/Valid Target", hasActiveTarget());
-    Logger.getInstance().recordOutput("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
+    SmartDashboard.putNumber("Vision/# of relocalization", relocalizeCounter);
+    SmartDashboard.putNumber("Vision/tx", getTx());
+    SmartDashboard.putNumber("Vision/ty", getTy());
+    SmartDashboard.putNumber("Vision/latency", getLatency());
+    SmartDashboard.putBoolean("Vision/Valid Target", hasActiveTarget());
+    SmartDashboard.putNumber("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
   }
 
   /** Limelight Network Table Access */

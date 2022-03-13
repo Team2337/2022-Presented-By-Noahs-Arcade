@@ -51,6 +51,7 @@ public final class Constants {
   public final double LIMELIGHT_CAMERA_HEIGHT_METERS;
   public final Rotation2d LIMEILGHT_CAMERA_ANGLE;
 
+  public final int CENTERING_BEAM_ID;
   public final int INTAKE_BEAM_ID;
 
   private static Constants instance;
@@ -100,7 +101,7 @@ public final class Constants {
     // Delivery Sensors (3x3 widgets)
     L_COLOR_SENSOR(7, 0),
     R_COLOR_SENSOR(10, 0),
-    TOF_SENSOR(13, 0),
+    CENTERING_SENSOR(13, 0),
     // Other sensors (also 3x3 widgets)
     STRING_POT(7, 3),
     PIXY_CAM(10, 3),
@@ -152,9 +153,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 10.5;
         DRIVETRAIN_WHEEL_BASE_INCHES = 10.5;
-
+        
+        CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 0;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
         break;
@@ -182,9 +184,10 @@ public final class Constants {
 
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
-
+        
+        CENTERING_BEAM_ID = 1;
         INTAKE_BEAM_ID = 0;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(30.91193711));
         break;
@@ -215,8 +218,9 @@ public final class Constants {
         DRIVETRAIN_TRACK_WIDTH_INCHES = 18.75;
         DRIVETRAIN_WHEEL_BASE_INCHES = 18.75;
 
+        CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 9;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(38.1));
         break;
@@ -261,11 +265,11 @@ public final class Constants {
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(62)
+      Rotation2d.fromDegrees(-152)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
       Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(76 + 180)
+      Rotation2d.fromDegrees(-99.75)
     );
 
     public static final PolarCoordinate kResetToZero = new PolarCoordinate(
@@ -293,17 +297,17 @@ public final class Constants {
     //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFourBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(205)
+      Rotation2d.fromDegrees(-155)
     );
     //Shoot postition between ball R2 and ball D2
     public static final PolarCoordinate kFiveBallShootPosition = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(205)
+      Rotation2d.fromDegrees(-155)
     );
     // Ball R2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBallR2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(212) //215.25
+      Rotation2d.fromDegrees(-144.75) //215.25
     );
     public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
       Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -316,7 +320,7 @@ public final class Constants {
     // Ball R3 = Ball nearest to the right starting location
     public static final PolarCoordinate kBallR3 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(260.25)
+      Rotation2d.fromDegrees(-99.75)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
@@ -333,15 +337,15 @@ public final class Constants {
     // Ball R4 = Ball just in front of the Terminal
     public static final PolarCoordinate kBallR4 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
-      Rotation2d.fromDegrees(202.65)
+      Rotation2d.fromDegrees(-157.35)
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Rotation2d.fromDegrees(201.65)
+      Rotation2d.fromDegrees(-158.35)
     );
     public static final PolarCoordinate kBallR4RunOver = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
-      Rotation2d.fromDegrees(201.65)
+      Rotation2d.fromDegrees(-158.35)
     );
 
     /*
@@ -349,7 +353,7 @@ public final class Constants {
      */
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(190.05)
+      Rotation2d.fromDegrees(-169.95)
     );
 
     public static final PolarCoordinate kStartAtZero = new PolarCoordinate(

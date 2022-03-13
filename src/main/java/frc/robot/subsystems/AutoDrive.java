@@ -103,15 +103,26 @@ public class AutoDrive extends SubsystemBase {
    * @return - A negotiated forward/strafe from the auto driveable command
    */
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    if (delegateReference == null) {
-      return null;
-    }
-
-    AutoDrivableCommand command = delegateReference.get();
+    AutoDrivableCommand command = getAutoDriveCommand();
     if (command == null) {
       return null;
     }
     return command.calculate(forward, strafe, isFieldOriented);
+  }
+
+  private AutoDrivableCommand getAutoDriveCommand() {
+    if (delegateReference == null) {
+      return null;
+    }
+    return delegateReference.get();
+  }
+
+  private String getAutoDiveCommandName() {
+    AutoDrivableCommand command = getAutoDriveCommand();
+    if (command == null) {
+      return "N/A";
+    }
+    return command.toString();
   }
 
   public String getAutoDriveCommand() {
@@ -120,16 +131,8 @@ public class AutoDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (delegateReference != null) {
-      AutoDrivableCommand command = delegateReference.get();
-      if (command != null) {
-        SmartDashboard.putString("AutoDrive/Command", command.toString());
-      } else {
-        SmartDashboard.putString("AutoDrive/Command", "N/A");
-      }
-    } else {
-      SmartDashboard.putString("AutoDrive/Command", "N/A");
-    }
+    String commandName = getAutoDiveCommandName();
+    SmartDashboard.putString("AutoDrive/Command", commandName);
   }
 
 }
