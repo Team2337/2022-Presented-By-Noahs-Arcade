@@ -160,10 +160,8 @@ public class RobotContainer {
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
-    driverTriggerLeft.whenHeld(new LinearShootCommand(19.25, delivery, kicker, shooter));
-    driverTriggerRight.whenHeld(new LinearShootCommand(38.5, delivery, kicker, shooter));
+    driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
-    driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
     driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
