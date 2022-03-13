@@ -31,12 +31,7 @@ public class BottomToSideCommand extends CommandBase {
   public void initialize() {
     isFinished = false;
     waitForBallFlag = false;
-    direction = delivery.getBottomToSideRotation();
-
-    if (direction == null) {
-      isFinished = true;
-      return;
-    }
+    direction = delivery.getLeftColorSensorStatus() ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
 
     // Check if we need to move a ball before checking to stop and start the motor
     if (direction == Direction.COUNTER_CLOCKWISE) {
@@ -75,13 +70,6 @@ public class BottomToSideCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    // Update ball values and stop delivery
-    if (direction == Direction.COUNTER_CLOCKWISE) {
-      delivery.rotateArrayCounterClockwise();
-    } else if (direction == Direction.CLOCKWISE) {
-      delivery.rotateArrayClockwise();
-    }
-
     delivery.stop();
     kicker.stop();
   }

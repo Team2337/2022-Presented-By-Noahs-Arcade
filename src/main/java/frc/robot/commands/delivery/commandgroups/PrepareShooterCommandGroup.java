@@ -1,29 +1,29 @@
 package frc.robot.commands.delivery.commandgroups;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.delivery.*;
+import frc.robot.commands.shooter.StartShooterUpToSpeedCommand;
 import frc.robot.Constants.BallColor;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.Shooter;
 
 public class PrepareShooterCommandGroup extends SequentialCommandGroup {
 
-  public PrepareShooterCommandGroup(BallColor ballColor, Delivery delivery, Kicker kicker) {
-    // Check which way we need to rotate
-    if (delivery.getTopPositionColor() == ballColor) {
-      // Ball is at top
-      return; // remove this if we want to call a shooter command after
-    } else if (delivery.getBottomPositionColor() == ballColor){
-      // Ball is at bottom
-      addCommands(
-        new BottomToSideCommand(delivery, kicker),
-        new SideToTopCommand(ballColor, delivery, kicker)
-      );
-    } else {
-      // Ball is at side
-      addCommands(
-        new SideToTopCommand(ballColor, delivery, kicker)
-      );
-    }
+  public PrepareShooterCommandGroup(BallColor ballColor, Delivery delivery, Kicker kicker, Shooter shooter) {
+    addCommands(
+      new ConditionalCommand(
+        sequence(
+          new SideToTopCommand(ballColor, delivery, kicker),
+          new StartShooterUpToSpeedCommand(48.0, shooter)
+          // number taken from the far distance for the very long-named StartShooterUpToSpeedDistanceCommand
+          // Should probably use that instead but oh well
+        ),
+        new InstantCommand(),
+        () -> (delivery.getNumberOfBalls() > 0)
+      )
+    );
   }
 }

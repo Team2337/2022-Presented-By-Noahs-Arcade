@@ -34,9 +34,10 @@ public class SideToTopCommand extends CommandBase {
   public void initialize() {
     isFinished = false;
     waitForBallFlag = false;
-    direction = delivery.getSideToTopDirection(ballColor);
+    direction = delivery.getLeftColorSensorValue() == ballColor ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
 
-    if (direction == null) {
+    // Check if the ball exists in the robot
+    if (delivery.getLeftColorSensorValue() != ballColor && delivery.getRightColorSensorValue() != ballColor) {
       isFinished = true;
       return;
     }
@@ -64,12 +65,6 @@ public class SideToTopCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    // Rotate internal state and stop delivery
-    if (direction == Direction.COUNTER_CLOCKWISE) {
-      delivery.rotateArrayCounterClockwise();
-    } else if (direction == Direction.CLOCKWISE) {
-      delivery.rotateArrayClockwise();
-    }
     delivery.stop();
     kicker.stop();
   }
