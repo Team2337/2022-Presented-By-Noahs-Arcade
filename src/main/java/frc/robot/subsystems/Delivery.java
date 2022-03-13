@@ -27,19 +27,6 @@ public class Delivery extends SubsystemBase {
     COUNTER_CLOCKWISE
   }
 
-  private static enum Slot {
-    BOTTOM(0),
-    RIGHT(1),
-    TOP(2),
-    LEFT(3);
-
-    public final int value;
-
-    private Slot(int value) {
-      this.value = value;
-    }
-  }
-
   private final TalonFX motor = new TalonFX(
     Constants.DELIVERY_MOTOR_ID,
     Constants.UPPER_CANIVORE_ID
@@ -52,17 +39,6 @@ public class Delivery extends SubsystemBase {
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
 
   private final DigitalInput ballCenteringSensor = new DigitalInput(Constants.getInstance().CENTERING_BEAM_ID);
-
-
-  /**
-   * Stores the currently held colors by rotating in a counter-clockwise direction:
-   * <ul>
-   * <li><code>[0]</code>: Bottom
-   * <li><code>[1]</code>: Right
-   * <li><code>[2]</code>: Top
-   * <li><code>[3]</code>: Left
-   */
-  private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
 
@@ -95,12 +71,6 @@ public class Delivery extends SubsystemBase {
       ShuffleboardLayout sensorsWidget = deliveryTab.getLayout("Sensors and States", BuiltInLayouts.kList)
         .withSize(6, 8)
         .withPosition(6, 0);
-      sensorsWidget.addStringArray("Ball positions", () -> new String[]{
-        "Bottom: " + String.valueOf(storedBalls[Slot.BOTTOM.value]),
-        "Right: "  + String.valueOf(storedBalls[Slot.RIGHT.value]),
-        "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
-        "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
-      });
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -200,98 +170,15 @@ public class Delivery extends SubsystemBase {
   /**
    * Adds a new ball to the bottom of the delivery internal state
    */
-  public void addNewBall() {
+  public void addBall() {
     balls++;
-    storedBalls[Slot.BOTTOM.value] = BallColor.UNKNOWN;
   }
 
   /**
    * Removes a ball from the top of the delivery internal state
    */
-  public void removeTopBall() {
+  public void removeBall() {
     balls--;
-    storedBalls[Slot.TOP.value] = null;
-  }
-
-  /**
-   * Rotates the internal state clockwise
-   */
-  public void rotateArrayClockwise() {
-    storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
-    storedBalls[Slot.RIGHT.value] = storedBalls[Slot.TOP.value];
-    storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
-    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
-  }
-
-  /**
-   * Rotates the internal state counter-clockwise
-   */
-  public void rotateArrayCounterClockwise() {
-    storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
-    storedBalls[Slot.LEFT.value] = storedBalls[Slot.TOP.value];
-    storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
-    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
-  }
-
-  public void resetArray() {
-    storedBalls[Slot.BOTTOM.value] = null;
-    storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
-    storedBalls[Slot.TOP.value] = null;
-    storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
-  }
-
-  /**
-   * @return Which way to turn in BottomToSideCommand
-   */
-  public Direction getBottomToSideRotation() {
-    if (storedBalls[Slot.BOTTOM.value] == null) {
-      return null;
-    }
-
-    return storedBalls[Slot.RIGHT.value] == null ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE;
-  }
-
-  /**
-   * @param ballColor The color to look for
-   * @return Which way to turn in SideToTopCommand. Returns null if no need to turn or ball is on bottom.
-   */
-  public Direction getSideToTopDirection(BallColor ballColor) {
-    if (storedBalls[Slot.LEFT.value] == ballColor) {
-      // Ball is on the left, rotate clockwise
-      return Direction.CLOCKWISE;
-    } else if (storedBalls[Slot.RIGHT.value] == ballColor) {
-      // Ball is on the right, rotate counter-clockwise
-      return Direction.COUNTER_CLOCKWISE;
-    }
-    return null;
-  }
-
-  /**
-   * @return The color of the bottom slot of the internal state
-   */
-  public BallColor getBottomPositionColor() {
-    return storedBalls[Slot.BOTTOM.value];
-  }
-
-  /**
-   * @return The color of the right slot of the internal state
-   */
-  public BallColor getRightPositionColor() {
-    return storedBalls[Slot.RIGHT.value];
-  }
-
-  /**
-   * @return The color of the top slot of the internal state
-   */
-  public BallColor getTopPositionColor() {
-    return storedBalls[Slot.TOP.value];
-  }
-
-  /**
-   * @return The color of the left slot of the internal state
-   */
-  public BallColor getLeftPositionColor() {
-    return storedBalls[Slot.LEFT.value];
   }
 
   /**
@@ -299,20 +186,6 @@ public class Delivery extends SubsystemBase {
    */
   public int getNumberOfBalls() {
     return balls;
-  }
-
-  /**
-   * @return If there are consistency issues with the balls in the robot (if one is missing)
-   */
-  public boolean hasIssues() {
-    int count =
-      (storedBalls[Slot.BOTTOM.value] != null ? 1 : 0) +
-      (storedBalls[Slot.LEFT.value] != null ? 1 : 0) +
-      (storedBalls[Slot.RIGHT.value] != null ? 1 : 0) +
-      (storedBalls[Slot.TOP.value] != null ? 1 : 0);
-
-    // If count == balls, return false because there are no issues. Otherwise return true.
-    return count != balls;
   }
 
 
