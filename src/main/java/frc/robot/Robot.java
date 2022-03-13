@@ -88,7 +88,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Starting Position", startingPos);
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
-    // m_robotContainer.resetRobotChooser(startingPos);
   }
   
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
