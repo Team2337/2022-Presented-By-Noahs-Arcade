@@ -24,7 +24,6 @@ public class Heading extends SubsystemBase {
 
   private static double P_MOVING = 0.005;
   private static double P_STATIONARY = 0.007;
-  private static double P_AUTO = 0.005;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -89,13 +88,6 @@ public class Heading extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (DriverStation.isAutonomous()) {
-      P_MOVING = 0.005;
-      P_STATIONARY = 0.007;
-    } else {
-      P_MOVING = 0.005;
-      P_STATIONARY = 0.007;
-    }
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
     if (pCurrent != pDesired) {

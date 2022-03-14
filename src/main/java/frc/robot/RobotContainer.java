@@ -176,8 +176,8 @@ public class RobotContainer {
     driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
-    // driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    // driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
+    driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
+    driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
@@ -208,8 +208,8 @@ public class RobotContainer {
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    // Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    // intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
+    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
 
     /** Driverstation Controls * */
 
