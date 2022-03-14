@@ -108,10 +108,15 @@ public class RobotContainer {
       .withPosition(DriverDashboardPositions.AUTON_CHOOSER.x, DriverDashboardPositions.AUTON_CHOOSER.y)
       .withSize(DriverDashboardPositions.AUTON_CHOOSER.width, DriverDashboardPositions.AUTON_CHOOSER.height);
     
-    Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", autonChooser)
+    Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", startingPosChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser)
       .withPosition(DriverDashboardPositions.STARTING_POS_CHOOSER.x, DriverDashboardPositions.STARTING_POS_CHOOSER.y)
       .withSize(DriverDashboardPositions.STARTING_POS_CHOOSER.width, DriverDashboardPositions.STARTING_POS_CHOOSER.height);
+    
+    Constants.DRIVER_DASHBOARD.add("Starting Angle Chooser", startingAngleChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.x, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.width, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.height);
     
     // Put alliance on driver dashboard
     Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
