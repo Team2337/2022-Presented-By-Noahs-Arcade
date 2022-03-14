@@ -75,7 +75,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
-    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -153,8 +153,8 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    pigeon.setYaw(-35, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
   public void resetRobotAuto(double startingAngle) {
@@ -176,7 +176,7 @@ public class RobotContainer {
     break;
 
     case "Right":
-      pigeon.setYaw(80, 250);
+      pigeon.setYaw(75, 250);
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
@@ -235,11 +235,11 @@ public class RobotContainer {
 
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
-
+    /*
     operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
     operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
-
+    */
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
