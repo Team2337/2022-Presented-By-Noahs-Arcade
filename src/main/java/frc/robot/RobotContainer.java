@@ -4,16 +4,23 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.BallColor;
+import frc.robot.Constants.DriverDashboardPositions;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
@@ -64,6 +71,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // Create auton selector
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -93,6 +101,34 @@ public class RobotContainer {
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
+    
+    // Add dropdowns to driver dashboard
+    Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.AUTON_CHOOSER.x, DriverDashboardPositions.AUTON_CHOOSER.y)
+      .withSize(DriverDashboardPositions.AUTON_CHOOSER.width, DriverDashboardPositions.AUTON_CHOOSER.height);
+    
+    Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", startingPosChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_POS_CHOOSER.x, DriverDashboardPositions.STARTING_POS_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_POS_CHOOSER.width, DriverDashboardPositions.STARTING_POS_CHOOSER.height);
+    
+    Constants.DRIVER_DASHBOARD.add("Starting Angle Chooser", startingAngleChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.x, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.width, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.height);
+    
+    // Put alliance on driver dashboard
+    Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
+      .withPosition(3, 6)
+      .withSize(3, 3)
+      .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
+
+    if (Constants.DO_SYSTEMS_CHECK) {
+      Constants.SYSTEMS_CHECK_TAB.addBoolean("Pixy Cam Connected", pixyCam::isConnected)
+        .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
+        .withSize(3, 3);
+    }
   }
 
   public void resetRobot() {
