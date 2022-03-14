@@ -9,6 +9,7 @@ import java.util.Map;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -60,6 +61,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
+  private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -92,6 +94,13 @@ public class RobotContainer {
     startingPosChooser.addOption("Middle", "Middle");
 
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
+
+    startingAngleChooser.addOption("Launchpad (0 degrees)", 0.0);
+    startingAngleChooser.addOption("Left fender (-12.5 degrees)", -12.5);
+    startingAngleChooser.addOption("Right fender (60 degrees)", 60.0);
+    startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
+
+    SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
     
     // Add dropdowns to driver dashboard
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
@@ -99,7 +108,7 @@ public class RobotContainer {
       .withPosition(DriverDashboardPositions.AUTON_CHOOSER.x, DriverDashboardPositions.AUTON_CHOOSER.y)
       .withSize(DriverDashboardPositions.AUTON_CHOOSER.width, DriverDashboardPositions.AUTON_CHOOSER.height);
     
-      Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", autonChooser)
+    Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", autonChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser)
       .withPosition(DriverDashboardPositions.STARTING_POS_CHOOSER.x, DriverDashboardPositions.STARTING_POS_CHOOSER.y)
       .withSize(DriverDashboardPositions.STARTING_POS_CHOOSER.width, DriverDashboardPositions.STARTING_POS_CHOOSER.height);
@@ -143,7 +152,12 @@ public class RobotContainer {
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
-  public void resetRobotChooser(String startPos) {
+  public void resetRobotAuto(double startingAngle) {
+    pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  }  
+
+  public void resetRobotChooser(String startPos, double startingAngle) {
     switch (startPos) {
 
     case "Left":
@@ -239,5 +253,9 @@ public class RobotContainer {
 
   public String getStartingPosition() {
     return startingPosChooser.getSelected();
+  }
+
+  public double getStartingAngle() {
+    return startingAngleChooser.getSelected();
   }
 }
