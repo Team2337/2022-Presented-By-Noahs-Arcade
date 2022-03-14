@@ -325,7 +325,7 @@ public final class Constants {
       Units.inchesToMeters(305.66),
       Rotation2d.fromDegrees(-157.35)
     );
-    // Ball R4 = Ball just in front of the Terminal
+    // Point between ball R1 and ball R4 when running four ball auto from left side
     public static final PolarCoordinate TransitionBetweenBallR1AndBallR4 = new PolarCoordinate(
       Units.inchesToMeters(170),
       Rotation2d.fromDegrees(179)
