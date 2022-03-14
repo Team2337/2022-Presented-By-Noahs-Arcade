@@ -27,6 +27,8 @@ import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.StartStopShooterCommand;
+import frc.robot.commands.shooter.StartStopShooterDynamic;
+import frc.robot.commands.shooter.StartStopShooterDynamicCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
@@ -59,7 +61,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
-    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -184,6 +186,7 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
@@ -193,6 +196,7 @@ public class RobotContainer {
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
+    operatorX.whileHeld(new StartStopShooterDynamic(drivetrain::getTranslation, shooter));
 
     operatorRightTrigger.whenPressed(intake::start, intake);
     operatorRightTrigger.whenReleased(intake::stop, intake);
@@ -227,4 +231,12 @@ public class RobotContainer {
   public double getStartingAngle() {
     return startingAngleChooser.getSelected();
   }
+
+  public void relocalize() {
+    // XboxController operatorControllerX = new XboxController(1);
+    // JoystickButton operatorY = new JoystickButton(operatorControllerX, XboxController.Button.kY.value);
+    // operatorY.whileHeld(new InstantRelocalizeCommand(drivetrain, vision));
+    new InstantRelocalizeCommand(drivetrain, vision);
+  }
+
 }

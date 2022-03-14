@@ -2,6 +2,7 @@ package frc.robot.commands.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.Drivetrain;
@@ -26,6 +27,7 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
 
   @Override
   public void execute() {
+    SmartDashboard.putNumber("Vision Relocalization", relocalizeDebounceCounter);
     if (relocalizeDebounceCounter >= RELOCALIZE_DEBOUNCE_LIMIT) {
       PolarCoordinate visionCoordinate = calculateVisionPolarCoordiante();
       if (visionCoordinate != null) {

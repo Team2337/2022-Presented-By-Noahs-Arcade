@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("auto", autonomousRan);
+    SmartDashboard.putData(CommandScheduler.getInstance());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Starting Position", startingPos);
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
+    m_robotContainer.relocalize();
   }
   
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -126,9 +128,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

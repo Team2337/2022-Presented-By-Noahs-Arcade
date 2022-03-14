@@ -3,10 +3,12 @@ package frc.robot.commands.shooter;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.delivery.StartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
+import frc.robot.commands.kicker.ForwardKickerDistanceCommand;
 import frc.robot.commands.kicker.ReverseKickerCommand;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Shooter;
@@ -20,8 +22,10 @@ public class LinearShootCommand extends SequentialCommandGroup {
       new ReverseKickerCommand(kicker).withTimeout(0.2),
       new WaitCommand(0.2),
       new StartShooterUpToSpeedDistanceCommand(translationSupplier, shooter),
-      new ForwardKickerCommand(kicker),
-      new StartDelivery(delivery)
+      new ParallelCommandGroup(
+        new ForwardKickerDistanceCommand(translationSupplier, kicker),
+        new StartDelivery(delivery) 
+      )
     );
   }
 
