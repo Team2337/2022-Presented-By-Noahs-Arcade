@@ -108,8 +108,6 @@ public class Vision extends SubsystemBase {
       distanceToTargetMeters = calculateDistanceToTargetMeters();
     }
 
-    SmartDashboard.putNumber("Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
-
     log();
   }
 
