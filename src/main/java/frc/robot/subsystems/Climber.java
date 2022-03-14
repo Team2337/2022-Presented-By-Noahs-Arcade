@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -25,6 +26,11 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
  * Subsystem for the climber mechanism
  */
 public class Climber extends SubsystemBase {
+  //Servos
+  private final Servo poleServo1 = new Servo(0);
+  private final Servo poleServo2 = new Servo(1);
+  private final Servo hookServo1 = new Servo(2);
+  private final Servo hookServo2 = new Servo(3);
 
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
@@ -160,6 +166,13 @@ public class Climber extends SubsystemBase {
     }
     //Else, we just use the ticks anyway and set
     leftMotor.set(TalonFXControlMode.Position, setpoint);
+  }
+
+  public void releaseServos(){
+    poleServo1.setSpeed(1);
+    poleServo2.setSpeed(1);
+    hookServo1.setSpeed(1);
+    hookServo2.setSpeed(1);
   }
 
   public void hold() {

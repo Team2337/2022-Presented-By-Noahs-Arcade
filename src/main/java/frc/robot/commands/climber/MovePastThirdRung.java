@@ -36,7 +36,7 @@ public class MovePastThirdRung extends CommandBase {
   @Override
   public void execute(){  
     //Deadband makes sure slight inaccuracies in the controller does not make the controller move if it isn't touched
-    double output = -1 * Utilities.deadband(controller.getRightY(), 0.15);
+    double output = -Math.abs(Utilities.deadband(controller.getRightY(), 0.15));
     if (output == 0){
         //First time through, set the position, so the robot will stay at this position while the controller is not touched.
         if (needsSetPoint){

@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.climber.JoystickClimberCommand;
