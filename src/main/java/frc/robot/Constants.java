@@ -239,23 +239,23 @@ public final class Constants {
     // Starting Locations
 
     public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
-      Units.inchesToMeters(97),
       // Starting angle of -35
+      Units.inchesToMeters(97),
       Rotation2d.fromDegrees(147.75)
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
-      Units.inchesToMeters(94),
       // Starting angle of 38
+      Units.inchesToMeters(94),
       Rotation2d.fromDegrees(-137)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(93),
       // Starting angle of 67.42
+      Units.inchesToMeters(93),
       Rotation2d.fromDegrees(-99.75)
     );
     public static final PolarCoordinate kPositionFarRightStart = new PolarCoordinate(
-      Units.inchesToMeters(93),
       // Starting angle of -90
+      Units.inchesToMeters(93),
       Rotation2d.fromDegrees(-90)
     );
 

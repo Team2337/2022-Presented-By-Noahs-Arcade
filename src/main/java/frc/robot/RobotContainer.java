@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +54,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
+  private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -84,6 +86,13 @@ public class RobotContainer {
     startingPosChooser.addOption("Middle", "Middle");
 
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
+
+    startingAngleChooser.addOption("Launchpad (0 degrees)", 0.0);
+    startingAngleChooser.addOption("Left fender (-12.5 degrees)", -12.5);
+    startingAngleChooser.addOption("Right fender (60 degrees)", 60.0);
+    startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
+
+    SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
   }
 
   public void resetRobot() {
@@ -112,7 +121,12 @@ public class RobotContainer {
     drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
-  public void resetRobotChooser(String startPos) {
+  public void resetRobotAuto(double startingAngle) {
+    pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  }  
+
+  public void resetRobotChooser(String startPos, double startingAngle) {
     switch (startPos) {
 
     case "Left":
@@ -208,5 +222,9 @@ public class RobotContainer {
 
   public String getStartingPosition() {
     return startingPosChooser.getSelected();
+  }
+
+  public double getStartingAngle() {
+    return startingAngleChooser.getSelected();
   }
 }
