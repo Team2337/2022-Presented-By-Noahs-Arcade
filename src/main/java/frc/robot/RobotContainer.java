@@ -90,9 +90,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 
-    startingPosChooser.setDefaultOption("Right", "Right");
-    startingPosChooser.addOption("Left", "Left");
-    startingPosChooser.addOption("Middle", "Middle");
+    startingPosChooser.setDefaultOption("Right Pos3", "Right");
+    startingPosChooser.addOption("Left Pos1", "Left");
+    startingPosChooser.addOption("Middle Pos2", "Middle");
+    startingPosChooser.addOption("Far Right", "Far Right");
 
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
 
@@ -167,22 +168,27 @@ public class RobotContainer {
     switch (startPos) {
 
     case "Left":
-      pigeon.setYaw(-32.25, 250);
+      pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250); // -32.25 deg
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
     case "Middle":
-      pigeon.setYaw(45, 250);
+      pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250); // 45 deg
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition2MiddleStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
     case "Right":
-      pigeon.setYaw(75, 250);
+      pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250); // 75 deg
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
+    case "Far Right":
+    pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250); // 90 deg
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPositionFarRightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  break;
+
     default:
-        pigeon.setYaw(80, 250);
+        pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250); // 80 deg
         drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));      
     break;
     }
