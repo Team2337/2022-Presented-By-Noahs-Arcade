@@ -59,8 +59,10 @@ public class RobotContainer {
   private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, heading));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, driverRightBumper::get, drivetrain, heading, vision));
     // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
@@ -159,11 +161,11 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     /** Driver Controller */
+    // Note: Drive Right Bumper being used for Heading relocalize
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
-    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
@@ -175,7 +177,8 @@ public class RobotContainer {
     // driverLeftBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.BLUE, delivery, kicker));
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
 
-    driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
+    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
@@ -186,7 +189,7 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);

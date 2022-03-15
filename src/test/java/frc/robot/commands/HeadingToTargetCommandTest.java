@@ -32,7 +32,10 @@ public class HeadingToTargetCommandTest {
     Translation2d target = coordinate.toFieldCoordinate();
     HeadingToTargetCommand command = new HeadingToTargetCommand(
       () -> target,
-      heading
+      () -> false,
+      null,
+      heading,
+      null
     );
     command.execute();
     return heading.getMaintainHeading();

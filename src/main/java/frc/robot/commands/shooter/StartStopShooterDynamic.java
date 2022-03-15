@@ -19,9 +19,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class StartStopShooterDynamic extends CommandBase {
 
+  private final Supplier<Translation2d> translationSupplier;
   private final Shooter shooter;
-  private PolarCoordinate robotCoordinate;
-  private Supplier<Translation2d> translationSupplier; 
 
   private static final double kLowGoalThresholdInches = 72;
   private static final double ringOfFireTopEnd = 180;
@@ -31,41 +30,49 @@ public class StartStopShooterDynamic extends CommandBase {
   private static final double kHighGoalSpeedFeetPerSecond = 38.5;
   private static final double kLaunchpadCloseSpeedFeetPerSecond = 43.7;
   private static final double kLaunchpadFarSpeedFeetPerSecond = 48;
-  private double lastDistance;
-  private double distance;
-  private double lastTime;
-  private double time;  
-  private double deltaTime;
-  private double deltaDistance;
 
+  Double previousTime;
+  PolarCoordinate previousRobotCoordinate;
 
   public StartStopShooterDynamic(Supplier<Translation2d> translationSupplier, Shooter shooter) {
-    this.shooter = shooter;
     this.translationSupplier = translationSupplier;
 
-    robotCoordinate = PolarCoordinate.fromFieldCoordinate(translationSupplier.get());
-    
+    this.shooter = shooter;
+
     addRequirements(shooter);
   }
 
   @Override
-  public void execute() {
-    robotCoordinate = PolarCoordinate.fromFieldCoordinate(translationSupplier.get());
+  public void initialize() {
+    previousTime = 0.0;
+    previousRobotCoordinate = PolarCoordinate.fromFieldCoordinate(translationSupplier.get());
+  }
 
-    lastDistance = distance;
-    lastTime = time;
-    distance = Units.metersToInches(robotCoordinate.getRadiusMeters());
-    time = Timer.getFPGATimestamp();
-    deltaTime = lastTime - time;
-    double velocity = Utilities.calculateDerivative(distance, lastDistance, deltaTime);
-    deltaDistance = (lastDistance - distance);
-    SmartDashboard.putNumber("Velocity", velocity);
-    SmartDashboard.putNumber("Change in distance", (lastDistance - distance));
-    double shooterSpeed = 36.1 - 0.0114 * distance + 0.00027 * Math.pow(distance, 2);
-    shooterSpeed = shooterSpeed - deltaDistance;
-    SmartDashboard.putNumber("Distance", distance);
-    shooter.setSpeed(shooterSpeed);
+  @Override
+  public void execute() {
+    PolarCoordinate robotCoordinate = PolarCoordinate.fromFieldCoordinate(translationSupplier.get());
+    double time = Timer.getFPGATimestamp();
+    double timeDelta = time - previousTime;
+
+    double deltaDistanceMeters = robotCoordinate.getRadiusMeters() - previousRobotCoordinate.getRadiusMeters();
+    double velocity = Units.metersToFeet(deltaDistanceMeters) / timeDelta;
+
+    double distanceInches = Units.metersToInches(robotCoordinate.getRadiusMeters());
+    SmartDashboard.putNumber("Distance", distanceInches);
+
+    double shooterSpeed = 36.1 - 0.0114 * distanceInches + 0.00027 * Math.pow(distanceInches, 2);
+    double shooterXSpeed = Math.cos(Units.degreesToRadians(25)) * shooterSpeed;
+    double shooterYSpeed = Math.sin(Units.degreesToRadians(25)) * shooterSpeed;
+    shooterXSpeed -= velocity;
+    shooterSpeed = Math.sqrt(Math.pow(shooterXSpeed, 2) + Math.pow(shooterYSpeed, 2));
+
     SmartDashboard.putNumber("Shooter speed", shooterSpeed);
+    SmartDashboard.putNumber("Velocity", velocity);
+
+    shooter.setSpeed(shooterSpeed);
+
+    previousTime = time;
+    previousRobotCoordinate = robotCoordinate;
   }
 
   @Override

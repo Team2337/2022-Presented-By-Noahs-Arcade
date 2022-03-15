@@ -16,14 +16,14 @@ import frc.robot.subsystems.Kicker;
 
 public class LinearShootCommand extends SequentialCommandGroup {
 
-  public LinearShootCommand(Supplier<Translation2d> translationSupplier, Delivery delivery, Kicker kicker, Shooter shooter) {
+  public LinearShootCommand(Supplier<Translation2d> translationSupplier, Supplier<Boolean> overrideSupplier, Delivery delivery, Kicker kicker, Shooter shooter) {
     addCommands(
       new ReverseStopShooterCommand(shooter).withTimeout(0.2),
       new ReverseKickerCommand(kicker).withTimeout(0.2),
       new WaitCommand(0.2),
-      new StartShooterUpToSpeedDistanceCommand(translationSupplier, shooter),
+      new StartShooterUpToSpeedDistanceCommand(translationSupplier,  overrideSupplier, shooter),
       new ParallelCommandGroup(
-        new ForwardKickerDistanceCommand(translationSupplier, kicker),
+        new ForwardKickerCommand(kicker),
         new StartDelivery(delivery) 
       )
     );

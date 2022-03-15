@@ -18,14 +18,14 @@ public class StartShooterUpToSpeedDistanceCommand extends ConditionalCommand {
   // kLowGoalThresholdInches or less from the goal
   private static final double kLowGoalThresholdInches = 72;
   private static final double kLowGoalSpeedFeetPerSecond = 19.25;
-  private static final double kHighGoalSpeedFeetPerSecond = 38.5;
+  private static final double kHighGoalSpeedFeetPerSecond = 40.7;
   private static final double kLaunchpadCloseSpeedFeetPerSecond = 43.7;
   private static final double kLaunchpadFarSpeedFeetPerSecond = 48;
 
-  public StartShooterUpToSpeedDistanceCommand(Supplier<Translation2d> translationSupplier, Shooter shooter) {
+  public StartShooterUpToSpeedDistanceCommand(Supplier<Translation2d> translationSupplier, Supplier<Boolean> overrideSupplier, Shooter shooter) {
     super(
       new StartShooterUpToSpeedCommand(kLowGoalSpeedFeetPerSecond, shooter),
-      new StartShooterUpToSpeedCommand(kHighGoalSpeedFeetPerSecond, shooter),
+      new StartShooterUpToSpeedCommand(kHighGoalSpeedFeetPerSecond, kLaunchpadFarSpeedFeetPerSecond, overrideSupplier, shooter),
       () -> {
         PolarCoordinate robotCoordinate = PolarCoordinate.fromFieldCoordinate(translationSupplier.get());
         return Units.metersToInches(robotCoordinate.getRadiusMeters()) < kLowGoalThresholdInches;
