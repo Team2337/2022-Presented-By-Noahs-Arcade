@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 
@@ -38,6 +39,7 @@ public class Intake extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
+    // Normal debug
     if (logEnable) {
       ShuffleboardTab intakeTab = Shuffleboard.getTab("Intake");
 
@@ -46,6 +48,12 @@ public class Intake extends SubsystemBase {
       intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
     }
 
+    // Driver dashboard
+    Constants.DRIVER_DASHBOARD.addBoolean("Intake Sensor", this::getBeamBreakSensorStatus)
+      .withPosition(DriverDashboardPositions.INTAKE_BEAM.x, DriverDashboardPositions.INTAKE_BEAM.y)
+      .withSize(DriverDashboardPositions.INTAKE_BEAM.width, DriverDashboardPositions.INTAKE_BEAM.height);
+
+    // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 

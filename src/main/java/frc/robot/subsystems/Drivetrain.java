@@ -15,9 +15,11 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.nerdyfiles.swerve.FXSwerveModule;
 
@@ -66,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
 
   // Update Drivetrain state only once per cycle
   private Pose2d pose = new Pose2d();
-  // private Field2d field = new Field2d();
+  private Field2d field = new Field2d();
 
   // Array for Yaw Pitch and Roll values in degrees
   private double[] ypr_deg = { 0, 0, 0 };
@@ -124,18 +126,29 @@ public class Drivetrain extends SubsystemBase {
     };
 
     setupShuffleboard(Constants.DashboardLogging.DRIVETRAIN);
+    SmartDashboard.putData("field", field);
   }
 
   private void setupShuffleboard(Boolean logEnable) {
+    // Normal debug
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
-      ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList).withSize(4, 8).withPosition(12, 0);
+      ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(12, 0);
       chassisSpeedsWidget.addNumber("vx meters per s", () -> chassisSpeeds.vxMetersPerSecond);
       chassisSpeedsWidget.addNumber("vy meters per s", () -> chassisSpeeds.vyMetersPerSecond);
       chassisSpeedsWidget.addNumber("omega radians per s", () -> chassisSpeeds.omegaRadiansPerSecond);
     }
-    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList).withSize(4, 8).withPosition(16, 0);
+    ShuffleboardLayout gyroWidget = tab.getLayout("Gyro", BuiltInLayouts.kList)
+      .withSize(4, 8)
+      .withPosition(16, 0);
     gyroWidget.addNumber("Degrees", () -> getGyroscopeRotation().getDegrees());
+
+    // Driver Dashboard
+    Constants.DRIVER_DASHBOARD.addNumber("Gyro Degrees", () -> getGyroscopeRotation().getDegrees())
+      .withPosition(DriverDashboardPositions.GYRO_DEGREES.x, DriverDashboardPositions.GYRO_DEGREES.y)
+      .withSize(DriverDashboardPositions.GYRO_DEGREES.width, DriverDashboardPositions.GYRO_DEGREES.height);
   }
 
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
@@ -233,8 +246,7 @@ public class Drivetrain extends SubsystemBase {
       realStates
     );
 
-    // field.setRobotPose(pose);
-
+    field.setRobotPose(pose);
     /*
     Logger.getInstance().recordOutput("Odometry/Robot",
       new double[] { pose.getX(), pose.getY(), pose.getRotation().getRadians() });

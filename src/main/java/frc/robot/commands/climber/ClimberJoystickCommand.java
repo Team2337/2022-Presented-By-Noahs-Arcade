@@ -14,6 +14,8 @@ public class ClimberJoystickCommand extends CommandBase {
   private final XboxController controller;
 
   private boolean shouldHoldPositionWhenStopped = true;
+  private double MIN_STRINGPOT_VALUE = 0.5;
+  private double MAX_STRINGPOT_VALUE = 2.95;
 
   public ClimberJoystickCommand(XboxController controller, Climber climber) {
     this.climber = climber;
@@ -44,6 +46,9 @@ public class ClimberJoystickCommand extends CommandBase {
         -MAX_SPEED,
         MAX_SPEED
       );
+      if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output < 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output > 0))) {
+        output = 0;
+      }
       climber.setSpeed(output);
       shouldHoldPositionWhenStopped = true;
     }

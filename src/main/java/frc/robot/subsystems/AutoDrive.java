@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 
 /**
@@ -52,6 +54,12 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
  * }
  */
 public class AutoDrive extends SubsystemBase {
+
+  public AutoDrive() {
+    Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", this::getAutoDriveCommandName)
+      .withPosition(DriverDashboardPositions.AUTODRIVE_COMMAND.x, DriverDashboardPositions.AUTODRIVE_COMMAND.y)
+      .withSize(DriverDashboardPositions.AUTODRIVE_COMMAND.width, DriverDashboardPositions.AUTODRIVE_COMMAND.height);
+  }
 
   private WeakReference<AutoDrivableCommand> delegateReference;
 
@@ -109,7 +117,7 @@ public class AutoDrive extends SubsystemBase {
     return delegateReference.get();
   }
 
-  private String getAutoDiveCommandName() {
+  private String getAutoDriveCommandName() {
     AutoDrivableCommand command = getAutoDriveCommand();
     if (command == null) {
       return "N/A";
@@ -119,7 +127,7 @@ public class AutoDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    String commandName = getAutoDiveCommandName();
+    String commandName = getAutoDriveCommandName();
     SmartDashboard.putString("AutoDrive/Command", commandName);
   }
 

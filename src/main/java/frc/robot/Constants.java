@@ -67,6 +67,31 @@ public final class Constants {
     public static final boolean SHOOTER = false;
   }
 
+  // Driver dashboard
+  // 28x13
+  public static enum DriverDashboardPositions {
+    // TODO: could we make this easier by using a method to pass in the widget and one of these enums?
+    AUTON_CHOOSER(0, 0, 6, 3),
+    STARTING_POS_CHOOSER(0, 3, 6, 3),
+    STARTING_ANGLE_CHOOSER(0, 6, 6, 3),
+    AUTODRIVE_COMMAND(0, 9, 6, 3),
+    GYRO_DEGREES(7, 0, 3, 3),
+    ALLIANCE(10, 0, 3, 3),
+    INTAKE_BEAM(7, 3, 3, 3),
+    DRIVER_CAM(14, 0, 10, 7);
+
+    public final int x, y, width, height;
+
+    private DriverDashboardPositions(int x, int y, int w, int h) {
+      this.x = x;
+      this.y = y;
+      this.width = w;
+      this.height = h;
+    }
+  }
+  public static final ShuffleboardTab DRIVER_DASHBOARD = Shuffleboard.getTab("DRIVER DASHBOARD");
+
+  // Systems check
   public static enum SystemsCheckPositions {
     // Temperatures (3x4 widgets)
     INTAKE_TEMP(0, 0),
@@ -133,9 +158,9 @@ public final class Constants {
         
         CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 0;
-        
-        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(40.5);
-        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34));
+
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34.98));
         break;
       case PRACTICE:
         SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK4I_L1;
@@ -197,9 +222,9 @@ public final class Constants {
 
         CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 9;
-        
-        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(28.5);
-        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(38.1));
+
+        LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(24.79));
         break;
     }
   }
@@ -231,22 +256,32 @@ public final class Constants {
      * is our 0 degrees line (positive X axis). 180 is added to our thetas in order
      * to get them to be on our side of the field, as opposed to the opposing side.
      */
-    public static final double kPickupDistanceInches = 22.0;
+    public static final double kPickupDistanceInches = 8.0;
+    public static final double kPickupR2DistanceInches = 34.0;
+    public static final double kPickupR4DistanceInches = 10.0;
     public static final double kRunOverDistanceInches = 4.0;
 
     // Starting Locations
 
     public static final PolarCoordinate kPosition1LeftStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(122.25)
+      // Starting angle of -35
+      Units.inchesToMeters(97),
+      Rotation2d.fromDegrees(147.75)
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
-      Rotation2d.fromDegrees(-152)
+      // Starting angle of 38
+      Units.inchesToMeters(94),
+      Rotation2d.fromDegrees(-137)
     );
     public static final PolarCoordinate kPosition3RightStart = new PolarCoordinate(
-      Units.inchesToMeters(90),
+      // Starting angle of 67.42
+      Units.inchesToMeters(93),
       Rotation2d.fromDegrees(-99.75)
+    );
+    public static final PolarCoordinate kPositionFarRightStart = new PolarCoordinate(
+      // Starting angle of -90
+      Units.inchesToMeters(93),
+      Rotation2d.fromDegrees(-90)
     );
 
     public static final PolarCoordinate kResetToZero = new PolarCoordinate(
@@ -265,7 +300,7 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR1Pickup = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Constants.Auto.kBallR1.getTheta()
+      Rotation2d.fromDegrees(143)
     );
     public static final PolarCoordinate kBallR1RunOver = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
@@ -284,10 +319,10 @@ public final class Constants {
     // Ball R2 = Ball nearest to the middle starting location
     public static final PolarCoordinate kBallR2 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(-144.75) //215.25
+      Rotation2d.fromDegrees(-146.75) //215.25
     );
     public static final PolarCoordinate kBallR2Pickup = new PolarCoordinate(
-      Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR2.getRadiusMeters() - Units.inchesToMeters(kPickupR2DistanceInches),
       Constants.Auto.kBallR2.getTheta()
     );
     public static final PolarCoordinate kBallR2RunOver = new PolarCoordinate(
@@ -300,7 +335,7 @@ public final class Constants {
       Rotation2d.fromDegrees(-99.75)
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
-      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR3.getTheta()
     );
     public static final PolarCoordinate kBallR3RunOver = new PolarCoordinate(
@@ -311,14 +346,22 @@ public final class Constants {
       Constants.Auto.kBallR2.getRadiusMeters(),
       Constants.Auto.kBallR2.getTheta()
     );
-    // Ball R4 = Ball just in front of the Terminal
     public static final PolarCoordinate kBallR4 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
       Rotation2d.fromDegrees(-157.35)
     );
+    // Point between ball R1 and ball R4 when running four ball auto from left side
+    public static final PolarCoordinate TransitionBetweenBallR1AndBallR4 = new PolarCoordinate(
+      Units.inchesToMeters(170),
+      Rotation2d.fromDegrees(179)
+    );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
-      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Rotation2d.fromDegrees(-158.35)
+      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
+      Rotation2d.fromDegrees(-157.35)
+    );
+    public static final PolarCoordinate kBallR4PickupForLeftStart = new PolarCoordinate(
+      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
+      Rotation2d.fromDegrees(-161)
     );
     public static final PolarCoordinate kBallR4RunOver = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),

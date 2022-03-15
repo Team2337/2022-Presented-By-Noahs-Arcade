@@ -4,15 +4,23 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.BallColor;
+import frc.robot.Constants.DriverDashboardPositions;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
@@ -54,6 +62,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
+  private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
@@ -63,10 +72,11 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // Create auton selector
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
-    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos2 Mid R2 Punt D2 R1 Shoot", new Pos2MidR2D2PR1(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -85,6 +95,41 @@ public class RobotContainer {
     startingPosChooser.addOption("Middle", "Middle");
 
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
+
+    startingAngleChooser.addOption("Launchpad (0 degrees)", 0.0);
+    startingAngleChooser.addOption("Left fender (-12.5 degrees)", -12.5);
+    startingAngleChooser.addOption("Right fender (60 degrees)", 60.0);
+    startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
+
+    SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
+    
+    // Add dropdowns to driver dashboard
+    Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.AUTON_CHOOSER.x, DriverDashboardPositions.AUTON_CHOOSER.y)
+      .withSize(DriverDashboardPositions.AUTON_CHOOSER.width, DriverDashboardPositions.AUTON_CHOOSER.height);
+    
+    Constants.DRIVER_DASHBOARD.add("Starting Pos Chooser", startingPosChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_POS_CHOOSER.x, DriverDashboardPositions.STARTING_POS_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_POS_CHOOSER.width, DriverDashboardPositions.STARTING_POS_CHOOSER.height);
+    
+    Constants.DRIVER_DASHBOARD.add("Starting Angle Chooser", startingAngleChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser)
+      .withPosition(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.x, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.y)
+      .withSize(DriverDashboardPositions.STARTING_ANGLE_CHOOSER.width, DriverDashboardPositions.STARTING_ANGLE_CHOOSER.height);
+    
+    // Put alliance on driver dashboard
+    Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
+      .withPosition(3, 6)
+      .withSize(3, 3)
+      .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
+
+    if (Constants.DO_SYSTEMS_CHECK) {
+      Constants.SYSTEMS_CHECK_TAB.addBoolean("Pixy Cam Connected", pixyCam::isConnected)
+        .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
+        .withSize(3, 3);
+    }
   }
 
   public void resetRobot() {
@@ -109,11 +154,16 @@ public class RobotContainer {
   }
 
   public void resetRobotAuto() {
-    pigeon.setYaw(Constants.STARTING_ANGLE, 250);
-    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+    pigeon.setYaw(-35, 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition1LeftStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
   }
 
-  public void resetRobotChooser(String startPos) {
+  public void resetRobotAuto(double startingAngle) {
+    pigeon.setYaw(startingAngle + drivetrain.getGyroscopeRotation().getDegrees(), 250);
+    drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
+  }  
+
+  public void resetRobotChooser(String startPos, double startingAngle) {
     switch (startPos) {
 
     case "Left":
@@ -127,7 +177,7 @@ public class RobotContainer {
     break;
 
     case "Right":
-      pigeon.setYaw(80, 250);
+      pigeon.setYaw(75, 250);
       drivetrain.resetPosition(new Pose2d(Constants.Auto.kPosition3RightStart.toFieldCoordinate(), drivetrain.getGyroscopeRotation()));
     break;
 
@@ -215,5 +265,9 @@ public class RobotContainer {
 
   public String getStartingPosition() {
     return startingPosChooser.getSelected();
+  }
+
+  public double getStartingAngle() {
+    return startingAngleChooser.getSelected();
   }
 }

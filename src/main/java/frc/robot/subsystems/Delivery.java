@@ -46,7 +46,7 @@ public class Delivery extends SubsystemBase {
   );
 
   // Color sensors
-  private final PicoColorSensors colorSensors = new PicoColorSensors();
+  // private final PicoColorSensors colorSensors = new PicoColorSensors();
 
   // Beam break sensor
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
@@ -101,6 +101,7 @@ public class Delivery extends SubsystemBase {
         "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
+      /*
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -109,6 +110,7 @@ public class Delivery extends SubsystemBase {
         "Left: " + String.valueOf(colorSensors.leftSensorSeesBall()),
         "Right: " + String.valueOf(colorSensors.rightSensorSeesBall())
       });
+      */
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Centering Sensor: "   + getCenteringSensorStatus()
       });
@@ -117,14 +119,14 @@ public class Delivery extends SubsystemBase {
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
-
+      /*
       systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
         .withPosition(SystemsCheckPositions.L_COLOR_SENSOR.x, SystemsCheckPositions.L_COLOR_SENSOR.y)
         .withSize(3, 3);
       systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
         .withPosition(SystemsCheckPositions.R_COLOR_SENSOR.x, SystemsCheckPositions.R_COLOR_SENSOR.y)
         .withSize(3, 3);
-
+      */
       systemsCheck.addNumber("Delivery Temp (°C)", () -> getTemperature())
         .withPosition(SystemsCheckPositions.DELIVERY_TEMP.x, SystemsCheckPositions.DELIVERY_TEMP.y)
         .withSize(3, 4)
@@ -217,27 +219,33 @@ public class Delivery extends SubsystemBase {
    * Rotates the internal state clockwise
    */
   public void rotateArrayClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
    * Rotates the internal state counter-clockwise
    */
   public void rotateArrayCounterClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
+    */
   }
 
   public void resetArray() {
+    /*
     storedBalls[Slot.BOTTOM.value] = null;
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
     storedBalls[Slot.TOP.value] = null;
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
@@ -327,7 +335,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return colorSensors.leftSensorSeesBall();
+    return false; // colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -335,7 +343,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return colorSensors.rightSensorSeesBall();
+    return false; // colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -343,7 +351,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return colorSensors.getLeftSensorBallColor();
+    return null; // colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -351,7 +359,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return colorSensors.getRightSensorBallColor();
+    return null; // colorSensors.getRightSensorBallColor();
   }
 
 
