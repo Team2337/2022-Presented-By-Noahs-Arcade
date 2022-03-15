@@ -122,6 +122,9 @@ public class Robot extends TimedRobot {
       m_robotContainer.resetRobotTeleop();
     }
 
+    m_robotContainer.instantiateSubsystemsTeleop();
+    m_robotContainer.configureButtonBindingsTeleop();
+
   }
 
   /** This function is called periodically during operator control. */

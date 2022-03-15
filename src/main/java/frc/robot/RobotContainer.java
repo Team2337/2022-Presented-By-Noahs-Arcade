@@ -42,12 +42,13 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
 
 public class RobotContainer {
+  private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
+
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
 
   private final PigeonIMU pigeon = new PigeonIMU(0);
-  private final PixyCam pixyCam = new PixyCam();
 
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
@@ -220,11 +221,9 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
-    Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
@@ -235,21 +234,29 @@ public class RobotContainer {
 
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
-    /*
-    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
-    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
-    */
+
     operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
-
     /** Driverstation Controls * */
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+  }
+
+  public void instantiateSubsystemsTeleop() {
+    pixyCam = new PixyCam();
+  }
+
+  public void configureButtonBindingsTeleop() {
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
+    Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
+    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
   }
 
   public Command getAutonomousCommand() {
