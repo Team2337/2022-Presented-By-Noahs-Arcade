@@ -9,13 +9,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * @author Nicholas S
  *
  */
-public class StartDelivery extends CommandBase {
+public class StartDeliveryWithLineupSensor extends CommandBase {
 
   private final Delivery delivery;
 
-  public StartDelivery(Delivery delivery) {
+  public StartDeliveryWithLineupSensor(Delivery delivery) {
     this.delivery = delivery;
-
     addRequirements(delivery);
   }
 
@@ -29,6 +28,7 @@ public class StartDelivery extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     delivery.stop();
+    
   }
 
   @Override
