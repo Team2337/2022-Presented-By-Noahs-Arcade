@@ -48,7 +48,10 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     super(
       target.getReferencePoint(),
       translationSupplier,
-      heading
+      () -> false,
+      null,
+      heading,
+      null
     );
 
     this.target = target;
