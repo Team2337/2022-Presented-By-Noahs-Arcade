@@ -1,6 +1,9 @@
 package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.Shooter;
+
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -12,10 +15,23 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class StartShooterUpToSpeedCommand extends CommandBase {
 
   private final double speedFeetPerSecond;
+  private final double overrideSpeedFeetPerSecond;
+  private final Supplier<Boolean>overrideSupplier;
   private final Shooter shooter;
 
   public StartShooterUpToSpeedCommand(double speedFeetPerSecond, Shooter shooter) {
+    this(
+      speedFeetPerSecond,
+      0.0,
+      () -> false,
+      shooter
+    );
+  }
+
+  public StartShooterUpToSpeedCommand(double speedFeetPerSecond, double overrideSpeedFeetPerSecond, Supplier<Boolean> overrideSupplier, Shooter shooter) {
     this.speedFeetPerSecond = speedFeetPerSecond;
+    this.overrideSpeedFeetPerSecond = overrideSpeedFeetPerSecond;
+    this.overrideSupplier = overrideSupplier;
     this.shooter = shooter;
 
     addRequirements(shooter);
@@ -23,7 +39,7 @@ public class StartShooterUpToSpeedCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    shooter.setSpeed(speedFeetPerSecond);
+    shooter.setSpeed(overrideSupplier.get() ? overrideSpeedFeetPerSecond : speedFeetPerSecond);
   }
 
   @Override
