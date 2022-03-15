@@ -149,7 +149,7 @@ public class Climber extends SubsystemBase {
   }
   //True if Connected
   public boolean getStringPotHealth() {
-    return ((getStringPotVoltage() > 0.1) && (getStringPotVoltage() < 4.3));
+    return ((getStringPotVoltage() > 0.26) && (getStringPotVoltage() < 4.3));
   }
   //Equation found using Google Sheets
   public double stringpotToEncoder(double stringpot){

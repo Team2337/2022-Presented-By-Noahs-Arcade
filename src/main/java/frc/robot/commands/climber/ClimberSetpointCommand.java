@@ -19,8 +19,8 @@ public class ClimberSetpointCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    // Sets a setpoint only if the <start> button has been pressed previously so that ClimberCommand has run atleast once.
-    if(climber.getClimberStatus()){
+    // Sets a setpoint only if the <start> button has been pressed previously so that ClimberCommand has run atleast once and if we have a stringpot.
+    if(climber.getClimberStatus() && climber.getStringPotHealth()){
       climber.setPosition(setpoint);
     }
    /* else {
