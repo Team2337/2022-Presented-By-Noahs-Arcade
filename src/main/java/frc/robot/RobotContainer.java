@@ -23,6 +23,7 @@ import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.climber.ClimbSequenceCommandGroup;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.climber.JoystickClimberCommand;
@@ -249,23 +250,20 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
     operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
-    /*Supplier<Boolean> driverOverride = () -> operatorStation.blackButton.get();
-    operatorStart.whenPressed(new ClimbSequence(0., driverOverride, operatorController, climber, drivetrain)); */
+
     operatorStart.whenReleased(climber::stop);
-    //operatorBack.whenPressed(climber::goLowRung);
-    //operatorBack.whenReleased(climber::holdPositionUsingEncoder);
+    operatorBack.whileHeld(new ClimbSequenceCommandGroup(drivetrain::getGyroscopePitch, operatorController, climber));
+    operatorBack.whenReleased(climber::stop);
+
     operatorX.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorX.whenReleased(new ClimberSetpointCommand(climber.START, climber));
-    //operatorX.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
     /** Driverstation Controls * */
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
-    operatorStation.blueButton.whenPressed(climber::releaseServos);
   }
 
   public void instantiateSubsystemsTeleop() {
