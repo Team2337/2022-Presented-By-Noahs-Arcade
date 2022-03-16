@@ -1,16 +1,19 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BallColor;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.hardware.PicoColorSensors;
-import frc.robot.subsystems.hardware.TimeOfFlightSensor;
 
 /**
  * Subsystem for the delivery mechanism
@@ -43,13 +46,12 @@ public class Delivery extends SubsystemBase {
   );
 
   // Color sensors
-  private final PicoColorSensors colorSensors = new PicoColorSensors();
-
-  // TOF sensor
-  private final TimeOfFlightSensor lineupSensor = new TimeOfFlightSensor();
+  // private final PicoColorSensors colorSensors = new PicoColorSensors();
 
   // Beam break sensor
   private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
+
+  private final DigitalInput ballCenteringSensor = new DigitalInput(Constants.getInstance().CENTERING_BEAM_ID);
 
 
   /**
@@ -63,8 +65,6 @@ public class Delivery extends SubsystemBase {
   private final BallColor[] storedBalls = new BallColor[4];
 
   private int balls = 0;
-  private static final double LINEUP_SENSOR_MAX_DISTANCE_INCHES = 4.5;
-
 
   /**
    * Initializes the Delivery subsystem.
@@ -101,6 +101,7 @@ public class Delivery extends SubsystemBase {
         "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
+      /*
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -109,15 +110,39 @@ public class Delivery extends SubsystemBase {
         "Left: " + String.valueOf(colorSensors.leftSensorSeesBall()),
         "Right: " + String.valueOf(colorSensors.rightSensorSeesBall())
       });
+      */
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
-        "Lineup (in): "  + lineupSensor.getDistanceInches(),
-        "Shooter: "   + shooterBeam.get()
+        "Centering Sensor: "   + getCenteringSensorStatus()
       });
+    }
+
+    // Systems check
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+      /*
+      systemsCheck.addBoolean("Left Color Sensor", () -> colorSensors.leftSensorIsConnected())
+        .withPosition(SystemsCheckPositions.L_COLOR_SENSOR.x, SystemsCheckPositions.L_COLOR_SENSOR.y)
+        .withSize(3, 3);
+      systemsCheck.addBoolean("Right Color Sensor", () -> colorSensors.rightSensorIsConnected())
+        .withPosition(SystemsCheckPositions.R_COLOR_SENSOR.x, SystemsCheckPositions.R_COLOR_SENSOR.y)
+        .withSize(3, 3);
+      */
+      systemsCheck.addNumber("Delivery Temp (°C)", () -> getTemperature())
+        .withPosition(SystemsCheckPositions.DELIVERY_TEMP.x, SystemsCheckPositions.DELIVERY_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
+
+      systemsCheck.addBoolean("Centering Sensor", () -> getCenteringSensorStatus())
+        .withPosition(SystemsCheckPositions.CENTERING_SENSOR.x, SystemsCheckPositions.CENTERING_SENSOR.y)
+        .withSize(3, 3);
     }
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putBoolean("Centering Sensor Status", getCenteringSensorStatus());
+  }
 
 
   ///////////////////////////
@@ -156,6 +181,10 @@ public class Delivery extends SubsystemBase {
     }
   }
 
+  public double getTemperature() {
+    return motor.getTemperature();
+  }
+
   /**
    * Stops the delivery mechanism
    */
@@ -190,27 +219,33 @@ public class Delivery extends SubsystemBase {
    * Rotates the internal state clockwise
    */
   public void rotateArrayClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
    * Rotates the internal state counter-clockwise
    */
   public void rotateArrayCounterClockwise() {
+    /*
     storedBalls[Slot.BOTTOM.value] = storedBalls[Slot.LEFT.value];
     storedBalls[Slot.LEFT.value] = storedBalls[Slot.TOP.value];
     storedBalls[Slot.TOP.value] = storedBalls[Slot.RIGHT.value];
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
+    */
   }
 
   public void resetArray() {
+    /*
     storedBalls[Slot.BOTTOM.value] = null;
     storedBalls[Slot.RIGHT.value] = getRightColorSensorValue();
     storedBalls[Slot.TOP.value] = null;
     storedBalls[Slot.LEFT.value] = getLeftColorSensorValue();
+    */
   }
 
   /**
@@ -300,7 +335,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return colorSensors.leftSensorSeesBall();
+    return false; // colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -308,7 +343,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return colorSensors.rightSensorSeesBall();
+    return false; // colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -316,7 +351,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return colorSensors.getLeftSensorBallColor();
+    return null; // colorSensors.getLeftSensorBallColor();
   }
 
   /**
@@ -324,7 +359,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return colorSensors.getRightSensorBallColor();
+    return null; // colorSensors.getRightSensorBallColor();
   }
 
 
@@ -334,27 +369,18 @@ public class Delivery extends SubsystemBase {
   // ---------------------------- //
   //////////////////////////////////
 
-  /**
-   * @return The reading of the lineup time of flight sensor in inches
-   */
-  public double getLineupSensorValue() {
-    return lineupSensor.getDistanceInches();
-  }
-
   public boolean isBallInTopSlot() {
-    // 3.5 seems to be the maximum value when a ball is lined up, it's a pretty big difference beyond that
-    return lineupSensor.getDistanceInches() < LINEUP_SENSOR_MAX_DISTANCE_INCHES;
+    return getCenteringSensorStatus();
   }
 
   /**
-   * TODO: does this need to be moved to shooter when we add that logic? Will this be in the robot?
-   * @return Gets whether or not the shooter (output) golf ball sensor sees something
+   * @return Gets whether or not the centering sensor diffuse mode sensor sees something
    */
-  public boolean getShooterSensorStatus() {
-    return !shooterBeam.get();
+  public boolean getCenteringSensorStatus() {
+    return !ballCenteringSensor.get();
   }
 
-    /**
+   /**
    * Stops the delivery mechanism
    */
   public void stopDelivery() {

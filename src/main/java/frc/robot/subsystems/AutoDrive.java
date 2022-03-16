@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 
 /**
@@ -53,6 +55,12 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
  */
 public class AutoDrive extends SubsystemBase {
 
+  public AutoDrive() {
+    Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", this::getAutoDriveCommandName)
+      .withPosition(DriverDashboardPositions.AUTODRIVE_COMMAND.x, DriverDashboardPositions.AUTODRIVE_COMMAND.y)
+      .withSize(DriverDashboardPositions.AUTODRIVE_COMMAND.width, DriverDashboardPositions.AUTODRIVE_COMMAND.height);
+  }
+
   private WeakReference<AutoDrivableCommand> delegateReference;
 
   public static class State {
@@ -95,29 +103,32 @@ public class AutoDrive extends SubsystemBase {
    * @return - A negotiated forward/strafe from the auto driveable command
    */
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    if (delegateReference == null) {
-      return null;
-    }
-
-    AutoDrivableCommand command = delegateReference.get();
+    AutoDrivableCommand command = getAutoDriveCommand();
     if (command == null) {
       return null;
     }
     return command.calculate(forward, strafe, isFieldOriented);
   }
 
+  private AutoDrivableCommand getAutoDriveCommand() {
+    if (delegateReference == null) {
+      return null;
+    }
+    return delegateReference.get();
+  }
+
+  private String getAutoDriveCommandName() {
+    AutoDrivableCommand command = getAutoDriveCommand();
+    if (command == null) {
+      return "N/A";
+    }
+    return command.toString();
+  }
+
   @Override
   public void periodic() {
-    if (delegateReference != null) {
-      AutoDrivableCommand command = delegateReference.get();
-      if (command != null) {
-        SmartDashboard.putString("AutoDrive/Command", command.toString());
-      } else {
-        SmartDashboard.putString("AutoDrive/Command", "N/A");
-      }
-    } else {
-      SmartDashboard.putString("AutoDrive/Command", "N/A");
-    }
+    String commandName = getAutoDriveCommandName();
+    SmartDashboard.putString("AutoDrive/Command", commandName);
   }
 
 }

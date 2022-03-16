@@ -1,18 +1,17 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 import frc.robot.nerdyfiles.utilities.Utilities;
 /**
@@ -103,6 +102,21 @@ public class Shooter extends SubsystemBase {
       speeds.addNumber("Left Motor Velocity", () -> leftMotor.getSelectedSensorVelocity());
       speeds.addNumber("Right Motor Velocity", () -> rightMotor.getSelectedSensorVelocity());
     }
+
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+
+      systemsCheck.addNumber("L Shooter Temp (°C)", () -> leftMotor.getTemperature())
+        .withPosition(SystemsCheckPositions.L_SHOOTER_TEMP.x, SystemsCheckPositions.L_SHOOTER_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
+      systemsCheck.addNumber("R Shooter Temp (°C)", () -> rightMotor.getTemperature())
+        .withPosition(SystemsCheckPositions.R_SHOOTER_TEMP.x, SystemsCheckPositions.R_SHOOTER_TEMP.y)
+        .withSize(3, 4)
+        .withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
+    }
   }
 
   @Override
@@ -115,8 +129,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void log() {
-    Logger.getInstance().recordOutput("Shooter/Speed", getMotorWheelSpeed(leftMotor));
-    Logger.getInstance().recordOutput("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Shooter/Speed", getMotorWheelSpeed(leftMotor));
+    SmartDashboard.putNumber("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
   // ** Public API **

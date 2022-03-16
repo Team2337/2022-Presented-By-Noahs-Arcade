@@ -27,7 +27,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private static final double strafeP = 0.05;
   private static final double forwardVelocity = Units.inchesToMeters(160);
   private static final double forwardAcceleration = Units.inchesToMeters(90);
-  private static final double strafeVelocity = 60;
+  private static final double strafeVelocity = 45;
   private static final double strafeAcceleration = 12;
 
   private PolarCoordinate target;
@@ -48,7 +48,10 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     super(
       target.getReferencePoint(),
       translationSupplier,
-      heading
+      () -> false,
+      null,
+      heading,
+      null
     );
 
     this.target = target;

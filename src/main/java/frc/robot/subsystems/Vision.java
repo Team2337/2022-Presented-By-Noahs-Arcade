@@ -1,14 +1,19 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.cscore.VideoException;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriverDashboardPositions;
+import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.nerdyfiles.vision.LimelightUtilities;
-
-import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -18,7 +23,8 @@ public class Vision extends SubsystemBase {
     X("tx"),
     Y("ty"),
     LATENCY("tl"),
-    VALID_TARGET("tv");
+    VALID_TARGET("tv"),
+    STREAM("stream");
 
     private String key;
 
@@ -79,9 +85,36 @@ public class Vision extends SubsystemBase {
 
   public int relocalizeCounter = 0;
 
+  private HttpCamera limelightStream;
+
   public Vision() {
     // Automatically switch our Limelight to our default pipeline on construction
     switchPipeLine(Pipeline.DEFAULT);
+
+    try {
+      // Set up limelight camera
+      getLimelightEntry(LimelightKey.STREAM).setNumber(2);
+      String limelightIp = SmartDashboard.getString("limelight_Stream", "");
+      limelightStream = new HttpCamera("limelight", limelightIp + "/stream.mjpg");
+      
+      // Driver dashboard
+      Constants.DRIVER_DASHBOARD.add("Driver Camera", limelightStream)
+        .withPosition(DriverDashboardPositions.DRIVER_CAM.x, DriverDashboardPositions.DRIVER_CAM.y)
+        .withSize(DriverDashboardPositions.DRIVER_CAM.width, DriverDashboardPositions.DRIVER_CAM.height);
+    } catch (VideoException e) {
+      // Happens if cannot connect to the IP, which would happen if it is invalid
+      DriverStation.reportError("Limelight not plugged in or is not working correctly!", false);
+    }
+
+
+    // Systems check
+    if (Constants.DO_SYSTEMS_CHECK) {
+      ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
+
+      systemsCheck.addBoolean("Limelight Connected", () -> (latency > 0))
+        .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y)
+        .withSize(3, 3);
+    }
   }
 
   @Override
@@ -102,12 +135,12 @@ public class Vision extends SubsystemBase {
   }
 
   private void log() {
-    Logger.getInstance().recordOutput("Vision/# of relocalization", relocalizeCounter);
-    Logger.getInstance().recordOutput("Vision/tx", getTx());
-    Logger.getInstance().recordOutput("Vision/ty", getTy());
-    Logger.getInstance().recordOutput("Vision/latency", getLatency());
-    Logger.getInstance().recordOutput("Vision/Valid Target", hasActiveTarget());
-    Logger.getInstance().recordOutput("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
+    SmartDashboard.putNumber("Vision/# of relocalization", relocalizeCounter);
+    SmartDashboard.putNumber("Vision/tx", getTx());
+    SmartDashboard.putNumber("Vision/ty", getTy());
+    SmartDashboard.putNumber("Vision/latency", getLatency());
+    SmartDashboard.putBoolean("Vision/Valid Target", hasActiveTarget());
+    SmartDashboard.putNumber("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
   }
 
   /** Limelight Network Table Access */
