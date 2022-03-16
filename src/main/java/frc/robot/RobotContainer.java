@@ -130,11 +130,11 @@ public class RobotContainer {
       .withSize(3, 3)
       .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
 
-    if (Constants.DO_SYSTEMS_CHECK) {
+    /*if (Constants.DO_SYSTEMS_CHECK) {
       Constants.SYSTEMS_CHECK_TAB.addBoolean("Pixy Cam Connected", pixyCam::isConnected)
         .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
         .withSize(3, 3);
-    }
+    } */
   }
 
   public void resetRobot() {
@@ -265,6 +265,7 @@ public class RobotContainer {
     /** Driverstation Controls * */
 
     operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    operatorStation.blueButton.whenPressed(climber::releaseServos);
   }
 
   public void instantiateSubsystemsTeleop() {

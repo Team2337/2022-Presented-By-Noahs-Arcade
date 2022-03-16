@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.lang.invoke.VolatileCallSite;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -29,10 +30,8 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
  */
 public class Climber extends SubsystemBase {
   //Servos
-  private final Servo poleServo1 = new Servo(0);
-  private final Servo poleServo2 = new Servo(1);
-  private final Servo hookServo1 = new Servo(2);
-  private final Servo hookServo2 = new Servo(3);
+  private final Servo leftHookServo = new Servo(7);
+  private final Servo rightHookServo = new Servo(8);
 
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
@@ -190,10 +189,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void releaseServos(){
-    poleServo1.setSpeed(1);
-    poleServo2.setSpeed(1);
-    hookServo1.setSpeed(1);
-    hookServo2.setSpeed(1);
+    leftHookServo.setSpeed(-1);
+    rightHookServo.setSpeed(1);
   }
 
   public void hold() {
@@ -242,3 +239,4 @@ public class Climber extends SubsystemBase {
 
 
 }
+
