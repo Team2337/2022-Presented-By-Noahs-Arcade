@@ -296,7 +296,7 @@ public final class Constants {
     // Ball R1 = Ball nearest to the left starting location
     public static final PolarCoordinate kBallR1 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(147.75)
+      Rotation2d.fromDegrees(145)
     );
     public static final PolarCoordinate kBallR1Pickup = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
@@ -371,8 +371,20 @@ public final class Constants {
     /*
      * Opponent balls
      */
+    public static final PolarCoordinate kBallD1 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(125.25)
+    );
+    public static final PolarCoordinate kBallD1Pickup = new PolarCoordinate(
+      Units.inchesToMeters(153) - Units.inchesToMeters(kPickupDistanceInches),
+      Rotation2d.fromDegrees(125.25)
+    );
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(
       Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(-169.95)
+    );
+    public static final PolarCoordinate kBallD2Pickup = new PolarCoordinate(
+      Units.inchesToMeters(153) - Units.inchesToMeters(kPickupDistanceInches),
       Rotation2d.fromDegrees(-169.95)
     );
 
@@ -380,7 +392,6 @@ public final class Constants {
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(180)
     );
-
   }
 
   // Robot-specific configuration for our swerve drive algorithm
