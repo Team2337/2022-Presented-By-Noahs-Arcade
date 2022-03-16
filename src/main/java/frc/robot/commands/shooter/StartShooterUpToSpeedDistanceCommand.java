@@ -19,7 +19,7 @@ public class StartShooterUpToSpeedDistanceCommand extends ConditionalCommand {
   private static final double kLowGoalThresholdInches = 72;
   private static final double kLowGoalSpeedFeetPerSecond = 19.25;
   private static final double kHighGoalSpeedFeetPerSecond = 40.7;
-  private static final double kLaunchpadCloseSpeedFeetPerSecond = 43.7;
+  private static final double kLaunchpadCloseSpeedFeetPerSecond = 47;
   private static final double kLaunchpadFarSpeedFeetPerSecond = 48;
 
   public StartShooterUpToSpeedDistanceCommand(Supplier<Translation2d> translationSupplier, Supplier<Boolean> overrideSupplier, Shooter shooter) {

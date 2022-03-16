@@ -29,6 +29,7 @@ import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
+import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -88,7 +89,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Three Ball", new Pos3RightThreeBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
-    autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading));
+    autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading, kicker, shooter));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 
@@ -100,8 +101,8 @@ public class RobotContainer {
     SmartDashboard.putData("StartingPositionChooser", startingPosChooser);
 
     startingAngleChooser.addOption("Launchpad (0 degrees)", 0.0);
-    startingAngleChooser.addOption("Left fender (-12.5 degrees)", -12.5);
-    startingAngleChooser.addOption("Right fender (60 degrees)", 60.0);
+    startingAngleChooser.addOption("Left fender (-20 degrees)", -20.0);
+    startingAngleChooser.addOption("Right fender (70 degrees)", 70.0);
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
@@ -128,11 +129,13 @@ public class RobotContainer {
       .withSize(3, 3)
       .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
 
+    /*
     if (Constants.DO_SYSTEMS_CHECK) {
       Constants.SYSTEMS_CHECK_TAB.addBoolean("Pixy Cam Connected", pixyCam::isConnected)
         .withPosition(SystemsCheckPositions.PIXY_CAM.x, SystemsCheckPositions.PIXY_CAM.y)
         .withSize(3, 3);
     }
+    */
   }
 
   public void resetRobot() {
