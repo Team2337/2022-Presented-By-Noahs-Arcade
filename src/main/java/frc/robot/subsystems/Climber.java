@@ -107,9 +107,9 @@ public class Climber extends SubsystemBase {
     leftMotor.config_kD(0, 0); */
     leftMotor.setSelectedSensorPosition(0);
     // This formula is used for converting Stringpot to encoder movements, so we only need one PID.
-    double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
-    double setpoint = stringpotToEncoder(voltageRound);
-    leftMotor.setSelectedSensorPosition(setpoint);
+    //double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
+    //double setpoint = stringpotToEncoder(voltageRound);
+    //leftMotor.setSelectedSensorPosition(setpoint);
     // Motor turns 25 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
     /*leftMotor.configAllowableClosedloopError(0, 100);
@@ -189,8 +189,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void releaseServos(){
-    leftHookServo.setSpeed(-1);
-    rightHookServo.setSpeed(1);
+    leftHookServo.setSpeed(1);
+    rightHookServo.setSpeed(-1);
   }
 
   public void hold() {

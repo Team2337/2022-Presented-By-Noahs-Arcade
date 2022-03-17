@@ -235,7 +235,7 @@ public class RobotContainer {
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
-
+    
     // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
@@ -243,7 +243,8 @@ public class RobotContainer {
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
-
+    operatorY.whenPressed(climber::releaseServos);
+    
     operatorRightTrigger.whenPressed(intake::start, intake);
     operatorRightTrigger.whenReleased(intake::stop, intake);
 

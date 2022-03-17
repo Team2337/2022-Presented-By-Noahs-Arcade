@@ -131,6 +131,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void setupShuffleboard(Boolean logEnable) {
     // Normal debug
+    SmartDashboard.putNumber("Pitch", getGyroscopePitch().getDegrees());
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList)
