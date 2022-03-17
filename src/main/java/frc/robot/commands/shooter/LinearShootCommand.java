@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.delivery.StartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.kicker.ReverseKickerCommand;
+import frc.robot.commands.kicker.StartKicker;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Kicker;
@@ -20,7 +21,7 @@ public class LinearShootCommand extends SequentialCommandGroup {
       new ReverseKickerCommand(kicker).withTimeout(0.2),
       new WaitCommand(0.2),
       new StartShooterUpToSpeedDistanceCommand(translationSupplier,  overrideSupplier, shooter),
-      new ForwardKickerCommand(kicker),
+      new StartKicker(kicker),
       new StartDelivery(delivery)
     );
   }
