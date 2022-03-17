@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.VecBuilder;
@@ -253,6 +254,7 @@ public class Drivetrain extends SubsystemBase {
     */
 
     SmartDashboard.putNumber("Gyro", getGyroscopeRotation().getDegrees());
+    SmartDashboard.putNumber("Roll", getGyroscopeRoll().getDegrees());
   }
 
 }

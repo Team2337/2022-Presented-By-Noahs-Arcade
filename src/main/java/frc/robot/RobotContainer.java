@@ -202,6 +202,10 @@ public class RobotContainer {
   public void enableMaintainHeading() {
     heading.enableMaintainHeading();
   }
+  public void disableServos() {
+    climber.leftHookServo.setDisabled();
+    climber.rightHookServo.setDisabled();
+  }
 
   private void configureButtonBindings() {
     /** Driver Controller */
@@ -249,7 +253,7 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorBack.whileHeld(new ClimberJoystickCommand(operatorController, climber));
+    operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 

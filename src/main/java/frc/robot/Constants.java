@@ -446,7 +446,9 @@ public final class Constants {
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;
   public static final int CLIMBER_RIGHT_MOTOR_ID = 3;
-  public static final int CLIMBER_STRING_POT_ID = 3; // DIO
+  public static final int CLIMBER_STRING_POT_ID = 3;
+  public static final int LEFT_SERVO_ID = 7;
+  public static final int RIGHT_SERVO_ID = 8;
 
   public static final int KICKER_MOTOR = 20;
 
