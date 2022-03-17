@@ -254,7 +254,7 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whenPressed(new JoystickClimberCommand(operatorController, climber));
+    operatorStart.whenPressed(new ClimberJoystickCommand(operatorController, climber));
 
     operatorStart.whenReleased(climber::stop);
     operatorBack.whileHeld(new ClimbSequenceCommandGroup(drivetrain::getGyroscopePitch, operatorController, climber));

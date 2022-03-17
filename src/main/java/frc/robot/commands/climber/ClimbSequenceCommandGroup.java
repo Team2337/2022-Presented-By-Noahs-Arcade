@@ -19,7 +19,7 @@ public class ClimbSequenceCommandGroup extends SequentialCommandGroup {
 
   public ClimbSequenceCommandGroup(Supplier<Rotation2d> robotPitch, XboxController controller, Climber climber) {
     addCommands(
-      new MoveToThirdRung(controller, climber),
+      new MoveToMidRung(controller, climber),
       new InstantCommand(climber::releaseServos),
       new MoveToThirdRung(controller, climber),
       new MovePastThirdRung(robotPitch, controller, climber),
