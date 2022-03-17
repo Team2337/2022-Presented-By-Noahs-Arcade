@@ -32,8 +32,8 @@ public class Intake extends SubsystemBase {
 
     motor.setNeutralMode(NeutralMode.Coast);
     motor.configOpenloopRamp(0.5);
-
-    motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
+    // Motors stalls when trying to leave the robot bumpers, so allow power to kick it out
+    //motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     setupShuffleboard(Constants.DashboardLogging.INTAKE);
   }

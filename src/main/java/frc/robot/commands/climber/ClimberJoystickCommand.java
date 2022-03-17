@@ -1,6 +1,9 @@
 package frc.robot.commands.climber;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.nerdyfiles.utilities.Utilities;
@@ -12,14 +15,16 @@ public class ClimberJoystickCommand extends CommandBase {
 
   private final Climber climber;
   private final XboxController controller;
+  private final Supplier<Rotation2d> rollSupplier;
 
   private boolean shouldHoldPositionWhenStopped = true;
   private double MIN_STRINGPOT_VALUE = 0.4;
-  private double MAX_STRINGPOT_VALUE = 3.00;
+  private double MAX_STRINGPOT_VALUE = 3.05;
 
-  public ClimberJoystickCommand(XboxController controller, Climber climber) {
+  public ClimberJoystickCommand(Supplier<Rotation2d> rollSupplier, XboxController controller, Climber climber) {
     this.climber = climber;
     this.controller = controller;
+    this.rollSupplier = rollSupplier;
 
     addRequirements(climber);
   }
@@ -47,6 +52,12 @@ public class ClimberJoystickCommand extends CommandBase {
         MAX_SPEED
       );
       if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output > 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output < 0))) {
+        output = 0;
+      }
+      if (climber.getStringPotVoltage() > 2.8){
+        climber.releaseServos();
+      }
+      if ((output > 0) && (rollSupplier.get().getDegrees() > 15) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))){
         output = 0;
       }
       climber.setSpeed(output);

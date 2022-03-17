@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,7 +19,10 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
  * Subsystem for the climber mechanism
  */
 public class Climber extends SubsystemBase {
-
+  //Servos
+  public final Servo leftHookServo = new Servo(Constants.LEFT_SERVO_ID);
+  public final Servo rightHookServo = new Servo(Constants.RIGHT_SERVO_ID);
+  
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
     Constants.CLIMBER_LEFT_MOTOR_ID,
@@ -28,8 +32,13 @@ public class Climber extends SubsystemBase {
     Constants.CLIMBER_RIGHT_MOTOR_ID,
     Constants.UPPER_CANIVORE_ID
   );
+  
+  private static double servoSpeed = 1;
 
   public Climber() {
+    leftHookServo.setDisabled();
+    rightHookServo.setDisabled();
+    
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
 
@@ -98,6 +107,11 @@ public class Climber extends SubsystemBase {
 
   public double getPosition() {
     return leftMotor.getSelectedSensorPosition();
+  }
+
+  public void releaseServos(){
+    leftHookServo.setSpeed(servoSpeed);
+    rightHookServo.setSpeed(-servoSpeed);
   }
 
   public void stop() {
