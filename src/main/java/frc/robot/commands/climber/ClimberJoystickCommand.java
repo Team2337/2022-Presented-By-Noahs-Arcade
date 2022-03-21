@@ -63,9 +63,9 @@ public class ClimberJoystickCommand extends CommandBase {
       if (climber.getStringPotVoltage() > 2.8 && !operatorStation.blackSwitch.get()) {
         climber.releaseServos();
       }
-      /*if (((output > 0) && (rollSupplier.get().getDegrees() > 17.5) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
+      if (((output > 0) && (rollSupplier.get().getDegrees() > 17.5) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
         output = 0;
-      } */
+      } 
       climber.setSpeed(output);
       shouldHoldPositionWhenStopped = true;
     }
