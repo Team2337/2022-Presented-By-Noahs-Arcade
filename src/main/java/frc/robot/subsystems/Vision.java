@@ -34,7 +34,7 @@ public class Vision extends SubsystemBase {
   }
 
   public static enum Pipeline {
-    DEFAULT(1);
+    DEFAULT(0);
 
     private int number;
 

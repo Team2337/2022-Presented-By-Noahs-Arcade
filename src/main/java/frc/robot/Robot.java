@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.instantiateSubsystemsTeleop();
     m_robotContainer.configureButtonBindingsTeleop();
-
+    m_robotContainer.stopAutoSubsystems();
   }
 
   /** This function is called periodically during operator control. */

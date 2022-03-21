@@ -34,8 +34,10 @@ import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
+import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
+import frc.robot.commands.shooter.StopShooterInstantCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
@@ -207,6 +209,11 @@ public class RobotContainer {
     climber.rightHookServo.setDisabled();
   }
 
+  public void stopAutoSubsystems() {
+    shooter.stop();
+    kicker.stop();
+  }
+
   private void configureButtonBindings() {
     /** Driver Controller */
     // Note: Drive Right Bumper being used for Heading relocalize
@@ -230,14 +237,17 @@ public class RobotContainer {
     driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
+    driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
+    driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
+
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
-    driverX.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
     /** Operator Controller * */
     // Note: Left X axis is used by DeliveryOverrideCommand
     JoystickButton operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
 
     // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
@@ -253,17 +263,22 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, climber));
+    operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
+
+    operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
+    operatorX.whileHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, driverRightBumper::get, delivery, kicker, shooter));
+    operatorX.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
+
     /** Driverstation Controls * */
 
-    operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
+    // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
   }
 
   public void instantiateSubsystemsTeleop() {
-    pixyCam = new PixyCam();
+    // pixyCam = new PixyCam();
   }
 
   public void configureButtonBindingsTeleop() {
@@ -272,9 +287,9 @@ public class RobotContainer {
     Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
-    operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
-    operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
-    operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+    // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
+    // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
+    // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
   }
 
   public Command getAutonomousCommand() {
@@ -287,5 +302,9 @@ public class RobotContainer {
 
   public double getStartingAngle() {
     return startingAngleChooser.getSelected();
+  }
+
+  public boolean getBlackSwitchStatus() {
+    return operatorStation.blackSwitch.get();
   }
 }
