@@ -275,6 +275,7 @@ public class RobotContainer {
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     operatorLeftBumper.whenHeld(new VisionToTarget(drivetrain, heading, vision));
+    operatorLeftBumper.whenReleased(new InstantRelocalizeCommand(drivetrain, vision));
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
