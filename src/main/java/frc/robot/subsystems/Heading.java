@@ -21,8 +21,8 @@ public class Heading extends SubsystemBase {
   private static double NOMINAL_OUTPUT_STATIONARY = 0.06;
   private static double NOMINAL_OUTPUT_MOVING = 0.03;
 
-  private static double P_MOVING = 0.025;
-  private static double P_STATIONARY = 0.02;
+  private static double P_MOVING = 0.025; //0.005
+  private static double P_STATIONARY = 0.02; //0.007
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -257,6 +257,10 @@ public class Heading extends SubsystemBase {
    */
   public void resetRotationController() {
     rotationController.reset();
+  }
+
+  public void setPValue(double pDesired) {
+    rotationController.setP(pDesired);
   }
 
 }

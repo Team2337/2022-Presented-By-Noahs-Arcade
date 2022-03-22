@@ -16,7 +16,7 @@ public class PrepareShooter extends SequentialCommandGroup {
       new ReverseStopShooterCommand(shooter).withTimeout(0.2),
       new ReverseKickerCommand(kicker).withTimeout(0.2),
       new WaitCommand(0.4),
-      new StartShooterUpToSpeedDistanceCommand(translationSupplier,  overrideSupplier, shooter)
+      new StartShooterUpToSpeedDistanceCommand(translationSupplier, overrideSupplier, shooter)
     );
   }
 }

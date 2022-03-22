@@ -28,6 +28,7 @@ public class LimeLightHeadingNeverEnding extends CommandBase {
   @Override
   public void initialize() {
     heading.enableMaintainHeading();
+    heading.setPValue(0.025);
   }
 
   @Override
@@ -40,6 +41,11 @@ public class LimeLightHeadingNeverEnding extends CommandBase {
     } else {
       shouldRotateToLimelightHeading = false;
     }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    heading.setPValue(0.005);
   }
 
   @Override
