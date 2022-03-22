@@ -21,7 +21,7 @@ public class StartKicker extends InstantCommand {
 
   @Override
   public void initialize() {
-    kicker.start(0.5);;
+    kicker.start(0.5);
   }
 
 }

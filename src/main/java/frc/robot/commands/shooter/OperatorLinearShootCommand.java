@@ -17,9 +17,9 @@ public class OperatorLinearShootCommand extends SequentialCommandGroup {
 
   public OperatorLinearShootCommand(Supplier<Translation2d> translationSupplier, Supplier<Boolean> overrideSupplier, Delivery delivery, Kicker kicker, Shooter shooter) {
     addCommands(
-      new ReverseStopShooterCommand(shooter).withTimeout(0.2),
-      new ReverseKickerCommand(kicker).withTimeout(0.2),
-      new WaitCommand(0.2),
+      new ReverseStopShooterCommand(shooter).withTimeout(0.15),
+      //new ReverseKickerCommand(kicker).withTimeout(0.15),
+      //new WaitCommand(0.2),
       new StartShooterInstantCommand(19.5, shooter),
       new StartKicker(kicker),
       new StartDelivery(delivery)
