@@ -60,7 +60,7 @@ public final class Constants {
     public static final boolean CLIMBER = false;
     public static final boolean DELIVERY = false;
     public static final boolean DRIVETRAIN = false;
-    public static final boolean HEADING = false;
+    public static final boolean HEADING = true;
     public static final boolean INTAKE = false;
     public static final boolean KICKER = false;
     public static final boolean PDH = false;

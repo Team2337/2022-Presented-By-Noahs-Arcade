@@ -35,12 +35,15 @@ import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
+import frc.robot.commands.shooter.PrepareShooter;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.shooter.StopShooterInstantCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
+import frc.robot.commands.vision.VisionToTarget;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
 
@@ -72,7 +75,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, driverRightBumper::get, drivetrain, heading, vision));
-    vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -108,6 +111,8 @@ public class RobotContainer {
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
+    SmartDashboard.putData(drivetrain);
+    SmartDashboard.putData(heading);
     
     // Add dropdowns to driver dashboard
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
@@ -234,7 +239,8 @@ public class RobotContainer {
     // driverRightBumper.whenPressed(new PrepareShooterCommandGroup(BallColor.RED, delivery, kicker));
     JoystickButton operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-    driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
+    // driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
+    driverTriggerRight.whenHeld(new Shoot(delivery, kicker));
     driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
@@ -248,6 +254,8 @@ public class RobotContainer {
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
 
     // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
@@ -262,6 +270,11 @@ public class RobotContainer {
 
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
+
+    operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, kicker, shooter));
+    operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
+
+    operatorLeftBumper.whenHeld(new VisionToTarget(drivetrain, heading, vision));
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
@@ -282,9 +295,7 @@ public class RobotContainer {
   }
 
   public void configureButtonBindingsTeleop() {
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
+    // Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
     // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));

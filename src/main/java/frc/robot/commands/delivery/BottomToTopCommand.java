@@ -62,6 +62,7 @@ public class BottomToTopCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    /*
     if (waitForBallFlag) {
       // If the old ball is still there, don't stop yet
       return false;
@@ -69,6 +70,8 @@ public class BottomToTopCommand extends CommandBase {
       // Stop when the ball we want triggers the motors. See `end()`
       return isFinished;
     }
+    */
+    return delivery.isBallInTopSlot();
   }
 
 }
