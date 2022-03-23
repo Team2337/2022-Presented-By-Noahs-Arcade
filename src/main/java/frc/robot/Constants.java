@@ -222,9 +222,9 @@ public final class Constants {
 
         CENTERING_BEAM_ID = 8;
         INTAKE_BEAM_ID = 9;
-
+        
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
-        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(24.79));
+        LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(27.95));
         break;
     }
   }

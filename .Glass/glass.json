@@ -2,7 +2,13 @@
   "NetworkTables": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/DRIVER DASHBOARD/Auton Chooser": "String Chooser",
+      "/Shuffleboard/DRIVER DASHBOARD/Starting Angle Chooser": "String Chooser",
+      "/Shuffleboard/DRIVER DASHBOARD/Starting Pos Chooser": "String Chooser",
       "/SmartDashboard/AutonChooser": "String Chooser",
+      "/SmartDashboard/Drivetrain": "Subsystem",
+      "/SmartDashboard/Heading": "Subsystem",
+      "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/StartingAngleChooser": "String Chooser",
       "/SmartDashboard/StartingPositionChooser": "String Chooser",
       "/SmartDashboard/field": "Field2d"

@@ -292,7 +292,7 @@ public class RobotContainer {
   }
 
   public void instantiateSubsystemsTeleop() {
-    // pixyCam = new PixyCam();
+    pixyCam = new PixyCam();
   }
 
   public void configureButtonBindingsTeleop() {

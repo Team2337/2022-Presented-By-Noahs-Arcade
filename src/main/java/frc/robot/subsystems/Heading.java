@@ -23,6 +23,9 @@ public class Heading extends SubsystemBase {
 
   private static double P_MOVING = 0.005; //0.005
   private static double P_STATIONARY = 0.007; //0.007
+  private static double visionPValue = 0.007;
+
+  private boolean visionP = false;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -89,9 +92,14 @@ public class Heading extends SubsystemBase {
   public void periodic() {
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
+    if (visionP) {
+      rotationController.setD(visionPValue);
+    } else {
     if (pCurrent != pDesired) {
       rotationController.setP(pDesired);
     }
+  }
+  
 
     log();
   }
@@ -259,8 +267,8 @@ public class Heading extends SubsystemBase {
     rotationController.reset();
   }
 
-  public void setPValue(double pDesired) {
-    rotationController.setP(pDesired);
+  public void setPValue(boolean usingVision) {
+    visionP = usingVision;
   }
 
 }
