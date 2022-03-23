@@ -28,26 +28,27 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(2.5),
         new BottomToTopCommand(delivery).withTimeout(1.5),
-        new StartShooterInstantCommand(39, shooter)
+        new StartShooterInstantCommand(39.5, shooter)
       ),
       new ForwardKickerCommand(kicker).withTimeout(0.3),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(1),
-      new StartShooterInstantCommand(42, shooter),
+      new StartShooterInstantCommand(40.7, shooter),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(1),
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(4),
+      new StartShooterInstantCommand(43, shooter),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getTranslation, 1.5, 0.01, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
-        new AutoStartDelivery(delivery).withTimeout(0.75)
+        new AutoStartDelivery(delivery).withTimeout(0.6)
       ),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(2),
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
       new WaitCommand(2),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
+      // new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }

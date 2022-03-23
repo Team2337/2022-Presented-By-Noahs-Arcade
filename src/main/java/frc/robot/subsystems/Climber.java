@@ -14,11 +14,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,9 +25,9 @@ import frc.robot.nerdyfiles.utilities.CTREUtils;
  */
 public class Climber extends SubsystemBase {
   //Servos
-  private final Servo leftHookServo = new Servo(7);
-  private final Servo rightHookServo = new Servo(8);
-
+  public final Servo leftHookServo = new Servo(Constants.LEFT_SERVO_ID);
+  public final Servo rightHookServo = new Servo(Constants.RIGHT_SERVO_ID);
+  
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
     Constants.CLIMBER_LEFT_MOTOR_ID//,
@@ -42,6 +37,8 @@ public class Climber extends SubsystemBase {
     Constants.CLIMBER_RIGHT_MOTOR_ID//,
    // Constants.UPPER_CANIVORE_ID
   );
+  
+  private static double servoSpeed = 1;
 
   private final static double kP = 0.15;
   private final static double kI = 0.0;
@@ -86,6 +83,9 @@ public class Climber extends SubsystemBase {
     motorConfig.slot0.kD = kD;
     motorConfig.slot0.allowableClosedloopError = tolerance;
 
+    leftHookServo.setDisabled();
+    rightHookServo.setDisabled();
+    
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
     leftMotor.configAllSettings(motorConfig);
@@ -200,6 +200,11 @@ public class Climber extends SubsystemBase {
   
   public double getEncoderPosition() {
     return leftMotor.getSelectedSensorPosition();
+  }
+
+  public void releaseServos(){
+    leftHookServo.setSpeed(servoSpeed);
+    rightHookServo.setSpeed(-servoSpeed);
   }
 
   public void stop() {

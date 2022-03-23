@@ -258,7 +258,7 @@ public final class Constants {
      */
     public static final double kPickupDistanceInches = 8.0;
     public static final double kPickupR2DistanceInches = 34.0;
-    public static final double kPickupR4DistanceInches = 10.0;
+    public static final double kPickupR4DistanceInches = 12.0;
     public static final double kRunOverDistanceInches = 4.0;
 
     // Starting Locations
@@ -357,7 +357,7 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
-      Rotation2d.fromDegrees(-157.35)
+      Rotation2d.fromDegrees(-156)
     );
     public static final PolarCoordinate kBallR4PickupForLeftStart = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
@@ -446,7 +446,9 @@ public final class Constants {
 
   public static final int CLIMBER_LEFT_MOTOR_ID = 16;
   public static final int CLIMBER_RIGHT_MOTOR_ID = 3;
-  public static final int CLIMBER_STRING_POT_ID = 3; // DIO
+  public static final int CLIMBER_STRING_POT_ID = 3;
+  public static final int LEFT_SERVO_ID = 7;
+  public static final int RIGHT_SERVO_ID = 8;
 
   public static final int KICKER_MOTOR = 20;
 
