@@ -7,12 +7,11 @@ package frc.robot;
 import java.util.Map;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,32 +19,29 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.Constants.DriverDashboardPositions;
-import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
+import frc.robot.commands.LED.LEDOff;
+import frc.robot.commands.LED.LEDRunnable;
+import frc.robot.commands.LED.SetLEDRed;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.pixy.PixyPickupCommand;
-import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
-import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
+import frc.robot.nerdyfiles.oi.JoystickPOVButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
-import frc.robot.commands.shooter.StopShooterInstantCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
-import frc.robot.commands.vision.PeriodicRelocalizeCommand;
-import frc.robot.commands.vision.VisionToTarget;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.hardware.LED;
 
 public class RobotContainer {
   private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
@@ -65,16 +61,18 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
+  private final LED LED = new LED();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
   private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
-    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, driverRightBumper::get, drivetrain, heading, vision));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, drivetrain, heading, vision));
+    LED.setDefaultCommand(new LEDRunnable(LED, this));
     // vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
@@ -113,6 +111,7 @@ public class RobotContainer {
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
     SmartDashboard.putData(drivetrain);
     SmartDashboard.putData(heading);
+    SmartDashboard.putString("Pigeon State", getPigeonState().toString());
     
     // Add dropdowns to driver dashboard
     Constants.DRIVER_DASHBOARD.add("Auton Chooser", autonChooser)
@@ -241,7 +240,7 @@ public class RobotContainer {
 
     // driverTriggerRight.whenHeld(new LinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
     driverTriggerRight.whenHeld(new Shoot(delivery, kicker));
-    driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
+    // driverTriggerRight.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
     driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
@@ -255,13 +254,17 @@ public class RobotContainer {
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
 
     // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+    JoystickPOVButton operatorPovUp = new JoystickPOVButton(operatorController, 0);
+    JoystickPOVButton operatorPovDown = new JoystickPOVButton(operatorController, 180);
+
+    operatorPovUp.whenPressed(new LEDOff(LED));
+    operatorPovDown.whenPressed(new SetLEDRed(LED));
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
@@ -274,8 +277,8 @@ public class RobotContainer {
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
-    operatorLeftBumper.whenHeld(new VisionToTarget(drivetrain, heading, vision));
-    operatorLeftBumper.whenReleased(new InstantRelocalizeCommand(drivetrain, vision));
+    // operatorLeftBumper.whenHeld(new VisionToTarget(drivetrain, heading, vision));
+    // operatorLeftBumper.whenReleased(new InstantRelocalizeCommand(drivetrain, vision));
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
 
@@ -318,5 +321,33 @@ public class RobotContainer {
 
   public boolean getBlackSwitchStatus() {
     return operatorStation.blackSwitch.get();
+  }
+
+  public double getGyroscopeRotation() {
+    return drivetrain.getGyroscopeRotation().getDegrees();
+  }
+
+  public void setLEDGreen() {
+    LED.setGreen();
+  }
+
+  public void setLEDOff() {
+    LED.setOff();
+  }
+
+  public PigeonState getPigeonState() {
+    return drivetrain.getPigeonState();
+  }
+
+  public boolean isShooterUpToLEDSpeed() {
+    return shooter.isShooterToLEDSpeed();
+  }
+
+  public boolean isOnTarget() {
+    return vision.isOnTarget();
+  }
+
+  public boolean hasActiveTarget() {
+    return vision.hasActiveTarget();
   }
 }

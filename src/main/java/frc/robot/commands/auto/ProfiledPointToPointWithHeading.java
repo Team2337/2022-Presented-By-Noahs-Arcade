@@ -20,7 +20,7 @@ import frc.robot.subsystems.Heading;
  * Generate movement values to drive the robot between it's current position and
  * the specified point. Depends on the robot facing the Hub.
  */
-public class ProfiledPointToPointCommand extends HeadingToTargetCommand implements AutoDrivableCommand {
+public class ProfiledPointToPointWithHeading extends HeadingToTargetCommand implements AutoDrivableCommand {
 
   // These are confirmed tuned values for our Point to Point moves. Can be adjusted
   // individually per move if necessary.
@@ -30,6 +30,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private static final double forwardAcceleration = Units.inchesToMeters(90);
   private static final double strafeVelocity = 45;
   private static final double strafeAcceleration = 12;
+  private static double degrees;
 
   private PolarCoordinate target;
   private Heading heading;
@@ -41,11 +42,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, AutoDrive autoDrive, Heading heading) {
-    this(target, translationSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading);
-  }
-
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
+  public ProfiledPointToPointWithHeading(PolarCoordinate target, Supplier<Translation2d> translationSupplier, double degrees, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
     super(
       target.getReferencePoint(),
       translationSupplier,
@@ -58,6 +55,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     this.target = target;
     this.heading = heading;
     this.autoDrive = autoDrive;
+    this.degrees = degrees;
 
     distanceController = new ProfiledPIDController(
       driveP, 0.0, 0.0,
@@ -81,6 +79,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   @Override
   public void initialize() {
     super.initialize();
+    heading.setNextHeading(Rotation2d.fromDegrees(degrees));
     heading.enableMaintainHeading();
     autoDrive.setDelegate(this);
 

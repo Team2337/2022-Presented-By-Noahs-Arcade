@@ -23,7 +23,7 @@ public class Heading extends SubsystemBase {
 
   private static double P_MOVING = 0.005; //0.005
   private static double P_STATIONARY = 0.007; //0.007
-  private static double visionPValue = 0.007;
+  private static double visionPValue = 0.02;
 
   private boolean visionP = false;
 
@@ -93,7 +93,8 @@ public class Heading extends SubsystemBase {
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
     if (visionP) {
-      rotationController.setD(visionPValue);
+      rotationController.setP(visionPValue);
+      rotationController.setD(0.001);
     } else {
     if (pCurrent != pDesired) {
       rotationController.setP(pDesired);
@@ -267,7 +268,7 @@ public class Heading extends SubsystemBase {
     rotationController.reset();
   }
 
-  public void setPValue(boolean usingVision) {
+  public void changePValue(boolean usingVision) {
     visionP = usingVision;
   }
 

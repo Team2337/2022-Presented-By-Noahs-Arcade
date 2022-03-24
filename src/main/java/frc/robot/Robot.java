@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -92,6 +94,18 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Starting Position", startingPos);
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
+    /*
+    if (Math.abs(m_robotContainer.getGyroscopeRotation()) < 0.1) {
+      m_robotContainer.setLEDGreen();
+    } else {
+      m_robotContainer.setLEDOff();
+    }
+    */
+    if (m_robotContainer.getPigeonState() != null) {
+      m_robotContainer.setLEDGreen();
+    } else {
+      m_robotContainer.setLEDOff();
+    }
   }
   
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

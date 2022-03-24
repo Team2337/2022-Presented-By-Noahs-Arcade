@@ -245,6 +245,10 @@ public class Vision extends SubsystemBase {
     relocalizeCounter++;
   }
 
+  public boolean isOnTarget() { 
+    return Math.abs(tx) < 2;
+  }
+
   private double calculateDistanceToTargetMeters() {
     return LimelightUtilities.calculateDistanceToTargetMeters(
       Constants.getInstance().LIMELIGHT_CAMERA_HEIGHT_METERS,
