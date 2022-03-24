@@ -23,6 +23,7 @@ public class HeadingToTargetCommand extends CommandBase {
   private final Drivetrain drivetrain;
   private final Heading heading;
   private final Vision vision;
+  private boolean firstTime = false;
 
   public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
     this(Constants.kHub, robotTranslationSupplier, overrideSupplier, drivetrain, heading, vision);
@@ -50,12 +51,21 @@ public class HeadingToTargetCommand extends CommandBase {
   @Override
   public void execute() {
     if (overrideSupplier.get()) {
+      if (firstTime) {
+        heading.enableMaintainHeading();
+        firstTime = false;
+        heading.changePValue(true);
+      }
       // We're in "vision drive" - drive to pull the Limelight tx value to zero
       double towardsCenterDegrees = (vision.getTx() * -1);
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
     } else {
+      if (!firstTime) {
+        firstTime = true;
+        heading.changePValue(false);
+      }
       PolarCoordinate coordinate = getRobotCoordinate();
       // The angle is the angle outward from our center point. In order to face our center
       // point, we need to rotate our angle by 180 degrees.
