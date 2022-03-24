@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -191,6 +192,10 @@ public class Drivetrain extends SubsystemBase {
 
   public Rotation2d getGyroscopeRoll() {
     return Rotation2d.fromDegrees(ypr_deg[2]);
+  }
+
+  public PigeonState getPigeonState() {
+    return pigeon.getState();
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
