@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class StartDelivery extends CommandBase {
 
   private final Delivery delivery;
+  private int waitTimer;
 
   public StartDelivery(Delivery delivery) {
     this.delivery = delivery;
@@ -20,8 +21,22 @@ public class StartDelivery extends CommandBase {
   }
 
   @Override
+  public void initialize() {
+    waitTimer = 0;
+    if (delivery.getCenteringSensorStatus()) {
+      delivery.stop();
+    } else {
+      delivery.setSpeed(Direction.COUNTER_CLOCKWISE, 0.3);
+    }
+  }
+
+
+  @Override
   public void execute() {
-    delivery.setSpeed(Direction.CLOCKWISE, 0.3);
+    if (!delivery.getCenteringSensorStatus() || waitTimer > 5) {
+      delivery.setSpeed(Direction.COUNTER_CLOCKWISE, 0.3);
+    }
+    waitTimer++;
   }
 
   @Override
