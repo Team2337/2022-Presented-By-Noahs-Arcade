@@ -23,6 +23,10 @@ public class Heading extends SubsystemBase {
 
   private static double P_MOVING = 0.005;
   private static double P_STATIONARY = 0.007;
+  private static double visionPValue = 0.02;
+  private static double visionDValue = 0.001;
+
+  private boolean visionP = false;
 
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
@@ -89,10 +93,15 @@ public class Heading extends SubsystemBase {
   public void periodic() {
     double pCurrent = rotationController.getP();
     double pDesired = drivetrainIsMovingSupplier.get() ? P_MOVING : P_STATIONARY;
-    if (pCurrent != pDesired) {
-      rotationController.setP(pDesired);
+    if (visionP) {
+      rotationController.setP(visionPValue);
+      rotationController.setD(visionDValue);
+    } else {
+      if (pCurrent != pDesired) {
+        rotationController.setP(pDesired);
+        rotationController.setD(0);
+      }
     }
-
     log();
   }
 
@@ -257,6 +266,11 @@ public class Heading extends SubsystemBase {
    */
   public void resetRotationController() {
     rotationController.reset();
+  }
+
+  //  Sets the P Value when we are holding the vision target tracking button.
+  public void changePValue(boolean usingVision) {
+    visionP = usingVision;
   }
 
 }
