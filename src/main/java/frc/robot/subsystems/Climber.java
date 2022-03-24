@@ -12,48 +12,50 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
+import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the climber mechanism
  */
 public class Climber extends SubsystemBase {
+ // private NetworkTableEntry P = climberTab. add("P", 0.15).
+   //   withWidget(BuiltInWidgets.kTextView)
+     // .getEntry();
+    
   //Servos
   public final Servo leftHookServo = new Servo(Constants.LEFT_SERVO_ID);
   public final Servo rightHookServo = new Servo(Constants.RIGHT_SERVO_ID);
   
   private final AnalogInput stringPot = new AnalogInput(Constants.CLIMBER_STRING_POT_ID);
   private final TalonFX leftMotor = new TalonFX(
-    Constants.CLIMBER_LEFT_MOTOR_ID//,
-    //Constants.UPPER_CANIVORE_ID
+    Constants.CLIMBER_LEFT_MOTOR_ID,//,
+    Constants.UPPER_CANIVORE_ID
   );
   private final TalonFX rightMotor = new TalonFX(
-    Constants.CLIMBER_RIGHT_MOTOR_ID//,
-   // Constants.UPPER_CANIVORE_ID
+    Constants.CLIMBER_RIGHT_MOTOR_ID,//,
+    Constants.UPPER_CANIVORE_ID
   );
   
   private static double servoSpeed = 1;
 
-  private final static double kP = 0.15;
+  private final static double kP = 0.08;
   private final static double kI = 0.0;
   private final static double kD = 0.0;
   private final static double tolerance = 50;
 
-  public final double START = 0;
+  public final double START = 0.59;
   public final double LOW_RUNG = 100000;
   public final double MID_RUNG = 2.5;
   public final double RICKABOOT = 1.65; // 1.65 Stringpot
-  public final double THIRD_RUNG_MAX = 2;
-  public final double THIRD_RUNG_MIN = 1.5;
-  public final double HOOKS_ARE_SET = 1;
-
-  public final double PITCH_RANGE = 0;
 
   private double maxSpeed = 1;
   private double nominalForwardSpeed = 0.1;
@@ -93,7 +95,7 @@ public class Climber extends SubsystemBase {
     leftMotor.setNeutralMode(NeutralMode.Brake);
 
     rightMotor.follow(leftMotor);
-
+    //TODO: have to change inversions on Comp Bot
     leftMotor.setInverted(TalonFXInvertType.Clockwise);
     rightMotor.setInverted(TalonFXInvertType.OpposeMaster);
 
@@ -105,11 +107,12 @@ public class Climber extends SubsystemBase {
     /*leftMotor.config_kP(0, 0.15);
     leftMotor.config_kI(0, 0);
     leftMotor.config_kD(0, 0); */
-    leftMotor.setSelectedSensorPosition(0);
+    //leftMotor.setSelectedSensorPosition(0);
     // This formula is used for converting Stringpot to encoder movements, so we only need one PID.
-    //double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
-    //double setpoint = stringpotToEncoder(voltageRound);
-    //leftMotor.setSelectedSensorPosition(setpoint);
+    double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
+    int setpoint = (int)stringpotToEncoder(voltageRound);
+    leftMotor.setSelectedSensorPosition(setpoint);
+    //leftMotor.setSelectedSensorPosition(10000);
     // Motor turns 25 times for one climber rotation, which is 6.283 inches, 2048
     // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
     /*leftMotor.configAllowableClosedloopError(0, 100);
@@ -134,6 +137,7 @@ public class Climber extends SubsystemBase {
       double setpoint = (112676 * voltageRound - 39538);
       SmartDashboard.putNumber("Voltage Round", voltageRound);
       SmartDashboard.putNumber("Voltage to Ticks", setpoint);
+      
     }
 
     // Systems check
@@ -158,6 +162,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    //leftMotor.config_kP(0, P.getDouble(0));
   }
 
   public void activateClimber() {
@@ -167,16 +172,14 @@ public class Climber extends SubsystemBase {
   public boolean getClimberStatus() {
     return climberActivated;
   }
-  //True if Connected
+
+  //True if Connected, 0.26 is around the value we get when we do not have anything plugged into the port.
   public boolean getStringPotHealth() {
     return ((getStringPotVoltage() > 0.26) && (getStringPotVoltage() < 4.3));
   }
   //Equation found using Google Sheets
   public double stringpotToEncoder(double stringpot){
     return ((112676 * stringpot) - 39538);
-  }
-  public boolean climberWithinThirdRungRange(){
-    return (THIRD_RUNG_MIN < getStringPotVoltage() && getStringPotVoltage() < THIRD_RUNG_MAX);
   }
 
   public void setPosition(double setpoint) {
@@ -186,11 +189,6 @@ public class Climber extends SubsystemBase {
     }
     //Else, we just use the ticks anyway and set
     leftMotor.set(TalonFXControlMode.Position, setpoint);
-  }
-
-  public void releaseServos(){
-    leftHookServo.setSpeed(1);
-    rightHookServo.setSpeed(-1);
   }
 
   public void hold() {

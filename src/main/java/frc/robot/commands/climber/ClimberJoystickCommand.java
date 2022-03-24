@@ -37,6 +37,7 @@ public class ClimberJoystickCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    climber.activateClimber();
     shouldHoldPositionWhenStopped = true;
   }
 
