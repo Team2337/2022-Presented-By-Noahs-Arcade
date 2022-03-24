@@ -74,6 +74,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, drivetrain, heading, vision));
+    LED.setDefaultCommand(new LEDRunnable(LED, this));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
     
 
