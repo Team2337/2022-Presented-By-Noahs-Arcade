@@ -24,9 +24,9 @@ public abstract class VisionCommand extends CommandBase {
     Rotation2d hubTheta = gyroRotation.rotateBy(Rotation2d.fromDegrees(180));
     if (vision.hasActiveTarget()) {
       double tx = vision.getTx(); // Degrees from crosshairs center - -29.8 to 29.8
-      // If we're more than ~5 degrees off center, we don't have confidence in our
+      // If we're more than ~2 degrees off center, we don't have confidence in our
       // hub height reading. Don't calculate an estimated position.
-      if (Math.abs(tx) > 5) {
+      if (Math.abs(tx) > 2) {
         return null;
       }
 

@@ -70,10 +70,10 @@ public class RobotContainer {
   private final SendableChooser<Double> startingAngleChooser = new SendableChooser<>();
 
   public RobotContainer() {
-    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, driverRightBumper::get, drivetrain, heading, vision));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, drivetrain, heading, vision));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
 
     // Configure the button bindings
@@ -218,7 +218,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     /** Driver Controller */
-    // Note: Drive Right Bumper being used for Heading relocalize
     // Note: Left X + Y axis, Right X axis, and Left Bumper are used by SwerveDriveCommand
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
@@ -251,7 +250,8 @@ public class RobotContainer {
     JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
-    // Operator left and right bumper below in the configureButtonBindingsTeleop() method.
+    // Operator left bumper used for vision tracking by default commands.
+    // Operator right bumper below in the configureButtonBindingsTeleop() method.
     JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
