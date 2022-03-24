@@ -237,6 +237,10 @@ public class Vision extends SubsystemBase {
     return hasValidTarget;
   }
 
+  public boolean isOnTarget() { 
+    return Math.abs(tx) < 2;
+  }
+
   public double getDistanceToCenterHubMeters() {
     return distanceToTargetMeters + Constants.Vision.VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS;
   }

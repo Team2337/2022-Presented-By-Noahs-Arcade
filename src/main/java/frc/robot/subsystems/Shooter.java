@@ -160,6 +160,10 @@ public class Shooter extends SubsystemBase {
     return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
+  public boolean isShooterToLEDSpeed() {
+    return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance) && getMotorWheelSpeed(leftMotor) > 10;
+  }
+
   // ** Private API **
 
   public double getVelocity() {

@@ -7,21 +7,20 @@ package frc.robot;
 import java.util.Map;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.Constants.DriverDashboardPositions;
-import frc.robot.Constants.SystemsCheckPositions;
 import frc.robot.commands.HeadingToTargetCommand;
+import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
@@ -37,12 +36,12 @@ import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.StartStopShooterCommand;
 import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
-import frc.robot.commands.shooter.StopShooterInstantCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
+import frc.robot.subsystems.hardware.LED;
 
 public class RobotContainer {
   private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
@@ -62,6 +61,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pigeon);
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
+  private final LED LED = new LED();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
@@ -72,7 +72,9 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, driverRightBumper::get, drivetrain, heading, vision));
+    LED.setDefaultCommand(new LEDRunnable(LED, this));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    
 
     // Configure the button bindings
     configureButtonBindings();
@@ -306,5 +308,33 @@ public class RobotContainer {
 
   public boolean getBlackSwitchStatus() {
     return operatorStation.blackSwitch.get();
+  }
+
+  public double getGyroscopeRotation() {
+    return drivetrain.getGyroscopeRotation().getDegrees();
+  }
+
+  public void setLEDColor(Color color) {
+    LED.setColor(color);
+  }
+
+  public void setLEDOff() {
+    LED.setOff();
+  }
+
+  public PigeonState getPigeonState() {
+    return drivetrain.getPigeonState();
+  }
+
+  public boolean isShooterUpToLEDSpeed() {
+    return shooter.isShooterToLEDSpeed();
+  }
+
+  public boolean isOnTarget() {
+    return vision.isOnTarget();
+  }
+
+  public boolean hasActiveTarget() {
+    return vision.hasActiveTarget();
   }
 }

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -90,6 +91,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Starting Position", startingPos);
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
+
+    if (m_robotContainer.getPigeonState() != null) {
+      m_robotContainer.setLEDColor(Color.kGreen);
+    } else {
+      m_robotContainer.setLEDOff();
+    }
   }
   
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
