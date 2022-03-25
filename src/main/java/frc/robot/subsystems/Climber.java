@@ -53,11 +53,17 @@ public class Climber extends SubsystemBase {
   private final static double tolerance = 50;
 
   public final double START = 0.59;
+  public final double TRAVEL_LOCATION = 1.0;
   public final double LOW_RUNG = 100000;
   public final double MID_RUNG = 2.5;
-  public final double RICKABOOT = 1.65; // 1.65 Stringpot
+  public final double RICKABOOT = 1.4; // 1.65 Stringpot
 
-  private double maxSpeed = 1;
+  private static final double MAX_UP_SPEED = 1.0;
+  private static final double MAX_DOWN_SPEED = 0.7;
+
+  private double MIN_STRINGPOT_VALUE = 0.4;
+  private double MAX_STRINGPOT_VALUE = 3.05;
+
   private double nominalForwardSpeed = 0.1;
   private double nominalReverseSpeed = -nominalForwardSpeed;
 
@@ -69,15 +75,15 @@ public class Climber extends SubsystemBase {
   public Climber() {
     //Setup config file
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.forwardSoftLimitThreshold = maxEncoderValue;
+    motorConfig.forwardSoftLimitThreshold = stringpotToEncoder(MAX_STRINGPOT_VALUE);
     motorConfig.forwardSoftLimitEnable = true;
-    motorConfig.reverseSoftLimitThreshold = minEncoderValue;
+    motorConfig.reverseSoftLimitThreshold = stringpotToEncoder(MIN_STRINGPOT_VALUE);
     motorConfig.reverseSoftLimitEnable = true;
     //motorConfig.reverseSoftLimitEnable = false;
     motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
     //motorConfig.primaryPID.selectedFeedbackCoefficient = 1; //TODO use to convert to inches?
-    motorConfig.peakOutputForward = maxSpeed;
-    motorConfig.peakOutputReverse = -maxSpeed;
+    motorConfig.peakOutputForward = MAX_UP_SPEED;
+    motorConfig.peakOutputReverse = -MAX_DOWN_SPEED;
     motorConfig.nominalOutputForward = nominalForwardSpeed;
     motorConfig.nominalOutputReverse = nominalReverseSpeed;
     motorConfig.slot0.kP = kP;
@@ -95,29 +101,16 @@ public class Climber extends SubsystemBase {
     leftMotor.setNeutralMode(NeutralMode.Brake);
 
     rightMotor.follow(leftMotor);
-    //TODO: have to change inversions on Comp Bot
-    leftMotor.setInverted(TalonFXInvertType.Clockwise);
+
+    leftMotor.setInverted(TalonFXInvertType.CounterClockwise);
     rightMotor.setInverted(TalonFXInvertType.OpposeMaster);
 
     leftMotor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
-    // TODO: If set set a nominal voltage we can enable voltage compensation
-    // leftMotor.enableVoltageCompensation(true);
 
-    // PID for our positional hold
-    /*leftMotor.config_kP(0, 0.15);
-    leftMotor.config_kI(0, 0);
-    leftMotor.config_kD(0, 0); */
-    //leftMotor.setSelectedSensorPosition(0);
     // This formula is used for converting Stringpot to encoder movements, so we only need one PID.
     double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
     int setpoint = (int)stringpotToEncoder(voltageRound);
     leftMotor.setSelectedSensorPosition(setpoint);
-    //leftMotor.setSelectedSensorPosition(10000);
-    // Motor turns 25 times for one climber rotation, which is 6.283 inches, 2048
-    // ticks in a rotation. Overall loss with this tolerance: 0.019 inches
-    /*leftMotor.configAllowableClosedloopError(0, 100);
-    leftMotor.configNominalOutputForward(0.1);
-    leftMotor.configNominalOutputReverse(0.1); */
 
     setupShuffleboard(Constants.DashboardLogging.CLIMBER);
   }
@@ -132,12 +125,10 @@ public class Climber extends SubsystemBase {
       climberWidget.addNumber("Right Temp", this::getRightMotorTemperature);
       climberWidget.addNumber("String Pot", this::getStringPotVoltage);
       climberWidget.addNumber("Encoder Position", this::getEncoderPosition);
-      climberWidget.addBoolean("Status", this::getClimberStatus);
       double voltageRound = Double.parseDouble(String.format("%.2f",getStringPotVoltage()));
       double setpoint = (112676 * voltageRound - 39538);
       SmartDashboard.putNumber("Voltage Round", voltageRound);
       SmartDashboard.putNumber("Voltage to Ticks", setpoint);
-      
     }
 
     // Systems check
@@ -162,15 +153,6 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //leftMotor.config_kP(0, P.getDouble(0));
-  }
-
-  public void activateClimber() {
-    climberActivated = true;
-  }
-
-  public boolean getClimberStatus() {
-    return climberActivated;
   }
 
   //True if Connected, 0.26 is around the value we get when we do not have anything plugged into the port.
@@ -179,13 +161,13 @@ public class Climber extends SubsystemBase {
   }
   //Equation found using Google Sheets
   public double stringpotToEncoder(double stringpot){
-    return ((112676 * stringpot) - 39538);
+    return ((Constants.getInstance().CLIMBER_SLOPE * stringpot) - Constants.getInstance().CLIMBER_Y_INTERCEPT);
   }
 
   public void setPosition(double setpoint) {
     //If setpoint is within the range for a stringpot, 0-5V, convert to ticks, we will save value as Stringpot, so doesn't matter if we have it or not.
     if (setpoint < 5){
-      setpoint = stringpotToEncoder(setpoint); //Convert to ENCODER TICKS!!!
+      setpoint = stringpotToEncoder(setpoint); //Converts to encoder ticks
     }
     //Else, we just use the ticks anyway and set
     leftMotor.set(TalonFXControlMode.Position, setpoint);

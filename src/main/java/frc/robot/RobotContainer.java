@@ -26,7 +26,6 @@ import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
-import frc.robot.commands.climber.JoystickClimberCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
@@ -252,6 +251,7 @@ public class RobotContainer {
     JoystickButton operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
+    JoystickButton operatorLeftStick = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
     // Operator left bumper used for vision tracking by default commands.
@@ -274,6 +274,8 @@ public class RobotContainer {
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
+    operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
+    operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
     operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
 
@@ -292,13 +294,9 @@ public class RobotContainer {
   }
 
   public void configureButtonBindingsTeleop() {
-
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     //Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
-    operatorLeftBumper.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
-    operatorLeftBumper.whenReleased(new ClimberSetpointCommand(climber.START, climber));
     // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
     // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));

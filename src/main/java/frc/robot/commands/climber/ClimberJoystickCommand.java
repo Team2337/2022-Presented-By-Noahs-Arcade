@@ -37,7 +37,6 @@ public class ClimberJoystickCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    climber.activateClimber();
     shouldHoldPositionWhenStopped = true;
   }
 
@@ -45,22 +44,14 @@ public class ClimberJoystickCommand extends CommandBase {
   public void execute() {
     // Deadband makes sure slight inaccuracies in the controller does not make the
     // controller move if it isn't touched
-    double joystick = -Utilities.deadband(controller.getRightY(), 0.15);
-    if (joystick == 0) {
+    double output = Utilities.deadband(controller.getRightY(), 0.15);
+    if (output == 0) {
       // If our joystick is not being moved, hold our climber in it's current position
       if (shouldHoldPositionWhenStopped) {
         climber.hold();
         shouldHoldPositionWhenStopped = false;
       }
     } else {
-      double output = MathUtil.clamp(
-        joystick,
-        -MAX_UP_SPEED,
-        MAX_DOWN_SPEED
-      );
-      if (((climber.getStringPotVoltage() < MIN_STRINGPOT_VALUE) && (output > 0.0)) || ((climber.getStringPotVoltage() > MAX_STRINGPOT_VALUE) && (output < 0))){
-        output = 0;
-      }
       if (climber.getStringPotVoltage() > 2.8 && !operatorStation.blackSwitch.get()) {
         climber.releaseServos();
       }
