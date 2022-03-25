@@ -21,8 +21,8 @@ public class LEDRunnable extends CommandBase{
       led.setColor(Color.kRed);
     } else if (robotContainer.isShooterUpToLEDSpeed()) {
       led.setColor(Color.kBlue);
-    } else if (robotContainer.isOnTarget() && robotContainer.hasActiveTarget()) {
-      led.setColor(Color.kYellow);
+    } else if (robotContainer.hasActiveTarget()) {
+      led.setColor(Color.kYellow, robotContainer.getTx());
     } else {
       led.setOff();
     }

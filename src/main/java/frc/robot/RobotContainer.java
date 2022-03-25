@@ -346,4 +346,8 @@ public class RobotContainer {
   public boolean hasActiveTarget() {
     return vision.hasActiveTarget();
   }
+
+  public double getTx() {
+    return vision.getTx();
+  }
 }
