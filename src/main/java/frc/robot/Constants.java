@@ -51,6 +51,9 @@ public final class Constants {
   public final double LIMELIGHT_CAMERA_HEIGHT_METERS;
   public final Rotation2d LIMEILGHT_CAMERA_ANGLE;
 
+  public final int CLIMBER_SLOPE;
+  public final int CLIMBER_Y_INTERCEPT;
+
   public final int CENTERING_BEAM_ID;
   public final int INTAKE_BEAM_ID;
 
@@ -161,6 +164,9 @@ public final class Constants {
 
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(34.98));
+
+        CLIMBER_SLOPE = 112676;
+        CLIMBER_Y_INTERCEPT = 39538;
         break;
       case PRACTICE:
         SWERVE_MODULE_CONFIGURATION = SdsModuleConfigurations.MK4I_L1;
@@ -192,6 +198,9 @@ public final class Constants {
         
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(30.91193711));
+
+        CLIMBER_SLOPE = 112676;
+        CLIMBER_Y_INTERCEPT = 39538;
         break;
       case COMPETITION:
       default:
@@ -225,6 +234,9 @@ public final class Constants {
 
         LIMELIGHT_CAMERA_HEIGHT_METERS = Units.inchesToMeters(38);
         LIMEILGHT_CAMERA_ANGLE = new Rotation2d(Units.degreesToRadians(27.95));
+
+        CLIMBER_SLOPE = 171149;
+        CLIMBER_Y_INTERCEPT = 49106;
         break;
     }
   }

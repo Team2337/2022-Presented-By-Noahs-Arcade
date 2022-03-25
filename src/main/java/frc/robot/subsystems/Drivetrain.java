@@ -133,6 +133,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void setupShuffleboard(Boolean logEnable) {
     // Normal debug
+    SmartDashboard.putNumber("Pitch", getGyroscopePitch().getDegrees());
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     if (logEnable) {
       ShuffleboardLayout chassisSpeedsWidget = tab.getLayout("Chassis Speeds", BuiltInLayouts.kList)
@@ -189,7 +190,6 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getGyroscopePitch() {
     return Rotation2d.fromDegrees(ypr_deg[1]);
   }
-
   public Rotation2d getGyroscopeRoll() {
     return Rotation2d.fromDegrees(ypr_deg[2]);
   }
@@ -226,7 +226,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     pigeon.getYawPitchRoll(ypr_deg);
-
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
