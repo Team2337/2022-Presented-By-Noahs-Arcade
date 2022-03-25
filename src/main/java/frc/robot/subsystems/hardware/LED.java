@@ -1,11 +1,13 @@
 package frc.robot.subsystems.hardware;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * Setup for addressable LED strip
@@ -43,6 +45,10 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setColor(Color color, double tx) {
+		MathUtil.clamp(
+			tx, 
+			-20, 
+			20);
 		if (tx > -2 && tx < 2) {
 			for (int i = 0; i < 16; i++) {
 				ledBuffer.setLED(i, color);
@@ -52,6 +58,13 @@ public class LED extends SubsystemBase {
 			double q = 8 - (tx / 2.5);
 			int e = (int)q;
 			SmartDashboard.putNumber("e", e);
+
+			if (e <= 1) {
+				e = 1;
+			}
+			if (e >= 16){
+				e=16;
+			}
 
 			for (int i = e; i < 16; i++) {
 				ledBuffer.setLED(i, color);
@@ -65,11 +78,15 @@ public class LED extends SubsystemBase {
 			int e = (int)q;
 			SmartDashboard.putNumber("e2", e);
 
-			for (int i = 0; i < e - 1; i++) {
+			if (e <= 1) {
+				e = 1;
+			}
+
+			for (int i = 0; i < e; i++) {
 				ledBuffer.setLED(i, color);
 			} 
 
-			for (int i = e; i < 16; i++) {
+			for (int i = e + 1; i < 16; i++) {
 				ledBuffer.setRGB(i, 0, 0, 0);
 			}
 		} 
