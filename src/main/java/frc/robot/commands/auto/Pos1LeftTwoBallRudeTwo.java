@@ -32,20 +32,19 @@ public class Pos1LeftTwoBallRudeTwo extends SequentialCommandGroup {
       new WaitCommand(0.5),
       new ForwardKickerCommand(kicker).withTimeout(0.5),
       new WaitCommand(0.5),
-      new ParallelCommandGroup(
-        new MaintainHeadingCommand(80, heading).withTimeout(2.5),
-        new ProfiledPointToPointCommand(Constants.Auto.kBallD2, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5)
-      ),
-      new ParallelCommandGroup(
-        new MaintainHeadingCommand(-80, heading).withTimeout(3),
-        new ProfiledPointToPointCommand(Constants.Auto.kBallD1, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(3)
-      ),
+      // new ProfiledPointToPointWithHeadingCommand(Constants.Auto.kBallD2, drivetrain::getTranslation, 80, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallD2, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
+      new WaitCommand(0.5),
+      /*
+      new ProfiledPointToPointWithHeadingCommand(Constants.Auto.kBallD1, drivetrain::getTranslation, -80, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(3),
+      new WaitCommand(0.5),
       new StartShooterInstantCommand(19.5, shooter),
       new ParallelCommandGroup(
         new MaintainHeadingCommand(180, heading).withTimeout(2),
         new StartKicker(kicker),
         new AutoStartDelivery(delivery).withTimeout(0.75)
       ),
+      */
       // new ProfiledPointToPointCommand(Constants.Auto.kPosition1LeftStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );

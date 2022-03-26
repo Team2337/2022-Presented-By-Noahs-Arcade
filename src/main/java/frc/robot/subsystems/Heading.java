@@ -28,6 +28,9 @@ public class Heading extends SubsystemBase {
 
   private boolean visionP = false;
 
+  public boolean autoAlterHeadingEnabled = false;
+  public double autoAlteredHeading;
+
   /**
    * Whether or not the Heading subsystem is enabled. Being "enabled" means
    * providing a heading to maintain if a maintainHeading is set + returning
@@ -185,6 +188,12 @@ public class Heading extends SubsystemBase {
   public boolean shouldMaintainHeading() {
     return this.enabled && maintainHeading != null;
   }
+
+  public void autonMaintainHeading(boolean maintain, double degrees) {
+     autoAlterHeadingEnabled = maintain;
+     autoAlteredHeading = degrees;
+  }
+
 
   /**
    * Enqueue the next heading for the robot. There can only be one next

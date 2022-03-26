@@ -346,6 +346,10 @@ public final class Constants {
       Units.inchesToMeters(153),
       Rotation2d.fromDegrees(-99.75)
     );
+    public static final PolarCoordinate kBallPastR3 = new PolarCoordinate(
+      Units.inchesToMeters(183),
+      Rotation2d.fromDegrees(-99.75)
+    );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
       Constants.Auto.kBallR3.getTheta()

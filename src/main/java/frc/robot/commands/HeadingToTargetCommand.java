@@ -61,6 +61,8 @@ public class HeadingToTargetCommand extends CommandBase {
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
+    } else if (heading.autoAlterHeadingEnabled) {
+      heading.setMaintainHeading(Rotation2d.fromDegrees(heading.autoAlteredHeading));
     } else {
       if (!firstTime) {
         firstTime = true;
