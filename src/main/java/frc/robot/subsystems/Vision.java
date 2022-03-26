@@ -222,7 +222,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTx() {
-    return tx;
+    return tx + Constants.VISION_OFFSET;
   }
 
   public double getTy() {
