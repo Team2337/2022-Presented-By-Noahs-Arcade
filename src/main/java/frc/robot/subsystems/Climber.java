@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
-import java.lang.invoke.VolatileCallSite;
-import java.util.Map;
-import java.util.function.Supplier;
 
+import java.util.Map;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,8 +9,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.*;
@@ -20,16 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
-import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the climber mechanism
  */
 public class Climber extends SubsystemBase {
- // private NetworkTableEntry P = climberTab. add("P", 0.15).
-   //   withWidget(BuiltInWidgets.kTextView)
-     // .getEntry();
     
   //Servos
   public final Servo leftHookServo = new Servo(Constants.LEFT_SERVO_ID);
@@ -67,10 +59,6 @@ public class Climber extends SubsystemBase {
   private double nominalForwardSpeed = 0.1;
   private double nominalReverseSpeed = -nominalForwardSpeed;
 
-  private double minEncoderValue = 30606;
-  private double maxEncoderValue = 277350;
-    //value to convert stringpot to encoder value
-
   public boolean climberActivated = false;
   public Climber() {
     //Setup config file
@@ -79,9 +67,7 @@ public class Climber extends SubsystemBase {
     motorConfig.forwardSoftLimitEnable = true;
     motorConfig.reverseSoftLimitThreshold = stringpotToEncoder(MIN_STRINGPOT_VALUE);
     motorConfig.reverseSoftLimitEnable = true;
-    //motorConfig.reverseSoftLimitEnable = false;
     motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-    //motorConfig.primaryPID.selectedFeedbackCoefficient = 1; //TODO use to convert to inches?
     motorConfig.peakOutputForward = MAX_UP_SPEED;
     motorConfig.peakOutputReverse = -MAX_DOWN_SPEED;
     motorConfig.nominalOutputForward = nominalForwardSpeed;

@@ -2,20 +2,14 @@ package frc.robot.commands.climber;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.Climber;
 
 public class ClimberJoystickCommand extends CommandBase {
-
-  private static final double MAX_UP_SPEED = 1.0;
-  private static final double MAX_DOWN_SPEED = 0.7;
-
 
   private final Climber climber;
   private final XboxController controller;
@@ -23,8 +17,6 @@ public class ClimberJoystickCommand extends CommandBase {
   private final Supplier<Rotation2d> rollSupplier;
 
   private boolean shouldHoldPositionWhenStopped = true;
-  private double MIN_STRINGPOT_VALUE = 0.4;
-  private double MAX_STRINGPOT_VALUE = 3.05;
 
   public ClimberJoystickCommand(Supplier<Rotation2d> rollSupplier, XboxController controller, NerdyOperatorStation operatorStation, Climber climber) {
     this.climber = climber;
