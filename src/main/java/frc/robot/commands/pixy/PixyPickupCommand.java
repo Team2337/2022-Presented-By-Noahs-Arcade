@@ -23,7 +23,9 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public static enum PickupStrategy {
     RED,
     BLUE,
-    ANY
+    ANY,
+    OURS,
+    THEIRS
   }
 
   // The position in the frame where the ball will go max speed.
@@ -119,6 +121,40 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
           // If alliance is blue, prioritize blue targets if they are there;
           // otherwise get red targets
           latestTargetBall = largestBlue == null ? largestRed : largestBlue;
+          break;
+        }
+      } else if (strategy == PickupStrategy.OURS) {
+        Block largestRed = PixyCam.getLargestRedBlock(blocks);
+        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
+
+      switch (DriverStation.getAlliance()) {
+        default:
+        case Red:
+          // If alliance is red, prioritize red targets if they are there;
+          // otherwise get blue targets
+          latestTargetBall = largestRed;
+          break;
+        case Blue:
+          // If alliance is blue, prioritize blue targets if they are there;
+          // otherwise get red targets
+          latestTargetBall = largestBlue;
+          break;
+        }
+      } else if (strategy == PickupStrategy.THEIRS) {
+        Block largestRed = PixyCam.getLargestRedBlock(blocks);
+        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
+
+      switch (DriverStation.getAlliance()) {
+        default:
+        case Red:
+          // If alliance is red, prioritize red targets if they are there;
+          // otherwise get blue targets
+          latestTargetBall = largestBlue;
+          break;
+        case Blue:
+          // If alliance is blue, prioritize blue targets if they are there;
+          // otherwise get red targets
+          latestTargetBall = largestRed;
           break;
       }
     }

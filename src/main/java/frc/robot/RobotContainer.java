@@ -47,7 +47,7 @@ import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
 
 public class RobotContainer {
-  private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
+  // private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
 
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
@@ -65,6 +65,7 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
   private final LED LED = new LED();
+  private final PixyCam pixyCam = new PixyCam();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
@@ -225,6 +226,7 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
@@ -269,6 +271,9 @@ public class RobotContainer {
 
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
+
+    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, autoDrive, intake, pixyCam));
+    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, autoDrive, intake, pixyCam));
 
     operatorStart.whenPressed(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getYellowSwitchStatus, kicker, shooter));
