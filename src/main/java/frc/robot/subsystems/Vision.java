@@ -259,4 +259,8 @@ public class Vision extends SubsystemBase {
     );
   }
 
+  public double calculateDistanceToTargetInches() {
+    return Units.metersToInches(distanceToTargetMeters);
+  }
+
 }
