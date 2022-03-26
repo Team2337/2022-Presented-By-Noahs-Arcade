@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -285,6 +286,7 @@ public class RobotContainer {
     operatorX.whileHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, driverRightBumper::get, delivery, kicker, shooter));
     operatorX.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
+
     /** Driverstation Controls * */
 
     // operatorStation.blueSwitch.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
@@ -297,7 +299,7 @@ public class RobotContainer {
   public void configureButtonBindingsTeleop() {
     //Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(delivery));
+    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(driverController, delivery).withTimeout(1.5));
     // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
     // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
