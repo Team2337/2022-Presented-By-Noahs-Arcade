@@ -1,6 +1,5 @@
 package frc.robot.commands.shooter;
 
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
