@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,9 @@ public class Shooter extends SubsystemBase {
   private StatorCurrentLimitConfiguration currentLimitConfiguration = CTREUtils.defaultCurrentLimit();
 
   public Shooter() {
+
+    SmartDashboard.putNumber("Shooter Speed", 0);
+
     leftMotor.configFactoryDefault();
     rightMotor.configFactoryDefault();
 
@@ -83,6 +87,7 @@ public class Shooter extends SubsystemBase {
 
   private void setupShuffleboard(Boolean logEnable) {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+
 
     ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
       .withSize(4, 8)
@@ -136,6 +141,7 @@ public class Shooter extends SubsystemBase {
   // ** Public API **
 
   public void setSpeed(double speedFeetPerSecond) {
+    //speedFeetPerSecond = SmartDashboard.getNumber("Shooter Speed", 0);
     if (isOverheated()) {
       return;
     }
