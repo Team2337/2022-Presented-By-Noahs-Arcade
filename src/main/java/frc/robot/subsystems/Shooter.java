@@ -120,16 +120,9 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    log();
-
     if (isOverheated()) {
       stop();
     }
-  }
-
-  private void log() {
-    SmartDashboard.putNumber("Shooter/Speed", getMotorWheelSpeed(leftMotor));
-    SmartDashboard.putNumber("Shooter/Velocity", leftMotor.getSelectedSensorVelocity());
   }
 
   // ** Public API **
