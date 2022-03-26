@@ -53,8 +53,13 @@ public class StartStopShooterDynamic extends CommandBase {
 
     double distanceInches = distanceSupplier.get();
     SmartDashboard.putNumber("Distance", distanceInches);
+    double shooterSpeed;
 
-    double shooterSpeed = 44.6 - 0.169 * distanceInches + 0.00108 * Math.pow(distanceInches, 2);
+    if (distanceInches == 0) {
+      shooterSpeed = kHighGoalSpeedFeetPerSecond;
+    } else {
+      shooterSpeed = 44.6 - 0.169 * distanceInches + 0.00108 * Math.pow(distanceInches, 2);
+    }
 
     SmartDashboard.putNumber("Shooter speed", shooterSpeed);
     if (overrideSupplier.get()) {
