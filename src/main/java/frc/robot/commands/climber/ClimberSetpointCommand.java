@@ -11,6 +11,11 @@ public class ClimberSetpointCommand extends CommandBase {
   private final Climber climber;
   private double setpoint;
 
+  /**
+   * 
+   * @param setpoint
+   * @param climber
+   */
   public ClimberSetpointCommand(double setpoint, Climber climber) {
     this.climber = climber;
     this.setpoint = setpoint;
@@ -23,17 +28,13 @@ public class ClimberSetpointCommand extends CommandBase {
     if(climber.getStringPotHealth()){
       climber.setPosition(setpoint);
     }
-   /* else {
-      climber.stop();
-    } */
+  }
+  @Override
+  public void execute() {}
 
-  }
   @Override
-  public void execute(){
-    }
-  @Override
-  public void end(boolean interupted){
-  }
+  public void end(boolean interupted) {}
+
   @Override
   public boolean isFinished() {
     return true;
