@@ -17,12 +17,12 @@ public class StartShooterUpToSpeedWithOverride extends ConditionalCommand {
   private static final double kHighGoalSpeedFeetPerSecond = 39.5;
   private static final double kLaunchpadCloseSpeedFeetPerSecond = 47.5;
 
-  public StartShooterUpToSpeedWithOverride(Supplier<Double> distanceSupplier, Supplier<Boolean> overrideSupplier, NerdyOperatorStation operatorStation, Shooter shooter) {
+  public StartShooterUpToSpeedWithOverride(Supplier<Double> distanceSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> yellowSwitch, Shooter shooter) {
     super(
       new StartShooterUpToSpeedCommand(kHighGoalSpeedFeetPerSecond, kLaunchpadCloseSpeedFeetPerSecond, overrideSupplier, shooter),
       new StartStopShooterDynamic(distanceSupplier, overrideSupplier, shooter),
       () -> {
-        return operatorStation.yellowSwitch.get();
+        return yellowSwitch.get();
       }
     );
   }
