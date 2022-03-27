@@ -482,6 +482,8 @@ public final class Constants {
 
   public static final String UPPER_CANIVORE_ID = "Upper";
 
+  public static final double VISION_OFFSET = 0;
+
   public static enum BallColor {
     RED,
     BLUE,

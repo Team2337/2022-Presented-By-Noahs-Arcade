@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
+import frc.robot.commands.delivery.AutoBottomToTopCommand;
 import frc.robot.commands.delivery.AutoStartDelivery;
-import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.subsystems.AutoDrive;
@@ -27,7 +27,7 @@ public class Pos3RightFiveBall extends SequentialCommandGroup {
       new ForwardKickerCommand(kicker).withTimeout(0.3),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(2.5),
-        new BottomToTopCommand(delivery).withTimeout(1.5),
+        new AutoBottomToTopCommand(delivery).withTimeout(1.5),
         new StartShooterInstantCommand(39.5, shooter)
       ),
       new ForwardKickerCommand(kicker).withTimeout(0.3),
