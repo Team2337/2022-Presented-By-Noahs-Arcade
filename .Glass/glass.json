@@ -2,6 +2,9 @@
   "NetworkTables": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/DRIVER DASHBOARD/Auton Chooser": "String Chooser",
+      "/Shuffleboard/DRIVER DASHBOARD/Starting Angle Chooser": "String Chooser",
+      "/Shuffleboard/DRIVER DASHBOARD/Starting Pos Chooser": "String Chooser",
       "/SmartDashboard/AutonChooser": "String Chooser",
       "/SmartDashboard/StartingAngleChooser": "String Chooser",
       "/SmartDashboard/StartingPositionChooser": "String Chooser",

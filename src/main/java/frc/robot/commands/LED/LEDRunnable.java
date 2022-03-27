@@ -24,15 +24,15 @@ public class LEDRunnable extends CommandBase{
       led.setColor(Color.kBlue);
     } else if (robotContainer.getOperatorStartStatus()) {
       if (DriverStation.getAlliance().toString() == "Red") {
-        led.setColor(Color.kRed);
+        led.setColorRGB(100, 0, 0, robotContainer.getFrameCenter());
       } else {
-        led.setColor(Color.kBlue);
+        led.setColorRGB(0, 0, 100, robotContainer.getFrameCenter());
       }
     } else if (robotContainer.getOperatorBackStatus()) {
       if (DriverStation.getAlliance().toString() == "Red") {
-        led.setColor(Color.kBlue);
+        led.setColorRGB(0, 0, 100, robotContainer.getFrameCenter());
       } else {
-        led.setColor(Color.kRed);
+        led.setColorRGB(100, 0, 0, robotContainer.getFrameCenter());
       }
     } else if (robotContainer.hasActiveTarget()) {
       led.setColor(Color.kYellow, robotContainer.getTx());

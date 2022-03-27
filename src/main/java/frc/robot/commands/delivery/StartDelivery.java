@@ -27,7 +27,7 @@ public class StartDelivery extends CommandBase {
     if (delivery.getCenteringSensorStatus()) {
       delivery.stop();
     } else {
-      delivery.setSpeed(Direction.COUNTER_CLOCKWISE, deliverySpeed);
+      delivery.setSpeed(Direction.CLOCKWISE, deliverySpeed);
     }
   }
 
@@ -35,7 +35,7 @@ public class StartDelivery extends CommandBase {
   @Override
   public void execute() {
     if (!delivery.getCenteringSensorStatus() || waitTimer > 5) {
-      delivery.setSpeed(Direction.COUNTER_CLOCKWISE, deliverySpeed);
+      delivery.setSpeed(Direction.CLOCKWISE, deliverySpeed);
     }
     waitTimer++;
   }

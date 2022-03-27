@@ -66,6 +66,28 @@ public class LED extends SubsystemBase {
 		led.start();
 	}
 
+	public void setColorRGB(int r, int g, int b, double tx) {
+		for (int i = 0; i < 16; i++) {
+		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
+			ledBuffer.setRGB(i, r, g, b);
+		}else if (tx >= Constants.VISION_TOLERANCE){
+			if(tx <= (20 - (i * 2.5))){
+				ledBuffer.setRGB(i, r, g, b);
+			}else{
+				ledBuffer.setRGB(i, 0, 0, 0);
+			}
+		}else if (tx <= -Constants.VISION_TOLERANCE){
+			if(tx >= (17.5 - (i * 2.5))){
+				ledBuffer.setRGB(i, r, g, b);
+			}else{
+				ledBuffer.setRGB(i,0,0,0);
+			}
+		}
+	}
+		led.setData(ledBuffer);
+		led.start();
+	}
+
   public void setColorLeft(Color color) {
 		for (int i = 0; i < 8; i++) {
 			ledBuffer.setLED(i, color);

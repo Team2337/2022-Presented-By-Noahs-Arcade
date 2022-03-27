@@ -10,7 +10,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,18 +22,15 @@ import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
-import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
@@ -48,7 +44,7 @@ import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
 
 public class RobotContainer {
-  private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
+  // private PixyCam pixyCam;  // Instance created in the instantiateSubsystemsTeleop() method.
 
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
@@ -66,6 +62,7 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
   private final LED LED = new LED();
+  private final PixyCam pixyCam = new PixyCam();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
@@ -226,6 +223,7 @@ public class RobotContainer {
     JoystickButton driverX = new JoystickButton(driverController, XboxController.Button.kX.value);
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+    JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
     JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
@@ -271,7 +269,10 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whenPressed(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
+    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
+    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
+
+    // operatorStart.whenPressed(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getYellowSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
@@ -279,7 +280,7 @@ public class RobotContainer {
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
-    operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
+    // operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
@@ -363,5 +364,9 @@ public class RobotContainer {
 
   public double getTx() {
     return vision.getTx();
+  }
+
+  public double getFrameCenter() {
+    return pixyCam.getFrameCenter();
   }
 }

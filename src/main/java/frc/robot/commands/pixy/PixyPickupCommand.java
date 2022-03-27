@@ -1,13 +1,18 @@
 package frc.robot.commands.pixy;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
+import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PixyCam;
@@ -23,7 +28,9 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public static enum PickupStrategy {
     RED,
     BLUE,
-    ANY
+    ANY,
+    OURS,
+    THEIRS
   }
 
   // The position in the frame where the ball will go max speed.
@@ -49,9 +56,18 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private Block targetBall;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
+  private XboxController driverController;
 
-  public PixyPickupCommand(PickupStrategy strategy, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+  public Supplier<Rotation2d> gyroSupplier;
+
+  public double spangle = 0;
+
+  private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
+
+  public PixyPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
     this.strategy = strategy;
+    this.gyroSupplier = gyroSupplier;
+    this.driverController = driverController;
     this.autoDrive = autoDrive;
     this.pixyCam = pixyCam;
     this.intake = intake;
@@ -88,6 +104,19 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void execute() {
     log();
+    double y = driverController.getLeftX();
+    double x = -driverController.getLeftY();
+    Rotation2d joystickAngle = joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getTheta();
+    double jAngle = -joystickAngle.getDegrees();
+    double gAngle = gyroSupplier.get().getDegrees();
+    double dangle = jAngle - gAngle;
+
+    spangle = Math.cos(Math.toRadians(dangle));
+    spangle = spangle * 0.4;
+    
+    if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {
+      spangle = 0;
+    }
 
     if (!pixyCam.isConnected()) {
       return;
@@ -120,6 +149,40 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
           // otherwise get red targets
           latestTargetBall = largestBlue == null ? largestRed : largestBlue;
           break;
+        }
+      } else if (strategy == PickupStrategy.OURS) {
+        Block largestRed = PixyCam.getLargestRedBlock(blocks);
+        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
+
+      switch (DriverStation.getAlliance()) {
+        default:
+        case Red:
+          // If alliance is red, prioritize red targets if they are there;
+          // otherwise get blue targets
+          latestTargetBall = largestRed;
+          break;
+        case Blue:
+          // If alliance is blue, prioritize blue targets if they are there;
+          // otherwise get red targets
+          latestTargetBall = largestBlue;
+          break;
+        }
+      } else if (strategy == PickupStrategy.THEIRS) {
+        Block largestRed = PixyCam.getLargestRedBlock(blocks);
+        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
+
+      switch (DriverStation.getAlliance()) {
+        default:
+        case Red:
+          // If alliance is red, prioritize red targets if they are there;
+          // otherwise get blue targets
+          latestTargetBall = largestBlue;
+          break;
+        case Blue:
+          // If alliance is blue, prioritize blue targets if they are there;
+          // otherwise get red targets
+          latestTargetBall = largestRed;
+          break;
       }
     }
 
@@ -145,7 +208,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     // The first time we see a ball, we should turn the intake on
     intake.start();
 
-    double frameCenter = pixyCam.getFrameWidth() / 2.0;
+    double frameCenter = pixyCam.getFrameCenter();
     double output = strafeController.calculate(
       (double) targetBall.getX(),
       frameCenter
@@ -179,7 +242,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
     if (targetBall != null) {
       return new AutoDrive.State(
-        forward,
+        spangle,
         strafeOutput
       );
     } else {
