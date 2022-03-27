@@ -94,6 +94,8 @@ public class Robot extends TimedRobot {
 
     if (m_robotContainer.getPigeonState() != null) {
       m_robotContainer.setLEDColor(Color.kGreen);
+    } else if (m_robotContainer.hasActiveTarget()) {
+      m_robotContainer.ledSetColor(Color.kRed, m_robotContainer.getTx());
     } else {
       m_robotContainer.setLEDOff();
     }

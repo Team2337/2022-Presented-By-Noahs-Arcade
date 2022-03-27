@@ -369,4 +369,8 @@ public class RobotContainer {
   public double getFrameCenter() {
     return pixyCam.getFrameCenter();
   }
+
+  public void ledSetColor(Color color, double tx) {
+    LED.setColor(color, tx);
+  }
 }
