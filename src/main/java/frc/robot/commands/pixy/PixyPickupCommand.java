@@ -1,13 +1,18 @@
 package frc.robot.commands.pixy;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
+import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PixyCam;
@@ -51,9 +56,18 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   private Block targetBall;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
+  private XboxController driverController;
 
-  public PixyPickupCommand(PickupStrategy strategy, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+  public Supplier<Rotation2d> gyroSupplier;
+
+  public double spangle = 0;
+
+  private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
+
+  public PixyPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
     this.strategy = strategy;
+    this.gyroSupplier = gyroSupplier;
+    this.driverController = driverController;
     this.autoDrive = autoDrive;
     this.pixyCam = pixyCam;
     this.intake = intake;
@@ -90,6 +104,27 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void execute() {
     log();
+    double y = Utilities.deadband(driverController.getLeftX(), 0.05);
+    double x = Utilities.deadband(-driverController.getLeftY(), 0.05);
+
+    Rotation2d joystickAngle = joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getTheta();
+
+    double jAngle = joystickAngle.getDegrees() - 90;
+    double gAngle = gyroSupplier.get().getDegrees();
+    double dangle = jAngle - gAngle;
+
+    
+    spangle = Math.sin(Math.toRadians(dangle) * joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getRadiusMeters());
+
+    if (x == 0 && y == 0) {
+      spangle = 0;
+    }
+    
+    SmartDashboard.putNumber("Joystick Angle", jAngle);
+    SmartDashboard.putNumber("X", x);
+    SmartDashboard.putNumber("Y", y);
+    SmartDashboard.putNumber("Jangle Gangle Difference", dangle);
+    SmartDashboard.putNumber("Jangle Gangle Speed", spangle);
 
     if (!pixyCam.isConnected()) {
       return;
@@ -215,7 +250,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
     if (targetBall != null) {
       return new AutoDrive.State(
-        forward,
+        spangle,
         strafeOutput
       );
     } else {

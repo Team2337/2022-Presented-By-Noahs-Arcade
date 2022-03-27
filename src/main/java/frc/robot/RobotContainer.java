@@ -272,10 +272,10 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, autoDrive, intake, pixyCam));
-    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, autoDrive, intake, pixyCam));
+    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
+    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
 
-    operatorStart.whenPressed(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
+    // operatorStart.whenPressed(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getYellowSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
@@ -283,7 +283,7 @@ public class RobotContainer {
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
-    operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
+    // operatorBack.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
