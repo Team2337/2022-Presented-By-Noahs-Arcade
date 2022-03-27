@@ -45,51 +45,23 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setColor(Color color, double tx) {
-		MathUtil.clamp(
-			tx, 
-			-20, 
-			20);
-		if (tx > -2 && tx < 2) {
-			for (int i = 0; i < 16; i++) {
-				ledBuffer.setLED(i, color);
-			}
-			SmartDashboard.putNumber("LED - tx", tx);
-		} else if (tx <= -2) {
-			double q = 8 - (tx / 2.5);
-			int e = (int)q;
-			SmartDashboard.putNumber("e", e);
-
-			if (e <= 1) {
-				e = 1;
-			}
-			if (e >= 16){
-				e=16;
-			}
-
-			for (int i = e; i < 16; i++) {
-				ledBuffer.setLED(i, color);
-			} 
-
-			for (int i = 0; i < e - 1; i++) {
+		for (int i = 0; i < 16; i++) {
+		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
+			ledBuffer.setLED(i, color);
+		}else if (tx >= Constants.VISION_TOLERANCE){
+			if(tx <= (20 - (i * 2.5))){
+				ledBuffer.setLED(i,color);
+			}else{
 				ledBuffer.setRGB(i, 0, 0, 0);
 			}
-		} else if (tx >= 2) {
-			double q = 8 - (tx / 2.5);
-			int e = (int)q;
-			SmartDashboard.putNumber("e2", e);
-
-			if (e <= 1) {
-				e = 1;
+		}else if (tx <= -Constants.VISION_TOLERANCE){
+			if(tx >= (17.5 - (i * 2.5))){
+				ledBuffer.setLED(i,color);
+			}else{
+				ledBuffer.setRGB(i,0,0,0);
 			}
-
-			for (int i = 0; i < e; i++) {
-				ledBuffer.setLED(i, color);
-			} 
-
-			for (int i = e + 1; i < 16; i++) {
-				ledBuffer.setRGB(i, 0, 0, 0);
-			}
-		} 
+		}
+	}
 		led.setData(ledBuffer);
 		led.start();
 	}

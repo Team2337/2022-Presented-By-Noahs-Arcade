@@ -1,5 +1,6 @@
 package frc.robot.commands.LED;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -17,10 +18,22 @@ public class LEDRunnable extends CommandBase{
   }
   @Override
   public void execute() {
-    if (robotContainer.isShooterUpToLEDSpeed() && robotContainer.isOnTarget()) {
-      led.setColor(Color.kRed);
+    if (robotContainer.isShooterUpToLEDSpeed() && robotContainer.hasActiveTarget()) {
+      led.setColor(Color.kRed, robotContainer.getTx());
     } else if (robotContainer.isShooterUpToLEDSpeed()) {
       led.setColor(Color.kBlue);
+    } else if (robotContainer.getOperatorStartStatus()) {
+      if (DriverStation.getAlliance().toString() == "Red") {
+        led.setColor(Color.kRed);
+      } else {
+        led.setColor(Color.kBlue);
+      }
+    } else if (robotContainer.getOperatorBackStatus()) {
+      if (DriverStation.getAlliance().toString() == "Red") {
+        led.setColor(Color.kBlue);
+      } else {
+        led.setColor(Color.kRed);
+      }
     } else if (robotContainer.hasActiveTarget()) {
       led.setColor(Color.kYellow, robotContainer.getTx());
     } else {
