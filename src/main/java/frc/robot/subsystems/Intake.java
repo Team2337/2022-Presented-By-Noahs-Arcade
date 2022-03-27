@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.Constants.SystemsCheckPositions;
-import frc.robot.nerdyfiles.utilities.CTREUtils;
 
 /**
  * Subsystem for the intake mechanism
