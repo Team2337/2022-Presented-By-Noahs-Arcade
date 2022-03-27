@@ -106,26 +106,17 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     log();
     double y = driverController.getLeftX();
     double x = -driverController.getLeftY();
-
     Rotation2d joystickAngle = joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getTheta();
-
-    double jAngle = joystickAngle.getDegrees() - 90;
+    double jAngle = -joystickAngle.getDegrees();
     double gAngle = gyroSupplier.get().getDegrees();
     double dangle = jAngle - gAngle;
 
-    
-    spangle = Math.sin(Math.toRadians(dangle) * joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getRadiusMeters());
-
+    spangle = Math.cos(Math.toRadians(dangle));
+    spangle = spangle * 0.4;
     
     if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {
       spangle = 0;
     }
-    
-    SmartDashboard.putNumber("Joystick Angle", jAngle);
-    SmartDashboard.putNumber("X", x);
-    SmartDashboard.putNumber("Y", y);
-    SmartDashboard.putNumber("Jangle Gangle Difference", dangle);
-    SmartDashboard.putNumber("Jangle Gangle Speed", spangle);
 
     if (!pixyCam.isConnected()) {
       return;
@@ -217,7 +208,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     // The first time we see a ball, we should turn the intake on
     intake.start();
 
-    double frameCenter = pixyCam.getFrameWidth() / 2.0;
+    double frameCenter = pixyCam.getFrameCenter();
     double output = strafeController.calculate(
       (double) targetBall.getX(),
       frameCenter

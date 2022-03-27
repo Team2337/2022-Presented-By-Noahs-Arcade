@@ -10,7 +10,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,18 +22,15 @@ import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
 import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
-import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.commands.shooter.LinearShootCommand;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
@@ -368,5 +364,9 @@ public class RobotContainer {
 
   public double getTx() {
     return vision.getTx();
+  }
+
+  public double getFrameCenter() {
+    return pixyCam.getFrameCenter();
   }
 }

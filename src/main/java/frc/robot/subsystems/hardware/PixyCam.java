@@ -50,6 +50,10 @@ public class PixyCam {
     return (double) pixycam.getFrameWidth();
   }
 
+  public double getFrameCenter() {
+    return getFrameWidth() / 2.0;
+  }
+
   public ArrayList<Block> getBlocks() {
     if (!isConnected()) {
       return new ArrayList<Block>();
