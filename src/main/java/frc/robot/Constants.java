@@ -379,6 +379,14 @@ public final class Constants {
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
       Rotation2d.fromDegrees(-158.35)
     );
+    public static final PolarCoordinate kBallR7 = new PolarCoordinate(
+      Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(102.75)
+    );
+    public static final PolarCoordinate kBallR7Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR7.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR7.getTheta()
+    );
 
     /*
      * Opponent balls
@@ -389,6 +397,10 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallD1Pickup = new PolarCoordinate(
       Units.inchesToMeters(153) - Units.inchesToMeters(kPickupDistanceInches),
+      Rotation2d.fromDegrees(125.25)
+    );
+    public static final PolarCoordinate kBallD1RunOver = new PolarCoordinate(
+      Units.inchesToMeters(153) - Units.inchesToMeters(kRunOverDistanceInches),
       Rotation2d.fromDegrees(125.25)
     );
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(

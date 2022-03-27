@@ -40,7 +40,7 @@ public class Pos2MidFourBall extends SequentialCommandGroup {
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
       new WaitCommand(1),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition2MiddleStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
+      // new ProfiledPointToPointCommand(Constants.Auto.kPosition2MiddleStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }
