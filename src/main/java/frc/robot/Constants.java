@@ -484,6 +484,8 @@ public final class Constants {
 
   public static final double VISION_OFFSET = 0;
 
+  public static final double CLIMBER_ROLL = 15;
+
   public static enum BallColor {
     RED,
     BLUE,

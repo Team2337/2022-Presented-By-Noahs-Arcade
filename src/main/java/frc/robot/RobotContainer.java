@@ -338,6 +338,10 @@ public class RobotContainer {
     return drivetrain.getGyroscopeRotation().getDegrees();
   }
 
+  public double getGyroscopeRoll() {
+    return drivetrain.getGyroscopeRoll().getDegrees();
+  }
+
   public void setLEDColor(Color color) {
     LED.setColor(color);
   }

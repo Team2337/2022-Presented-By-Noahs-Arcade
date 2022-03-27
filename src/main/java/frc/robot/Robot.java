@@ -98,10 +98,12 @@ public class Robot extends TimedRobot {
       if (pigeonCounter < 500) {
         pigeonCounter++;
       } else {
-        m_robotContainer.setLEDColor(Color.kGreen);
+        if (m_robotContainer.hasActiveTarget()) {
+          m_robotContainer.ledSetColor(Color.kRed, m_robotContainer.getTx());
+        } else {
+          m_robotContainer.setLEDColor(Color.kGreen);
+        }
       }
-    } else if (m_robotContainer.hasActiveTarget()) {
-      m_robotContainer.ledSetColor(Color.kRed, m_robotContainer.getTx());
     } else {
       m_robotContainer.setLEDOff();
     }
