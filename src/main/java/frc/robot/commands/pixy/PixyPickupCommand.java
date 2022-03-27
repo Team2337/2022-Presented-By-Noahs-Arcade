@@ -104,8 +104,8 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void execute() {
     log();
-    double y = Utilities.deadband(driverController.getLeftX(), 0.05);
-    double x = Utilities.deadband(-driverController.getLeftY(), 0.05);
+    double y = driverController.getLeftX();
+    double x = -driverController.getLeftY();
 
     Rotation2d joystickAngle = joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getTheta();
 
@@ -116,7 +116,8 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     
     spangle = Math.sin(Math.toRadians(dangle) * joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getRadiusMeters());
 
-    if (x == 0 && y == 0) {
+    
+    if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {
       spangle = 0;
     }
     
