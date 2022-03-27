@@ -1,6 +1,5 @@
 package frc.robot.commands.kicker;
 
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Kicker;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
