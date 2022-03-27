@@ -33,6 +33,8 @@ public class BottomToTopCommand extends CommandBase {
     isFinished = false;
     waitForBallFlag = false;
     direction = Direction.COUNTER_CLOCKWISE;
+
+    // Rumble the joystick if a ball has triggered the intake sensor. Takes a value of 0 to 1 as a percentage of 65535.
     driverController.setRumble(RumbleType.kLeftRumble, 1);
     driverController.setRumble(RumbleType.kRightRumble, 1);
 

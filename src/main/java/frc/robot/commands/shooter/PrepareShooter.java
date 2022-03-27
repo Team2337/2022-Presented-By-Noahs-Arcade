@@ -5,9 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.Vision;
 import frc.robot.commands.kicker.ReverseKickerCommand;
-import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Kicker;
 
@@ -17,10 +15,7 @@ public class PrepareShooter extends SequentialCommandGroup {
     addCommands(
       new ReverseStopShooterCommand(shooter).withTimeout(0.2),
       new ReverseKickerCommand(kicker).withTimeout(0.2),
-     // new ScheduleCommand(new StartShooterUpToSpeedDistanceCommand(translationSupplier, overrideSupplier, shooter))
-     // new ScheduleCommand(new StartStopShooterDynamic(distanceSupplier, overrideSupplier, shooter))
-     new ScheduleCommand(new StartShooterUpToSpeedWithOverride(distanceSupplier, overrideSupplier, yellowSwitch, shooter))
-     //};
+      new ScheduleCommand(new StartShooterUpToSpeedWithOverride(distanceSupplier, overrideSupplier, yellowSwitch, shooter))
     );
   }
 }

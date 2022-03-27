@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.delivery.StartDelivery;
-import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.kicker.ReverseKickerCommand;
 import frc.robot.commands.kicker.StartKicker;
 import frc.robot.subsystems.Delivery;

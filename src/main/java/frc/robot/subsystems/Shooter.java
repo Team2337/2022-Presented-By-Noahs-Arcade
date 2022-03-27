@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
@@ -21,7 +20,6 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 
 public class Shooter extends SubsystemBase {
 
-  // This is for 40.7 ft/s, RING OF FIRE!!!
   private static double kP = 0.06;
   private static double kI = 0;
   private static double kD = 0.000;
@@ -152,6 +150,7 @@ public class Shooter extends SubsystemBase {
     return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 
+  // Mimics isShooterToSpeed(), but adds if the motor is over 10 ft/s so the LEDs do not activate when the motor is stopped
   public boolean isShooterToLEDSpeed() {
     return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance) && getMotorWheelSpeed(leftMotor) > 10;
   }

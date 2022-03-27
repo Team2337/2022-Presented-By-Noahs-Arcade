@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.kicker.StartKicker;
 import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.subsystems.AutoDrive;

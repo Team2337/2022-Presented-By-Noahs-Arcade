@@ -9,7 +9,6 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoBottomToTopCommand;
 import frc.robot.commands.delivery.AutoStartDelivery;
-import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.subsystems.AutoDrive;
