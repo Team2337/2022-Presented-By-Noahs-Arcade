@@ -221,10 +221,18 @@ public class Vision extends SubsystemBase {
     return currentPipeline;
   }
 
+  /**
+   * Returns the horizontal offset from the crosshair to the target in degree (-27 to 27) 
+   * @return - tx value from the limelight plus an offset if desired to allow for fine tuning of vision centering or if we want to shoot to the side of the target
+   */
   public double getTx() {
-    return tx;
+    return tx + Constants.VISION_OFFSET;
   }
 
+  /**
+   * Returns the Vertical offset from the crosshair to the target in degrees (-20.5 to 20.5)
+   * @return ty value from the limelight
+   */
   public double getTy() {
     return ty;
   }
@@ -238,7 +246,7 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean isOnTarget() { 
-    return Math.abs(tx) < 2;
+    return Math.abs(tx) < Constants.VISION_TOLERANCE;
   }
 
   public double getDistanceToCenterHubMeters() {
