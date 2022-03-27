@@ -246,7 +246,7 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean isOnTarget() { 
-    return Math.abs(tx) < 2;
+    return Math.abs(tx) < Constants.VISION_TOLERANCE;
   }
 
   public double getDistanceToCenterHubMeters() {

@@ -325,6 +325,14 @@ public class RobotContainer {
     return operatorStation.yellowSwitch.get();
   }
 
+  public boolean getOperatorBackStatus() {
+    return operatorController.getBackButton();
+  } 
+
+  public boolean getOperatorStartStatus() {
+    return operatorController.getStartButton();
+  }
+
   public double getGyroscopeRotation() {
     return drivetrain.getGyroscopeRotation().getDegrees();
   }
@@ -351,5 +359,9 @@ public class RobotContainer {
 
   public boolean hasActiveTarget() {
     return vision.hasActiveTarget();
+  }
+
+  public double getTx() {
+    return vision.getTx();
   }
 }

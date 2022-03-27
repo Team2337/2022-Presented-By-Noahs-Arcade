@@ -1,10 +1,13 @@
 package frc.robot.subsystems.hardware;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
  * Setup for addressable LED strip
@@ -39,6 +42,28 @@ public class LED extends SubsystemBase {
 		}
 			led.setData(ledBuffer);
 			led.start();
+	}
+
+	public void setColor(Color color, double tx) {
+		for (int i = 0; i < 16; i++) {
+		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
+			ledBuffer.setLED(i, color);
+		}else if (tx >= Constants.VISION_TOLERANCE){
+			if(tx <= (20 - (i * 2.5))){
+				ledBuffer.setLED(i,color);
+			}else{
+				ledBuffer.setRGB(i, 0, 0, 0);
+			}
+		}else if (tx <= -Constants.VISION_TOLERANCE){
+			if(tx >= (17.5 - (i * 2.5))){
+				ledBuffer.setLED(i,color);
+			}else{
+				ledBuffer.setRGB(i,0,0,0);
+			}
+		}
+	}
+		led.setData(ledBuffer);
+		led.start();
 	}
 
   public void setColorLeft(Color color) {
