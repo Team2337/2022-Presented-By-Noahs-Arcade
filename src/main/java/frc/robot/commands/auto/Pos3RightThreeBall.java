@@ -39,7 +39,7 @@ public class Pos3RightThreeBall extends SequentialCommandGroup {
         new AutoStartDelivery(delivery).withTimeout(1.5)
       ),
       new WaitCommand(3),
-      new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(3),
+      // new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
   }

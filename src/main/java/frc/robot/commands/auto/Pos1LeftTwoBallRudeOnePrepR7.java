@@ -20,9 +20,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Shooter;
 
-public class Pos1LeftTwoBallRudeTwo extends SequentialCommandGroup {
+public class Pos1LeftTwoBallRudeOnePrepR7 extends SequentialCommandGroup {
 
-  public Pos1LeftTwoBallRudeTwo(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
+  public Pos1LeftTwoBallRudeOnePrepR7(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
       new FirstMove(Constants.Auto.kBallR1RunOver, autoDrive, drivetrain, heading, intake, shooter),
       new ForwardKickerCommand(kicker).withTimeout(0.3),
@@ -40,7 +40,8 @@ public class Pos1LeftTwoBallRudeTwo extends SequentialCommandGroup {
         new AutoStartDelivery(delivery).withTimeout(0.75),
         new ForwardKickerCommand(kicker).withTimeout(0.75)
       ),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD2, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(3),
+      new WaitCommand(0.25),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR7Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
       // new ProfiledPointToPointCommand(Constants.Auto.kPosition1LeftStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );

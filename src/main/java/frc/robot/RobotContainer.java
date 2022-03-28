@@ -22,6 +22,7 @@ import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.delivery.BottomToTopCommand;
@@ -85,6 +86,9 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Two Ball Rude One", new Pos1LeftTwoBallRudeOne(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Two Ball Rude One Prep R7", new Pos1LeftTwoBallRudeOnePrepR7(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Two Ball Rude Two", new Pos1LeftTwoBallRudeTwo(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left Four Ball", new Pos1LeftFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos2 Middle Two Ball", new Pos2MidTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
