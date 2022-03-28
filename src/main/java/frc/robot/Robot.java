@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private boolean autonomousRan = false;
+  private int pigeonCounter = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -83,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.disableServos();
+    pigeonCounter = 0;
   }
 
   @Override
@@ -93,7 +95,15 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Starting Angle", startingAngle);
 
     if (m_robotContainer.getPigeonState() != null) {
-      m_robotContainer.setLEDColor(Color.kGreen);
+      if (pigeonCounter < 500) {
+        pigeonCounter++;
+      } else {
+        if (m_robotContainer.hasActiveTarget()) {
+          m_robotContainer.ledSetColor(Color.kRed, m_robotContainer.getTx());
+        } else {
+          m_robotContainer.setLEDColor(Color.kGreen);
+        }
+      }
     } else {
       m_robotContainer.setLEDOff();
     }

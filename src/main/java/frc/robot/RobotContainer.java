@@ -343,6 +343,10 @@ public class RobotContainer {
     return drivetrain.getGyroscopeRotation().getDegrees();
   }
 
+  public double getGyroscopeRoll() {
+    return drivetrain.getGyroscopeRoll().getDegrees();
+  }
+
   public void setLEDColor(Color color) {
     LED.setColor(color);
   }
@@ -373,5 +377,9 @@ public class RobotContainer {
 
   public double getFrameCenter() {
     return pixyCam.getFrameCenter();
+  }
+
+  public void ledSetColor(Color color, double tx) {
+    LED.setColor(color, tx);
   }
 }

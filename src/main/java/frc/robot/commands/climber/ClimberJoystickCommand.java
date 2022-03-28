@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.Climber;
@@ -47,7 +48,7 @@ public class ClimberJoystickCommand extends CommandBase {
       if (climber.getStringPotVoltage() > 2.8 && !operatorStation.blackSwitch.get()) {
         climber.releaseServos();
       }
-      if (((output > 0) && (rollSupplier.get().getDegrees() > 17.5) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
+      if (((output > 0) && (rollSupplier.get().getDegrees() > Constants.CLIMBER_ROLL) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
         output = 0;
       } 
       climber.setSpeed(output);
