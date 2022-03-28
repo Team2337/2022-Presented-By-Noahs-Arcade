@@ -169,8 +169,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void releaseServos(){
-    leftHookServo.setSpeed(servoSpeed);
-    rightHookServo.setSpeed(-servoSpeed);
+    leftHookServo.setSpeed(-servoSpeed);
+    rightHookServo.setSpeed(servoSpeed);
   }
 
   public void stop() {
