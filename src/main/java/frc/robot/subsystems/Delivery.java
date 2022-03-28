@@ -127,7 +127,7 @@ public class Delivery extends SubsystemBase {
         .withPosition(SystemsCheckPositions.R_COLOR_SENSOR.x, SystemsCheckPositions.R_COLOR_SENSOR.y)
         .withSize(3, 3);
       */
-      systemsCheck.addNumber("Delivery Temp (°C)", () -> getTemperature())
+      systemsCheck.addNumber("Delivery Temp (C)", () -> getTemperature())
         .withPosition(SystemsCheckPositions.DELIVERY_TEMP.x, SystemsCheckPositions.DELIVERY_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)

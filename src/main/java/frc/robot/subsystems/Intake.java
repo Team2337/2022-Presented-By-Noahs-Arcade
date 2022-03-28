@@ -46,21 +46,20 @@ public class Intake extends SubsystemBase {
       intakeWidget.addNumber("Speed (%)", this::getSpeed);
       intakeWidget.addNumber("Temperatures (F)", this::getTemperature);
     }
-
-    // Driver dashboard
-    Constants.DRIVER_DASHBOARD.addBoolean("Intake Sensor", this::getBeamBreakSensorStatus)
-      .withPosition(DriverDashboardPositions.INTAKE_BEAM.x, DriverDashboardPositions.INTAKE_BEAM.y)
-      .withSize(DriverDashboardPositions.INTAKE_BEAM.width, DriverDashboardPositions.INTAKE_BEAM.height);
-
+    
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
-      systemsCheck.addNumber("Intake Temp (°C)", () -> getTemperature())
+      systemsCheck.addNumber("Intake Temp (C)", () -> getTemperature())
         .withPosition(SystemsCheckPositions.INTAKE_TEMP.x, SystemsCheckPositions.INTAKE_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
+      systemsCheck.addBoolean("Intake Sensor", this::getBeamBreakSensorStatus)
+        .withPosition(DriverDashboardPositions.INTAKE_BEAM.x, DriverDashboardPositions.INTAKE_BEAM.y)
+        .withSize(DriverDashboardPositions.INTAKE_BEAM.width, DriverDashboardPositions.INTAKE_BEAM.height);
+  
     }
   }
 

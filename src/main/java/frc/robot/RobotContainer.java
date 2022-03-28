@@ -135,7 +135,7 @@ public class RobotContainer {
     
     // Put alliance on driver dashboard
     Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
-      .withPosition(3, 6)
+      .withPosition(DriverDashboardPositions.ALLIANCE.x, DriverDashboardPositions.ALLIANCE.y)
       .withSize(3, 3)
       .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
 

@@ -56,9 +56,6 @@ import frc.robot.commands.interfaces.AutoDrivableCommand;
 public class AutoDrive extends SubsystemBase {
 
   public AutoDrive() {
-    Constants.DRIVER_DASHBOARD.addString("AutoDrive Command", this::getAutoDriveCommandName)
-      .withPosition(DriverDashboardPositions.AUTODRIVE_COMMAND.x, DriverDashboardPositions.AUTODRIVE_COMMAND.y)
-      .withSize(DriverDashboardPositions.AUTODRIVE_COMMAND.width, DriverDashboardPositions.AUTODRIVE_COMMAND.height);
   }
 
   private WeakReference<AutoDrivableCommand> delegateReference;
@@ -127,8 +124,10 @@ public class AutoDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     String commandName = getAutoDriveCommandName();
     SmartDashboard.putString("AutoDrive/Command", commandName);
+    */
   }
 
 }

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -57,7 +58,7 @@ public class HeadingToTargetCommand extends CommandBase {
         heading.changePValue(true);
       }
       // We're in "vision drive" - drive to pull the Limelight tx value to zero
-      double towardsCenterDegrees = (vision.getTx() * -1);
+      double towardsCenterDegrees = MathUtil.applyDeadband((vision.getTx() * -1), Constants.VISION_TOLERANCE);
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
