@@ -79,16 +79,16 @@ public class Shooter extends SubsystemBase {
   }
 
   private void setupShuffleboard(Boolean logEnable) {
-    ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-
-    ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
-      .withSize(4, 8)
-      .withPosition(8, 0);
-    temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
-    temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
-    temps.addBoolean("Motors Overheating?", () -> isOverheated());
-
     if (logEnable) {
+      ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+
+      ShuffleboardLayout temps = tab.getLayout("Shooter Temperature", BuiltInLayouts.kList)
+        .withSize(4, 8)
+        .withPosition(8, 0);
+      temps.addNumber("Left Motor Temperature", () -> leftMotor.getTemperature());
+      temps.addNumber("Right Motor Temperature", () -> rightMotor.getTemperature());
+      temps.addBoolean("Motors Overheating?", () -> isOverheated());
+
       ShuffleboardLayout speeds = tab.getLayout("Shooter Speeds", BuiltInLayouts.kList)
         .withSize(4, 8)
         .withPosition(4, 0);
@@ -103,12 +103,12 @@ public class Shooter extends SubsystemBase {
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
 
-      systemsCheck.addNumber("L Shooter Temp (°C)", () -> leftMotor.getTemperature())
+      systemsCheck.addNumber("L Shooter Temp (C)", () -> leftMotor.getTemperature())
         .withPosition(SystemsCheckPositions.L_SHOOTER_TEMP.x, SystemsCheckPositions.L_SHOOTER_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
-      systemsCheck.addNumber("R Shooter Temp (°C)", () -> rightMotor.getTemperature())
+      systemsCheck.addNumber("R Shooter Temp (C)", () -> rightMotor.getTemperature())
         .withPosition(SystemsCheckPositions.R_SHOOTER_TEMP.x, SystemsCheckPositions.R_SHOOTER_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)

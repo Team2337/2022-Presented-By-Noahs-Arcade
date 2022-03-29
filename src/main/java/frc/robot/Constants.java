@@ -68,20 +68,22 @@ public final class Constants {
     public static final boolean KICKER = false;
     public static final boolean PDH = false;
     public static final boolean SHOOTER = false;
+    public static final boolean VISION = false;
   }
 
   // Driver dashboard
   // 28x13
   public static enum DriverDashboardPositions {
     // TODO: could we make this easier by using a method to pass in the widget and one of these enums?
-    AUTON_CHOOSER(0, 0, 6, 3),
-    STARTING_POS_CHOOSER(0, 3, 6, 3),
-    STARTING_ANGLE_CHOOSER(0, 6, 6, 3),
-    AUTODRIVE_COMMAND(0, 9, 6, 3),
-    GYRO_DEGREES(7, 0, 3, 3),
-    ALLIANCE(10, 0, 3, 3),
-    INTAKE_BEAM(7, 3, 3, 3),
-    DRIVER_CAM(14, 0, 10, 7);
+    AUTON_CHOOSER(9, 6, 6, 3),
+    STARTING_POS_CHOOSER(9, 0, 6, 3),
+    STARTING_ANGLE_CHOOSER(9, 3, 6, 3),
+    AUTODRIVE_COMMAND(9, 9, 6, 3),
+    GYRO_DEGREES(16, 0, 3, 3),
+    ALLIANCE(9, 9, 6, 3),
+    INTAKE_BEAM(7, 0, 3, 3),
+    DRIVER_CAM(14, 0, 10, 7),
+    DISTANCE_TO_TARGET(16, 3, 3, 3);
 
     public final int x, y, width, height;
 
@@ -110,7 +112,8 @@ public final class Constants {
     // Other sensors (also 3x3 widgets)
     STRING_POT(7, 3),
     PIXY_CAM(10, 3),
-    LIMELIGHT(13, 3);
+    LIMELIGHT(13, 3),
+    ROLL_DEGREES(19, 0);
 
     public final int x, y;
 

@@ -124,12 +124,12 @@ public class Climber extends SubsystemBase {
       systemsCheck.addBoolean("String Pot", () -> (stringPot.getVoltage() > 0))
         .withPosition(SystemsCheckPositions.STRING_POT.x, SystemsCheckPositions.STRING_POT.y)
         .withSize(3, 3);
-      systemsCheck.addNumber("L Climber Temp (°C)", () -> leftMotor.getTemperature())
+      systemsCheck.addNumber("L Climber Temp (C)", () -> leftMotor.getTemperature())
         .withPosition(SystemsCheckPositions.L_CLIMBER_TEMP.x, SystemsCheckPositions.L_CLIMBER_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", Constants.MOTOR_MINIMUM_TEMP_CELSIUS, "Max", Constants.MOTOR_SHUTDOWN_TEMP_CELSIUS));
-      systemsCheck.addNumber("R Climber Temp (°C)", () -> rightMotor.getTemperature())
+      systemsCheck.addNumber("R Climber Temp (C)", () -> rightMotor.getTemperature())
         .withPosition(SystemsCheckPositions.R_CLIMBER_TEMP.x, SystemsCheckPositions.R_CLIMBER_TEMP.y)
         .withSize(3, 4)
         .withWidget(BuiltInWidgets.kDial)

@@ -91,22 +91,6 @@ public class Vision extends SubsystemBase {
     // Automatically switch our Limelight to our default pipeline on construction
     switchPipeLine(Pipeline.DEFAULT);
 
-    try {
-      // Set up limelight camera
-      getLimelightEntry(LimelightKey.STREAM).setNumber(2);
-      String limelightIp = SmartDashboard.getString("limelight_Stream", "");
-      limelightStream = new HttpCamera("limelight", limelightIp + "/stream.mjpg");
-      
-      // Driver dashboard
-      Constants.DRIVER_DASHBOARD.add("Driver Camera", limelightStream)
-        .withPosition(DriverDashboardPositions.DRIVER_CAM.x, DriverDashboardPositions.DRIVER_CAM.y)
-        .withSize(DriverDashboardPositions.DRIVER_CAM.width, DriverDashboardPositions.DRIVER_CAM.height);
-    } catch (VideoException e) {
-      // Happens if cannot connect to the IP, which would happen if it is invalid
-      DriverStation.reportError("Limelight not plugged in or is not working correctly!", false);
-    }
-
-
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {
       ShuffleboardTab systemsCheck = Constants.SYSTEMS_CHECK_TAB;
@@ -115,7 +99,12 @@ public class Vision extends SubsystemBase {
         .withPosition(SystemsCheckPositions.LIMELIGHT.x, SystemsCheckPositions.LIMELIGHT.y)
         .withSize(3, 3);
     }
-  }
+      ShuffleboardTab driverDashboard = Constants.DRIVER_DASHBOARD;
+
+      driverDashboard.addNumber("Distance to Target (inches)", () -> Units.metersToInches(distanceToTargetMeters))
+      .withPosition(DriverDashboardPositions.DISTANCE_TO_TARGET.x, DriverDashboardPositions.DISTANCE_TO_TARGET.y)
+      .withSize(3, 3);
+    }
 
   @Override
   public void periodic() {
@@ -135,11 +124,13 @@ public class Vision extends SubsystemBase {
   }
 
   private void log() {
-    SmartDashboard.putNumber("Vision/# of relocalization", relocalizeCounter);
-    SmartDashboard.putNumber("Vision/tx", getTx());
-    SmartDashboard.putNumber("Vision/ty", getTy());
-    SmartDashboard.putNumber("Vision/latency", getLatency());
-    SmartDashboard.putBoolean("Vision/Valid Target", hasActiveTarget());
+    if (Constants.DashboardLogging.VISION) {
+      SmartDashboard.putNumber("Vision/# of relocalization", relocalizeCounter);
+      SmartDashboard.putNumber("Vision/tx", getTx());
+      SmartDashboard.putNumber("Vision/ty", getTy());
+      SmartDashboard.putNumber("Vision/latency", getLatency());
+      SmartDashboard.putBoolean("Vision/Valid Target", hasActiveTarget());
+    }
     SmartDashboard.putNumber("Vision/Distance To Target (inches)", Units.metersToInches(distanceToTargetMeters));
   }
 
