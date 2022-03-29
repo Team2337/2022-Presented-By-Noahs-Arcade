@@ -1,6 +1,7 @@
 package frc.robot.commands.LED;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -17,6 +18,10 @@ public class LEDRunnable extends CommandBase{
 
     addRequirements(led);
   }
+  @Override
+  public void initialize(){
+  }
+
   @Override
   public void execute() {
     if (robotContainer.getYellowSwitchStatus() && robotContainer.getGyroscopeRoll() < Constants.CLIMBER_ROLL) {

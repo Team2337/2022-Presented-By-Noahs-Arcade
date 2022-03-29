@@ -19,6 +19,7 @@ public class LED extends SubsystemBase {
 
 	private static AddressableLED led;
 	private static AddressableLEDBuffer ledBuffer;
+	private static int LED_LENGTH = 16;
 
 	/**
 	 * Controls the LEDs on the Robot 
@@ -27,7 +28,7 @@ public class LED extends SubsystemBase {
 	 */
 	public LED() {
 		led = new AddressableLED(Constants.LEDSTRIP_PWM_ID);
-		ledBuffer = new AddressableLEDBuffer(16);
+		ledBuffer = new AddressableLEDBuffer(LED_LENGTH);
 		led.setLength(ledBuffer.getLength());
 	}
 
@@ -37,25 +38,27 @@ public class LED extends SubsystemBase {
 	 * @param color A Color object reflecting the color you want to use on the LEDs.  i.e.  kRed, kBlue, kSeashell
 	 */
   public void setColor(Color color) {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, color);
 		}
 			led.setData(ledBuffer);
 			led.start();
 	}
 
+	// maybe swap out 20 to TX_MAX
+
 	public void setColor(Color color, double tx) {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
 			ledBuffer.setLED(i, color);
 		}else if (tx >= Constants.VISION_TOLERANCE){
-			if(tx <= (20 - (i * 2.5))){
+			if(tx <= (20 - ((double)i * (20/(double)LED_LENGTH*2)))){
 				ledBuffer.setLED(i,color);
 			}else{
 				ledBuffer.setRGB(i, 0, 0, 0);
 			}
 		}else if (tx <= -Constants.VISION_TOLERANCE){
-			if(tx >= (17.5 - (i * 2.5))){
+			if(tx >= (20-(20/(double)LED_LENGTH*2) - ((double)i * (20/(double)LED_LENGTH*2)))){
 				ledBuffer.setLED(i,color);
 			}else{
 				ledBuffer.setRGB(i,0,0,0);
@@ -64,20 +67,21 @@ public class LED extends SubsystemBase {
 	}
 		led.setData(ledBuffer);
 		led.start();
+		System.out.println();
 	}
 
 	public void setColorRGB(int r, int g, int b, double tx) {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
 			ledBuffer.setRGB(i, r, g, b);
 		}else if (tx >= Constants.VISION_TOLERANCE){
-			if(tx <= (20 - (i * 2.5))){
+			if(tx <= (20 - ((double)i * (20/(double)LED_LENGTH*2)))){
 				ledBuffer.setRGB(i, r, g, b);
 			}else{
 				ledBuffer.setRGB(i, 0, 0, 0);
 			}
 		}else if (tx <= -Constants.VISION_TOLERANCE){
-			if(tx >= (17.5 - (i * 2.5))){
+			if(tx >= (20-(20/(double)LED_LENGTH*2) - ((double)i * (20/(double)LED_LENGTH*2)))){
 				ledBuffer.setRGB(i, r, g, b);
 			}else{
 				ledBuffer.setRGB(i,0,0,0);
@@ -124,7 +128,7 @@ public class LED extends SubsystemBase {
 	}
 
 	public static void setRed() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, Color.kRed);
 		}
 			led.setData(ledBuffer);
@@ -132,7 +136,7 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setGreen() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, Color.kGreen);
 		}
 			led.setData(ledBuffer);
@@ -140,7 +144,7 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setBlue() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, Color.kBlue);
 		}
 			led.setData(ledBuffer);
@@ -148,7 +152,7 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setYellow() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, Color.kYellow);
 		}
 			led.setData(ledBuffer);
@@ -156,7 +160,7 @@ public class LED extends SubsystemBase {
 	}
 
 	public void setSeashell() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setLED(i, Color.kSeashell);
 		}
 			led.setData(ledBuffer);
@@ -182,7 +186,7 @@ public class LED extends SubsystemBase {
   }
 
 	public static void setOff() {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < LED_LENGTH; i++) {
 			ledBuffer.setRGB(i, 0, 0, 0);
 		}
 			led.setData(ledBuffer);
