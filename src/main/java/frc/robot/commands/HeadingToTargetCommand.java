@@ -58,6 +58,9 @@ public class HeadingToTargetCommand extends CommandBase {
       }
       // We're in "vision drive" - drive to pull the Limelight tx value to zero
       double towardsCenterDegrees = (vision.getTx() * -1);
+      if (Math.abs(towardsCenterDegrees) < 0.25) {
+        towardsCenterDegrees = 0;
+      }
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
