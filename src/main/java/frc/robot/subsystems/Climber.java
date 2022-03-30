@@ -53,7 +53,7 @@ public class Climber extends SubsystemBase {
   private static final double MAX_UP_SPEED = 1.0;
   private static final double MAX_DOWN_SPEED = 0.7;
 
-  private double MIN_STRINGPOT_VALUE = 0.4;
+  private double MIN_STRINGPOT_VALUE = 0.35;
   private double MAX_STRINGPOT_VALUE = 3.05;
 
   private double nominalForwardSpeed = 0.1;
@@ -116,6 +116,7 @@ public class Climber extends SubsystemBase {
       SmartDashboard.putNumber("Voltage Round", voltageRound);
       SmartDashboard.putNumber("Voltage to Ticks", setpoint);
     }
+    SmartDashboard.putNumber("String pot ", getStringPotVoltage());
 
     // Systems check
     if (Constants.DO_SYSTEMS_CHECK) {

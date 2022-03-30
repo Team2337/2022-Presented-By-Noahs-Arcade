@@ -11,20 +11,23 @@ import frc.robot.Constants;
 import frc.robot.nerdyfiles.utilities.Utilities;
 
 /**
- * The Heading subsystem is a "fake" subsystem (no hardware) that is used to coordinate
+ * The Heading subsystem is a "fake" subsystem (no hardware) that is used to
+ * coordinate
  * mutual exclusivity around maintaining the heading of the robot.
  * Ex: Commands that request the robot to maintain a heading should require
- * the Heading subsystem. Only one command should be updating the robot's heading
+ * the Heading subsystem. Only one command should be updating the robot's
+ * heading
  * at a time.
  */
 public class Heading extends SubsystemBase {
 
   private static double NOMINAL_OUTPUT_STATIONARY = 0.06;
   private static double NOMINAL_OUTPUT_MOVING = 0.03;
+  private static double VISION_NOMINAL_OUTPUT_STATIONARY = 0.2;
 
   private static double P_MOVING = 0.005;
   private static double P_STATIONARY = 0.007;
-  private static double visionPValue = 0.02;
+  private static double visionPValue = 0.009;
   private static double visionDValue = 0.001;
 
   private boolean visionP = false;
@@ -43,13 +46,15 @@ public class Heading extends SubsystemBase {
 
   /**
    * Supplier to provide the gyro angle of the robot. Should come from
-   * the gyro on the Drivetrain. Used to calculate our maintain heading calculation.
+   * the gyro on the Drivetrain. Used to calculate our maintain heading
+   * calculation.
    */
   private Supplier<Rotation2d> gyroAngleSupplier;
   /**
    * Supplier to provide if the drivetrain is moving or not. This should be
    * calculated using the drivetrain's chassis speeds. This is used to set a
-   * dynamic nominal value for the heading controller - higher if we're stationary,
+   * dynamic nominal value for the heading controller - higher if we're
+   * stationary,
    * lower if we're moving - since it takes less power to achieve our heading
    * while we're driving then when we're stationary.
    */
@@ -68,7 +73,8 @@ public class Heading extends SubsystemBase {
   private Rotation2d nextHeading;
 
   /**
-   * PID used to converge the robot to the maintainHeading from it's current heading.
+   * PID used to converge the robot to the maintainHeading from it's current
+   * heading.
    */
   private PIDController rotationController = new PIDController(P_STATIONARY, 0.0, 0.0);
 
@@ -105,7 +111,7 @@ public class Heading extends SubsystemBase {
     }
     log();
   }
-  
+
   private void log() {
     if (Constants.DashboardLogging.HEADING) {
       SmartDashboard.putNumber("Heading/kP", rotationController.getP());
@@ -222,13 +228,15 @@ public class Heading extends SubsystemBase {
    * we would expect from a joystick (ex: [-1, 1]).
    */
   public double calculateRotation() {
-    // If subsystem is disabled - calculateRotation should not be called. Return a 0.0
+    // If subsystem is disabled - calculateRotation should not be called. Return a
+    // 0.0
     if (!this.enabled) {
       // SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
       return 0.0;
     }
 
-    // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but just in case
+    // Should not call `calculateRotation` if `shouldMaintainHeading` is false - but
+    // just in case
     if (maintainHeading == null) {
       // SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
       return 0.0;
@@ -236,9 +244,8 @@ public class Heading extends SubsystemBase {
 
     Rotation2d currentHeading = currentHeading();
     double output = rotationController.calculate(
-      currentHeading.getDegrees(),
-      maintainHeading.getDegrees()
-    );
+        currentHeading.getDegrees(),
+        maintainHeading.getDegrees());
     // If our controller is within our tolerance - do not provide a nominal output
     if (rotationController.atSetpoint()) {
       // SmartDashboard.putNumber("Heading/Rotation Controller Output", 0.0);
@@ -247,18 +254,25 @@ public class Heading extends SubsystemBase {
     // Clamp to some max speed (should be between [0.0, 1.0])
     final double maxSpeed = 0.3;
     double clampedOutput = MathUtil.clamp(
-      output,
-      -maxSpeed,
-      maxSpeed
-    );
-    double nominalClampedOutput = Math.copySign(
-      Math.max(
-        Math.abs(clampedOutput),
-        drivetrainIsMovingSupplier.get() ? NOMINAL_OUTPUT_MOVING : NOMINAL_OUTPUT_STATIONARY
-      ),
-      clampedOutput
-    );
-    // SmartDashboard.putNumber("Heading/Rotation Controller Output", nominalClampedOutput);
+        output,
+        -maxSpeed,
+        maxSpeed);
+    double nominalClampedOutput;
+    if (visionP) {
+      nominalClampedOutput = Math.copySign(
+          Math.max(
+              Math.abs(clampedOutput),
+              drivetrainIsMovingSupplier.get() ? NOMINAL_OUTPUT_MOVING : VISION_NOMINAL_OUTPUT_STATIONARY),
+          clampedOutput);
+    } else {
+      nominalClampedOutput = Math.copySign(
+          Math.max(
+              Math.abs(clampedOutput),
+              drivetrainIsMovingSupplier.get() ? NOMINAL_OUTPUT_MOVING : NOMINAL_OUTPUT_STATIONARY),
+          clampedOutput);
+    }
+    // SmartDashboard.putNumber("Heading/Rotation Controller Output",
+    // nominalClampedOutput);
     return nominalClampedOutput;
   }
 
@@ -271,7 +285,7 @@ public class Heading extends SubsystemBase {
     rotationController.reset();
   }
 
-  //  Sets the P Value when we are holding the vision target tracking button.
+  // Sets the P Value when we are holding the vision target tracking button.
   public void changePValue(boolean usingVision) {
     visionP = usingVision;
   }

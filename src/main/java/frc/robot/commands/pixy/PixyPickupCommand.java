@@ -206,7 +206,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     }
 
     // The first time we see a ball, we should turn the intake on
-    intake.start();
+    // intake.start();
 
     double frameCenter = pixyCam.getFrameCenter();
     double output = strafeController.calculate(
@@ -234,7 +234,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   @Override
   public void end(boolean interrupted) {
     autoDrive.clearDelegate();
-    intake.stop();
+    // intake.stop();
     targetBall = null;
   }
 
