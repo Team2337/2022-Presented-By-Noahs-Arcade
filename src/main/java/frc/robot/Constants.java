@@ -272,6 +272,7 @@ public final class Constants {
      * to get them to be on our side of the field, as opposed to the opposing side.
      */
     public static final double kPickupDistanceInches = 8.0;
+    public static final double kPickupD1DistanceInches = 22.0;
     public static final double kPickupR2DistanceInches = 34.0;
     public static final double kPickupR4DistanceInches = 12.0;
     public static final double kRunOverDistanceInches = 4.0;
@@ -311,11 +312,11 @@ public final class Constants {
     // Ball R1 = Ball nearest to the left starting location
     public static final PolarCoordinate kBallR1 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(145)
+      Rotation2d.fromDegrees(144)
     );
     public static final PolarCoordinate kBallR1Pickup = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
-      Rotation2d.fromDegrees(143)
+      Rotation2d.fromDegrees(144)
     );
     public static final PolarCoordinate kBallR1RunOver = new PolarCoordinate(
       Constants.Auto.kBallR1.getRadiusMeters() - Units.inchesToMeters(kRunOverDistanceInches),
@@ -396,15 +397,15 @@ public final class Constants {
      */
     public static final PolarCoordinate kBallD1 = new PolarCoordinate(
       Units.inchesToMeters(153),
-      Rotation2d.fromDegrees(125.25)
+      Rotation2d.fromDegrees(127.25)
     );
     public static final PolarCoordinate kBallD1Pickup = new PolarCoordinate(
-      Units.inchesToMeters(153) - Units.inchesToMeters(kPickupDistanceInches),
-      Rotation2d.fromDegrees(125.25)
+      Units.inchesToMeters(153) - Units.inchesToMeters(kPickupD1DistanceInches),
+      Rotation2d.fromDegrees(127.25)
     );
     public static final PolarCoordinate kBallD1RunOver = new PolarCoordinate(
       Units.inchesToMeters(153) - Units.inchesToMeters(kRunOverDistanceInches),
-      Rotation2d.fromDegrees(125.25)
+      Rotation2d.fromDegrees(127.25)
     );
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(
       Units.inchesToMeters(153),
