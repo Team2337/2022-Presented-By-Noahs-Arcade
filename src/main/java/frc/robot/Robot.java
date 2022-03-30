@@ -94,6 +94,10 @@ public class Robot extends TimedRobot {
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
 
+    if (m_robotContainer.getBlackButtonStatus()) {
+      m_robotContainer.climberDisableBrakeMode();
+    }
+
     if (m_robotContainer.getPigeonState() != null) {
       if (pigeonCounter < 500) {
         pigeonCounter++;

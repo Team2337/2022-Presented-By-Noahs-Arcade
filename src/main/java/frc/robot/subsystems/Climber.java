@@ -208,7 +208,10 @@ public class Climber extends SubsystemBase {
     return rightMotor.getTemperature();
   }
 
-
+  public void disableBrakeMode() {
+    leftMotor.setNeutralMode(NeutralMode.Coast);
+    rightMotor.setNeutralMode(NeutralMode.Coast);
+  }
 
 }
 

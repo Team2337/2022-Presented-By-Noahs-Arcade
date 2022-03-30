@@ -21,7 +21,7 @@ public class LED extends SubsystemBase {
 	private static AddressableLEDBuffer ledBuffer;
 
 	/**
-	 * Controls the LEDs on the Robot 
+	 * Controls the LEDs on the Robot
 	 * 
 	 * @param pwm The PWM port that the blinkin is plugged into
 	 */
@@ -34,158 +34,160 @@ public class LED extends SubsystemBase {
 	/**
 	 * Sets the color of the LEDs
 	 * 
-	 * @param color A Color object reflecting the color you want to use on the LEDs.  i.e.  kRed, kBlue, kSeashell
+	 * @param color A Color object reflecting the color you want to use on the LEDs.
+	 *              i.e. kRed, kBlue, kSeashell
 	 */
-  public void setColor(Color color) {
+	public void setColor(Color color) {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, color);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
 	public void setColor(Color color, double tx) {
 		for (int i = 0; i < 16; i++) {
-		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
-			ledBuffer.setLED(i, color);
-		}else if (tx >= Constants.VISION_TOLERANCE){
-			if(tx <= (20 - (i * 2.5))){
-				ledBuffer.setLED(i,color);
-			}else{
-				ledBuffer.setRGB(i, 0, 0, 0);
-			}
-		}else if (tx <= -Constants.VISION_TOLERANCE){
-			if(tx >= (17.5 - (i * 2.5))){
-				ledBuffer.setLED(i,color);
-			}else{
-				ledBuffer.setRGB(i,0,0,0);
+			if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
+				ledBuffer.setLED(i, color);
+			} else if (tx >= Constants.VISION_TOLERANCE) {
+				if (tx <= (20 - (i * 2.5))) {
+					ledBuffer.setLED(i, color);
+				} else {
+					ledBuffer.setRGB(i, 0, 0, 0);
+				}
+			} else if (tx <= -Constants.VISION_TOLERANCE) {
+				if (tx >= (17.5 - (i * 2.5))) {
+					ledBuffer.setLED(i, color);
+				} else {
+					ledBuffer.setRGB(i, 0, 0, 0);
+				}
 			}
 		}
-	}
 		led.setData(ledBuffer);
 		led.start();
 	}
 
 	public void setColorRGB(int r, int g, int b, double tx) {
 		for (int i = 0; i < 16; i++) {
-		if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
-			ledBuffer.setRGB(i, r, g, b);
-		}else if (tx >= Constants.VISION_TOLERANCE){
-			if(tx <= (20 - (i * 2.5))){
+			if (tx > -Constants.VISION_TOLERANCE && tx < Constants.VISION_TOLERANCE) {
 				ledBuffer.setRGB(i, r, g, b);
-			}else{
-				ledBuffer.setRGB(i, 0, 0, 0);
-			}
-		}else if (tx <= -Constants.VISION_TOLERANCE){
-			if(tx >= (17.5 - (i * 2.5))){
-				ledBuffer.setRGB(i, r, g, b);
-			}else{
-				ledBuffer.setRGB(i,0,0,0);
+			} else if (tx >= Constants.VISION_TOLERANCE) {
+				if (tx <= (20 - (i * 2.5))) {
+					ledBuffer.setRGB(i, r, g, b);
+				} else {
+					ledBuffer.setRGB(i, 0, 0, 0);
+				}
+			} else if (tx <= -Constants.VISION_TOLERANCE) {
+				if (tx >= (17.5 - (i * 2.5))) {
+					ledBuffer.setRGB(i, r, g, b);
+				} else {
+					ledBuffer.setRGB(i, 0, 0, 0);
+				}
 			}
 		}
-	}
 		led.setData(ledBuffer);
 		led.start();
 	}
 
-  public void setColorLeft(Color color) {
+	public void setColorLeft(Color color) {
 		for (int i = 0; i < 8; i++) {
 			ledBuffer.setLED(i, color);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
-  public void setColorRight(Color color) {
+	public void setColorRight(Color color) {
 		for (int i = 9; i < 16; i++) {
 			ledBuffer.setLED(i, color);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
-  public void setColorEdge(Color color) {
+	public void setColorEdge(Color color) {
 		for (int i = 0; i < 2; i++) {
 			ledBuffer.setLED(i, color);
 		}
-    for (int i = 14; i < 16; i++) {
+		for (int i = 14; i < 16; i++) {
 			ledBuffer.setLED(i, color);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
-  public void setColorMiddle(Color color) {
-		for (int i = 3; i < 13; i++) {
-			ledBuffer.setLED(i, color);
+	public void setColorMiddle(Color color) {
+		for (int i = 0; i < 16; i++) {
+			if (i > 4 && i < 11) {
+				ledBuffer.setLED(i, color);
+			} else {
+				ledBuffer.setRGB(i, 0, 0, 0);
+			}
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
 	}
 
 	public static void setRed() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, Color.kRed);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
 	public void setGreen() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, Color.kGreen);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
 	public void setBlue() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, Color.kBlue);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
 	public void setYellow() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, Color.kYellow);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
 	public void setSeashell() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setLED(i, Color.kSeashell);
 		}
-			led.setData(ledBuffer);
-			led.start();
+		led.setData(ledBuffer);
+		led.start();
 	}
 
-  
 	public static void setLeftOff() {
 		for (int i = 0; i < 8; i++) {
 			ledBuffer.setRGB(i, 0, 0, 0);
 		}
-			led.setData(ledBuffer);
-			led.start();
-  }
+		led.setData(ledBuffer);
+		led.start();
+	}
 
-  
 	public static void setRightOff() {
 		for (int i = 9; i < 16; i++) {
 			ledBuffer.setRGB(i, 0, 0, 0);
 		}
-			led.setData(ledBuffer);
-			led.start();
-  }
+		led.setData(ledBuffer);
+		led.start();
+	}
 
 	public static void setOff() {
 		for (int i = 0; i < 16; i++) {
 			ledBuffer.setRGB(i, 0, 0, 0);
 		}
-			led.setData(ledBuffer);
-			led.start();
-  }
-} 
+		led.setData(ledBuffer);
+		led.start();
+	}
+}
