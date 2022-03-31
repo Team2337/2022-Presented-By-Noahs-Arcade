@@ -25,20 +25,12 @@ public class LEDRunnable extends CommandBase{
       led.setColor(Color.kRed, robotContainer.getTx());
     } else if (robotContainer.isShooterUpToLEDSpeed()) {
       led.setColor(Color.kBlue);
-    } else if (robotContainer.getOperatorStartStatus()) {
-      if (DriverStation.getAlliance().toString() == "Red") {
-        led.setColorMiddle(Color.kWhite);
-      } else {
-        led.setColorMiddle(Color.kWhiteSmoke);
-      }
-    } else if (robotContainer.getOperatorBackStatus()) {
-      if (DriverStation.getAlliance().toString() == "Red") {
-        led.setColorMiddle(Color.kWhiteSmoke);
-      } else {
-        led.setColorMiddle(Color.kWhite);
-      }
+    } else if (robotContainer.getOperatorStartStatus() || robotContainer.getOperatorBackStatus()) {
+      led.setColorMiddle();
     } else if (robotContainer.hasActiveTarget()) {
       led.setColor(Color.kYellow, robotContainer.getTx());
+    } else if (robotContainer.getOperatorRightTriggerStatus() && DriverStation.isTeleop()) {
+      led.setColorMiddle();
     } else {
       led.setOff();
     }

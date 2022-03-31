@@ -119,10 +119,9 @@ public class LED extends SubsystemBase {
 			led.start();
 	}
 
-  public void setColorMiddle(Color color) {
+  public void setColorMiddle() {
 		for (int i = 0; i < LED_LENGTH; i++) {
 			if (i > 27 && i < 48) {
-				// ledBuffer.setLED(i, color);
 				ledBuffer.setRGB(i, 25, 25, 25);
 			} else {
 				ledBuffer.setRGB(i, 0, 0, 0);

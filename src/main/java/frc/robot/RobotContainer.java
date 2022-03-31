@@ -394,4 +394,8 @@ public class RobotContainer {
   public boolean getBlackButtonStatus() {
     return operatorStation.blackButton.get();
   }
+
+  public boolean getOperatorRightTriggerStatus() {
+    return operatorController.getRightTriggerAxis() > 0.5;
+  }
 }
