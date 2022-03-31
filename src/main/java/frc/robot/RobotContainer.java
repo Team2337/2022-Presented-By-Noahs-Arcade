@@ -386,4 +386,16 @@ public class RobotContainer {
   public void ledSetColor(Color color, double tx) {
     LED.setColor(color, tx);
   }
+  
+  public void climberDisableBrakeMode() {
+    climber.disableBrakeMode();
+  }
+
+  public boolean getBlackButtonStatus() {
+    return operatorStation.blackButton.get();
+  }
+
+  public boolean getOperatorRightTriggerStatus() {
+    return operatorController.getRightTriggerAxis() > 0.5;
+  }
 }
