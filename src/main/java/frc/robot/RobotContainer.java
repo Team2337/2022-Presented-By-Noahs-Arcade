@@ -398,4 +398,8 @@ public class RobotContainer {
   public boolean getOperatorRightTriggerStatus() {
     return operatorController.getRightTriggerAxis() > 0.5;
   }
+
+  public void setRGBGreen() {
+    LED.setColorRGB(0, 25, 0);
+  }
 }

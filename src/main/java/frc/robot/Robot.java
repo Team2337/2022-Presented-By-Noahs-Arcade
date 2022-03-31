@@ -94,9 +94,11 @@ public class Robot extends TimedRobot {
     startingAngle = m_robotContainer.getStartingAngle();
     SmartDashboard.putNumber("Starting Angle", startingAngle);
 
+    /*
     if (m_robotContainer.getBlackButtonStatus()) {
       m_robotContainer.climberDisableBrakeMode();
     }
+    */
 
     if (m_robotContainer.getPigeonState() != null) {
       if (pigeonCounter < 500) {
@@ -105,7 +107,7 @@ public class Robot extends TimedRobot {
         if (m_robotContainer.hasActiveTarget()) {
           m_robotContainer.ledSetColor(Color.kRed, m_robotContainer.getTx());
         } else {
-          m_robotContainer.setLEDColor(Color.kGreen);
+          m_robotContainer.setRGBGreen();
         }
       }
     } else {
