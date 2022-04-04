@@ -33,6 +33,7 @@ import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
@@ -251,6 +252,10 @@ public class RobotContainer {
 
     driverTriggerRight.whenHeld(new Shoot(delivery, kicker));
 
+    //Shoot when lined up, see command
+    Trigger shootTrigger = new Trigger(()-> robotLinedUp());
+    shootTrigger.whenActive(new Shoot(delivery, kicker));
+
     driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
     driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
@@ -316,6 +321,13 @@ public class RobotContainer {
     // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
     // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
     // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+  }
+
+  public boolean robotLinedUp() {
+    //Idea behind this is that we use the onTarget and shooterToSpeed methods to know we are on target, not just seeing it,
+    //and we are up to speed, and we are not driving (joystick not touched), so we are not shooting while on the move, 
+    //at least not yet, and we are waiting to stop and then immediately shooting. 
+    return (isOnTarget() && isShooterUpToLEDSpeed() && (Utilities.deadband(driverController.getRightY(), 0.15) == 0));
   }
 
   public Command getAutonomousCommand() {
