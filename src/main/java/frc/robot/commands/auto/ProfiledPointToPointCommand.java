@@ -33,10 +33,10 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private PolarCoordinate target;
   private Heading heading;
   private AutoDrive autoDrive;
-  private RobotContainer robotContainer;
 
   private ProfiledPIDController distanceController;
   private ProfiledPIDController thetaController;
+  private Supplier<Boolean> intakeSensorSupplier;
 
   private double forwardOutput = 0.0;
   private double strafeOutput = 0.0;
@@ -45,14 +45,14 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   private boolean endWithIntake = false;
 
   public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, AutoDrive autoDrive, Heading heading) {
-    this(target, translationSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, false, autoDrive, heading);
+    this(target, translationSupplier, () -> false, forwardP, strafeP, forwardAcceleration, strafeAcceleration, false, autoDrive, heading);
   }
 
   public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, AutoDrive autoDrive, Heading heading) {
-    this(target, translationSupplier, forwardP, strafeP, forwardAcceleration, strafeAcceleration, false, autoDrive, heading);
+    this(target, translationSupplier, () -> false, forwardP, strafeP, forwardAcceleration, strafeAcceleration, false, autoDrive, heading);
   }
 
-  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, boolean monitorIntake, AutoDrive autoDrive, Heading heading) {
+  public ProfiledPointToPointCommand(PolarCoordinate target, Supplier<Translation2d> translationSupplier, Supplier<Boolean> intakeSensorSupplier, double driveP, double strafeP, double forwardAcceleration, double strafeAcceleration, boolean monitorIntake, AutoDrive autoDrive, Heading heading) {
     super(
       target.getReferencePoint(),
       translationSupplier,
@@ -67,6 +67,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
     this.heading = heading;
     this.autoDrive = autoDrive;
     this.monitorIntake = monitorIntake;
+    this.intakeSensorSupplier = intakeSensorSupplier;
 
     distanceController = new ProfiledPIDController(
       driveP, 0.0, 0.0,
@@ -105,7 +106,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
   public void execute() {
     super.execute();
     if (monitorIntake) {
-      endWithIntake = robotContainer.getIntakeSensorStatus();
+      endWithIntake = intakeSensorSupplier.get();
     }
 
     PolarCoordinate robotCoordinate = getRobotCoordinate();
