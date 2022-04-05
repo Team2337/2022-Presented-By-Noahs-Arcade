@@ -9,8 +9,6 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.kicker.StartKicker;
-import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
@@ -20,28 +18,22 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Shooter;
 
-public class Pos1LeftTwoBallRudeOne extends SequentialCommandGroup {
+public class Pos1LeftTwoBallPartnerOneBall extends SequentialCommandGroup {
 
-  public Pos1LeftTwoBallRudeOne(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
+  public Pos1LeftTwoBallPartnerOneBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
       new FirstMove(Constants.Auto.kBallR1RunOver, autoDrive, drivetrain, heading, intake, shooter),
       new ForwardKickerCommand(kicker).withTimeout(0.3),
-      new StartShooterInstantCommand(41, shooter),
+      new ParallelCommandGroup(
+        new AutoStartDelivery(delivery).withTimeout(0.75),
+        new ForwardKickerCommand(kicker).withTimeout(0.5)
+      ),
+      new MaintainHeadingCommand(180, heading).withTimeout(2.5),
+      new WaitCommand(1.5),
       new ParallelCommandGroup(
         new AutoStartDelivery(delivery).withTimeout(0.75),
         new ForwardKickerCommand(kicker).withTimeout(0.75)
       ),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD1Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
-      new WaitCommand(0.25),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
-      new WaitCommand(0.25),
-      new StartShooterInstantCommand(15, shooter),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
-      new ParallelCommandGroup(
-        new AutoStartDelivery(delivery).withTimeout(0.75),
-        new ForwardKickerCommand(kicker).withTimeout(0.75)
-      ),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD1Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
       // new ProfiledPointToPointCommand(Constants.Auto.kPosition1LeftStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );

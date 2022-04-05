@@ -84,6 +84,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingCommand());
     autonChooser.addOption("Pos1 Left Two Ball", new Pos1LeftTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left R1 Punt D2 R2 Shoot", new Pos1LeftR1D2PR2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos1 Left Two Ball Partner One Ball", new Pos1LeftTwoBallPartnerOneBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left Two Ball Rude One", new Pos1LeftTwoBallRudeOne(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left Two Ball Rude One Prep R7", new Pos1LeftTwoBallRudeOnePrepR7(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos1 Left Two Ball Rude Two", new Pos1LeftTwoBallRudeTwo(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -96,6 +97,8 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Two Ball", new Pos3RightTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos3 Right Three Ball", new Pos3RightThreeBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos3 Right Five Ball", new Pos3RightFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos3 Right Five Ball v2", new Pos3RightFiveBallv2(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos3 Right Five Ball Cheeseball", new Pos3RightFiveBallv3(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading, kicker, shooter));
 
@@ -112,6 +115,10 @@ public class RobotContainer {
     startingAngleChooser.addOption("Left fender (-20 degrees)", -20.0);
     startingAngleChooser.addOption("Right fender (70 degrees)", 70.0);
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
+    startingAngleChooser.addOption("Right Pos3 Errored Start (80 degrees)", 80.0);
+    startingAngleChooser.addOption("Left Pos1 Errored Start (-35 degrees)", -35.0);
+    startingAngleChooser.addOption("Test (-35 degrees)", -35.0);
+
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
     
