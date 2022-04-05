@@ -31,7 +31,7 @@ public class Pos3RightFiveBallv2 extends SequentialCommandGroup {
         new StartShooterInstantCommand(39.5, shooter)
       ),
       new ForwardKickerCommand(kicker).withTimeout(0.3),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(1),
       new StartShooterInstantCommand(40.7, shooter),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(1),

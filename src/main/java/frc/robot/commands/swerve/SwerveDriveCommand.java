@@ -92,8 +92,8 @@ public class SwerveDriveCommand extends CommandBase {
       );
     } else {
       drivetrain.drive(new ChassisSpeeds(
-        vxMetersPerSecond,
-        vyMetersPerSecond,
+        -vxMetersPerSecond,
+        -vyMetersPerSecond,
         omegaRadiansPerSecond
       ));
     }
