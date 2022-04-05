@@ -327,7 +327,7 @@ public class RobotContainer {
     //Idea behind this is that we use the onTarget and shooterToSpeed methods to know we are on target, not just seeing it,
     //and we are up to speed, and we are not driving (joystick not touched), so we are not shooting while on the move, 
     //at least not yet, and we are waiting to stop and then immediately shooting. 
-    return (isOnTarget() && isShooterUpToLEDSpeed() && (Utilities.deadband(driverController.getRightY(), 0.15) == 0));
+    return (isOnTarget() && isShooterUpToLEDSpeed() && (Utilities.deadband(driverController.getLeftY(), 0.15) == 0));
   }
 
   public Command getAutonomousCommand() {
