@@ -67,6 +67,17 @@ public class HeadingToTargetCommand extends CommandBase {
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
+    } else if (driverRightBumperSupplier.get()) {
+      if (firstTime) {
+        heading.enableMaintainHeading();
+        firstTime = false;
+        heading.changePValue(false);
+      }
+      PolarCoordinate coordinate = getRobotCoordinate();
+
+      heading.setMaintainHeading(
+          coordinate.getTheta()
+        );
     } else {
       if (!firstTime) {
         firstTime = true;
@@ -75,20 +86,9 @@ public class HeadingToTargetCommand extends CommandBase {
       PolarCoordinate coordinate = getRobotCoordinate();
       // The angle is the angle outward from our center point. In order to face our center
       // point, we need to rotate our angle by 180 degrees.
-      if (driverRightBumperSupplier.get()) {
-        heading.setMaintainHeading(
-          coordinate.getTheta()
-        );
-      } else {
-        heading.setMaintainHeading(
-          coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180))
-        );
-      }
-      /*
       heading.setMaintainHeading(
           coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180))
         );
-      */
     }
   }
 }

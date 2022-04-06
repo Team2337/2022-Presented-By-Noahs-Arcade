@@ -23,7 +23,7 @@ public class Pos3RightThreeBall extends SequentialCommandGroup {
 
   public Pos3RightThreeBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
-      // new FirstMove(Constants.Auto.kBallR3Pickup, autoDrive, drivetrain, heading, intake, shooter),
+      new FirstMove(Constants.Auto.kBallR3Pickup, autoDrive, drivetrain, heading, intake, shooter),
       new ForwardKickerCommand(kicker).withTimeout(0.5),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kBallR2Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(3),

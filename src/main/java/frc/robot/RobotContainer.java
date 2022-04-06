@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
 import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.HeadingToTargetCommand;
+import frc.robot.commands.TriggerCommandGroup;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
@@ -355,7 +356,7 @@ public class RobotContainer {
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(driverController, delivery).withTimeout(1.5));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(driverController, delivery));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
     shootTrigger.whenActive(new Shoot(delivery, kicker)); // operatorRightBumper.whileHeld(new
@@ -481,5 +482,9 @@ public class RobotContainer {
 
   public boolean getDriverRightBumperStatus() {
     return driverController.getRightBumper();
+  }
+
+  public void setClimberSetpoint() {
+    climber.setPosition(1.0);
   }
 }
