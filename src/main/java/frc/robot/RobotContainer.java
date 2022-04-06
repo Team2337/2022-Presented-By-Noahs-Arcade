@@ -108,6 +108,8 @@ public class RobotContainer {
         new Pos2MidR2D2PR1(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
     autonChooser.addOption("Pos2 Middle Four Ball",
         new Pos2MidFourBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
+    autonChooser.addOption("Pos2 Middle Five Ball", 
+        new Pos2MidFiveBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     autonChooser.addOption("Pos3 Right Two Ball",
         new Pos3RightTwoBall(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
@@ -137,6 +139,7 @@ public class RobotContainer {
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
     startingAngleChooser.addOption("Right Pos3 Errored Start (80 degrees)", 80.0);
     startingAngleChooser.addOption("Left Pos1 Errored Start (-35 degrees)", -35.0);
+    startingAngleChooser.addOption("Middle Pos2 Errored Start (38 degrees)", 38.0);
     startingAngleChooser.addOption("Test (-35 degrees)", -35.0);
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
@@ -373,8 +376,9 @@ public class RobotContainer {
     return (isOnTarget()
         && hasActiveTarget()
         && isShooterUpToLEDSpeed()
-        && (Utilities.deadband(driverController.getRightY(), 0.15) == 0)
-        && (Utilities.deadband(driverController.getRightX(), 0.15) == 0)
+        && !drivetrain.isMoving()
+        // && (Utilities.deadband(driverController.getRightY(), 0.15) == 0)
+        // && (Utilities.deadband(driverController.getRightX(), 0.15) == 0)
         && operatorController.getRightBumper()
         && operatorController.getLeftBumper());
   }
