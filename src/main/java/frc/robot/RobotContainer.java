@@ -48,9 +48,6 @@ import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
 
 public class RobotContainer {
-  // private PixyCam pixyCam; // Instance created in the
-  // instantiateSubsystemsTeleop() method.
-
   private final XboxController driverController = new XboxController(0);
   private final XboxController operatorController = new XboxController(1);
   private final NerdyOperatorStation operatorStation = new NerdyOperatorStation(2);
