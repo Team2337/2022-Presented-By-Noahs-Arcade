@@ -48,6 +48,7 @@ public class ProfiledPointToPointCommand extends HeadingToTargetCommand implemen
       target.getReferencePoint(),
       translationSupplier,
       () -> false,
+      () -> false,
       null,
       heading,
       null
