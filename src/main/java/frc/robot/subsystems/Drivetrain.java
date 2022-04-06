@@ -221,7 +221,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public boolean isMoving() {
-    return !Utilities.withinTolerance(0, velocity(), 0.001);
+    return !Utilities.withinTolerance(0, velocity(), 0.01); //0.001
   }
 
   /**
