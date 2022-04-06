@@ -72,9 +72,10 @@ public class RobotContainer {
 
   public RobotContainer() {
     JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
-    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, drivetrain, heading, vision));
+    heading.setDefaultCommand(new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, driverRightBumper::get, drivetrain, heading, vision));
     LED.setDefaultCommand(new LEDRunnable(LED, this));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
     
@@ -236,7 +237,6 @@ public class RobotContainer {
     JoystickButton driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
     JoystickButton driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
     JoystickButton driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
-    JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
     JoystickAnalogButton driverTriggerLeft = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
     JoystickAnalogButton driverTriggerRight = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
     JoystickButton driverBack = new JoystickButton(driverController, XboxController.Button.kBack.value);
@@ -251,7 +251,7 @@ public class RobotContainer {
 
     driverTriggerRight.whenHeld(new Shoot(delivery, kicker));
 
-    driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, operatorY::get, delivery, kicker, shooter));
+    driverTriggerLeft.whenHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     driverTriggerLeft.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     driverBack.whenPressed(new InstantRelocalizeCommand(drivetrain, vision));
@@ -296,7 +296,7 @@ public class RobotContainer {
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    operatorX.whileHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, driverRightBumper::get, delivery, kicker, shooter));
+    operatorX.whileHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     operatorX.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
 
@@ -310,12 +310,24 @@ public class RobotContainer {
   }
 
   public void configureButtonBindingsTeleop() {
-    //Trigger operatorRightLeftBumper = operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
     intakeBeamBreakTrigger.whenInactive(new BottomToTopCommand(driverController, delivery).withTimeout(1.5));
-    // operatorRightBumper.whileHeld(new PixyPickupCommand(PickupStrategy.RED, autoDrive, intake, pixyCam));
-    // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE, autoDrive, intake, pixyCam));
-    // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY, autoDrive, intake, pixyCam));
+    Trigger shootTrigger = new Trigger(() -> robotLinedUp());
+    shootTrigger.whenActive(new Shoot(delivery, kicker));
+  }
+
+  public boolean robotLinedUp() {
+    // Idea behind this is that we use the onTarget and shooterToSpeed methods to
+    // know we are on target, not just seeing it,
+    // and we are up to speed, and we are not driving (joystick not touched), so we
+    // are not shooting while on the move,
+    // at least not yet, and we are waiting to stop and then immediately shooting.
+    return (isOnTarget()
+        && hasActiveTarget()
+        && isShooterUpToLEDSpeed()
+        && drivetrain.isMoving()
+        && operatorController.getRightBumper()
+        && operatorController.getLeftBumper());
   }
 
   public Command getAutonomousCommand() {
