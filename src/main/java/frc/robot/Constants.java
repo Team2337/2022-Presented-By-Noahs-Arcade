@@ -475,6 +475,8 @@ public final class Constants {
   public static final class Vision {
     public static final double IMAGE_PROCESSING_LATENCY_MS = 11;
     public static final double VISION_TARGET_OFFSET_FROM_HUB_CENTER_METERS = Units.feetToMeters(2);
+    public static final int RED_PIPELINE_INDEX = 0;
+    public static final int BLUE_PIPELINE_INDEX = 1;
   }
 
   public static final double MOTOR_MINIMUM_TEMP_CELSIUS = 15.0; // Used in Shuffleboard for temperature dials
