@@ -10,6 +10,7 @@ import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase  {
@@ -34,6 +35,7 @@ public class PhotonVision extends SubsystemBase  {
       corners = ball.getCorners();
       hasTarget = true;
       ballX = getXValue(corners);
+      SmartDashboard.putNumber("Xvalue", ballX);
     }
     else {
       hasTarget = false;
@@ -54,16 +56,16 @@ public class PhotonVision extends SubsystemBase  {
     return yawValue;
   }
 
-  public List<TargetCorner> getCorners(){
+  public List<TargetCorner> getCorners() {
     return corners;
   }
 
-  public double getFrameWidth(){
+  public double getFrameWidth() {
     //Find based off of PhotonVision output settings
     return 240;
   }
 
-  public double getFrameCenter(){
+  public double getFrameCenter() {
     return getFrameWidth() / 2;
   }
 
@@ -81,12 +83,12 @@ public class PhotonVision extends SubsystemBase  {
 
     //Hold Point values
     ArrayList<Double> ballXValues = new ArrayList<Double>();
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < 4; i++) {
       //Get the point, start a count
-      double point = targetCorners.get(i).x;
+      double point = Math.abs(targetCorners.get(i).x);
       double count = 0;
       //Add how many times the x value has been seen inside this array
-      for (int z = 0; z < ballXValues.size(); z++){
+      for (int z = 0; z < ballXValues.size(); z++) {
         if (ballXValues.get(z) != point){
           count++;
         }
@@ -98,7 +100,7 @@ public class PhotonVision extends SubsystemBase  {
     }
     //Get the overall "length" of the line segment
     double totalXValues = 0;
-    for (int y = 0; y < ballXValues.size(); y++){
+    for (int y = 0; y < ballXValues.size(); y++) {
       totalXValues = totalXValues + ballXValues.get(y);
     }
     //Divide by the size to get the x value the midpoint of ball is on.
