@@ -1,13 +1,11 @@
 package frc.robot.commands.auto;
 
 import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.RobotContainer;
 import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;

@@ -2,8 +2,6 @@ package frc.robot.commands.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
