@@ -1,6 +1,5 @@
 package frc.robot.commands.pixy;
 
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,8 +16,6 @@ import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PhotonVision;
-import frc.robot.subsystems.hardware.PixyCam;
-import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Intake;
 
@@ -27,7 +24,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   /**
    * Whatever ball color we want to pick up. Red, blue, or any.
    */
-  public static enum PickupStrategy {
+  public static enum PickuppStrategy {
     RED,
     BLUE,
     ANY,
@@ -48,14 +45,14 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   private static final double MAX_STRAFE_OUTPUT = 0.5;
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
-  private final PickupStrategy strategy;
+  private final PickuppStrategy strategy;
   private final AutoDrive autoDrive;
   private final Intake intake;
   private final PhotonVision photonVision;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
 
-  private Block targetBall;
+  // private var targetBall;
   private Double targetX = null;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
@@ -67,7 +64,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
 
   private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
 
-  public PhotonPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PhotonVision photonVision) {
+  public PhotonPickupCommand(PickuppStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PhotonVision photonVision) {
     this.strategy = strategy;
     this.gyroSupplier = gyroSupplier;
     this.driverController = driverController;
@@ -81,7 +78,6 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   @Override
   public void initialize() {
     autoDrive.setDelegate(this);
-
     resetInternalState();
   }
 
@@ -90,6 +86,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
     if (strategy != null) {
       strategyString = strategy.toString();
     }
+    SmartDashboard.putString("Target X", String.valueOf(targetX));
     SmartDashboard.putString("PixyPickup/Strategy", strategyString);
     SmartDashboard.putNumber("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
     SmartDashboard.putNumber("PixyPickup/Strafe Output", strafeOutput);
@@ -125,7 +122,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
       return;
     }
     //Add the pipelines to 
-    if (strategy == PickupStrategy.OURS) {
+    if (strategy == PickuppStrategy.OURS) {
       switch (DriverStation.getAlliance()) {
         default:
         case Red:
@@ -135,7 +132,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
           photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
           break;
         } 
-      } else if (strategy == PickupStrategy.THEIRS) {
+      } else if (strategy == PickuppStrategy.THEIRS) {
         switch (DriverStation.getAlliance()) {
           default:
           case Red:
@@ -146,65 +143,6 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
             break;
           } 
       }
-   /* ArrayList<Block> blocks = pixyCam.getBlocks();
-
-    Block latestTargetBall = null;
-    if (strategy == PickupStrategy.RED) {
-      latestTargetBall = PixyCam.getLargestRedBlock(blocks);
-    } else if (strategy == PickupStrategy.BLUE) {
-      latestTargetBall = PixyCam.getLargestBlueBlock(blocks);
-    } else if (strategy == PickupStrategy.ANY) {
-      Block largestRed = PixyCam.getLargestRedBlock(blocks);
-      Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
-      switch (DriverStation.getAlliance()) {
-        default:
-        case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestRed == null ? largestBlue : largestRed;
-          break;
-        case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestBlue == null ? largestRed : largestBlue;
-          break;
-        }
-      } else if (strategy == PickupStrategy.OURS) {
-        Block largestRed = PixyCam.getLargestRedBlock(blocks);
-        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
-      switch (DriverStation.getAlliance()) {
-        default:
-        case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestRed;
-          break;
-        case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestBlue;
-          break;
-        }
-      } else if (strategy == PickupStrategy.THEIRS) {
-        Block largestRed = PixyCam.getLargestRedBlock(blocks);
-        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
-      switch (DriverStation.getAlliance()) {
-        default:
-        case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestBlue;
-          break;
-        case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestRed;
-          break;
-      }
-    } */
 
     Double latestTargetX = photonVision.getBallXValue();
     // If our `latestTargetBall` is null, remember where our last seen ball was
@@ -250,13 +188,17 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
       -MAX_STRAFE_OUTPUT,
       MAX_STRAFE_OUTPUT
     );
+    double straffedOutput = strafeOutput;
+    SmartDashboard.putNumber("Strafe Output", straffedOutput);
+    strafeOutput = 0;
   }
 
   @Override
   public void end(boolean interrupted) {
+    targetX = null;
     autoDrive.clearDelegate();
     // intake.stop();
-    targetX = null;
+    
   }
 
   @Override

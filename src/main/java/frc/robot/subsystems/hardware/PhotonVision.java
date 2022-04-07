@@ -62,7 +62,7 @@ public class PhotonVision extends SubsystemBase  {
 
   public double getFrameWidth() {
     //Find based off of PhotonVision output settings
-    return 240;
+    return 160;
   }
 
   public double getFrameCenter() {
@@ -80,6 +80,7 @@ public class PhotonVision extends SubsystemBase  {
     a rectangle, we can get the x-values, divide them by two to get the midpoint, and this midpoint of the ball relative to the camera
     center can be plugged into the PixyPickupCommand to run correctly.
     */
+
 
     //Hold Point values
     ArrayList<Double> ballXValues = new ArrayList<Double>();
