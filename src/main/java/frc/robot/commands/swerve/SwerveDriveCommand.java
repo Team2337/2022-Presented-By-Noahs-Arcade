@@ -91,11 +91,19 @@ public class SwerveDriveCommand extends CommandBase {
         )
       );
     } else {
-      drivetrain.drive(new ChassisSpeeds(
-        vxMetersPerSecond,
-        vyMetersPerSecond,
-        omegaRadiansPerSecond
-      ));
+      if (controller.getLeftBumper()) {
+        drivetrain.drive(new ChassisSpeeds(
+          -vxMetersPerSecond,
+          -vyMetersPerSecond,
+          omegaRadiansPerSecond
+        ));
+        } else {
+          drivetrain.drive(new ChassisSpeeds(
+          vxMetersPerSecond,
+          vyMetersPerSecond,
+          omegaRadiansPerSecond
+        ));
+        }
     }
   }
 

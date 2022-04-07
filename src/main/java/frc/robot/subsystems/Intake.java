@@ -116,4 +116,8 @@ public class Intake extends SubsystemBase {
     return intakeBeam.get();
   }
 
+  public boolean getAutoBeamBreakSensorStatus() {
+    return !intakeBeam.get();
+  }
+
 }
