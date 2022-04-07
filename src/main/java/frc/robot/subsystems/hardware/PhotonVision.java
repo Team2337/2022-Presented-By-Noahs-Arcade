@@ -74,16 +74,23 @@ public class PhotonVision extends SubsystemBase  {
   }
 
   private double getXValue(List<TargetCorner> targetCorners) {
-    /*
-    PixyCam uses XY Coordinates to find balls and strafe, while PhotonVision only gives us rotations around axises for finding our ball.
-    However, getting the corners gives us a bounding box rectangle, in which I assume are in pixels from the camera output. So if we have
-    a rectangle, we can get the x-values, divide them by two to get the midpoint, and this midpoint of the ball relative to the camera
-    center can be plugged into the PixyPickupCommand to run correctly.
-    */
+    /**
+     * PixyCam uses x-y coordinates to find balls and strafe, but PhotonVision only gives us rotations around axes for
+     * finding our ball. However, getting the corner gives us a bounding box, which can be presumed to be pixels from
+     * the camera output. So if we have a rectangle (the bounding box), we can get the x-values and divide them by two
+     * to get the midpoint, and turn this midpoint of the ball to be relative to the camera center so that it can be
+     * plugged into the PixyPickupCommand to run correctly.
+     */
 
 
     //Hold Point values
-    ArrayList<Double> ballXValues = new ArrayList<Double>();
+    return (
+      targetCorners.get(0) == targetCorners.get(1) ?          //Check if the first two are equal. There are only two unique values
+      (targetCorners.get(0).x + targetCorners.get(2).x) / 2 : //If so, the first and third can be presumed to be unique. Use those
+      (targetCorners.get(0).x + targetCorners.get(1).x) / 2   //Otherwise, resort to using the first two, which are different.
+    );//If you don't like ternary, I can switch this out for a more readable if-statement
+
+    /* ArrayList<Double> ballXValues = new ArrayList<Double>();
     for (int i = 0; i < 4; i++) {
       //Get the point, start a count
       double point = Math.abs(targetCorners.get(i).x);
@@ -106,6 +113,6 @@ public class PhotonVision extends SubsystemBase  {
     }
     //Divide by the size to get the x value the midpoint of ball is on.
     double xValue = totalXValues / ballXValues.size();
-    return xValue;
-    }
+    return xValue; */
   }
+}
