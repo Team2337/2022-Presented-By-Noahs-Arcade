@@ -47,10 +47,7 @@ public class Delivery extends SubsystemBase {
 
   // Color sensors
   // private final PicoColorSensors colorSensors = new PicoColorSensors();
-
-  // Beam break sensor
-  private final DigitalInput shooterBeam = new DigitalInput(Constants.SHOOTER_BEAM_ID);
-
+  
   private final DigitalInput ballCenteringSensor = new DigitalInput(Constants.getInstance().CENTERING_BEAM_ID);
 
 

@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.cscore.HttpCamera;
-import edu.wpi.first.cscore.VideoException;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -84,8 +81,6 @@ public class Vision extends SubsystemBase {
   private double distanceToTargetMeters = 0.0;
 
   public int relocalizeCounter = 0;
-
-  private HttpCamera limelightStream;
 
   public Vision() {
     // Automatically switch our Limelight to our default pipeline on construction

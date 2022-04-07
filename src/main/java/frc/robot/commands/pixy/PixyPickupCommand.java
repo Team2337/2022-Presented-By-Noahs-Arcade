@@ -18,7 +18,6 @@ import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PixyCam;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import frc.robot.subsystems.AutoDrive;
-import frc.robot.subsystems.Intake;
 
 public class PixyPickupCommand extends CommandBase implements AutoDrivableCommand {
 
@@ -48,8 +47,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
-  private final Intake intake;
-  private final PixyCam pixyCam;
+    private final PixyCam pixyCam;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
 
@@ -64,15 +62,14 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
 
-  public PixyPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PixyCam pixyCam) {
+  public PixyPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, PixyCam pixyCam) {
     this.strategy = strategy;
     this.gyroSupplier = gyroSupplier;
     this.driverController = driverController;
     this.autoDrive = autoDrive;
     this.pixyCam = pixyCam;
-    this.intake = intake;
-
-    addRequirements(autoDrive, intake);
+    
+    addRequirements(autoDrive);
   }
 
   @Override

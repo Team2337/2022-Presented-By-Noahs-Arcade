@@ -23,10 +23,8 @@ import frc.robot.commands.HeadingToTargetCommand;
 import frc.robot.commands.TriggerCommandGroup;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
-import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PixyPickupCommand;
@@ -34,7 +32,6 @@ import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
@@ -318,9 +315,9 @@ public class RobotContainer {
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
     operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, intake, pixyCam));
+        driverController, autoDrive, pixyCam));
     operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, intake, pixyCam));
+        driverController, autoDrive, pixyCam));
 
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get,
         vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
