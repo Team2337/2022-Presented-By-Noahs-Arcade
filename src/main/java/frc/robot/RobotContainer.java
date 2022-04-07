@@ -24,8 +24,10 @@ import frc.robot.commands.TriggerCommandGroup;
 import frc.robot.commands.LED.*;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
+import frc.robot.commands.climber.ClimberDrive;
 import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
+import frc.robot.commands.climber.ClimberSetpointWithTimeout;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
@@ -296,18 +298,18 @@ public class RobotContainer {
     JoystickButton operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
     JoystickButton operatorRightStick = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
     JoystickButton operatorLeftStick = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
-    JoystickButton operatorRightBumper = new JoystickButton(operatorController,
-        XboxController.Button.kRightBumper.value);
+    JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
     // Operator left bumper used for vision tracking by default commands.
     // Operator right bumper below in the configureButtonBindingsTeleop() method.
-    JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController,
-        XboxController.Axis.kLeftTrigger.value);
-    JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController,
-        XboxController.Axis.kRightTrigger.value);
+    JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+    JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
     JoystickButton operatorBack = new JoystickButton(operatorController, XboxController.Button.kBack.value);
     JoystickButton operatorStart = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+
     JoystickButton yellowSwitch = new JoystickButton(operatorStation, 4);
+    JoystickButton yellowButton = new JoystickButton(operatorStation, 8);
+    JoystickButton blueButton = new JoystickButton(operatorStation, 9);
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
@@ -317,25 +319,23 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, intake, pixyCam));
-    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, intake, pixyCam));
+    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
+    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, pixyCam));
 
-    operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get,
-        vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
+    operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
-    yellowSwitch.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber).andThen(new ClimberSetpointCommand(climber.MID_RUNG, climber)));
+    yellowSwitch.whenHeld(new ClimberSetpointWithTimeout(climber.MID_RUNG, climber).withTimeout(2.5));
+    yellowButton.whileHeld(new ClimberDrive(0.1, drivetrain::getGyroscopeRoll, operatorStation, climber));
+    blueButton.whileHeld(new ClimberDrive(-0.1, drivetrain::getGyroscopeRoll, operatorStation, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
-    operatorX.whileHeld(
-        new OperatorLinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
+    operatorX.whileHeld(new OperatorLinearShootCommand(drivetrain::getTranslation, delivery, kicker, shooter));
     operatorX.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
 
     /** Driverstation Controls * */
@@ -481,6 +481,6 @@ public class RobotContainer {
   }
 
   public void setClimberSetpoint() {
-    climber.setPosition(1.0);
+    climber.setPosition(climber.TRAVEL_LOCATION);
   }
 }
