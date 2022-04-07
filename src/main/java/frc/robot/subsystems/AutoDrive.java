@@ -2,10 +2,7 @@ package frc.robot.subsystems;
 
 import java.lang.ref.WeakReference;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.DriverDashboardPositions;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 
 /**
@@ -113,7 +110,7 @@ public class AutoDrive extends SubsystemBase {
     }
     return delegateReference.get();
   }
-
+/*
   private String getAutoDriveCommandName() {
     AutoDrivableCommand command = getAutoDriveCommand();
     if (command == null) {
@@ -121,7 +118,7 @@ public class AutoDrive extends SubsystemBase {
     }
     return command.toString();
   }
-
+*/
   @Override
   public void periodic() {
     /*

@@ -1,16 +1,8 @@
 package frc.robot.commands.auto;
 
-import org.ejml.equation.IntegerSequence.For;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.auto.commandGroups.FirstMove;
-import frc.robot.commands.delivery.AutoStartDelivery;
-import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.shooter.StartShooterInstantCommand;
-import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Drivetrain;

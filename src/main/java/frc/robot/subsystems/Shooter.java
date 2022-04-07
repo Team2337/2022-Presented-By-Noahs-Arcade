@@ -146,7 +146,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterToSpeed() {
-    // TODO: Change to Percentage or another method
     return Utilities.withinTolerance(targetSpeed, getMotorWheelSpeed(leftMotor), kShooterSpeedFeetPerSecondTolerance);
   }
 

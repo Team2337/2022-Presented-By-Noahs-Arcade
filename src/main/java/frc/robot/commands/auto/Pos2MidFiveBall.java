@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
-import frc.robot.commands.delivery.AutoBottomToTopCommand;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.delivery.AutoStartDeliveryLeft;
 import frc.robot.commands.kicker.ForwardKickerCommand;
