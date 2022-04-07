@@ -274,6 +274,7 @@ public final class Constants {
     public static final double kPickupDistanceInches = 8.0;
     public static final double kPickupD1DistanceInches = 44.0;
     public static final double kPickupR2DistanceInches = 34.0;
+    public static final double kPickupR3DistanceInches = 34.0;
     public static final double kPickupR4DistanceInches = 14.0;
     public static final double kPickupR5DistanceInches = 26.0;
     public static final double kRunOverDistanceInches = 4.0;
@@ -352,6 +353,10 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR3Pickup = new PolarCoordinate(
       Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupDistanceInches),
+      Constants.Auto.kBallR3.getTheta()
+    );
+    public static final PolarCoordinate kBallR3MidPickup = new PolarCoordinate(
+      Constants.Auto.kBallR3.getRadiusMeters() - Units.inchesToMeters(kPickupR3DistanceInches),
       Constants.Auto.kBallR3.getTheta()
     );
     public static final PolarCoordinate kBallR3RunOver = new PolarCoordinate(

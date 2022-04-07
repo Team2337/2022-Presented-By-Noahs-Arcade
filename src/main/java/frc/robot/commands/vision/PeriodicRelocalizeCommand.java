@@ -1,8 +1,7 @@
 package frc.robot.commands.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
@@ -26,34 +25,36 @@ public class PeriodicRelocalizeCommand extends VisionCommand {
 
   @Override
   public void execute() {
-    if (relocalizeDebounceCounter >= RELOCALIZE_DEBOUNCE_LIMIT) {
-      PolarCoordinate visionCoordinate = calculateVisionPolarCoordiante();
-      if (visionCoordinate != null) {
-        pose = new Pose2d(
-          visionCoordinate.toFieldCoordinate(),
-          drivetrain.getGyroscopeRotation()
-        );
-        // + 2 because like - a little bonus latency for network stuff
-        // / 1000 to go ms -> seconds
-        //drivetrain.addVisionMeasurement(
-          //pose,
-          //Timer.getFPGATimestamp() - ((Constants.Vision.IMAGE_PROCESSING_LATENCY_MS + vision.getLatency() + 2) / 1000)
-       // );
-        vision.incrementRelocalizeCounter();
+    if (DriverStation.isTeleop()) {
+      if (relocalizeDebounceCounter >= RELOCALIZE_DEBOUNCE_LIMIT) {
+        PolarCoordinate visionCoordinate = calculateVisionPolarCoordiante();
+        if (visionCoordinate != null) {
+          pose = new Pose2d(
+              visionCoordinate.toFieldCoordinate(),
+              drivetrain.getGyroscopeRotation());
+          // + 2 because like - a little bonus latency for network stuff
+          // / 1000 to go ms -> seconds
+          // drivetrain.addVisionMeasurement(
+          // pose,
+          // Timer.getFPGATimestamp() - ((Constants.Vision.IMAGE_PROCESSING_LATENCY_MS +
+          // vision.getLatency() + 2) / 1000)
+          // );
+          vision.incrementRelocalizeCounter();
 
-        relocalizeDebounceCounter = 0;
+          relocalizeDebounceCounter = 0;
+        }
+      } else {
+        relocalizeDebounceCounter++;
       }
-    } else {
-      relocalizeDebounceCounter++;
-    }
 
-    if (pose != null) {
-      // field.setRobotPose(pose);
-      /*
-      Logger.getInstance().recordOutput("Vision/Robot",
-        new double[] { pose.getX(), pose.getY(),
-          pose.getRotation().getRadians() });
-      */
+      if (pose != null) {
+        // field.setRobotPose(pose);
+        /*
+         * Logger.getInstance().recordOutput("Vision/Robot",
+         * new double[] { pose.getX(), pose.getY(),
+         * pose.getRotation().getRadians() });
+         */
+      }
     }
   }
 

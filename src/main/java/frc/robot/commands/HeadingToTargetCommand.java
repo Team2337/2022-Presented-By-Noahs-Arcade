@@ -24,15 +24,17 @@ public class HeadingToTargetCommand extends CommandBase {
   private final Heading heading;
   private final Vision vision;
   private boolean firstTime = false;
+  private Supplier<Boolean> driverRightBumperSupplier;
 
-  public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
-    this(Constants.kHub, robotTranslationSupplier, overrideSupplier, drivetrain, heading, vision);
+  public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
+    this(Constants.kHub, robotTranslationSupplier, overrideSupplier, driverRightBumperSupplier, drivetrain, heading, vision);
   }
 
-  public HeadingToTargetCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
+  public HeadingToTargetCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
     this.targetMeters = targetMeters;
     this.robotTranslationSupplier = robotTranslationSupplier;
     this.overrideSupplier = overrideSupplier;
+    this.driverRightBumperSupplier = driverRightBumperSupplier;
     this.drivetrain = drivetrain;
     this.heading = heading;
     this.vision = vision;
@@ -64,6 +66,17 @@ public class HeadingToTargetCommand extends CommandBase {
       Rotation2d desiredRotation =  drivetrain.getGyroscopeRotation()
         .plus(Rotation2d.fromDegrees(towardsCenterDegrees));
       heading.setMaintainHeading(desiredRotation);
+    } else if (driverRightBumperSupplier.get()) {
+      if (firstTime) {
+        heading.enableMaintainHeading();
+        firstTime = false;
+        heading.changePValue(false);
+      }
+      PolarCoordinate coordinate = getRobotCoordinate();
+
+      heading.setMaintainHeading(
+          coordinate.getTheta()
+        );
     } else {
       if (!firstTime) {
         firstTime = true;
@@ -73,8 +86,8 @@ public class HeadingToTargetCommand extends CommandBase {
       // The angle is the angle outward from our center point. In order to face our center
       // point, we need to rotate our angle by 180 degrees.
       heading.setMaintainHeading(
-        coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180))
-      );
+          coordinate.getTheta().rotateBy(Rotation2d.fromDegrees(180))
+        );
     }
   }
 }

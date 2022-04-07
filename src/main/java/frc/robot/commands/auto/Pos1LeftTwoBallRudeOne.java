@@ -9,9 +9,7 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.kicker.StartKicker;
 import frc.robot.commands.shooter.StartShooterInstantCommand;
-import frc.robot.commands.swerve.MaintainHeadingCommand;
 import frc.robot.subsystems.AutoDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Heading;
@@ -33,7 +31,7 @@ public class Pos1LeftTwoBallRudeOne extends SequentialCommandGroup {
       ),
       new ProfiledPointToPointCommand(Constants.Auto.kBallD1Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
       new WaitCommand(0.25),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallD1RunOver, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(1),
       new WaitCommand(0.25),
       new StartShooterInstantCommand(15, shooter),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
