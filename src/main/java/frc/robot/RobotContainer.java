@@ -292,7 +292,7 @@ public class RobotContainer {
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
-    yellowSwitch.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
+    yellowSwitch.whileHeld(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber).andThen(new ClimberSetpointCommand(climber.MID_RUNG, climber)));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
