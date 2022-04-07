@@ -89,8 +89,9 @@ public class PhotonVision extends SubsystemBase  {
       (targetCorners.get(0).x + targetCorners.get(2).x) / 2 : //If so, the first and third can be presumed to be unique. Use those
       (targetCorners.get(0).x + targetCorners.get(1).x) / 2   //Otherwise, resort to using the first two, which are different.
     );//If you don't like ternary, I can switch this out for a more readable if-statement
-
-    /* ArrayList<Double> ballXValues = new ArrayList<Double>();
+    
+    /*
+     ArrayList<Double> ballXValues = new ArrayList<Double>();
     for (int i = 0; i < 4; i++) {
       //Get the point, start a count
       double point = Math.abs(targetCorners.get(i).x);

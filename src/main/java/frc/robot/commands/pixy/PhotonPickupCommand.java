@@ -190,11 +190,12 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
     );
     double straffedOutput = strafeOutput;
     SmartDashboard.putNumber("Strafe Output", straffedOutput);
-    strafeOutput = 0;
+    //strafeOutput = 0;
   }
 
   @Override
   public void end(boolean interrupted) {
+    strafeOutput = 0;
     targetX = null;
     autoDrive.clearDelegate();
     // intake.stop();
