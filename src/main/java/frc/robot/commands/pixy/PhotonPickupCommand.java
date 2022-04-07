@@ -17,6 +17,7 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PhotonVision;
 import frc.robot.subsystems.AutoDrive;
+import frc.robot.subsystems.Intake;
 
 public class PhotonPickupCommand extends CommandBase implements AutoDrivableCommand {
 
