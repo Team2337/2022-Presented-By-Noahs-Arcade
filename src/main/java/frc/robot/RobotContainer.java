@@ -81,6 +81,7 @@ public class RobotContainer {
         new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, driverRightBumper::get, drivetrain, heading, vision));
     LED.setDefaultCommand(new LEDRunnable(LED, this));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
+    climber.setDefaultCommand(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -329,9 +330,9 @@ public class RobotContainer {
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
     operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
 
-    yellowSwitch.whenHeld(new ClimberSetpointWithTimeout(climber.MID_RUNG, climber).withTimeout(2.5));
-    yellowButton.whileHeld(new ClimberDrive(0.1, drivetrain::getGyroscopeRoll, operatorStation, climber));
-    blueButton.whileHeld(new ClimberDrive(-0.1, drivetrain::getGyroscopeRoll, operatorStation, climber));
+    // yellowSwitch.whenHeld(new ClimberSetpointWithTimeout(climber.MID_RUNG, climber).withTimeout(2.5));
+    yellowButton.whileHeld(new ClimberDrive(1.0, drivetrain::getGyroscopeRoll, operatorStation, climber));
+    blueButton.whileHeld(new ClimberDrive(-1.0, drivetrain::getGyroscopeRoll, operatorStation, climber));
 
     operatorB.whileHeld(new DeliveryOverrideCommand(operatorController, delivery));
 
