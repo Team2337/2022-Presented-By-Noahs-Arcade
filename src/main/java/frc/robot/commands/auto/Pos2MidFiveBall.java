@@ -29,8 +29,8 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
         new ForwardKickerCommand(kicker).withTimeout(0.75),
         new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
       ),
-      new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation, intake::getBeamBreakSensorStatus,1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(2.5),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, intake::getBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(1.5),
+      new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus,1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(2.5),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(1.5),
       new StartShooterInstantCommand(43, shooter),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getTranslation, 1.5, 0.01, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
@@ -43,7 +43,7 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
       new ProfiledPointToPointCommand(Constants.Auto.kBallR3MidPickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(1),
       new WaitCommand(0.25),
       new StartShooterInstantCommand(42, shooter),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, intake::getBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(45), 6, true, autoDrive, heading).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(45), 6, true, autoDrive, heading).withTimeout(1),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(2),
         new AutoStartDelivery(delivery).withTimeout(1)

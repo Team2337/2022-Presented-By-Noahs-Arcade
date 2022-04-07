@@ -25,7 +25,7 @@ public class FirstMove extends SequentialCommandGroup {
       new StartShooterInstantCommand(42, shooter),
       new ParallelCommandGroup(
         new AutoStartIntake(intake),
-        new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, intake::getBeamBreakSensorStatus, forwardP, strafeP, forwardAcceleration, strafeAcceleration, false, autoDrive, heading).withTimeout(2)
+        new ProfiledPointToPointCommand(pickupLocation, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, forwardP, strafeP, forwardAcceleration, strafeAcceleration, true, autoDrive, heading).withTimeout(2)
         )
     );
   }

@@ -120,7 +120,7 @@ public class RobotContainer {
     autonChooser.addOption("Pos3 Right Five Ball Cheeseball",
         new Pos3RightFiveBallv3(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
-    autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading, kicker, shooter));
+    autonChooser.addOption("Test", new Test(autoDrive, delivery, drivetrain, heading, intake, kicker, shooter));
 
     SmartDashboard.putData("AutonChooser", autonChooser);
 

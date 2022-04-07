@@ -32,7 +32,7 @@ public class Pos1LeftTwoBallRudeTwo extends SequentialCommandGroup {
       ),
       new ProfiledPointToPointCommand(Constants.Auto.kBallD1Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
       new WaitCommand(0.25),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallD1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallD1RunOver, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(1),
       new WaitCommand(0.25),
       new StartShooterInstantCommand(15, shooter),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR1RunOver, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1),
