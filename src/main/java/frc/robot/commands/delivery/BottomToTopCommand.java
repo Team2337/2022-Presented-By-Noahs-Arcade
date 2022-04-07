@@ -14,15 +14,13 @@ import frc.robot.subsystems.Delivery.Direction;
 public class BottomToTopCommand extends CommandBase {
 
   private final Delivery delivery;
-  private final XboxController driverController;
 
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
 
-  public BottomToTopCommand(XboxController driverController, Delivery delivery){
-    this.driverController = driverController;
+  public BottomToTopCommand(Delivery delivery){
     this.delivery = delivery;
 
     addRequirements(delivery);
@@ -33,10 +31,6 @@ public class BottomToTopCommand extends CommandBase {
     isFinished = false;
     waitForBallFlag = false;
     direction = Direction.CLOCKWISE;
-
-    // Rumble the joystick if a ball has triggered the intake sensor. Takes a value of 0 to 1 as a percentage of 65535.
-    driverController.setRumble(RumbleType.kLeftRumble, 1);
-    driverController.setRumble(RumbleType.kRightRumble, 1);
 
     if (direction == null) {
       isFinished = true;
@@ -65,8 +59,6 @@ public class BottomToTopCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    driverController.setRumble(RumbleType.kLeftRumble, 0);
-    driverController.setRumble(RumbleType.kRightRumble, 0);
     delivery.stop();
   }
 

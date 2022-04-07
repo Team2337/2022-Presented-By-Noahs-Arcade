@@ -28,7 +28,7 @@ public class Pos1LeftFourBall extends SequentialCommandGroup {
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
       new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR1AndBallR4, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR4PickupForLeftStart, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(4),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR4PickupForLeftStart, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(4),
       new WaitCommand(0.25),
       new ParallelCommandGroup(
         new ProfiledPointToPointCommand(Constants.Auto.kFiveBallShootPosition, drivetrain::getTranslation, 1.5, 0.01, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(3),

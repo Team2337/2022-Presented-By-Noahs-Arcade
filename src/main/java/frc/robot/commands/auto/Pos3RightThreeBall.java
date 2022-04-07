@@ -32,7 +32,7 @@ public class Pos3RightThreeBall extends SequentialCommandGroup {
       new StartShooterInstantCommand(39, shooter),
       new WaitCommand(1),
       new ForwardKickerCommand(kicker).withTimeout(0.5),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(2),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(45), 8, true, autoDrive, heading).withTimeout(2),
       new StartShooterInstantCommand(42, shooter),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(1.5),
