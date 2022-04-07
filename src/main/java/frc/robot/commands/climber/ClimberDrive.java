@@ -3,28 +3,32 @@ package frc.robot.commands.climber;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
-import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.Climber;
 
-public class ClimberJoystickCommand extends CommandBase {
-
+/**
+ * This command runs the climber to a setpoint using FalconFX encoders.
+ * @author Nicholas S
+ */
+public class ClimberDrive extends CommandBase {
   private final Climber climber;
-  private final XboxController controller;
+  private double speed;
+  private boolean shouldHoldPositionWhenStopped = true;
   private final NerdyOperatorStation operatorStation;
   private final Supplier<Rotation2d> rollSupplier;
 
-  private boolean shouldHoldPositionWhenStopped = true;
-
-  public ClimberJoystickCommand(Supplier<Rotation2d> rollSupplier, XboxController controller, NerdyOperatorStation operatorStation, Climber climber) {
+  /**
+   * 
+   * @param setpoint
+   * @param climber
+   */
+  public ClimberDrive(double speed, Supplier<Rotation2d> rollSupplier, NerdyOperatorStation operatorStation, Climber climber) {
     this.climber = climber;
-    this.controller = controller;
-    this.operatorStation = operatorStation;
+    this.speed = speed;
     this.rollSupplier = rollSupplier;
-
+    this.operatorStation = operatorStation;
     addRequirements(climber);
   }
 
@@ -37,8 +41,7 @@ public class ClimberJoystickCommand extends CommandBase {
   public void execute() {
     // Deadband makes sure slight inaccuracies in the controller does not make the
     // controller move if it isn't touched
-    double output = Utilities.deadband(controller.getRightY(), 0.15);
-    if (output == 0) {
+    if (speed == 0) {
       // If our joystick is not being moved, hold our climber in it's current position
       if (shouldHoldPositionWhenStopped) {
         climber.hold();
@@ -48,11 +51,13 @@ public class ClimberJoystickCommand extends CommandBase {
       if (climber.getStringPotVoltage() > 2.8 && !operatorStation.blackSwitch.get()) {
         climber.releaseServos();
       }
-      if (((output > 0) && (rollSupplier.get().getDegrees() > Constants.CLIMBER_ROLL) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
-        output = 0;
-      } 
+      if (((speed > 0) && (rollSupplier.get().getDegrees() > Constants.CLIMBER_ROLL) && ((climber.getStringPotVoltage() < 2.0) && (climber.getStringPotVoltage() > 1.59))) && operatorStation.blueSwitch.get()) {
+        speed = 0;
+      }
       if (operatorStation.yellowSwitch.get()) {
-        climber.setSpeed(output);
+        climber.setSpeed(speed);
+      } else {
+        climber.setSpeed(0);
       }
       shouldHoldPositionWhenStopped = true;
     }
@@ -67,5 +72,4 @@ public class ClimberJoystickCommand extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-
 }

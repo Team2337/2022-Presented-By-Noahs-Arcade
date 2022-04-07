@@ -47,7 +47,7 @@ public class Climber extends SubsystemBase {
   public final double START = 0.59;
   public final double TRAVEL_LOCATION = 1.0;
   public final double LOW_RUNG = 100000;
-  public final double MID_RUNG = 2.5;
+  public final double MID_RUNG = 3.0;
   public final double RICKABOOT = 1.4; // 1.65 Stringpot
 
   private static final double MAX_UP_SPEED = 1.0;
