@@ -61,7 +61,7 @@ public final class Constants {
 
   public static final class DashboardLogging {
     public static final boolean CLIMBER = false;
-    public static final boolean DELIVERY = false;
+    public static final boolean DELIVERY = true;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
     public static final boolean INTAKE = false;
@@ -513,7 +513,7 @@ public final class Constants {
 
   public static final double VISION_OFFSET = 0;
 
-  public static final double CLIMBER_ROLL = 15;
+  public static final double CLIMBER_ROLL = 22;
 
   public static enum BallColor {
     RED,

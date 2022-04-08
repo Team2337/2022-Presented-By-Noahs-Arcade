@@ -46,7 +46,7 @@ public class Delivery extends SubsystemBase {
   );
 
   // Color sensors
-  // private final PicoColorSensors colorSensors = new PicoColorSensors();
+  private final PicoColorSensors colorSensors = new PicoColorSensors();
   
   private final DigitalInput ballCenteringSensor = new DigitalInput(Constants.getInstance().CENTERING_BEAM_ID);
 
@@ -98,7 +98,6 @@ public class Delivery extends SubsystemBase {
         "Top: "    + String.valueOf(storedBalls[Slot.TOP.value]),
         "Left: "   + String.valueOf(storedBalls[Slot.LEFT.value])
       });
-      /*
       sensorsWidget.addStringArray("Color sensors", () -> new String[]{
         "Left: " + String.valueOf(colorSensors.getLeftSensorBallColor()),
         "Right: " + String.valueOf(colorSensors.getRightSensorBallColor())
@@ -107,7 +106,6 @@ public class Delivery extends SubsystemBase {
         "Left: " + String.valueOf(colorSensors.leftSensorSeesBall()),
         "Right: " + String.valueOf(colorSensors.rightSensorSeesBall())
       });
-      */
       sensorsWidget.addStringArray("Other sensors", () -> new String[]{
         "Centering Sensor: "   + getCenteringSensorStatus()
       });
@@ -332,7 +330,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the left sensor sees a ball.
    */
   public boolean getLeftColorSensorStatus() {
-    return false; // colorSensors.leftSensorSeesBall();
+    return colorSensors.leftSensorSeesBall();
   }
 
   /**
@@ -348,7 +346,7 @@ public class Delivery extends SubsystemBase {
    * @return The color the left sensor sees
    */
   public BallColor getLeftColorSensorValue() {
-    return null; // colorSensors.getLeftSensorBallColor();
+    return colorSensors.getLeftSensorBallColor();
   }
 
   /**
