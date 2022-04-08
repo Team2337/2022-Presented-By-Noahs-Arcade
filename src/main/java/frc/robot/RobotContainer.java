@@ -351,7 +351,7 @@ public class RobotContainer {
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery, kicker));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
     shootTrigger.whenActive(new Shoot(delivery, kicker)); // operatorRightBumper.whileHeld(new

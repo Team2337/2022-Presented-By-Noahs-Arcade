@@ -3,7 +3,9 @@ package frc.robot.commands.delivery;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Delivery.Direction;
 
 /**
@@ -14,16 +16,17 @@ import frc.robot.subsystems.Delivery.Direction;
 public class BottomToTopCommand extends CommandBase {
 
   private final Delivery delivery;
-
+  private final Kicker kicker;
   private Direction direction;
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
   private Supplier<Boolean> isUpToSpeed;
 
-  public BottomToTopCommand(Supplier<Boolean> isUpToSpeed, Delivery delivery) {
+  public BottomToTopCommand(Supplier<Boolean> isUpToSpeed, Delivery delivery, Kicker kicker) {
     this.isUpToSpeed = isUpToSpeed;
     this.delivery = delivery;
+    this.kicker = kicker;
 
     addRequirements(delivery);
   }
@@ -43,6 +46,7 @@ public class BottomToTopCommand extends CommandBase {
     if (isUpToSpeed.get()) {
       delivery.start(direction);
     }
+    kicker.setSpeed(-0.2);
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 
@@ -56,19 +60,20 @@ public class BottomToTopCommand extends CommandBase {
     if (waitForBallFlag) {
       waitForBallFlag = delivery.isBallInTopSlot();
     } else {
-      // We're finished when either of the sensors returns true
-      isFinished = delivery.isBallInTopSlot();
+      // We're finished when ball is in top slot and color matches alliance color
+      isFinished = delivery.isBallInTopSlot() && (delivery.getLeftColorSensorValue() == Constants.BallColor.getAllianceColor());
     }
   }
 
   @Override
   public void end(boolean interrupted) {
+    kicker.stop();
     delivery.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return delivery.isBallInTopSlot();
+    return isFinished;
   }
 
 }

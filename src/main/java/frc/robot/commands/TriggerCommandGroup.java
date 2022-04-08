@@ -6,13 +6,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.delivery.BottomToTopCommand;
 import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Kicker;
 
 public class TriggerCommandGroup extends ParallelCommandGroup {
 
-  public TriggerCommandGroup(Supplier<Boolean> isUpToSpeed, XboxController controller, Delivery delivery) {
+  public TriggerCommandGroup(Supplier<Boolean> isUpToSpeed, XboxController controller, Delivery delivery, Kicker kicker) {
     addCommands(
       new Rumble(controller).withTimeout(0.5),
-      new BottomToTopCommand(isUpToSpeed, delivery)
+      new BottomToTopCommand(isUpToSpeed, delivery, kicker)
     );
   }
 
