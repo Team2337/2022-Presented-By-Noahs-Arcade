@@ -179,7 +179,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
     double scaledOutput = output / (((frameCenter / MAX_SPEED_HALF_FRAME_SCALE) * strafeController.getP()));
     // Square our output so we more quickly ramp to zero as we approach the center of our frame.
     strafeOutput = Utilities.squareValues(scaledOutput) * MAX_STRAFE_OUTPUT;
-
+    strafeOutput = strafeOutput * 2.5;
     // Negative since our Pixy cam is on the back of our robot. Our
     // side-to-side values need to be inverted, since our side-to-side
     // values are relative to the front of the robot
