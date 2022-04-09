@@ -12,7 +12,7 @@ public class TriggerCommandGroup extends ParallelCommandGroup {
   public TriggerCommandGroup(Supplier<Boolean> isUpToSpeed, XboxController controller, Delivery delivery) {
     addCommands(
       new Rumble(controller).withTimeout(0.5),
-      new BottomToTopCommand(isUpToSpeed, delivery)
+      new BottomToTopCommand(delivery)
     );
   }
 

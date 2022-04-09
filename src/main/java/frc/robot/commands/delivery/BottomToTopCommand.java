@@ -19,10 +19,9 @@ public class BottomToTopCommand extends CommandBase {
   private boolean isFinished;
   /** True if there is a ball there and we need to wait for it to move before checking to stop */
   private boolean waitForBallFlag;
-  private Supplier<Boolean> isUpToSpeed;
 
-  public BottomToTopCommand(Supplier<Boolean> isUpToSpeed, Delivery delivery) {
-    this.isUpToSpeed = isUpToSpeed;
+  public BottomToTopCommand(Delivery delivery) {
+
     this.delivery = delivery;
 
     addRequirements(delivery);
@@ -40,9 +39,7 @@ public class BottomToTopCommand extends CommandBase {
     }
 
     // Check if we need to move ball before checking to stop and start the motor
-    if (isUpToSpeed.get()) {
       delivery.start(direction);
-    }
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 

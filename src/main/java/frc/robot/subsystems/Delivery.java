@@ -5,6 +5,7 @@ import java.util.Map;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,6 +64,8 @@ public class Delivery extends SubsystemBase {
 
   private int balls = 0;
 
+  private String alliance;
+
   /**
    * Initializes the Delivery subsystem.
    */
@@ -75,6 +78,20 @@ public class Delivery extends SubsystemBase {
     motor.configStatorCurrentLimit(CTREUtils.defaultCurrentLimit(), 0);
 
     setupShuffleboard(Constants.DashboardLogging.DELIVERY);
+
+    switch (DriverStation.getAlliance()) {
+      default:
+      case Red:
+        // If alliance is red, prioritize red targets if they are there;
+        // otherwise get blue targets
+        alliance = "Red";
+        break;
+      case Blue:
+        // If alliance is blue, prioritize blue targets if they are there;
+        // otherwise get red targets
+        alliance = "Blue";
+        break;
+      }
   }
 
   private void setupShuffleboard(Boolean logEnable) {
@@ -137,6 +154,11 @@ public class Delivery extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Centering Sensor Status", getCenteringSensorStatus());
+    SmartDashboard.putString("Left Ball Color", getLeftColorSensorAllianceBallColor());
+    SmartDashboard.putString("Left Color Raw", colorSensors.getColor0());
+    SmartDashboard.putString("Right Color Raw", colorSensors.getColor1());
+    int val = colorSensors.getLeftSensorBallColor() == BallColor.Red ? 1 : (colorSensors.getLeftSensorBallColor() == BallColor.Blue ? 2 : 0);
+    SmartDashboard.putNumber("Left Color Graph", val);
   }
 
 
@@ -338,7 +360,7 @@ public class Delivery extends SubsystemBase {
    * @return Whether or not the right sensor sees a ball.
    */
   public boolean getRightColorSensorStatus() {
-    return false; // colorSensors.rightSensorSeesBall();
+    return colorSensors.rightSensorSeesBall();
   }
 
   /**
@@ -354,9 +376,26 @@ public class Delivery extends SubsystemBase {
    * @return The color the right sensor sees.
    */
   public BallColor getRightColorSensorValue() {
-    return null; // colorSensors.getRightSensorBallColor();
+    return colorSensors.getRightSensorBallColor();
   }
 
+  public String getLeftColorSensorAllianceBallColor() {
+    BallColor incoming = colorSensors.getLeftSensorBallColor();
+    if (incoming != null) {
+      return String.valueOf(incoming);
+    } else {
+      return "null";
+    }
+  }
+
+  public String getRightColorSensorAllianceBallColor() {
+    BallColor incoming = colorSensors.getRightSensorBallColor();
+    if (incoming != null) {
+      return String.valueOf(incoming);
+    } else {
+      return "null";
+    }
+  }
 
   //////////////////////////////////
   // ---------------------------- //

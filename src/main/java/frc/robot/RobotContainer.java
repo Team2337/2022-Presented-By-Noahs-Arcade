@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.BallColor;
@@ -34,6 +35,10 @@ import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
+import frc.robot.commands.shooter.PerpetualBloopOperatorLinearShoot;
+import frc.robot.commands.shooter.PerpetualBloopShoot;
+import frc.robot.commands.shooter.PerpetualConditionalBloopShoot;
+import frc.robot.commands.shooter.PerpetualShoot;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.StartStopShooterCommand;
@@ -161,7 +166,7 @@ public class RobotContainer {
             DriverDashboardPositions.STARTING_ANGLE_CHOOSER.height);
 
     // Put alliance on driver dashboard
-    Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.RED)
+    Constants.DRIVER_DASHBOARD.addBoolean("Alliance", () -> BallColor.getAllianceColor() == BallColor.Red)
         .withPosition(DriverDashboardPositions.ALLIANCE.x, DriverDashboardPositions.ALLIANCE.y)
         .withSize(3, 3)
         .withProperties(Map.of("Color when true", "#ff3333", "Color when false", "#3333ff"));
@@ -352,16 +357,10 @@ public class RobotContainer {
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
-    shootTrigger.whenActive(new Shoot(delivery, kicker)); // operatorRightBumper.whileHeld(new
-                                                          // PixyPickupCommand(PickupStrategy.RED, autoDrive, intake,
-                                                          // pixyCam));
-    // operatorLeftBumper.whileHeld(new PixyPickupCommand(PickupStrategy.BLUE,
-    // autoDrive, intake, pixyCam));
-    // operatorRightLeftBumper.whenActive(new PixyPickupCommand(PickupStrategy.ANY,
-    // autoDrive, intake, pixyCam));
+    shootTrigger.whenActive(new PerpetualBloopShoot(climber, delivery, kicker));
   }
 
   public boolean robotLinedUp() {
@@ -374,8 +373,6 @@ public class RobotContainer {
         && hasActiveTarget()
         && isShooterUpToLEDSpeed()
         && !drivetrain.isMoving()
-        // && (Utilities.deadband(driverController.getRightY(), 0.15) == 0)
-        // && (Utilities.deadband(driverController.getRightX(), 0.15) == 0)
         && operatorController.getRightBumper()
         && operatorController.getLeftBumper());
   }

@@ -61,7 +61,7 @@ public final class Constants {
 
   public static final class DashboardLogging {
     public static final boolean CLIMBER = false;
-    public static final boolean DELIVERY = false;
+    public static final boolean DELIVERY = true;
     public static final boolean DRIVETRAIN = false;
     public static final boolean HEADING = false;
     public static final boolean INTAKE = false;
@@ -516,17 +516,17 @@ public final class Constants {
   public static final double CLIMBER_ROLL = 22;
 
   public static enum BallColor {
-    RED,
-    BLUE,
+    Red,
+    Blue,
     UNKNOWN;
 
     public static BallColor getAllianceColor() {
       // If we're blue, return blue. Otherwise default to red (if red or invalid).
-      return DriverStation.getAlliance() == Alliance.Blue ? BLUE : RED;
+      return DriverStation.getAlliance() == Alliance.Blue ? Blue : Red;
     }
     public static BallColor getOpposingColor() {
       // The inverse of getAllianceColor
-      return DriverStation.getAlliance() == Alliance.Blue ? RED : BLUE;
+      return DriverStation.getAlliance() == Alliance.Blue ? Red : Blue;
     }
   }
 
