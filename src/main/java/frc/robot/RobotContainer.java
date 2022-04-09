@@ -326,7 +326,7 @@ public class RobotContainer {
 
     operatorRightStick.whileHeld(new LimelightHeadingAndInstantRelocalizeCommand(drivetrain, heading, vision));
     operatorLeftStick.whenPressed(new ClimberSetpointCommand(climber.RICKABOOT, climber));
-    operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber));
+    operatorLeftStick.whenReleased(new ClimberSetpointCommand(climber.TRAVEL_LOCATION, climber).withTimeout(1));
 
     // yellowSwitch.whenHeld(new ClimberSetpointWithTimeout(climber.MID_RUNG, climber).withTimeout(2.5));
     yellowButton.whileHeld(new ClimberDrive(1.0, drivetrain::getGyroscopeRoll, operatorStation, climber));
@@ -351,7 +351,7 @@ public class RobotContainer {
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(driverController, delivery));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
     shootTrigger.whenActive(new Shoot(delivery, kicker)); // operatorRightBumper.whileHeld(new
