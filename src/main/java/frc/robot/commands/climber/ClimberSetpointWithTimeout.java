@@ -7,7 +7,7 @@ import frc.robot.subsystems.Climber;
  * This command runs the climber to a setpoint using FalconFX encoders.
  * @author Nicholas S
  */
-public class ClimberSetpointCommand extends CommandBase {
+public class ClimberSetpointWithTimeout extends CommandBase {
   private final Climber climber;
   private double setpoint;
 
@@ -16,7 +16,7 @@ public class ClimberSetpointCommand extends CommandBase {
    * @param setpoint
    * @param climber
    */
-  public ClimberSetpointCommand(double setpoint, Climber climber) {
+  public ClimberSetpointWithTimeout(double setpoint, Climber climber) {
     this.climber = climber;
     this.setpoint = setpoint;
     addRequirements(climber);
