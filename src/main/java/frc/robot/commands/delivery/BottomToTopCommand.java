@@ -3,6 +3,7 @@ package frc.robot.commands.delivery;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.Delivery.Direction;
 
@@ -39,7 +40,7 @@ public class BottomToTopCommand extends CommandBase {
     }
 
     // Check if we need to move ball before checking to stop and start the motor
-      delivery.start(direction);
+    delivery.start(Constants.BOTTOM_TO_TOP_SPEED, direction);
     waitForBallFlag = delivery.isBallInTopSlot();
   }
 

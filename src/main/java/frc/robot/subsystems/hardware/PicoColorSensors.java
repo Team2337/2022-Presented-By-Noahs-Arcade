@@ -19,7 +19,7 @@ public class PicoColorSensors {
   private final PicoCommunicator pico = new PicoCommunicator();
 
   // Proximity where ball is roughly 2 inches away from sensor
-  private final int PROXIMITY_THRESHOLD = 325; // TODO: tune me
+  private final int PROXIMITY_THRESHOLD = 315; // TODO: tune me
 
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
