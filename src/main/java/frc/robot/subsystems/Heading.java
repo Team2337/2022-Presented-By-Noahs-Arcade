@@ -23,12 +23,12 @@ public class Heading extends SubsystemBase {
 
   private static double NOMINAL_OUTPUT_STATIONARY = 0.06;
   private static double NOMINAL_OUTPUT_MOVING = 0.03;
-  private static double VISION_NOMINAL_OUTPUT_STATIONARY = 0.2;
+  private static double VISION_NOMINAL_OUTPUT_STATIONARY = 0.1;
 
   private static double P_MOVING = 0.005;
   private static double P_STATIONARY = 0.007;
   private static double visionPValue = 0.009;
-  private static double visionDValue = 0.001;
+  private static double visionDValue = 0.0; // 0.001;
 
   private boolean visionP = false;
 
