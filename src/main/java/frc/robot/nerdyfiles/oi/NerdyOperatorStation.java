@@ -34,6 +34,9 @@ public class NerdyOperatorStation extends Joystick {
   public JoystickButton  blueSwitch   = new JoystickButton(this, 5);
   public JoystickButton  blackSwitch  = new JoystickButton(this, 6);
 
+  public JoystickButton redLeftSwitch = new JoystickButton(this, 11);
+  public JoystickButton redRightSwitch = new JoystickButton(this, 12);
+
   public boolean isClearSwitchOn() {
     return this.clearSwitch.get();
   }
@@ -48,5 +51,13 @@ public class NerdyOperatorStation extends Joystick {
 
   public boolean isBlueSwitchOn() {
     return this.blueSwitch.get();
+  }
+
+  public boolean isRedLeftSwitchOn() {
+    return this.redLeftSwitch.get();
+  }
+
+  public boolean isRedRightSwitchOn() {
+    return this.redRightSwitch.get();
   }
 }

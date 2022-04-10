@@ -518,17 +518,17 @@ public final class Constants {
   public static final double CLIMBER_ROLL = 15;
 
   public static enum BallColor {
-    RED,
-    BLUE,
+    Red,
+    Blue,
     UNKNOWN;
 
     public static BallColor getAllianceColor() {
       // If we're blue, return blue. Otherwise default to red (if red or invalid).
-      return DriverStation.getAlliance() == Alliance.Blue ? BLUE : RED;
+      return DriverStation.getAlliance() == Alliance.Blue ? Blue : Red;
     }
     public static BallColor getOpposingColor() {
       // The inverse of getAllianceColor
-      return DriverStation.getAlliance() == Alliance.Blue ? RED : BLUE;
+      return DriverStation.getAlliance() == Alliance.Blue ? Red : Blue;
     }
   }
 

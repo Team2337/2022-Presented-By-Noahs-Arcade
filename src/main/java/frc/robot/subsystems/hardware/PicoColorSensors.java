@@ -3,6 +3,7 @@ package frc.robot.subsystems.hardware;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.BallColor;
 import frc.robot.subsystems.hardware.PicoCommunicator.RawColor;
@@ -14,16 +15,16 @@ import frc.robot.subsystems.hardware.PicoCommunicator.RawColor;
  */
 public class PicoColorSensors {
 
-  // Proximity where ball is roughly 2 inches away from sensor
-  private final int PROXIMITY_THRESHOLD = 300; // TODO: tune me
-
   // Class to abstract
   private final PicoCommunicator pico = new PicoCommunicator();
 
+  // Proximity where ball is roughly 2 inches away from sensor
+  private final int PROXIMITY_THRESHOLD = 325; // TODO: tune me
+
   // Color matches
   private final ColorMatch colorMatcher = new ColorMatch();
-  private static final Color kMatchRed  = new Color(0.275, 0.45, 0.275);
-  private static final Color kMatchBlue = new Color(0.25, 0.45, 0.3);
+  private static final Color kMatchRed  = new Color(0.4, 0.2, 0.4);
+  private static final Color kMatchBlue = new Color(0.25, 0.3, 0.45);
 
   public PicoColorSensors() {
     // Set up color matching
@@ -55,10 +56,10 @@ public class PicoColorSensors {
 
     if (match.color == kMatchRed) {
       // Red ball
-      return BallColor.RED;
+      return BallColor.Red;
     } else if (match.color == kMatchBlue) {
       // Blue ball
-      return BallColor.BLUE;
+      return BallColor.Blue;
     }
     // We shouldn't be here, but just in case, return null.
     return null;
@@ -68,6 +69,7 @@ public class PicoColorSensors {
    * @return The BallColor of what the left sensor sees or null if it doesn't see anything
    */
   public BallColor getLeftSensorBallColor() {
+    SmartDashboard.putNumber("Left Proximity", pico.getProximity0());
     if (!leftSensorSeesBall()) {
       return null;
     }
@@ -110,6 +112,16 @@ public class PicoColorSensors {
    */
   public boolean rightSensorIsConnected() {
     return pico.isSensor1Connected();
+  }
+
+  // TODO: these are testing functions, remove after
+  public String getColor0(){
+    Color test = rawColorToColor(pico.getRawColor0());
+    return test.red + ", " + test.green + ", " + test.blue;
+  }
+  public String getColor1(){
+    Color test = rawColorToColor(pico.getRawColor1());
+    return test.red + ", " + test.green + ", " + test.blue;
   }
 
 }
