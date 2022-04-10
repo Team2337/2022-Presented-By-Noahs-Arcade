@@ -28,8 +28,8 @@ import frc.robot.commands.climber.ClimberJoystickCommand;
 import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
-import frc.robot.commands.pixy.PixyPickupCommand;
-import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
+import frc.robot.commands.pixy.PhotonPickupCommand;
+import frc.robot.commands.pixy.PhotonPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -44,6 +44,7 @@ import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
+import frc.robot.subsystems.hardware.PhotonVision;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -63,6 +64,7 @@ public class RobotContainer {
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
   private final LED LED = new LED();
   private final PixyCam pixyCam = new PixyCam();
+  private final PhotonVision photonVision = new PhotonVision();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
@@ -316,10 +318,8 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whileHeld(new PixyPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, pixyCam));
-    operatorBack.whileHeld(new PixyPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation,
-        driverController, autoDrive, pixyCam));
+    operatorStart.whileHeld(new PhotonPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
+    operatorBack.whileHeld(new PhotonPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
 
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
