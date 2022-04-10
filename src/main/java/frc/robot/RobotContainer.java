@@ -34,6 +34,7 @@ import frc.robot.commands.pixy.PixyPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
+import frc.robot.commands.shooter.ConditionalAutomaticShoot;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
 import frc.robot.commands.shooter.PerpetualBloopOperatorLinearShoot;
 import frc.robot.commands.shooter.PerpetualBloopShoot;
@@ -312,6 +313,7 @@ public class RobotContainer {
     JoystickButton yellowSwitch = new JoystickButton(operatorStation, 4);
     JoystickButton yellowButton = new JoystickButton(operatorStation, 8);
     JoystickButton blueButton = new JoystickButton(operatorStation, 9);
+    JoystickButton redSwitchRight = new JoystickButton(operatorStation, 10);
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
@@ -354,13 +356,15 @@ public class RobotContainer {
   }
 
   public void configureButtonBindingsTeleop() {
+    JoystickButton redSwitchLeft = new JoystickButton(operatorStation, 7);
+
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(redSwitchLeft::get, climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
-    shootTrigger.whenActive(new PerpetualBloopShoot(climber, delivery, kicker));
+    shootTrigger.whenActive(new ConditionalAutomaticShoot(redSwitchLeft::get, climber, delivery, kicker, shooter));
   }
 
   public boolean robotLinedUp() {
@@ -374,7 +378,8 @@ public class RobotContainer {
         && isShooterUpToLEDSpeed()
         && !drivetrain.isMoving()
         && operatorController.getRightBumper()
-        && operatorController.getLeftBumper());
+        && operatorController.getLeftBumper())
+        && !operatorStation.redSwitchRight.get();
   }
 
   public Command getAutonomousCommand() {
@@ -455,10 +460,6 @@ public class RobotContainer {
 
   public void climberDisableBrakeMode() {
     climber.disableBrakeMode();
-  }
-
-  public boolean getBlackButtonStatus() {
-    return operatorStation.blackButton.get();
   }
 
   public boolean getOperatorRightTriggerStatus() {
