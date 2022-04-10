@@ -20,7 +20,8 @@ public class StartStopShooterDynamic extends CommandBase {
   private static final double kHighGoalSpeedFeetPerSecond = 38.5;
   private static final double kLaunchpadCloseSpeedFeetPerSecond = 47.5;
   // Modify to increase or decrease the speed of the shooter
-  private static double yInterceptModification = 49.8;
+  // private static double yInterceptModification = 49.8;
+  private static double yInterceptModification = 32.6;
 
   Double previousTime;
   PolarCoordinate previousRobotCoordinate;
@@ -49,7 +50,8 @@ public class StartStopShooterDynamic extends CommandBase {
       shooterSpeed = kHighGoalSpeedFeetPerSecond;
     } else {
       // shooterSpeed = yInterceptModification - 0.169 * distanceInches + 0.00108 * Math.pow(distanceInches, 2);
-      shooterSpeed = yInterceptModification - 0.219 * distanceInches + 0.00118 * Math.pow(distanceInches, 2);
+      // shooterSpeed = yInterceptModification - 0.219 * distanceInches + 0.00118 * Math.pow(distanceInches, 2);
+      shooterSpeed = yInterceptModification + 0.0402 * distanceInches + 0.000221 * Math.pow(distanceInches, 2);
     }
 
     SmartDashboard.putNumber("Shooter speed", shooterSpeed);
