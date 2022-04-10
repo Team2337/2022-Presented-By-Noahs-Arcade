@@ -17,14 +17,13 @@ import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
 import frc.robot.subsystems.hardware.PhotonVision;
 import frc.robot.subsystems.AutoDrive;
-import frc.robot.subsystems.Intake;
 
 public class PhotonPickupCommand extends CommandBase implements AutoDrivableCommand {
 
   /**
    * Whatever ball color we want to pick up. Red, blue, or any.
    */
-  public static enum PickuppStrategy {
+  public static enum PickupStrategy {
     RED,
     BLUE,
     ANY,
@@ -45,9 +44,8 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   private static final double MAX_STRAFE_OUTPUT = 0.5;
   private static final double LAST_SEEN_CYCLE_COUNTER_MAX = 50; // 1s
 
-  private final PickuppStrategy strategy;
+  private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
-  private final Intake intake;
   private final PhotonVision photonVision;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0); //P 0.0035
@@ -64,15 +62,14 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
 
   private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
 
-  public PhotonPickupCommand(PickuppStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, Intake intake, PhotonVision photonVision) {
+  public PhotonPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, PhotonVision photonVision) {
     this.strategy = strategy;
     this.gyroSupplier = gyroSupplier;
     this.driverController = driverController;
     this.autoDrive = autoDrive;
     this.photonVision = photonVision;
-    this.intake = intake;
 
-    addRequirements(autoDrive, intake);
+    addRequirements(autoDrive);
   }
 
   @Override
@@ -122,7 +119,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
       return;
     }
     //Add the pipelines to 
-    if (strategy == PickuppStrategy.OURS) {
+    if (strategy == PickupStrategy.OURS) {
       switch (DriverStation.getAlliance()) {
         default:
         case Red:
@@ -132,7 +129,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
           photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
           break;
         } 
-      } else if (strategy == PickuppStrategy.THEIRS) {
+      } else if (strategy == PickupStrategy.THEIRS) {
         switch (DriverStation.getAlliance()) {
           default:
           case Red:

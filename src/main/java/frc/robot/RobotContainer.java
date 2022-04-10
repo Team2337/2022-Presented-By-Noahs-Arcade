@@ -29,7 +29,7 @@ import frc.robot.commands.climber.ClimberSetpointCommand;
 import frc.robot.commands.delivery.DeliveryOverrideCommand;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.pixy.PhotonPickupCommand;
-import frc.robot.commands.pixy.PhotonPickupCommand.PickuppStrategy;
+import frc.robot.commands.pixy.PhotonPickupCommand.PickupStrategy;
 import frc.robot.commands.swerve.SwerveDriveCommand;
 import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
@@ -318,8 +318,8 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    operatorStart.whileHeld(new PhotonPickupCommand(PickuppStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, photonVision));
-    operatorBack.whileHeld(new PhotonPickupCommand(PickuppStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, intake, photonVision));
+    operatorStart.whileHeld(new PhotonPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
+    operatorBack.whileHeld(new PhotonPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
 
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
