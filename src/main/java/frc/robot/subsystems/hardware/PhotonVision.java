@@ -30,11 +30,11 @@ public class PhotonVision extends SubsystemBase  {
       corners = ball.getCorners();
       hasTarget = true;
       ballX = getXValue(corners);
+      SmartDashboard.putNumber("Photon X", ballX);
     } else {
       hasTarget = false;
       ballX = null;
     }
-    SmartDashboard.putNumber("Photon X", ballX);
   }
 
   public boolean hasTarget() {
