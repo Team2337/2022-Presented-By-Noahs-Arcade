@@ -1,6 +1,5 @@
 package frc.robot.commands.pixy;
 
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -11,15 +10,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.Vision;
 import frc.robot.commands.interfaces.AutoDrivableCommand;
 import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.nerdyfiles.utilities.Utilities;
 import frc.robot.subsystems.AutoDrive.State;
-import frc.robot.subsystems.hardware.PixyCam;
-import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
+import frc.robot.subsystems.hardware.PhotonVision;
 import frc.robot.subsystems.AutoDrive;
 
-public class PixyPickupCommand extends CommandBase implements AutoDrivableCommand {
+public class PhotonPickupCommand extends CommandBase implements AutoDrivableCommand {
 
   /**
    * Whatever ball color we want to pick up. Red, blue, or any.
@@ -47,11 +46,12 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
-    private final PixyCam pixyCam;
+  private final PhotonVision photonVision;
 
-  private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
+  private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0); //P 0.0035
 
-  private Block targetBall;
+  // private var targetBall;
+  private Double targetX = null;
   private int lastSeenCycleCounter = 0;
   private double strafeOutput = 0.0;
   private XboxController driverController;
@@ -62,20 +62,19 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
 
   private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
 
-  public PixyPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, PixyCam pixyCam) {
+  public PhotonPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, PhotonVision photonVision) {
     this.strategy = strategy;
     this.gyroSupplier = gyroSupplier;
     this.driverController = driverController;
     this.autoDrive = autoDrive;
-    this.pixyCam = pixyCam;
-    
+    this.photonVision = photonVision;
+
     addRequirements(autoDrive);
   }
 
   @Override
   public void initialize() {
     autoDrive.setDelegate(this);
-
     resetInternalState();
   }
 
@@ -84,6 +83,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     if (strategy != null) {
       strategyString = strategy.toString();
     }
+    SmartDashboard.putString("Target X", String.valueOf(targetX));
     SmartDashboard.putString("PixyPickup/Strategy", strategyString);
     SmartDashboard.putNumber("PixyPickup/Last Seen Counter", lastSeenCycleCounter);
     SmartDashboard.putNumber("PixyPickup/Strafe Output", strafeOutput);
@@ -91,7 +91,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
   }
 
   private void resetInternalState() {
-    targetBall = null;
+    targetX = null;
     lastSeenCycleCounter = 0;
     strafeOutput = 0.0;
 
@@ -115,99 +115,58 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
       spangle = 0;
     }
 
-    if (!pixyCam.isConnected()) {
-      return;
-    }
-
     if (strategy == null) {
       return;
     }
-
-    ArrayList<Block> blocks = pixyCam.getBlocks();
-
-    Block latestTargetBall = null;
-    if (strategy == PickupStrategy.RED) {
-      latestTargetBall = PixyCam.getLargestRedBlock(blocks);
-    } else if (strategy == PickupStrategy.BLUE) {
-      latestTargetBall = PixyCam.getLargestBlueBlock(blocks);
-    } else if (strategy == PickupStrategy.ANY) {
-      Block largestRed = PixyCam.getLargestRedBlock(blocks);
-      Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
+    //Add the pipelines to 
+    if (strategy == PickupStrategy.OURS) {
       switch (DriverStation.getAlliance()) {
         default:
         case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestRed == null ? largestBlue : largestRed;
+          photonVision.changePipeline(Vision.RED_PIPELINE_INDEX);
           break;
         case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestBlue == null ? largestRed : largestBlue;
+          photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
           break;
-        }
-      } else if (strategy == PickupStrategy.OURS) {
-        Block largestRed = PixyCam.getLargestRedBlock(blocks);
-        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
-      switch (DriverStation.getAlliance()) {
-        default:
-        case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestRed;
-          break;
-        case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestBlue;
-          break;
-        }
+        } 
       } else if (strategy == PickupStrategy.THEIRS) {
-        Block largestRed = PixyCam.getLargestRedBlock(blocks);
-        Block largestBlue = PixyCam.getLargestBlueBlock(blocks);
-
-      switch (DriverStation.getAlliance()) {
-        default:
-        case Red:
-          // If alliance is red, prioritize red targets if they are there;
-          // otherwise get blue targets
-          latestTargetBall = largestBlue;
-          break;
-        case Blue:
-          // If alliance is blue, prioritize blue targets if they are there;
-          // otherwise get red targets
-          latestTargetBall = largestRed;
-          break;
+        switch (DriverStation.getAlliance()) {
+          default:
+          case Red:
+            photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
+            break;
+          case Blue:
+            photonVision.changePipeline(Vision.RED_PIPELINE_INDEX);
+            break;
+          } 
       }
-    }
 
+    Double latestTargetX = photonVision.getBallXValue();
     // If our `latestTargetBall` is null, remember where our last seen ball was
     // until we haven't seen a new ball ball for LAST_SEEN_CYCLE_COUNTER_MAX
     // number of cycles.
-    if (targetBall != null && latestTargetBall == null) {
+    if (targetX != null && latestTargetX == null) {
       lastSeenCycleCounter++;
     } else {
       lastSeenCycleCounter = 0;
-      targetBall = latestTargetBall;
+      targetX = latestTargetX;
     }
     if (lastSeenCycleCounter >= LAST_SEEN_CYCLE_COUNTER_MAX) {
-      targetBall = null;
+      targetX = null;
     }
 
     strafeOutput = 0.0;
 
-    if (targetBall == null) {
+    if (targetX == null) {
       return;
     }
 
     // The first time we see a ball, we should turn the intake on
     // intake.start();
 
-    double frameCenter = pixyCam.getFrameCenter();
+    double frameCenter = photonVision.getFrameCenter();
     double output = strafeController.calculate(
-      (double) targetBall.getX(),
+      (double) targetX,
       frameCenter
     );
 
@@ -217,7 +176,7 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
     double scaledOutput = output / (((frameCenter / MAX_SPEED_HALF_FRAME_SCALE) * strafeController.getP()));
     // Square our output so we more quickly ramp to zero as we approach the center of our frame.
     strafeOutput = Utilities.squareValues(scaledOutput) * MAX_STRAFE_OUTPUT;
-
+    strafeOutput = strafeOutput * 2.5;
     // Negative since our Pixy cam is on the back of our robot. Our
     // side-to-side values need to be inverted, since our side-to-side
     // values are relative to the front of the robot
@@ -226,18 +185,27 @@ public class PixyPickupCommand extends CommandBase implements AutoDrivableComman
       -MAX_STRAFE_OUTPUT,
       MAX_STRAFE_OUTPUT
     );
+
+    if (Math.abs(strafeOutput) < 0.08) {
+      strafeOutput = Math.copySign(0.08, strafeOutput);
+    }
+    double straffedOutput = strafeOutput;
+    SmartDashboard.putNumber("Strafe Output", straffedOutput);
+    //strafeOutput = 0;
   }
 
   @Override
   public void end(boolean interrupted) {
+    strafeOutput = 0;
+    targetX = null;
     autoDrive.clearDelegate();
     // intake.stop();
-    targetBall = null;
+    
   }
 
   @Override
   public State calculate(double forward, double strafe, boolean isFieldOriented) {
-    if (targetBall != null) {
+    if (targetX != null) {
       return new AutoDrive.State(
         spangle,
         strafeOutput

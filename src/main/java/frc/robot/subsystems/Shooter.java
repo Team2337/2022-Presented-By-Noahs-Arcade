@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SystemsCheckPositions;
@@ -59,6 +60,7 @@ public class Shooter extends SubsystemBase {
     rightMotor.enableVoltageCompensation(true);
 
     setupShuffleboard(Constants.DashboardLogging.SHOOTER);
+    // SmartDashboard.putNumber("Shooter Speed X", 0);
   }
 
   private ErrorCode configureShooterMotor(TalonFX motor) {
@@ -133,7 +135,8 @@ public class Shooter extends SubsystemBase {
     if (speedFeetPerSecond != targetSpeed){
       targetSpeed = speedFeetPerSecond;
     }
-
+  
+    // speedFeetPerSecond = SmartDashboard.getNumber("Shooter Speed X", 0);
     double ticksPerHundredMiliseconds = feetPerSecondToTicksPerOneHundredMs(speedFeetPerSecond);
 
     enableMotorCurrentLimiting();
