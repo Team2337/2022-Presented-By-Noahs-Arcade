@@ -62,7 +62,7 @@ public class PhotonVision extends SubsystemBase  {
 
   public double getFrameWidth() {
     //Find based off of PhotonVision output settings
-    return 160;
+    return 320;
   }
 
   public double getFrameCenter() {

@@ -50,7 +50,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   private final Intake intake;
   private final PhotonVision photonVision;
 
-  private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0);
+  private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0); //P 0.0035
 
   // private var targetBall;
   private Double targetX = null;
@@ -188,6 +188,10 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
       -MAX_STRAFE_OUTPUT,
       MAX_STRAFE_OUTPUT
     );
+
+    if (Math.abs(strafeOutput) < 0.08) {
+      strafeOutput = Math.copySign(0.08, strafeOutput);
+    }
     double straffedOutput = strafeOutput;
     SmartDashboard.putNumber("Strafe Output", straffedOutput);
     //strafeOutput = 0;
