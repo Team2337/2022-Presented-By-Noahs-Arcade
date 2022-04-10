@@ -172,6 +172,10 @@ public class Delivery extends SubsystemBase {
     setSpeed(direction, Constants.DELIVERY_SPEED);
   }
 
+  public void start(double speed, Direction direction) {
+    setSpeed(direction, speed);
+  }
+
   public void startDelivery(Direction direction, double speed) {
     switch (direction) {
       case CLOCKWISE:
