@@ -313,7 +313,6 @@ public class RobotContainer {
     JoystickButton yellowSwitch = new JoystickButton(operatorStation, 4);
     JoystickButton yellowButton = new JoystickButton(operatorStation, 8);
     JoystickButton blueButton = new JoystickButton(operatorStation, 9);
-    JoystickButton redSwitchRight = new JoystickButton(operatorStation, 10);
 
     operatorA.whileHeld(new ForwardKickerCommand(kicker));
 
@@ -356,15 +355,15 @@ public class RobotContainer {
   }
 
   public void configureButtonBindingsTeleop() {
-    JoystickButton redSwitchLeft = new JoystickButton(operatorStation, 7);
+    JoystickButton redLeftSwitch = new JoystickButton(operatorStation, 11);
 
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(redSwitchLeft::get, climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(redLeftSwitch::get, climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
-    shootTrigger.whenActive(new ConditionalAutomaticShoot(redSwitchLeft::get, climber, delivery, kicker, shooter));
+    shootTrigger.whenActive(new ConditionalAutomaticShoot(redLeftSwitch::get, climber, delivery, kicker, shooter));
   }
 
   public boolean robotLinedUp() {
@@ -379,7 +378,7 @@ public class RobotContainer {
         && !drivetrain.isMoving()
         && operatorController.getRightBumper()
         && operatorController.getLeftBumper())
-        && !operatorStation.redSwitchRight.get();
+        && !operatorStation.redRightSwitch.get();
   }
 
   public Command getAutonomousCommand() {
