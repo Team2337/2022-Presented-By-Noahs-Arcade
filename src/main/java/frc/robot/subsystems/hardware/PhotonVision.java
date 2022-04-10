@@ -1,15 +1,10 @@
 package frc.robot.subsystems.hardware;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -35,13 +30,11 @@ public class PhotonVision extends SubsystemBase  {
       corners = ball.getCorners();
       hasTarget = true;
       ballX = getXValue(corners);
-      SmartDashboard.putNumber("Xvalue", ballX);
-    }
-    else {
+    } else {
       hasTarget = false;
       ballX = null;
     }
-
+    SmartDashboard.putNumber("Photon X", ballX);
   }
 
   public boolean hasTarget() {
@@ -90,30 +83,5 @@ public class PhotonVision extends SubsystemBase  {
       (targetCorners.get(0).x + targetCorners.get(1).x) / 2   //Otherwise, resort to using the first two, which are different.
     );//If you don't like ternary, I can switch this out for a more readable if-statement
     
-    /*
-     ArrayList<Double> ballXValues = new ArrayList<Double>();
-    for (int i = 0; i < 4; i++) {
-      //Get the point, start a count
-      double point = Math.abs(targetCorners.get(i).x);
-      double count = 0;
-      //Add how many times the x value has been seen inside this array
-      for (int z = 0; z < ballXValues.size(); z++) {
-        if (ballXValues.get(z) != point){
-          count++;
-        }
-      }
-      //If it hasn't, it is unique and we want it.
-      if (count == 0.0){
-        ballXValues.add(point);
-      }
-    }
-    //Get the overall "length" of the line segment
-    double totalXValues = 0;
-    for (int y = 0; y < ballXValues.size(); y++) {
-      totalXValues = totalXValues + ballXValues.get(y);
-    }
-    //Divide by the size to get the x value the midpoint of ball is on.
-    double xValue = totalXValues / ballXValues.size();
-    return xValue; */
   }
 }
