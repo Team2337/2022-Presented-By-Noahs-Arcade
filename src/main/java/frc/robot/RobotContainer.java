@@ -345,6 +345,7 @@ public class RobotContainer {
 
   public void instantiateSubsystemsTeleop() {
     // pixyCam = new PixyCam();
+    System.out.println("Hello World!");
   }
 
   public void configureButtonBindingsTeleop() {
