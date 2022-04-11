@@ -18,7 +18,7 @@ public class PerpetualBloopDelivery extends CommandBase {
 
   private final Delivery delivery;
   private int waitTimer;
-  private double deliverySpeed = 0.25;
+  private double deliverySpeed = 0.35;
   private Supplier<Boolean> isAtSetpoint;
   private Supplier<String> leftBallColor;
 
