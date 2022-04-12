@@ -278,6 +278,7 @@ public final class Constants {
     public static final double kPickupR4DistanceInches = 14.0;
     public static final double kPickupR5DistanceInches = 26.0;
     public static final double kRunOverDistanceInches = 4.0;
+    public static final double kPuntDistanceInches = 4;
 
     // Starting Locations
 
@@ -287,7 +288,7 @@ public final class Constants {
       Rotation2d.fromDegrees(147.75)
     );
     public static final PolarCoordinate kPosition2MiddleStart = new PolarCoordinate(
-      // Starting angle of 38
+      // Starting angle of 45
       Units.inchesToMeters(94),
       Rotation2d.fromDegrees(-137)
     );
@@ -382,7 +383,7 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
-      Rotation2d.fromDegrees(-153) //-156
+      Rotation2d.fromDegrees(-150) //-156
     );
     public static final PolarCoordinate kBallR4PickupForLeftStart = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
@@ -422,6 +423,10 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallD2 = new PolarCoordinate(
       Units.inchesToMeters(153),
+      Rotation2d.fromDegrees(-169.95)
+    );
+    public static final PolarCoordinate kBallD2Punt = new PolarCoordinate(
+      Units.inchesToMeters(153) - Units.inchesToMeters(kPuntDistanceInches),
       Rotation2d.fromDegrees(-169.95)
     );
     public static final PolarCoordinate kBallD2Pickup = new PolarCoordinate(
