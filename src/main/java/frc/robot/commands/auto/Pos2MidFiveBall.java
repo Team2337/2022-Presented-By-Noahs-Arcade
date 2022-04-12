@@ -37,7 +37,6 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
         new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
       ),
       new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus,1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(2.5),
-      /*
       new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, 1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(1.5),
       new StartShooterInstantCommand(43, shooter),
       new ParallelCommandGroup(
@@ -57,7 +56,6 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
       new WaitCommand(2),
-      */
       // new ProfiledPointToPointCommand(Constants.Auto.kPosition3RightStart, drivetrain::getTranslation, 1.0, 0.05, Units.inchesToMeters(120), 8, autoDrive, heading).withTimeout(3),
       new AutoStopAllCommands(delivery, intake, kicker, shooter)
     );
