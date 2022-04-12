@@ -500,7 +500,7 @@ public final class Constants {
 
   public static final int DELIVERY_MOTOR_ID = 21;
   public static final double DELIVERY_SPEED = 0.275;
-  public static final double BOTTOM_TO_TOP_SPEED = 0.35;
+  public static final double BOTTOM_TO_TOP_SPEED = 0.4; //0.35
 
   public static final int INTAKE_MOTOR_ID = 15;
   public static final double INTAKE_FORWARD_SPEED = 1;
