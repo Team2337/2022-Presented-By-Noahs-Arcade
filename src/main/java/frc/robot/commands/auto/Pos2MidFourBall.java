@@ -36,8 +36,8 @@ public class Pos2MidFourBall extends SequentialCommandGroup {
           new ForwardKickerCommand(kicker).withTimeout(0.75),
           new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
         ),
-        new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus,1.5, 0.05, Units.inchesToMeters(60), 8, true, autoDrive, heading).withTimeout(2.5),
-        new ProfiledPointToPointCommand(Constants.Auto.kBallR4Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1.5),
+        new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation,1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
+        new ProfiledPointToPointCommand(Constants.Auto.kMidFiveBallR4Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1.5),
         new StartShooterInstantCommand(43, shooter),
         new ParallelCommandGroup(
           new ProfiledPointToPointCommand(Constants.Auto.kBallD2Punt, drivetrain::getTranslation, 1.5, 0.01, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5), //TODO: Change to D2

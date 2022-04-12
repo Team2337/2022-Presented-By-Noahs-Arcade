@@ -368,6 +368,10 @@ public final class Constants {
       Constants.Auto.kBallR2.getRadiusMeters(),
       Constants.Auto.kBallR2.getTheta()
     );
+    public static final PolarCoordinate kMidFiveBallShootPosition = new PolarCoordinate(
+      Constants.Auto.kBallR2.getRadiusMeters(),
+      Rotation2d.fromDegrees(-130)
+    );
     public static final PolarCoordinate kBallR4 = new PolarCoordinate(
       Units.inchesToMeters(305.66),
       Rotation2d.fromDegrees(-157.35) //-157.35
@@ -383,7 +387,11 @@ public final class Constants {
     );
     public static final PolarCoordinate kBallR4Pickup = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
-      Rotation2d.fromDegrees(-150) //-156
+      Rotation2d.fromDegrees(-153) //-156
+    );
+    public static final PolarCoordinate kMidFiveBallR4Pickup = new PolarCoordinate(
+      Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
+      Rotation2d.fromDegrees(-150.75) //-156
     );
     public static final PolarCoordinate kBallR4PickupForLeftStart = new PolarCoordinate(
       Constants.Auto.kBallR4.getRadiusMeters() - Units.inchesToMeters(kPickupR4DistanceInches),
