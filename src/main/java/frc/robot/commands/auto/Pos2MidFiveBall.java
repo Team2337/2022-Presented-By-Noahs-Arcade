@@ -9,6 +9,7 @@ import frc.robot.commands.auto.commandGroups.AutoStopAllCommands;
 import frc.robot.commands.auto.commandGroups.FirstMove;
 import frc.robot.commands.delivery.AutoStartDelivery;
 import frc.robot.commands.delivery.AutoStartDeliveryLeft;
+import frc.robot.commands.intake.AutoStartIntake;
 import frc.robot.commands.kicker.ForwardKickerCommand;
 import frc.robot.commands.shooter.StartShooterInstantCommand;
 import frc.robot.subsystems.AutoDrive;
@@ -20,10 +21,17 @@ import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Shooter;
 
 public class Pos2MidFiveBall extends SequentialCommandGroup {
+  private double forwardP = 1.5;
+  private double strafeP = 0.05;
+  private double forwardAcceleration = Units.inchesToMeters(45);
+  private double strafeAcceleration = 8;
 
   public Pos2MidFiveBall(AutoDrive autoDrive, Delivery delivery, Drivetrain drivetrain, Heading heading, Intake intake, Kicker kicker, Shooter shooter) {
     addCommands(
-      new FirstMove(Constants.Auto.kBallR2ShootPosition, autoDrive, drivetrain, heading, intake, shooter),
+      new StartShooterInstantCommand(42, shooter),
+      new ParallelCommandGroup(
+        new AutoStartIntake(intake),
+        new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, intake::getAutoBeamBreakSensorStatus, forwardP, strafeP, forwardAcceleration, strafeAcceleration, true, autoDrive, heading).withTimeout(2)),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(0.75),
         new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
