@@ -48,7 +48,6 @@ import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
 import frc.robot.subsystems.hardware.PhotonVision;
 
@@ -69,7 +68,6 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
   private final LED LED = new LED();
-  private final PixyCam pixyCam = new PixyCam();
   // private final PhotonVision photonVision = new PhotonVision();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -144,7 +142,7 @@ public class RobotContainer {
     startingAngleChooser.setDefaultOption("Cargo exit (25 degrees)", 25.0);
     startingAngleChooser.addOption("Right Pos3 Errored Start (80 degrees)", 80.0);
     startingAngleChooser.addOption("Left Pos1 Errored Start (-35 degrees)", -35.0);
-    startingAngleChooser.addOption("Middle Pos2 Errored Start (38 degrees)", 38.0);
+    startingAngleChooser.addOption("Middle Pos2 Errored Start (45 degrees)", 45.0);
     startingAngleChooser.addOption("Test (-35 degrees)", -35.0);
 
     SmartDashboard.putData("StartingAngleChooser", startingAngleChooser);
@@ -447,10 +445,6 @@ public class RobotContainer {
 
   public double getTx() {
     return vision.getTx();
-  }
-
-  public double getFrameCenter() {
-    return pixyCam.getFrameCenter();
   }
 
   public void ledSetColor(Color color, double tx) {
