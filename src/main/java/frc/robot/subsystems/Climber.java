@@ -40,7 +40,7 @@ public class Climber extends SubsystemBase {
   
   private static double servoSpeed = 1;
 
-  private final static double kP = 0.15; //0.08
+  private final static double kP = 0.08; //0.08
   private final static double kI = 0.0;
   private final static double kD = 0.0;
   private final static double tolerance = 50;
@@ -50,7 +50,7 @@ public class Climber extends SubsystemBase {
   public final double LOW_RUNG = 100000;
   public final double MID_RUNG = 3.0;
   public final double RICKABOOT = 1.4; // 1.65 Stringpot
-  public final double BLOOP_SHOOT = 1.35;
+  public final double BLOOP_SHOOT = 1.3;
 
   private static final double MAX_UP_SPEED = 1.0;
   private static final double MAX_DOWN_SPEED = 0.7;
@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase {
   private double MIN_STRINGPOT_VALUE = 0.3;
   private double MAX_STRINGPOT_VALUE = 3.05;
 
-  private double nominalForwardSpeed = 1.0;
+  private double nominalForwardSpeed = 0.1;
   private double nominalReverseSpeed = -nominalForwardSpeed;
 
   private double currentSetpoint;

@@ -358,7 +358,7 @@ public class RobotContainer {
     // Trigger operatorRightLeftBumper =
     // operatorRightBumper.and(operatorLeftBumper);
     Trigger intakeBeamBreakTrigger = new Trigger(intake::getBeamBreakSensorStatus);
-    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, driverController, delivery).andThen(new WaitCommand(0.2)).andThen(new PerpetualConditionalBloopShoot(redLeftSwitch::get, climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
+    intakeBeamBreakTrigger.whenInactive(new TriggerCommandGroup(shooter::isShooterToSpeed, delivery::getLeftColorSensorAllianceBallColor, driverController, delivery).andThen(new WaitCommand(0.3)).andThen(new PerpetualConditionalBloopShoot(redLeftSwitch::get, climber, delivery, kicker, shooter).andThen(new StopAllShooterSystemsCommand(delivery, kicker, shooter))));
 
     Trigger shootTrigger = new Trigger(() -> robotLinedUp());
     shootTrigger.whenActive(new ConditionalAutomaticShoot(redLeftSwitch::get, climber, delivery, kicker, shooter));

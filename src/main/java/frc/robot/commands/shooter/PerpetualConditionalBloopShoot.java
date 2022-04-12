@@ -14,7 +14,7 @@ public class PerpetualConditionalBloopShoot extends ConditionalCommand {
 
   public PerpetualConditionalBloopShoot(Supplier<Boolean> redSwitchLeftStatus, Climber climber, Delivery delivery, Kicker kicker, Shooter shooter) {
     super (
-      new PerpetualBloopOperatorLinearShoot(delivery, kicker, shooter).withTimeout(0.75),
+      new PerpetualBloopOperatorLinearShoot(delivery, kicker, shooter).withTimeout(0.5),
       new WaitCommand(0.0),
       () -> {
         return (DriverStation.getAlliance().toString() != delivery.getLeftColorSensorAllianceBallColor() && delivery.getLeftColorSensorAllianceBallColor() != "null" && !redSwitchLeftStatus.get());
