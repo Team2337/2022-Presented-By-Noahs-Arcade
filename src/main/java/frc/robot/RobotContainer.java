@@ -36,10 +36,7 @@ import frc.robot.nerdyfiles.oi.JoystickAnalogButton;
 import frc.robot.nerdyfiles.oi.NerdyOperatorStation;
 import frc.robot.commands.shooter.ConditionalAutomaticShoot;
 import frc.robot.commands.shooter.OperatorLinearShootCommand;
-import frc.robot.commands.shooter.PerpetualBloopOperatorLinearShoot;
-import frc.robot.commands.shooter.PerpetualBloopShoot;
 import frc.robot.commands.shooter.PerpetualConditionalBloopShoot;
-import frc.robot.commands.shooter.PerpetualShoot;
 import frc.robot.commands.shooter.PrepareShooter;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.StartStopShooterCommand;
@@ -50,7 +47,6 @@ import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.PixyCam;
 import frc.robot.subsystems.hardware.LED;
-import frc.robot.subsystems.hardware.PhotonVision;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -69,8 +65,7 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Heading heading = new Heading(drivetrain::getGyroscopeRotation, drivetrain::isMoving);
   private final LED LED = new LED();
-  private final PixyCam pixyCam = new PixyCam();
-  // private final PhotonVision photonVision = new PhotonVision();
+   
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
   private final SendableChooser<String> startingPosChooser = new SendableChooser<>();
@@ -324,8 +319,8 @@ public class RobotContainer {
     operatorLeftTrigger.whenPressed(intake::reverse, intake);
     operatorLeftTrigger.whenReleased(intake::stop, intake);
 
-    // operatorStart.whileHeld(new PhotonPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
-    // operatorBack.whileHeld(new PhotonPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive, photonVision));
+    operatorStart.whileHeld(new PhotonPickupCommand(PickupStrategy.OURS, drivetrain::getGyroscopeRotation, driverController, autoDrive));
+    operatorBack.whileHeld(new PhotonPickupCommand(PickupStrategy.THEIRS, drivetrain::getGyroscopeRotation, driverController, autoDrive));
 
     operatorRightBumper.whenHeld(new PrepareShooter(drivetrain::getTranslation, operatorY::get, vision::calculateDistanceToTargetInches, this::getClearSwitchStatus, kicker, shooter));
     operatorRightBumper.whenReleased(new StopAllShooterSystemsCommand(delivery, kicker, shooter));
@@ -447,10 +442,6 @@ public class RobotContainer {
 
   public double getTx() {
     return vision.getTx();
-  }
-
-  public double getFrameCenter() {
-    return pixyCam.getFrameCenter();
   }
 
   public void ledSetColor(Color color, double tx) {
