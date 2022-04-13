@@ -1,6 +1,12 @@
 package frc.robot.commands.pixy;
 
+import java.util.List;
 import java.util.function.Supplier;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -46,7 +52,6 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
 
   private final PickupStrategy strategy;
   private final AutoDrive autoDrive;
-  private final PhotonVision photonVision;
 
   private final PIDController strafeController = new PIDController(0.0035, 0.0, 0.0); //P 0.0035
 
@@ -62,12 +67,19 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
 
   private PolarCoordinate joystickCoordinates = new PolarCoordinate(0, Rotation2d.fromDegrees(0));
 
-  public PhotonPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive, PhotonVision photonVision) {
+  private PhotonCamera camera = new PhotonCamera("intake");
+  private PhotonPipelineResult targets;
+  private PhotonTrackedTarget ball;
+  private double yawValue = 0.0;
+  private boolean hasTarget = false;
+  private List<TargetCorner> corners;
+  private Double ballX;
+
+  public PhotonPickupCommand(PickupStrategy strategy, Supplier<Rotation2d> gyroSupplier, XboxController driverController, AutoDrive autoDrive) {
     this.strategy = strategy;
     this.gyroSupplier = gyroSupplier;
     this.driverController = driverController;
     this.autoDrive = autoDrive;
-    this.photonVision = photonVision;
 
     addRequirements(autoDrive);
   }
@@ -101,6 +113,20 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
   @Override
   public void execute() {
     log();
+    targets = camera.getLatestResult();
+    if (targets.hasTargets()) {
+      ball = targets.getBestTarget();
+      yawValue = ball.getYaw();
+      corners = ball.getCorners();
+      hasTarget = true;
+      ballX = getXValue(corners);
+      SmartDashboard.putNumber("Photon X", ballX);
+    } else {
+      hasTarget = false;
+      ballX = null;
+    }
+
+
     double y = driverController.getLeftX();
     double x = -driverController.getLeftY();
     Rotation2d joystickAngle = joystickCoordinates.fromFieldCoordinate(new Translation2d(x, y), new Translation2d(0, 0)).getTheta();
@@ -123,25 +149,25 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
       switch (DriverStation.getAlliance()) {
         default:
         case Red:
-          photonVision.changePipeline(Vision.RED_PIPELINE_INDEX);
+          changePipeline(Vision.RED_PIPELINE_INDEX);
           break;
         case Blue:
-          photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
+          changePipeline(Vision.BLUE_PIPELINE_INDEX);
           break;
         } 
       } else if (strategy == PickupStrategy.THEIRS) {
         switch (DriverStation.getAlliance()) {
           default:
           case Red:
-            photonVision.changePipeline(Vision.BLUE_PIPELINE_INDEX);
+            changePipeline(Vision.BLUE_PIPELINE_INDEX);
             break;
           case Blue:
-            photonVision.changePipeline(Vision.RED_PIPELINE_INDEX);
+            changePipeline(Vision.RED_PIPELINE_INDEX);
             break;
           } 
       }
 
-    Double latestTargetX = photonVision.getBallXValue();
+    Double latestTargetX = getBallXValue();
     // If our `latestTargetBall` is null, remember where our last seen ball was
     // until we haven't seen a new ball ball for LAST_SEEN_CYCLE_COUNTER_MAX
     // number of cycles.
@@ -164,7 +190,7 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
     // The first time we see a ball, we should turn the intake on
     // intake.start();
 
-    double frameCenter = photonVision.getFrameCenter();
+    double frameCenter = getFrameCenter();
     double output = strafeController.calculate(
       (double) targetX,
       frameCenter
@@ -213,6 +239,54 @@ public class PhotonPickupCommand extends CommandBase implements AutoDrivableComm
     } else {
       return null;
     }
+  }
+
+  public boolean hasTarget() {
+    return hasTarget;
+  }
+
+  public void changePipeline(int pipeline) {
+    camera.setPipelineIndex(pipeline);
+  }
+
+  public double getYaw() {
+    return yawValue;
+  }
+
+  public List<TargetCorner> getCorners() {
+    return corners;
+  }
+
+  public double getFrameWidth() {
+    //Find based off of PhotonVision output settings
+    return 320;
+  }
+
+  public double getFrameCenter() {
+    return getFrameWidth() / 2;
+  }
+
+  public Double getBallXValue() {
+    return ballX;
+  }
+
+  private double getXValue(List<TargetCorner> targetCorners) {
+    /**
+     * PixyCam uses x-y coordinates to find balls and strafe, but PhotonVision only gives us rotations around axes for
+     * finding our ball. However, getting the corner gives us a bounding box, which can be presumed to be pixels from
+     * the camera output. So if we have a rectangle (the bounding box), we can get the x-values and divide them by two
+     * to get the midpoint, and turn this midpoint of the ball to be relative to the camera center so that it can be
+     * plugged into the PixyPickupCommand to run correctly.
+     */
+
+
+    //Hold Point values
+    return (
+      targetCorners.get(0) == targetCorners.get(1) ?          //Check if the first two are equal. There are only two unique values
+      (targetCorners.get(0).x + targetCorners.get(2).x) / 2 : //If so, the first and third can be presumed to be unique. Use those
+      (targetCorners.get(0).x + targetCorners.get(1).x) / 2   //Otherwise, resort to using the first two, which are different.
+    );//If you don't like ternary, I can switch this out for a more readable if-statement
+    
   }
 
 }
