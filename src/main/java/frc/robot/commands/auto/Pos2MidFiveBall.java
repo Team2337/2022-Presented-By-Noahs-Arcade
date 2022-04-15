@@ -30,12 +30,12 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
       new StartShooterInstantCommand(42, shooter),
       new ParallelCommandGroup(
         new AutoStartIntake(intake),
-        new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)),
+        new ProfiledPointToPointCommand(Constants.Auto.kMidFiveBallR2, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)),
       new ParallelCommandGroup(
         new ForwardKickerCommand(kicker).withTimeout(0.75),
         new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
       ),
-      new ProfiledPointToPointCommand(Constants.Auto.TransitionBetweenBallR2AndBallR4, drivetrain::getTranslation,1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
+      new ProfiledPointToPointCommand(Constants.Auto.MidFiveBallTransitionBetweenBallR2AndBallR4, drivetrain::getTranslation,1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(2.5),
       new ProfiledPointToPointCommand(Constants.Auto.kMidFiveBallR4Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(60), 8, autoDrive, heading).withTimeout(1.5),
       new StartShooterInstantCommand(43, shooter),
       new ParallelCommandGroup(
@@ -46,7 +46,7 @@ public class Pos2MidFiveBall extends SequentialCommandGroup {
         new ForwardKickerCommand(kicker).withTimeout(2),
         new AutoStartDelivery(delivery).withTimeout(1)
       ),
-      new ProfiledPointToPointCommand(Constants.Auto.kBallR3MidPickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(1),
+      new ProfiledPointToPointCommand(Constants.Auto.kBallR3MidPickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 8, autoDrive, heading).withTimeout(2.7),
       new WaitCommand(0.25),
       new StartShooterInstantCommand(42, shooter),
       new ProfiledPointToPointCommand(Constants.Auto.kBallR3Pickup, drivetrain::getTranslation, 1.5, 0.05, Units.inchesToMeters(45), 6, autoDrive, heading).withTimeout(1),

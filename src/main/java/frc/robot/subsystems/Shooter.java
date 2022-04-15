@@ -123,6 +123,7 @@ public class Shooter extends SubsystemBase {
     if (isOverheated()) {
       stop();
     }
+    SmartDashboard.putBoolean("Shooter At Speed", isShooterToLEDSpeed());
   }
 
   // ** Public API **

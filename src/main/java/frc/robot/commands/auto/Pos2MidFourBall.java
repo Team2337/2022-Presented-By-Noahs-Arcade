@@ -29,7 +29,7 @@ public class Pos2MidFourBall extends SequentialCommandGroup {
         new StartShooterInstantCommand(42, shooter),
         new ParallelCommandGroup(
           new AutoStartIntake(intake),
-          new ProfiledPointToPointCommand(Constants.Auto.kBallR2ShootPosition, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)),
+          new ProfiledPointToPointCommand(Constants.Auto.kMidFiveBallR2, drivetrain::getTranslation, forwardP, strafeP, forwardAcceleration, strafeAcceleration, autoDrive, heading).withTimeout(2)),
         new ParallelCommandGroup(
           new ForwardKickerCommand(kicker).withTimeout(0.75),
           new AutoStartDeliveryLeft(delivery).withTimeout(0.75)
