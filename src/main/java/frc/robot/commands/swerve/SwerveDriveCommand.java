@@ -64,9 +64,7 @@ public class SwerveDriveCommand extends CommandBase {
     // controller to let the driver rotate freely.
     // Never allow this flow in autonomous (protect against floating joystick
     // values coming from our controllers)
-    if (DriverStation.isTeleopEnabled() && rotation != 0 && heading.isEnabled()) {
-      heading.disableMaintainHeading();
-    }
+  
 
     /**
      * Calculate a rotation value for the robot to achieve it's

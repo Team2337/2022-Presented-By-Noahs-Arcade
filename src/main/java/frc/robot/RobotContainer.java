@@ -9,6 +9,9 @@ import java.util.Map;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,6 +47,7 @@ import frc.robot.commands.shooter.StopAllShooterSystemsCommand;
 import frc.robot.commands.vision.InstantRelocalizeCommand;
 import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
+import frc.robot.coordinates.PolarCoordinate;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.LED;
 
@@ -75,7 +79,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommand(driverController, autoDrive, heading, drivetrain));
     heading.setDefaultCommand(
-        new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, driverRightBumper::get, drivetrain, heading, vision));
+        new HeadingToTargetCommand(drivetrain::getTranslation, operatorLeftBumper::get, driverRightBumper::get, (()-> joystickAngleQueued()), (()-> joystickCoordinate()), drivetrain, heading, vision));
     LED.setDefaultCommand(new LEDRunnable(LED, this));
     vision.setDefaultCommand(new PeriodicRelocalizeCommand(drivetrain, vision));
     climber.setDefaultCommand(new ClimberJoystickCommand(drivetrain::getGyroscopeRoll, operatorController, operatorStation, climber));
@@ -372,6 +376,14 @@ public class RobotContainer {
         && operatorController.getRightBumper()
         && operatorController.getLeftBumper())
         && !operatorStation.redRightSwitch.get();
+  }
+  //We can know when someone wants to set a new direction if they have pushed the stick to the edge of the axis, found by getting the radius of the polar coordinate
+  public boolean joystickAngleQueued(){
+    return joystickCoordinate().getRadiusMeters() >= 0.9 && DriverStation.isTeleopEnabled();
+  }
+
+  public PolarCoordinate joystickCoordinate(){
+    return PolarCoordinate.fromFieldCoordinate(new Translation2d(driverController.getRightX(), driverController.getRightY()), new Translation2d(0, 0));
   }
 
   public Command getAutonomousCommand() {

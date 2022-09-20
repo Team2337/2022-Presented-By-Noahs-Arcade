@@ -20,21 +20,25 @@ public class HeadingToTargetCommand extends CommandBase {
   private final Translation2d targetMeters;
   private final Supplier<Translation2d> robotTranslationSupplier;
   private final Supplier<Boolean> overrideSupplier; // Moves us to "vision drive"
+  private final Supplier<Boolean> joystickAngleOverideSupplier;
+  private final Supplier<PolarCoordinate> joystickAngleSupplier;
   private final Drivetrain drivetrain;
   private final Heading heading;
   private final Vision vision;
   private boolean firstTime = false;
   private Supplier<Boolean> driverRightBumperSupplier;
 
-  public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
-    this(Constants.kHub, robotTranslationSupplier, overrideSupplier, driverRightBumperSupplier, drivetrain, heading, vision);
+  public HeadingToTargetCommand(Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Supplier<Boolean> joystickAngleOverideSupplier, Supplier<PolarCoordinate> joystickAngleSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
+    this(Constants.kHub, robotTranslationSupplier, overrideSupplier, driverRightBumperSupplier, joystickAngleOverideSupplier, joystickAngleSupplier, drivetrain, heading, vision);
   }
 
-  public HeadingToTargetCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
+  public HeadingToTargetCommand(Translation2d targetMeters, Supplier<Translation2d> robotTranslationSupplier, Supplier<Boolean> overrideSupplier, Supplier<Boolean> driverRightBumperSupplier, Supplier<Boolean> joystickAngleOverideSupplier, Supplier<PolarCoordinate> joystickAngleSupplier, Drivetrain drivetrain, Heading heading, Vision vision) {
     this.targetMeters = targetMeters;
     this.robotTranslationSupplier = robotTranslationSupplier;
     this.overrideSupplier = overrideSupplier;
     this.driverRightBumperSupplier = driverRightBumperSupplier;
+    this.joystickAngleOverideSupplier = joystickAngleOverideSupplier;
+    this.joystickAngleSupplier = joystickAngleSupplier;
     this.drivetrain = drivetrain;
     this.heading = heading;
     this.vision = vision;
@@ -52,7 +56,17 @@ public class HeadingToTargetCommand extends CommandBase {
 
   @Override
   public void execute() {
-    if (overrideSupplier.get()) {
+    //Using joystick values
+    if (joystickAngleOverideSupplier.get()){
+      if (firstTime) {
+        heading.enableMaintainHeading();
+        firstTime = false;
+        heading.changePValue(false);
+      }
+      Rotation2d desiredRotation = joystickAngleSupplier.get().getTheta().minus(drivetrain.getGyroscopeRotation());
+      heading.setMaintainHeading(desiredRotation);
+    }
+    else if (overrideSupplier.get()) {
       if (firstTime) {
         heading.enableMaintainHeading();
         firstTime = false;
