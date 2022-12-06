@@ -1,6 +1,22 @@
 package frc.robot.subsystems.hardware;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.commons.io.IOIndexedException;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -10,31 +26,83 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase  {
   
-  private PhotonCamera camera = new PhotonCamera("intake");
+  private PhotonCamera aprilTagCamera = new PhotonCamera("aprilTagCamera");
   private PhotonPipelineResult targets;
-  private PhotonTrackedTarget ball;
-  private double yawValue = 0.0;
+  private PhotonTrackedTarget target;
   private boolean hasTarget = false;
-  private List<TargetCorner> corners;
-  private Double ballX;
+  private ArrayList<AprilTag> aprilTags;
 
   public PhotonVision() {
   }
 
+  public static class AprilTag {
+    public int id;
+    public double yaw;
+    public double area;
+
+    public AprilTag(int id, double yaw, double area) {
+      this.id = id;
+      this.yaw = yaw;
+      this.area = area;
+    }
+  }
+
+
+
   @Override
   public void periodic() {
-    targets = camera.getLatestResult();
+    targets = aprilTagCamera.getLatestResult();
     if (targets.hasTargets()) {
-      ball = targets.getBestTarget();
-      yawValue = ball.getYaw();
-      corners = ball.getCorners();
-      hasTarget = true;
-      ballX = getXValue(corners);
-      SmartDashboard.putNumber("Photon X", ballX);
-    } else {
-      hasTarget = false;
-      ballX = null;
+      aprilTags.clear();
+      for (int i = 0; i < targets.getTargets().size(); i++){
+        target = targets.getTargets().get(i);
+        int id = target.getFiducialId();
+        double yaw = target.getYaw();
+        double area = target.getArea();
+        AprilTag tag = new AprilTag(id, yaw, area);
+        aprilTags.add(tag);
+      }
     }
+  }
+
+  public double[] readAprilTagDataFromDatabase(int id){
+    /*So Jackson is a way to read JSON files in Java, and it is already in WPILib, and we will probably need to use
+    a database to store AprilTag position data, so why not use it, as JSON is easy to use? *
+    Exact techinique taken from https://stackoverflow.com/a/21760537 */
+
+    ObjectMapper mapper = new ObjectMapper();
+    InputStream in = null;
+    try {
+      //Java works on FileInputStreams, so we need to convert the file into an input stream
+      in = new FileInputStream(new File("src//main//java//frc//robot//subsystems//hardware//apriltags.json"));
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    //BufferedReaders are more efficient ways to read through data, so that is what now can read the JSON File
+    //(Copied from my homework)
+    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    Map<String, Map<String, Double>> map = null;
+    try {
+      //Java has a way to create {key,value} dictionaries with maps, so this is converting the JSON into this dictionary object
+      map = mapper.readValue(br, Map.class);
+    } catch (JsonParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    //And this returns all the data in a nice neat array.
+    double[] output = {map.get(String.valueOf(id)).get("x"),map.get(String.valueOf(id)).get("y"),map.get(String.valueOf(id)).get("height")};
+    return output;
+  }
+  
+  public ArrayList<AprilTag> getAprilTags(){
+    return aprilTags;
   }
 
   public boolean hasTarget() {
@@ -42,15 +110,7 @@ public class PhotonVision extends SubsystemBase  {
   }
 
   public void changePipeline(int pipeline) {
-    camera.setPipelineIndex(pipeline);
-  }
-
-  public double getYaw() {
-    return yawValue;
-  }
-
-  public List<TargetCorner> getCorners() {
-    return corners;
+    aprilTagCamera.setPipelineIndex(pipeline);
   }
 
   public double getFrameWidth() {
@@ -62,26 +122,4 @@ public class PhotonVision extends SubsystemBase  {
     return getFrameWidth() / 2;
   }
 
-  public Double getBallXValue() {
-    return ballX;
-  }
-
-  private double getXValue(List<TargetCorner> targetCorners) {
-    /**
-     * PixyCam uses x-y coordinates to find balls and strafe, but PhotonVision only gives us rotations around axes for
-     * finding our ball. However, getting the corner gives us a bounding box, which can be presumed to be pixels from
-     * the camera output. So if we have a rectangle (the bounding box), we can get the x-values and divide them by two
-     * to get the midpoint, and turn this midpoint of the ball to be relative to the camera center so that it can be
-     * plugged into the PixyPickupCommand to run correctly.
-     */
-
-
-    //Hold Point values
-    return (
-      targetCorners.get(0) == targetCorners.get(1) ?          //Check if the first two are equal. There are only two unique values
-      (targetCorners.get(0).x + targetCorners.get(2).x) / 2 : //If so, the first and third can be presumed to be unique. Use those
-      (targetCorners.get(0).x + targetCorners.get(1).x) / 2   //Otherwise, resort to using the first two, which are different.
-    );//If you don't like ternary, I can switch this out for a more readable if-statement
-    
-  }
 }
