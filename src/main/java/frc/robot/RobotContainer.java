@@ -46,6 +46,7 @@ import frc.robot.commands.vision.LimelightHeadingAndInstantRelocalizeCommand;
 import frc.robot.commands.vision.PeriodicRelocalizeCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.hardware.LED;
+import frc.robot.subsystems.hardware.PhotonVision;
 
 public class RobotContainer {
   private final XboxController driverController = new XboxController(0);
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Kicker kicker = new Kicker();
+  private final PhotonVision photonvision = new PhotonVision();
   private final AutoDrive autoDrive = new AutoDrive();
   private final Delivery delivery = new Delivery();
   private final Drivetrain drivetrain = new Drivetrain(pigeon);

@@ -16,21 +16,22 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.io.IOIndexedException;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase  {
   
-  private PhotonCamera aprilTagCamera = new PhotonCamera("aprilTagCamera");
+  private PhotonCamera aprilTagCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
   private PhotonPipelineResult targets;
   private PhotonTrackedTarget target;
   private boolean hasTarget = false;
-  private ArrayList<AprilTag> aprilTags;
+  private ArrayList<AprilTag> aprilTags = new ArrayList<>();
 
   public PhotonVision() {
   }
@@ -63,6 +64,13 @@ public class PhotonVision extends SubsystemBase  {
         aprilTags.add(tag);
       }
     }
+    SmartDashboard.putNumber("April Tag 1", getAprilTags().get(0).id);
+    SmartDashboard.putNumber("April Tag 1 Yaw",getAprilTags().get(0).yaw); 
+    SmartDashboard.putNumber("April Tag 1 Area",getAprilTags().get(0).area); 
+    SmartDashboard.putNumber("April Tag 2", getAprilTags().get(1).id);
+    SmartDashboard.putNumber("April Tag  2Yaw",getAprilTags().get(1).yaw); 
+    SmartDashboard.putNumber("April Tag 2 Area",getAprilTags().get(1).area); 
+    SmartDashboard.putNumber("April Tag X", readAprilTagDataFromDatabase(getAprilTags().get(0).id)[0]);
   }
 
   public double[] readAprilTagDataFromDatabase(int id){
@@ -72,9 +80,15 @@ public class PhotonVision extends SubsystemBase  {
 
     ObjectMapper mapper = new ObjectMapper();
     InputStream in = null;
+    
     try {
       //Java works on FileInputStreams, so we need to convert the file into an input stream
-      in = new FileInputStream(new File("src//main//java//frc//robot//subsystems//hardware//apriltags.json"));
+      /* In case you are wondering what all of this deploy directory gobbledygook is, I 
+      just copied what WPILib docs article did to access an external, in this case, PathWeaver file.
+      https://docs.wpilib.org/en/stable/docs/software/pathplanning/pathweaver/integrating-robot-program.html
+      Having the file stored locally apparently meant that the RIO couldn't trace the path leading to null
+      pointer exceptions, which are bad. */
+      in = new FileInputStream(Filesystem.getDeployDirectory().toPath().resolve("apriltags.json").toFile());
     } catch (FileNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -97,7 +111,8 @@ public class PhotonVision extends SubsystemBase  {
       e.printStackTrace();
     }
     //And this returns all the data in a nice neat array.
-    double[] output = {map.get(String.valueOf(id)).get("x"),map.get(String.valueOf(id)).get("y"),map.get(String.valueOf(id)).get("height")};
+    //,map.get(String.valueOf(id)).get("height")
+    double[] output = {map.get(String.valueOf(id)).get("x"),map.get(String.valueOf(id)).get("y")};
     return output;
   }
   
