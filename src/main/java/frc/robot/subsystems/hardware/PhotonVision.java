@@ -41,11 +41,13 @@ public class PhotonVision extends SubsystemBase  {
     public int id;
     public double yaw;
     public double area;
+    public double pitch;
 
-    public AprilTag(int id, double yaw, double area) {
+    public AprilTag(int id, double yaw, double area, double pitch) {
       this.id = id;
       this.yaw = yaw;
       this.area = area;
+      this.pitch = pitch;
     }
   }
 
@@ -61,23 +63,22 @@ public class PhotonVision extends SubsystemBase  {
         int id = target.getFiducialId();
         double yaw = target.getYaw();
         double area = target.getArea();
-        AprilTag tag = new AprilTag(id, yaw, area);
+        double pitch = target.getPitch();
+        AprilTag tag = new AprilTag(id, yaw, area, pitch);
         aprilTags.add(tag);
       }
     }
-    SmartDashboard.putNumber("April Tag 1", getAprilTags().get(0).id);
-    SmartDashboard.putNumber("April Tag 1 Yaw",getAprilTags().get(0).yaw); 
-    SmartDashboard.putNumber("April Tag 1 Area",getAprilTags().get(0).area); 
-    SmartDashboard.putNumber("April Tag 2", getAprilTags().get(1).id);
-    SmartDashboard.putNumber("April Tag  2Yaw",getAprilTags().get(1).yaw); 
-    SmartDashboard.putNumber("April Tag 2 Area",getAprilTags().get(1).area); 
-    SmartDashboard.putNumber("April Tag X", readAprilTagDataFromDatabase(getAprilTags().get(0).id)[0]);
   }
   //https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+  public double getDistanceFromTarget(AprilTag tag, double cameraHeightMeters, double cameraPitchRadians){
+    return PhotonUtils.calculateDistanceToTargetMeters(cameraHeightMeters, readAprilTagDataFromDatabase(tag.id)[2], cameraPitchRadians, tag.pitch * (Math.PI/180.0));
+  }
+
   
+  //[0] is x pos, [1] is y pos, [2] is height
   public double[] readAprilTagDataFromDatabase(int id){
     /*So Jackson is a way to read JSON files in Java, and it is already in WPILib, and we will probably need to use
-    a database to store AprilTag position data, so why not use it, as JSON is easy to use? *
+    a database to store AprilTag position data, so why not use it, as JSON is easy to use?
     Exact techinique taken from https://stackoverflow.com/a/21760537 */
     
     ObjectMapper mapper = new ObjectMapper();
@@ -86,7 +87,7 @@ public class PhotonVision extends SubsystemBase  {
     try {
       //Java works on FileInputStreams, so we need to convert the file into an input stream
       /* In case you are wondering what all of this deploy directory gobbledygook is, I 
-      just copied what WPILib docs article did to access an external, in this case, PathWeaver file.
+      just copied what WPILib docs article did to access an external, in their case, PathWeaver file.
       https://docs.wpilib.org/en/stable/docs/software/pathplanning/pathweaver/integrating-robot-program.html
       Having the file stored locally apparently meant that the RIO couldn't trace the path leading to null
       pointer exceptions, which are bad. */
@@ -114,7 +115,7 @@ public class PhotonVision extends SubsystemBase  {
     }
     //And this returns all the data in a nice neat array.
     //,map.get(String.valueOf(id)).get("height")
-    double[] output = {map.get(String.valueOf(id)).get("x"),map.get(String.valueOf(id)).get("y")};
+    double[] output = {map.get(String.valueOf(id)).get("x"),map.get(String.valueOf(id)).get("y"),map.get(String.valueOf(id)).get("height")};
     return output;
   }
   
